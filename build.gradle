@@ -64,6 +64,13 @@ project (':client'){
     } 
 }
 
+clover {
+    report {
+        xml=true
+        html=true
+    }
+}
+
 tasks.register("run-server") {
     dependsOn project('server').getTasksByName('run',false)
     group = 'Run Client/Server'
@@ -76,20 +83,4 @@ tasks.register("run-client") {
     description = 'Run the Client'
 }
 
-task resolveDependencies {
-    doLast {
-        project.rootProject.allprojects.each { subProject ->
-            subProject.buildscript.configurations.each { configuration->
-                if(configuration.canBeResolved) {
-                    configuration.resolve()
-                }
-            }
-            subProject.configurations.each { configuration ->
-                if(configuration.canBeResolved) {
-                    configuration.resolve()
-                }
-            }
-        }
-    }
-}
 

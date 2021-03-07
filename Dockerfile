@@ -41,9 +41,6 @@ COPY --chown=juser build.gradle gradlew settings.gradle  ./
 COPY --chown=juser gradle/wrapper gradle/wrapper
 
 
-# this will fetch gradle 5.4, and the packages we depend on
-RUN ./gradlew resolveDependencies
-
 
 # Now we copy all our source files in.  Note that
 # if we change src, etc, but not our gradle setup,
