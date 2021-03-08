@@ -3,12 +3,54 @@
  */
 package edu.duke.ece651.risc.server;
 
+import java.util.ArrayList;
+
 public class App {
-    public String getGreeting() {
+    /**
+     * all players socket for the game
+     * ClientSokct includes socket, inputStream, outputStream
+     */
+     ArrayList<ClientSocket> clients;
+
+
+    /*public String getGreeting() {
         return "Hello world.";
+    }*/
+
+    /**
+     * 
+     * @param clients
+     */
+    public App(ArrayList<ClientSocket> clients){
+        this.clients = clients;
     }
 
+    /**
+     * The main function to run
+     * @param args
+     */
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        //System.out.println(new App().getGreeting());
+        /*if (args.length != 2) {
+            System.err.println("need parameter <port number> <Player number>");
+            System.exit(1);
+        }*/
+        int portNumber = 4444;
+        int playerNum = 1;
+        HostSocket hs = new HostSocket(portNumber,playerNum);
+        App myapp = new App(hs.waitForConnections());
+        System.out.println("There are "+myapp.clients.size()+" players");
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
