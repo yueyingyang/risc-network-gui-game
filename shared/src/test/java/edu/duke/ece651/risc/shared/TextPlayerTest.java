@@ -11,7 +11,7 @@ class TextPlayerTest {
     void test_main() throws IOException {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         BufferedReader in = new BufferedReader(new StringReader("Hello Client\n"));
-        Player p = new TextPlayer(in, new PrintStream(bytes, true));
+        Player p = new TextPlayer(in, new PrintWriter(bytes, true));
         assertEquals("Hello Client", p.recvMessage());
         p.sendMessage("Hello Server");
         assertEquals("Hello Server\n", bytes.toString());
