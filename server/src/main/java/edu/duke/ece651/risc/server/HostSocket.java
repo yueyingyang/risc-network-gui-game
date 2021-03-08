@@ -14,6 +14,7 @@ import edu.duke.ece651.risc.shared.TextPlayer;
  * The HostSocket class for the gameServer
  */
 public class HostSocket {
+  private ServerSocket serverSocket;
   private final int portNumber;
   private final int playerNum;
   
@@ -25,6 +26,22 @@ public class HostSocket {
   public HostSocket(int portNumber,int playerNum){
     this.portNumber = portNumber;
     this.playerNum = playerNum;
+    try{
+      this.serverSocket = new ServerSocket(this.portNumber); 
+    }catch(IOException e){
+      System.out.println("Exception caught when listening fon port"+portNumber);
+      System.out.println(e.getMessage());
+    }     
+  }
+
+  public void closeSocket(){
+    try{
+       this.serverSocket.close();
+     } catch (IOException e) {
+      System.out.println("Exception caught when closing the server socket.");
+      System.out.println(e.getMessage());
+    }
+    
   }
 
   /**
@@ -36,25 +53,24 @@ public class HostSocket {
     int num = 0;
     ArrayList<Player> players = new ArrayList<Player>(); 
     while(num<this.playerNum){
-      try( ServerSocket serverSocket =
-           new ServerSocket(this.portNumber);
-           Socket clientSocket = serverSocket.accept();     
-           PrintWriter out =
-           new PrintWriter(clientSocket.getOutputStream(), true);                   
-           BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));)
-        {
-        num++;
+      try{
+        Socket clientSocket = serverSocket.accept();     
+        PrintWriter out =
+        new PrintWriter(clientSocket.getOutputStream(), true);                   
+        BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         Player player = new TextPlayer(in,out);
         players.add(player);
         String inputLine;
         /*while ((inputLine = in.readLine()) != null) {
             System.out.println(inputLine);
         }*/
+        out.println(num);
         inputLine = in.readLine();
         System.out.println(inputLine);
-        out.println("Successfully recv message from player!");
+        out.println("Successfully connect to the server!");
+        num++;
       }catch (IOException e){
-        System.out.println("Exception caught when trying to listen on port " + portNumber + " or listening for a connection");
+        System.out.println("Exception caught when listening for a connection");
         System.out.println(e.getMessage());
       }
     }

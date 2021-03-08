@@ -3,58 +3,55 @@
  */
 package edu.duke.ece651.risc.server;
 
+import java.io.BufferedReader;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-import edu.duke.ece651.risc.shared.Player;
 
 public class App {
-    /**
-     * all players socket for the game
-     * ClientSokct includes socket, inputStream, outputStream
-     */
-     ArrayList<Player> players;
+    ArrayList<Game> games;
+    BufferedReader input;
+
+    public App(){
+        input = new BufferedReader(new InputStreamReader(System.in));
+        games = new ArrayList(); 
+    }
 
 
-    /*public String getGreeting() {
-        return "Hello world.";
-    }*/
+    public Game startNewGame() throws IOException{
+        System.out.println("Hi ^_^, how many players are there in Game" + games.size()+"?");
+        String s = input.readLine();
+        if (s == null) {
+            throw new EOFException("You should input a line!");
+        }
+        int playerNum = Integer.parseInt(s);
+        int portNumber = 4444;
+        HostSocket hs = new HostSocket(portNumber,playerNum);
+        Game newGame = new Game(hs);
+        this.games.add(newGame);
+        //System.out.println("Number of player/players in Game "+games.indexOf(newGame)+": "+ newGame.getPlayerNum());
+        return newGame;
+    }
 
-    /**
-     * 
-     * @param clients
-     */
-    public App(ArrayList<Player> players){
-        this.players = players;
+    public void endOneGame(Game game){
+        game.getHostSocket().closeSocket();
     }
 
     /**
      * The main function to run
      * @param args
      */
-    public static void main(String[] args) {
-        //System.out.println(new App().getGreeting());
-        /*if (args.length != 2) {
-            System.err.println("need parameter <port number> <Player number>");
-            System.exit(1);
-        }*/
-        int portNumber = 4444;
-        int playerNum = 1;
-        HostSocket hs = new HostSocket(portNumber,playerNum);
-        App myapp = new App(hs.waitForConnections());
-        System.out.println("There are "+myapp.players.size()+" players");
+    public static void main(String[] args) throws IOException{
+        App myapp = new App();
+        myapp.startNewGame();
+        System.out.println("Number of games: " + myapp.games.size());
+        //close sockets of all the games
+        for(int i=0;i<myapp.games.size();i++){
+            myapp.endOneGame(myapp.games.get(i));
+        }
     }
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-

@@ -30,7 +30,7 @@ public class App {
         Socket s = new Socket(hostName, portNumber);
 
         Player player = new TextPlayer(new BufferedReader(new InputStreamReader(s.getInputStream())), new PrintWriter(s.getOutputStream(), true));
-        player.sendMessage("test message");
+        player.sendMessage("test message from Player" + Integer.parseInt(player.recvMessage()));
         System.out.println(player.recvMessage());
         App app = new App(player);
         
