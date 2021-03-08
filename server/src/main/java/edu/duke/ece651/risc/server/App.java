@@ -5,12 +5,14 @@ package edu.duke.ece651.risc.server;
 
 import java.util.ArrayList;
 
+import edu.duke.ece651.risc.shared.Player;
+
 public class App {
     /**
      * all players socket for the game
      * ClientSokct includes socket, inputStream, outputStream
      */
-     ArrayList<ClientSocket> clients;
+     ArrayList<Player> players;
 
 
     /*public String getGreeting() {
@@ -21,8 +23,8 @@ public class App {
      * 
      * @param clients
      */
-    public App(ArrayList<ClientSocket> clients){
-        this.clients = clients;
+    public App(ArrayList<Player> players){
+        this.players = players;
     }
 
     /**
@@ -39,8 +41,10 @@ public class App {
         int playerNum = 1;
         HostSocket hs = new HostSocket(portNumber,playerNum);
         App myapp = new App(hs.waitForConnections());
-        System.out.println("There are "+myapp.clients.size()+" players");
+        System.out.println("There are "+myapp.players.size()+" players");
     }
+
+
 }
 
 

@@ -5,9 +5,9 @@ import java.io.*;
 public abstract class Player {
     // IO stream with game server
     protected BufferedReader in;
-    protected PrintStream out;
+    protected PrintWriter out;
 
-    public Player(BufferedReader in, PrintStream out) {
+    public Player(BufferedReader in, PrintWriter out) {
         this.in = in;
         this.out = out;
     }

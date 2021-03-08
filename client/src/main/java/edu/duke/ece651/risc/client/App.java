@@ -29,9 +29,11 @@ public class App {
         int portNumber = Integer.parseInt(prop.getProperty("server.port"));
         Socket s = new Socket(hostName, portNumber);
 
-        Player player = new TextPlayer(new BufferedReader(new InputStreamReader(s.getInputStream())), new PrintStream(s.getOutputStream(), true));
+        Player player = new TextPlayer(new BufferedReader(new InputStreamReader(s.getInputStream())), new PrintWriter(s.getOutputStream(), true));
+        player.sendMessage("test message");
+        System.out.println(player.recvMessage());
         App app = new App(player);
-
+        
         s.close();
     }
 

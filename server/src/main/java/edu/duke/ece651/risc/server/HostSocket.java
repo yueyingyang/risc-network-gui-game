@@ -1,8 +1,14 @@
 package edu.duke.ece651.risc.server;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 
-import java.io.*;
+import edu.duke.ece651.risc.shared.Player;
+import edu.duke.ece651.risc.shared.TextPlayer;
 
 /**
  * The HostSocket class for the gameServer
@@ -26,9 +32,9 @@ public class HostSocket {
    * will print whatever the player send and then send player a success message
    * @return the list of players' ClientSocket 
    */
-  ArrayList<ClientSocket> waitForConnections(){
+  ArrayList<Player> waitForConnections(){
     int num = 0;
-    ArrayList<ClientSocket> clients = new ArrayList<ClientSocket>(); 
+    ArrayList<Player> players = new ArrayList<Player>(); 
     while(num<this.playerNum){
       try( ServerSocket serverSocket =
            new ServerSocket(this.portNumber);
@@ -38,13 +44,13 @@ public class HostSocket {
            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));)
         {
         num++;
-        ClientSocket client = new ClientSocket(in,out);
-        clients.add(client);
+        Player player = new TextPlayer(in,out);
+        players.add(player);
         String inputLine;
         /*while ((inputLine = in.readLine()) != null) {
             System.out.println(inputLine);
         }*/
-       inputLine = in.readLine();
+        inputLine = in.readLine();
         System.out.println(inputLine);
         out.println("Successfully recv message from player!");
       }catch (IOException e){
@@ -52,9 +58,8 @@ public class HostSocket {
         System.out.println(e.getMessage());
       }
     }
-    return clients;
+    return players;
   }
-
   
 }
 
