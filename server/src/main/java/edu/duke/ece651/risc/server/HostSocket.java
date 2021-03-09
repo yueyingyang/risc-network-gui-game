@@ -20,6 +20,7 @@ public class HostSocket {
   
   /**
    * the constructor that takes a portNumber and a playerNum
+   * make the server socket listen on portNum
    * @param portNumber
    * @param playerNum
    */
@@ -34,6 +35,9 @@ public class HostSocket {
     }     
   }
 
+  /**
+   * close the server socket
+   */
   public void closeSocket(){
     try{
        this.serverSocket.close();
@@ -45,7 +49,7 @@ public class HostSocket {
   }
 
   /**
-   * build server and connect with players. If success, 
+   * server connect with players. If success, 
    * will print whatever the player send and then send player a success message
    * @return the list of players' ClientSocket 
    */
