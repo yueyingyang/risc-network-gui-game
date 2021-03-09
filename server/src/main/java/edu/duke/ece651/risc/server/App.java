@@ -14,41 +14,42 @@ public class App {
     ArrayList<Game> games;
     BufferedReader input;
 
-    public App(){
+    public App() {
         input = new BufferedReader(new InputStreamReader(System.in));
-        games = new ArrayList(); 
+        games = new ArrayList();
     }
 
 
-    public Game startNewGame() throws IOException{
-        System.out.println("Hi ^_^, how many players are there in Game" + games.size()+"?");
+    public Game startNewGame() throws IOException {
+        System.out.println("Hi ^_^, how many players are there in Game" + games.size() + "?");
         String s = input.readLine();
         if (s == null) {
             throw new EOFException("You should input a line!");
         }
         int playerNum = Integer.parseInt(s);
         int portNumber = 4444;
-        HostSocket hs = new HostSocket(portNumber,playerNum);
+        HostSocket hs = new HostSocket(portNumber, playerNum);
         Game newGame = new Game(hs);
         this.games.add(newGame);
         //System.out.println("Number of player/players in Game "+games.indexOf(newGame)+": "+ newGame.getPlayerNum());
         return newGame;
     }
 
-    public void endOneGame(Game game){
+    public void endOneGame(Game game) {
         game.getHostSocket().closeSocket();
     }
 
     /**
      * The main function to run
+     *
      * @param args
      */
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException {
         App myapp = new App();
         myapp.startNewGame();
         System.out.println("Number of games: " + myapp.games.size());
         //close sockets of all the games
-        for(int i=0;i<myapp.games.size();i++){
+        for (int i = 0; i < myapp.games.size(); i++) {
             myapp.endOneGame(myapp.games.get(i));
         }
     }

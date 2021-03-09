@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import edu.duke.ece651.risc.shared.Player;
-import edu.duke.ece651.risc.shared.TextPlayer;
+import edu.duke.ece651.risc.shared.ServerPlayer;
 
 /**
  * The HostSocket class for the gameServer
@@ -62,7 +62,7 @@ public class HostSocket {
         PrintWriter out =
         new PrintWriter(clientSocket.getOutputStream(), true);                   
         BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        Player player = new TextPlayer(in,out);
+        Player player = new ServerPlayer(in,out);
         players.add(player);
         String inputLine;
         /*while ((inputLine = in.readLine()) != null) {
