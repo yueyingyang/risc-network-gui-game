@@ -30,8 +30,9 @@ public class App {
                 userIn,
                 System.out
         );
-        player.sendMessage("test message from Player" + Integer.parseInt(player.recvMessage()));
-        player.setName(player.recvMessage());
+        String name = player.recvMessage();
+        player.sendMessage("test message from Player" + name);
+        player.setName(name);
         s.close();
     }
 
