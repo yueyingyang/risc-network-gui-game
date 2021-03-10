@@ -56,6 +56,7 @@ public class Territory {
 
     /**
      * Place the army on the territory
+     *
      * @param myArmy is the army been placed on the territory
      */
     public void setMyArmy(Army myArmy) {
@@ -105,6 +106,33 @@ public class Territory {
      */
     public boolean isAdjacent(Territory territory) {
         return neighbours.contains(territory);
+    }
+
+    /**
+     * Add the given number of soldiers to myArmy
+     *
+     * @param numSoldiers is the number of soldiers to add
+     */
+    public void addSoldiersToArmy(int numSoldiers) {
+        myArmy.addSoldiers(numSoldiers);
+    }
+
+    /**
+     * Remove the given number of soldiers to myArmy
+     *
+     * @param numSoldiers is the number of soldiers to add
+     */
+    public void removeSoldiersFromArmy(int numSoldiers) {
+        myArmy.removeSoldiers(numSoldiers);
+    }
+
+    /**
+     * Get the number of soldier in myArmy
+     *
+     * @return the number of soldier in myArmy
+     */
+    public int getNumSoldiersInArmy() {
+        return myArmy.getNumSoldiers();
     }
 
 }

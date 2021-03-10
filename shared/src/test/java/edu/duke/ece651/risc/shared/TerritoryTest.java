@@ -50,4 +50,16 @@ class TerritoryTest {
         assertEquals("Green", territory.getOwnerName());
     }
 
+    @Test
+    public void test_add_remove() {
+        Territory territory = new Territory("NANJING");
+        Army myArmy = new BasicArmy("NANJING", 3);
+        territory.setMyArmy(myArmy);
+        assertEquals(3, territory.getNumSoldiersInArmy());
+        territory.addSoldiersToArmy(4);
+        assertEquals(7, territory.getNumSoldiersInArmy());
+        territory.removeSoldiersFromArmy(2);
+        assertEquals(5, territory.getNumSoldiersInArmy());
+    }
+
 }
