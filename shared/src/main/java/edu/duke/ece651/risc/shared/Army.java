@@ -1,5 +1,7 @@
 package edu.duke.ece651.risc.shared;
 
+import java.util.List;
+
 /**
  * An interface represents an army
  */
@@ -40,4 +42,11 @@ public interface Army {
      * @return the army that wins the fight
      */
     public Army fight(Army attacker);
+
+    /**
+     * Get the force of the army
+     *
+     * @return the force of the army
+     */
+    public List<Soldier> getForce();
 }
