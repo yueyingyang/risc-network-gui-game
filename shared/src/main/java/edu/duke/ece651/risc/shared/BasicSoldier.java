@@ -1,17 +1,22 @@
 package edu.duke.ece651.risc.shared;
 
-public class BasicSoldier implements Soldier{
+import java.util.Random;
+
+public class BasicSoldier implements Soldier {
 
     /**
      * Fight with the attacker
      *
-     * @param attacker is the solder in the army that attacks the territory
-     * @return non-negative number if the defend soldier wins
+     * @param attacker is the solder that attacks the territory
+     * @return non-negative number if the soldier that defend the territory wins
      * else return negative number
      */
     @Override
     public int fight(Soldier attacker) {
-        // TODO
-        return 0;
+        Random myRandom = new Random();
+        int length = 20;
+        int defenderRoll = myRandom.nextInt(length);
+        int attackerRoll = myRandom.nextInt(length);
+        return defenderRoll - attackerRoll;
     }
 }
