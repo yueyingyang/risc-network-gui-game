@@ -1,9 +1,6 @@
 package edu.duke.ece651.risc.shared;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * An class represents a territory
@@ -133,6 +130,20 @@ public class Territory {
      */
     public int getNumSoldiersInArmy() {
         return myArmy.getNumSoldiers();
+    }
+
+    /**
+     * Add attackers to attacker buffer
+     */
+    public void bufferAttacker() {
+        // TODO
+    }
+
+    /**
+     * Resolve combat
+     */
+    public void resolveCombat() {
+        // TODO
     }
 
 }

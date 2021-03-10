@@ -49,4 +49,9 @@ public interface Army {
      * @return the force of the army
      */
     public List<Soldier> getForce();
+
+    /**
+     * Merge the force of the same owner
+     */
+    public void mergeForce();
 }
