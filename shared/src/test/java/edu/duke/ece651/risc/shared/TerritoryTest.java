@@ -43,4 +43,11 @@ class TerritoryTest {
         assertFalse(territory0.isAdjacent(territory2));
     }
 
+    @Test
+    public void test_getOwnerName_setOwnerName() {
+        Territory territory = new Territory("NANJING");
+        territory.setOwnerName("Green");
+        assertEquals("Green", territory.getOwnerName());
+    }
+
 }
