@@ -1,6 +1,17 @@
 # Ignore Gradle project-specific cache directory
 .gradle
 .idea
+bin/
+.settings
+.project
+.classpath
+*.class
+
+# Emacs related
+*~
+\#*\#
+
 
 # Ignore Gradle build output directory
 build
+coverage

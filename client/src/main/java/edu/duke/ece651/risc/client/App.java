@@ -3,12 +3,37 @@
  */
 package edu.duke.ece651.risc.client;
 
+import edu.duke.ece651.risc.shared.ClientPlayer;
+import edu.duke.ece651.risc.shared.Player;
+import edu.duke.ece651.risc.shared.ServerPlayer;
+
+import java.io.*;
+import java.net.Socket;
+import java.util.Properties;
+
 public class App {
-    public String getGreeting() {
-        return "Hello world.";
+
+    public static void main(String[] args) throws IOException {
+        // load a properties file
+        InputStream propFileInputStream = App.class.getClassLoader().getResourceAsStream("config.properties");
+        Properties prop = new Properties();
+        prop.load(propFileInputStream);
+
+        // init socket
+        String hostName = prop.getProperty("server.hostname");
+        int portNumber = Integer.parseInt(prop.getProperty("server.port"));
+        Socket s = new Socket(hostName, portNumber);
+        BufferedReader userIn = new BufferedReader(new InputStreamReader(System.in));
+
+        ClientPlayer player = new ClientPlayer(new BufferedReader(new InputStreamReader(s.getInputStream())),
+                new PrintWriter(s.getOutputStream(), true),
+                userIn,
+                System.out
+        );
+        String name = player.recvMessage();
+        player.sendMessage("test message from Player" + name);
+        player.setName(name);
+        s.close();
     }
 
-    public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
-    }
 }
