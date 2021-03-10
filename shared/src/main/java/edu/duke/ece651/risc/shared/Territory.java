@@ -10,7 +10,8 @@ import java.util.Set;
  */
 public class Territory {
     private String name;
-    private Army defender;
+    private String ownerName;
+    private Army myArmy;
     private Set<Territory> neighbours;
     private Map<String, Army> attackerBuffer;
 
@@ -21,7 +22,7 @@ public class Territory {
      */
     public Territory(String name) {
         this.name = name;
-        this.defender = null;
+        this.myArmy = null;
         this.neighbours = new HashSet<>();
         this.attackerBuffer = new HashMap<>();
     }
@@ -36,12 +37,29 @@ public class Territory {
     }
 
     /**
-     * Set the defender on the territory
+     * Get the name of the owner
      *
-     * @param defender is an army that defends the territory
+     * @return the name of the owner
      */
-    public void setDefender(Army defender) {
-        this.defender = defender;
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    /**
+     * Set the owner of the territory
+     *
+     * @param ownerName is the name of the owner
+     */
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
+
+    /**
+     * Place the army on the territory
+     * @param myArmy is the army been placed on the territory
+     */
+    public void setMyArmy(Army myArmy) {
+        this.myArmy = myArmy;
     }
 
     /**
