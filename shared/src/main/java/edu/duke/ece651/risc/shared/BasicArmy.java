@@ -37,8 +37,31 @@ public class BasicArmy implements Army {
      *
      * @return the number of soldiers in the force
      */
+    @Override
     public int getNumSoldiers() {
         return force.size();
+    }
+
+    /**
+     * Add soldiers to the force
+     *
+     * @param numSoldiers is the number of the soldiers to add
+     */
+    @Override
+    public void addSoldiers(int numSoldiers) {
+        force.addAll(Collections.nCopies(numSoldiers, new BasicSoldier()));
+    }
+
+    /**
+     * Remove the given number of soldiers to the force
+     *
+     * @param numSoldiers is the number of the soldiers to remove
+     */
+    @Override
+    public void removeSoldiers(int numSoldiers) {
+        for (int i = 0; i < numSoldiers; i++) {
+            force.remove(force.size() - 1);
+        }
     }
 
     /**

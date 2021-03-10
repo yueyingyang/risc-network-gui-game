@@ -20,6 +20,20 @@ public interface Army {
     public int getNumSoldiers();
 
     /**
+     * Add the given number of soldiers to the force
+     *
+     * @param numSoldiers is the number of the soldiers to add
+     */
+    public void addSoldiers(int numSoldiers);
+
+    /**
+     * Remove the given number of soldiers to the force
+     *
+     * @param numSoldiers is the number of the soldiers to remove
+     */
+    public void removeSoldiers(int numSoldiers);
+
+    /**
      * Fight with the attacker
      *
      * @param attacker is the army that attack the territory
