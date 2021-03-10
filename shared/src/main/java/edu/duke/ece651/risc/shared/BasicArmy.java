@@ -33,6 +33,16 @@ public class BasicArmy implements Army {
     }
 
     /**
+     * Get the force of the army
+     *
+     * @return the force of the army
+     */
+    @Override
+    public List<Soldier> getForce() {
+        return force;
+    }
+
+    /**
      * Get the number of soldiers in the force
      *
      * @return the number of soldiers in the force
@@ -72,8 +82,30 @@ public class BasicArmy implements Army {
      */
     @Override
     public Army fight(Army attacker) {
-        // TODO
-        return null;
+        while (getNumSoldiers() > 0 && attacker.getNumSoldiers() > 0) {
+            fightOneRound(attacker);
+        }
+        if (getNumSoldiers() > 0) {
+            return this;
+        }
+        return attacker;
+    }
+
+    /**
+     * Fight with the attacker for one round
+     *
+     * @param attacker is the army that attack the territory
+     */
+    protected void fightOneRound(Army attacker) {
+        List<Soldier> enemyForce = attacker.getForce();
+        Soldier mySoldier = force.get(force.size() - 1);
+        Soldier enemySoldier = enemyForce.get(enemyForce.size() - 1);
+        int res = mySoldier.fight(enemySoldier);
+        if (res >= 0) {
+            attacker.removeSoldiers(1);
+        } else {
+            removeSoldiers(1);
+        }
     }
 
 }
