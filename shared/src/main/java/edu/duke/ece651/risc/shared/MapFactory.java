@@ -1,7 +1,7 @@
 package edu.duke.ece651.risc.shared;
 import java.util.*;
 
-public class MapFactory{
+public class V1MapFactory implements AbstractMapFactory{
   public MapFactory(){
   }
   
@@ -35,7 +35,7 @@ public class MapFactory{
         return territory_list;
     }
 
-  public GameMap createV1Map(List<String> nameList, int territoriesPerPlayer){
+  public GameMap createMap(List<String> nameList, int territoriesPerPlayer){
     Map<String,Territory> territoryFinder=new HashMap<>();
     List<Territory> territories=createTerrority(nameList, territoriesPerPlayer,territoryFinder);
     List<List<String>> connections=createConnection(territories,nameList.size());
