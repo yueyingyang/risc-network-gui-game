@@ -71,7 +71,7 @@ public class Game {
 
   /**
    * 
-   * @return the number of players in the game
+   * @return the number of players that can start a game
    */
   public int getPlayerNum() {
     return playerNum;
