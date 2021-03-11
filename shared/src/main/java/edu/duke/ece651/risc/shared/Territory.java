@@ -138,5 +138,4 @@ public class Territory {
     public void bufferAttacker() {
         // TODO
     }
-
 }
