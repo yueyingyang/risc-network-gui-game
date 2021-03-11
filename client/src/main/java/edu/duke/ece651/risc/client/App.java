@@ -30,10 +30,37 @@ public class App {
                 userIn,
                 System.out
         );
+
+        String str = player.recvMessage();
+        player.display(str);
+        if(!str.equals("Hi, there's no existing game in the system, so we will start a game for you.")){
+            player.sendMessage(player.readFromUser());//the user send s or j from stdin
+            String msg = player.recvMessage();
+            while(msg.equals("You should only input s/j")){
+                player.display(msg);
+                player.sendMessage(player.readFromUser());
+                msg = player.recvMessage();
+            }
+            player.display(msg);
+
+
+            player.sendMessage(player.readFromUser());//user type in how many player do you want/the available games list
+            msg = player.recvMessage();
+            while(!msg.equals("Success!")){
+                player.display(msg);
+                player.sendMessage(player.readFromUser());
+                msg = player.recvMessage();
+            }
+            player.display(msg);
+        }
+        else{
+            player.display(player.recvMessage()); // how many players in one game
+            player.sendMessage(player.readFromUser());
+        }
         String name = player.recvMessage();
-        player.sendMessage("test message from Player" + name);
+        System.out.println(name);
         player.setName(name);
-        s.close();
+        s.close();        
     }
 
 }

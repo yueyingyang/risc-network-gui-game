@@ -31,6 +31,10 @@ public abstract class Player {
         this.out = out;
     }
 
+    public String getName(){
+        return this.name;
+    }
+
     /**
      * Write to output stream
      *
@@ -49,4 +53,5 @@ public abstract class Player {
     public String recvMessage() throws IOException {
         return in.readLine();
     }
+
 }
