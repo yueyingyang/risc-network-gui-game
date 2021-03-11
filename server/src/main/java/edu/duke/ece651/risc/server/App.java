@@ -74,7 +74,6 @@ public class App {
     int playerNum = Integer.parseInt(s);
     Game newGame = new Game(playerNum);
     if (newGame.addPlayer(player).equals("")) {
-      System.out.println(1);
       player.sendMessage(player.getName()); // send name to client player
       this.games.add(newGame);
     }
@@ -136,9 +135,11 @@ public class App {
           while (true) {
             String action = in.readLine();
             if (action.equals("s")) {
+              player.sendMessage("Successfully choose an action!");  
               startNewGame(player);
               break;
             } else if (action.equals("j")) {
+              player.sendMessage("Successfully choose an action!");
               joinExistingGame(player);
               break;
             } else {

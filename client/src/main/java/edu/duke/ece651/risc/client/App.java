@@ -13,7 +13,24 @@ import java.util.Properties;
 
 public class App {
 
-  public static void main(String[] args) throws IOException {
+    /**
+     * wait in the loop until the user type in a valid string
+     * @param s the successful message from the server
+     * @param player
+     * @throws IOException
+     */
+    private static void typeUtilCorrect(String s, ClientPlayer player) throws IOException{
+    player.sendMessage(player.readFromUser());
+      String msg = player.recvMessage();
+      while (!msg.equals(s)) {
+        player.display(msg);
+        player.sendMessage(player.readFromUser());
+        msg = player.recvMessage();
+      }
+      player.display(msg);
+  }
+
+    public static void main(String[] args) throws IOException {
     // load a properties file
     InputStream propFileInputStream = App.class.getClassLoader().getResourceAsStream("config.properties");
     Properties prop = new Properties();
@@ -34,34 +51,13 @@ public class App {
     player.display(str);
     if (!str.equals("Hi, there's no available game in the system, so we will start a game for you.")) {
       // the user send s or j from stdin
-      player.sendMessage(player.readFromUser());
-      String msg = player.recvMessage();
-      while (msg.equals("You should only input s/j")) {
-        player.display(msg);
-        player.sendMessage(player.readFromUser());
-        msg = player.recvMessage();
-      }
-      player.display(msg); // client prompt success
-
+      typeUtilCorrect("Successfully choose an action!", player);
+      player.display(player.recvMessage());
       // user type in how many player do you want/the available games list
-      player.sendMessage(player.readFromUser());
-      msg = player.recvMessage();
-      while (!msg.equals("Success!")) {
-        player.display(msg);
-        player.sendMessage(player.readFromUser());
-        msg = player.recvMessage();
-      }
-      player.display(msg); // client prompt success
+      typeUtilCorrect("Success!", player);
     } else {
       player.display(player.recvMessage());
-      player.sendMessage(player.readFromUser());
-      String msg = player.recvMessage();
-      while (!msg.equals("Success!")) {
-        player.display(msg);
-        player.sendMessage(player.readFromUser());
-        msg = player.recvMessage();
-      }
-      player.display(msg);
+      typeUtilCorrect("Success!", player);
     }
     String name = player.recvMessage();
     System.out.println(name);
