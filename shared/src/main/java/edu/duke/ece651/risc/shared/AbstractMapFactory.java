@@ -4,7 +4,7 @@ public interface AbstractMapFactory{
   /**
   @param 
    */
-  List<Territory> getPlayerTerritory(String playerName);
+  Iterable<Territory> getPlayerTerritories(String playerName);
 
   /**
   @param 

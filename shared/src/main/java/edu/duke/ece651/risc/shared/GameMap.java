@@ -5,13 +5,15 @@ import java.util.HashMap;
 
 
 public class GameMap implements AbstractMapFactory{
-    Map<String, Territory> territoryFinder ;
+    private Map<String, Territory> territoryFinder;
+    private List<String> playerNameList;
     public GameMap(List<String> nameList, int territoriesPerPlayer){
         territoryFinder=new HashMap<>();
+        this.playerNameList=nameList;
         createTerrority(nameList, territoriesPerPlayer);
     }
     
-    void createTerrority(List<String> nameList, int num){
+    private void createTerrority(List<String> nameList, int num){
         int territory_id=0;
         for(String playerName:nameList){
             for(int i=0;i<num;i++){
@@ -24,7 +26,11 @@ public class GameMap implements AbstractMapFactory{
         }
     }
 
-    List<Territory> getPlayerTerritory(String playerName){
+    public Iterable<String> getAllPlayerNames(){
+        return playerNameList;
+    }
+
+    public Iterable<Territory> getPlayerTerritories(String playerName){
         List<Territory> territory_list=new ArrayList<>();
         for(String name:territoryFinder.keySet()){
             Territory t=territoryFinder.get(name);
@@ -34,7 +40,7 @@ public class GameMap implements AbstractMapFactory{
         }
     }
 
-    Territory getTerritoryByName(String name){
+    public Territory getTerritoryByName(String name){
         return territoryFinder.get(name);
     }
 }
