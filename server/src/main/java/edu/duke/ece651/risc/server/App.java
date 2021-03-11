@@ -32,6 +32,16 @@ public class App {
     this.hostSocket = new HostSocket(portNumber);
   }
 
+  private ArrayList<Game> getAvailablGames(){
+    ArrayList<Game> res = new ArrayList<Game>(); 
+    for (int i = 0; i < this.games.size(); i++) {
+        if (this.games.get(i).isGameFull() == false) {
+            res.add(this.games.get(i));
+        }
+      }
+      return res;
+  }
+
   /**
    * start a new game for a user
    * @param player
@@ -47,7 +57,6 @@ public class App {
             if(s.charAt(i)>'9' || s.charAt(i)<='0'){
                 player.sendMessage("Please input a number between 1-9.");
                 isValid = false;
-                break;
             }
         }
         if(isValid==true){
@@ -60,10 +69,11 @@ public class App {
     }
    
     int playerNum = Integer.parseInt(s);
-    Game newGame = new Game(playerNum);
-    this.games.add(newGame);
+    Game newGame = new Game(playerNum);   
     if (newGame.addPlayer(player).equals("")) {
+      System.out.println(1);
       player.sendMessage(player.getName()); // send name to client player
+      this.games.add(newGame);
     }
   }
 
@@ -75,14 +85,13 @@ public class App {
   public void joinExistingGame(Player player) throws IOException {
     // send the available games to user to choose from
     StringBuilder sb = new StringBuilder("The available games here are: ");
-    for (int i = 0; i < this.games.size(); i++) {
-      if (this.games.get(i).isGameFull() == false) {
-        sb.append(Integer.toString(i));
+    ArrayList<Game> availableGames = this.getAvailablGames();
+    for (int i = 0; i < availableGames.size(); i++) {
+        sb.append(Integer.toString(games.indexOf(availableGames.get(i))));
         sb.append(" ");
-      }
     }
-    String availableGames = sb.toString();
-    player.sendMessage(availableGames);
+    String availables = sb.toString();
+    player.sendMessage(availables);
     // wait util the user give a valid game number
     while(true){
         int chosenGame = Integer.parseInt(player.recvMessage());
@@ -118,7 +127,7 @@ public class App {
         Player player = new ServerPlayer(in, out);
         // let the player choose whether to join a game or start a new one
         // when there are existing games
-        if (games.size() > 0) {
+        if (this.getAvailablGames().size() > 0) {
             out.println("Hi, Do you want to start a new game(type s) or join an existing game(type j)?");
           while(true){           
             String action = in.readLine();
@@ -135,7 +144,7 @@ public class App {
           }
           
         } else { // when there's no existing games  
-          out.println("Hi, there's no existing game in the system, so we will start a game for you.");
+          out.println("Hi, there's no available game in the system, so we will start a game for you.");
           startNewGame(player);
         }
       } catch (IOException e) {

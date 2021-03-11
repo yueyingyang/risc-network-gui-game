@@ -61,7 +61,6 @@ public class Game {
       String playerColor = colorSet.iterator().next();
       player.setName(playerColor);
       colorSet.remove(playerColor);
-      player.sendMessage(playerColor);
       this.players.add(player);
       return "";
     } else {
