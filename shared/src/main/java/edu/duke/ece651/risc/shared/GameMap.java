@@ -12,7 +12,11 @@ public class GameMap{
         setConnection(connections);
     }
 
-    public void setConnection(List<List<String>> connections){
+    /** 
+    * help the game map to create connections based on generated connection list
+    @param connections a list of connection
+     */
+    private void setConnection(List<List<String>> connections){
         for(List<String> connection:connections){
             Territory start=territoryFinder.get(connection.get(0));
             Territory end=territoryFinder.get(connection.get(1));
@@ -22,19 +26,11 @@ public class GameMap{
         }
     }
 
-    /*
-    public Iterable<Territory> getPlayerTerritories(String playerName){
-        List<Territory> territory_list=new ArrayList<>();
-        for(String name:territoryFinder.keySet()){
-            Territory t=territoryFinder.get(name);
-            if(playerName.equals(t.getOwnerName())){
-                territory_list.add(t);
-            }
-        }
-        return territory_list;
-    }
-    */
-
+    /**
+    * find a terrority with its name
+    @param name the name of territory
+    @return the territory with the name
+     */
     public Territory getTerritory(String name){
         return territoryFinder.get(name);
     }

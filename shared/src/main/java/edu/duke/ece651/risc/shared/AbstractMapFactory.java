@@ -5,7 +5,10 @@ public interface AbstractMapFactory{
 
 
   /**
-  @param create 
+  *create a game map object for version1's game
+  @param nameList player's name list
+  @param territoriesPerPlayer how many territories each player have
+  @return a game map
    */
   public GameMap createV1Map(List<String> nameList, int territoriesPerPlayer);
   
