@@ -34,4 +34,34 @@ public class GameMap{
     public Territory getTerritory(String name){
         return territoryFinder.get(name);
     }
+
+    /**
+     * return all territory belong to a player
+     * @param playerName
+     * @return
+     */
+    public Iterable<Territory> getPlayerTerritories(String playerName){
+        Set<Territory> territorySet=new HashSet<>();
+        for(String name:territoryFinder.keySet()){
+            if(territoryFinder.get(name).getOwnerName().equals(playerName)){
+                territorySet.add(territoryFinder.get(name));
+            }
+        }
+        return territorySet;
+    }
+
+    public Map<String, Set<Territory>> getAllPlayerTerritories(){
+        Map<String,Set<Territory>> playerMap=new HashMap<>();
+        for(String name:territoryFinder.keySet()){
+            Territory t=territoryFinder.get(name);
+            if(playerMap.containsKey(t.getOwnerName())){
+                playerMap.get(t.getOwnerName()).add(t);
+            }else{
+                Set<Territory> territorySet=new HashSet<>();
+                territorySet.add(t);
+                playerMap.put(t.getOwnerName(),territorySet);
+            }
+        }
+        return playerMap;
+    }
 }
