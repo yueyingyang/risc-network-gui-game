@@ -32,6 +32,10 @@ public class App {
     this.hostSocket = new HostSocket(portNumber);
   }
 
+  /**
+   * 
+   * @return the list of available games for a player ro join
+   */
   private ArrayList<Game> getAvailablGames(){
     ArrayList<Game> res = new ArrayList<Game>(); 
     for (int i = 0; i < this.games.size(); i++) {
