@@ -9,7 +9,7 @@ import java.io.PrintWriter;
  * Could add more features based on server-side needs
  */
 public class ServerPlayer extends Player {
-    public ServerPlayer(BufferedReader in, PrintWriter out) {
-        super(in, out);
-    }
+  public ServerPlayer(BufferedReader in, PrintWriter out) {
+    super(in, out);
+  }
 }

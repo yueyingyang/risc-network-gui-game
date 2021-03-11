@@ -3,7 +3,6 @@ package edu.duke.ece651.risc.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 
-
 /**
  * The HostSocket class for the gameServer
  */
@@ -27,7 +26,6 @@ public class HostSocket {
     }
   }
 
-
   /**
    * close the server socket
    */
@@ -40,7 +38,7 @@ public class HostSocket {
     }
   }
 
-  public ServerSocket getSocket(){
+  public ServerSocket getSocket() {
     return this.serverSocket;
   }
 

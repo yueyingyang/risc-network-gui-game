@@ -21,9 +21,8 @@ public class App {
   BufferedReader input;
 
   /**
-   * the constructor of App
-   * build the socket based on the portnumber
-   * initialize the games list
+   * the constructor of App build the socket based on the portnumber initialize
+   * the games list
    */
   public App() {
     input = new BufferedReader(new InputStreamReader(System.in));
@@ -36,44 +35,44 @@ public class App {
    * 
    * @return the list of available games for a player ro join
    */
-  private ArrayList<Game> getAvailablGames(){
-    ArrayList<Game> res = new ArrayList<Game>(); 
+  private ArrayList<Game> getAvailablGames() {
+    ArrayList<Game> res = new ArrayList<Game>();
     for (int i = 0; i < this.games.size(); i++) {
-        if (this.games.get(i).isGameFull() == false) {
-            res.add(this.games.get(i));
-        }
+      if (this.games.get(i).isGameFull() == false) {
+        res.add(this.games.get(i));
       }
-      return res;
+    }
+    return res;
   }
 
   /**
    * start a new game for a user
+   * 
    * @param player
    * @throws IOException
    */
   public void startNewGame(Player player) throws IOException {
     player.sendMessage("Hi ^_^, We will create a new game for you. How many players do you want to have in your Game"
         + games.size() + "?");
-        String s = player.recvMessage();
-    while(true){
-        Boolean isValid = true;
-        for(int i=0;i<s.length();i++){
-            if(s.charAt(i)>'9' || s.charAt(i)<='0'){
-                player.sendMessage("Please input a number between 1-9.");
-                isValid = false;
-            }
+    String s = player.recvMessage();
+    while (true) {
+      Boolean isValid = true;
+      for (int i = 0; i < s.length(); i++) {
+        if (s.charAt(i) > '9' || s.charAt(i) <= '0') {
+          player.sendMessage("Please input a number between 1-9.");
+          isValid = false;
         }
-        if(isValid==true){
-            player.sendMessage("Success!");
-            break;
-        }
-        else{
-            s = player.recvMessage();
-        }
+      }
+      if (isValid == true) {
+        player.sendMessage("Success!");
+        break;
+      } else {
+        s = player.recvMessage();
+      }
     }
-   
+
     int playerNum = Integer.parseInt(s);
-    Game newGame = new Game(playerNum);   
+    Game newGame = new Game(playerNum);
     if (newGame.addPlayer(player).equals("")) {
       System.out.println(1);
       player.sendMessage(player.getName()); // send name to client player
@@ -83,6 +82,7 @@ public class App {
 
   /**
    * let the player join into an existing game
+   * 
    * @param player
    * @throws IOException
    */
@@ -91,34 +91,34 @@ public class App {
     StringBuilder sb = new StringBuilder("The available games here are: ");
     ArrayList<Game> availableGames = this.getAvailablGames();
     for (int i = 0; i < availableGames.size(); i++) {
-        sb.append(Integer.toString(games.indexOf(availableGames.get(i))));
-        sb.append(" ");
+      sb.append(Integer.toString(games.indexOf(availableGames.get(i))));
+      sb.append(" ");
     }
     String availables = sb.toString();
     player.sendMessage(availables);
     // wait util the user give a valid game number
-    while(true){
-        int chosenGame = Integer.parseInt(player.recvMessage());
-        if(chosenGame>=this.games.size()){
-            player.sendMessage("You should only chose from the available list!");
-            continue;
-        }
-        String msg = games.get(chosenGame).addPlayer(player);
-        if (msg.equals("")) {
-            player.sendMessage("Success!");
-            player.sendMessage(player.getName()); // send name to client player
-            break;
-        }
-        else{
-            player.sendMessage(msg); 
-        }
+    while (true) {
+      int chosenGame = Integer.parseInt(player.recvMessage());
+      if (chosenGame >= this.games.size()) {
+        player.sendMessage("You should only chose from the available list!");
+        continue;
+      }
+      String msg = games.get(chosenGame).addPlayer(player);
+      if (msg.equals("")) {
+        player.sendMessage("Success!");
+        player.sendMessage(player.getName()); // send name to client player
+        break;
+      } else {
+        player.sendMessage(msg);
+      }
     }
-    
+
   }
 
   /**
-   * continously accept connections and initialize players
-   * the player will be asked whether he/she want to start a new game or join a game
+   * continously accept connections and initialize players the player will be
+   * asked whether he/she want to start a new game or join a game
+   * 
    * @throws IOException
    */
   public void acceptPlayers() throws IOException {
@@ -132,22 +132,21 @@ public class App {
         // let the player choose whether to join a game or start a new one
         // when there are existing games
         if (this.getAvailablGames().size() > 0) {
-            out.println("Hi, Do you want to start a new game(type s) or join an existing game(type j)?");
-          while(true){           
+          out.println("Hi, Do you want to start a new game(type s) or join an existing game(type j)?");
+          while (true) {
             String action = in.readLine();
             if (action.equals("s")) {
-                startNewGame(player);
-                break;
+              startNewGame(player);
+              break;
             } else if (action.equals("j")) {
-                joinExistingGame(player);
-                break;
-            }
-            else{
-                player.sendMessage("You should only input s/j");
+              joinExistingGame(player);
+              break;
+            } else {
+              player.sendMessage("You should only input s/j");
             }
           }
-          
-        } else { // when there's no existing games  
+
+        } else { // when there's no existing games
           out.println("Hi, there's no available game in the system, so we will start a game for you.");
           startNewGame(player);
         }
@@ -160,6 +159,7 @@ public class App {
 
   /**
    * The main function to run
+   * 
    * @param args
    */
   public static void main(String[] args) throws IOException {
