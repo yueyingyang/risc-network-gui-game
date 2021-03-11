@@ -139,11 +139,4 @@ public class Territory {
         // TODO
     }
 
-    /**
-     * Resolve combat
-     */
-    public void resolveCombat() {
-        // TODO
-    }
-
 }
