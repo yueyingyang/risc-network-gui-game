@@ -1,14 +1,13 @@
 package edu.duke.ece651.risc.shared;
+import java.util.*;
 
 public interface AbstractMapFactory{
-  /**
-  @param 
-   */
-  Iterable<Territory> getPlayerTerritories(String playerName);
+
 
   /**
-  @param 
+  @param create 
    */
-  Territory getTerritoryByName(String name);
+  public GameMap createV1Map(List<String> nameList, int territoriesPerPlayer);
+  
 
 }

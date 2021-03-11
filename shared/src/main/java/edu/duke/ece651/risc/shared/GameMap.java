@@ -1,35 +1,28 @@
 package edu.duke.ece651.risc.shared;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+//import java.util.ArrayList;
+import java.util.*;
 
 
-public class GameMap implements AbstractMapFactory{
+public class GameMap{
     private Map<String, Territory> territoryFinder;
-    private List<String> playerNameList;
-    public GameMap(List<String> nameList, int territoriesPerPlayer){
-        territoryFinder=new HashMap<>();
-        this.playerNameList=nameList;
-        createTerrority(nameList, territoriesPerPlayer);
-    }
     
-    private void createTerrority(List<String> nameList, int num){
-        int territory_id=0;
-        for(String playerName:nameList){
-            for(int i=0;i<num;i++){
-                String territory_name=""+territory_id;
-                Territory temp=new Territory(territory_name);
-                temp.setOwnerName(playerName);
-                territoryFinder.put(territory_name,temp);
-                territory_id++；
-            }
+    public GameMap(List<List<String>> connections,Map<String,Territory> territoryFinder){
+        this.territoryFinder=territoryFinder;
+        setConnection(connections);
+    }
+
+    public void setConnection(List<List<String>> connections){
+        for(List<String> connection:connections){
+            Territory start=territoryFinder.get(connection.get(0));
+            Territory end=territoryFinder.get(connection.get(1));
+
+            start.addNeighbour(end);
+            end.addNeighbour(start);
         }
     }
 
-    public Iterable<String> getAllPlayerNames(){
-        return playerNameList;
-    }
-
+    /*
     public Iterable<Territory> getPlayerTerritories(String playerName){
         List<Territory> territory_list=new ArrayList<>();
         for(String name:territoryFinder.keySet()){
@@ -38,9 +31,11 @@ public class GameMap implements AbstractMapFactory{
                 territory_list.add(t);
             }
         }
+        return territory_list;
     }
+    */
 
-    public Territory getTerritoryByName(String name){
+    public Territory getTerritory(String name){
         return territoryFinder.get(name);
     }
 }

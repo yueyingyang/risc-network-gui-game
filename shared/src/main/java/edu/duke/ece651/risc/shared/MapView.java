@@ -1,6 +1,7 @@
 package edu.duke.ece651.risc.shared;
 
 import java.util.function.Function;
+import java.util.*;
 
 public class MapView{
   GameMap toView;
@@ -9,26 +10,32 @@ public class MapView{
   }
 
   public String display(){
-    StringBuilder msg="";
-
-    for(String name:toView.getAllPlayerNames){
+      
+    StringBuilder msg=new StringBuilder();
+    /* 
+    for(String name:toView.getAllPlayerNames()){
         msg.append(name+" player:\n");
         msg.append("-------------\n");
-        Iterable<Territory> territories=getPlayerTerritories(name);
+        Iterable<Territory> territories=toView.getPlayerTerritories(name);
         for(Territory territory:territories){
             msg.append(territory.getNumSoldiersInArmy()+" units in "+territory.getName());
             msg.append("(next to: ");
-            for(Territory neighbor: territory.getNeighbors()){
+            boolean hasNeighbor=false;
+            for(Territory neighbor: territory.getNeighbours()){
                 msg.append(neighbor.getName());
-                msg.append(", ")
+                msg.append(", ");
+                hasNeighbor=true;
             }
-            msg.delete(msg.length()-2,msg.length());
-            msg.append("\n");
+            if(hasNeighbor){
+                msg.delete(msg.length()-2,msg.length());
+            }
+            msg.append(")\n");
         }
-        msg.append("\n")
+        msg.append("\n");
     }
-
+    */
     return msg.toString();
+    
   }
 }
 

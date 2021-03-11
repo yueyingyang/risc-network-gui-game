@@ -133,6 +133,15 @@ public class Territory {
     }
 
     /**
+     * Get neighbors
+     *
+     * @return the neighbor territories
+     */
+    public Iterable<Territory> getNeighbours() {
+        return neighbours;
+    }
+
+    /**
      * Add attackers to attacker buffer
      */
     public void bufferAttacker() {
