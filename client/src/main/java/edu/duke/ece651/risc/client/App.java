@@ -4,6 +4,7 @@
 package edu.duke.ece651.risc.client;
 
 import edu.duke.ece651.risc.shared.ClientPlayer;
+import edu.duke.ece651.risc.shared.Constant;
 import edu.duke.ece651.risc.shared.Player;
 import edu.duke.ece651.risc.shared.ServerPlayer;
 
@@ -13,56 +14,38 @@ import java.util.Properties;
 
 public class App {
 
-    /**
-     * wait in the loop until the user type in a valid string
-     * @param s the successful message from the server
-     * @param player
-     * @throws IOException
-     */
-    private static void typeUtilCorrect(String s, ClientPlayer player) throws IOException{
-    player.sendMessage(player.readFromUser());
-      String msg = player.recvMessage();
-      while (!msg.equals(s)) {
-        player.display(msg);
-        player.sendMessage(player.readFromUser());
-        msg = player.recvMessage();
-      }
-      player.display(msg);
-  }
-
     public static void main(String[] args) throws IOException {
-    // load a properties file
-    InputStream propFileInputStream = App.class.getClassLoader().getResourceAsStream("config.properties");
-    Properties prop = new Properties();
-    prop.load(propFileInputStream);
+        // load a properties file
+        InputStream propFileInputStream = App.class.getClassLoader().getResourceAsStream("config.properties");
+        Properties prop = new Properties();
+        prop.load(propFileInputStream);
 
-    // init socket
-    String hostName = prop.getProperty("server.hostname");
-    int portNumber = Integer.parseInt(prop.getProperty("server.port"));
-    Socket s = new Socket(hostName, portNumber);
-    BufferedReader userIn = new BufferedReader(new InputStreamReader(System.in));
+        // init socket
+        String hostName = prop.getProperty("server.hostname");
+        int portNumber = Integer.parseInt(prop.getProperty("server.port"));
+        Socket s = new Socket(hostName, portNumber);
+        BufferedReader userIn = new BufferedReader(new InputStreamReader(System.in));
 
-    ClientPlayer player = new ClientPlayer(new BufferedReader(new InputStreamReader(s.getInputStream())),
-        new PrintWriter(s.getOutputStream(), true), userIn, System.out);
+        ClientPlayer player = new ClientPlayer(new BufferedReader(new InputStreamReader(s.getInputStream())),
+                new PrintWriter(s.getOutputStream(), true), userIn, System.out);
 
-    // ask the player whether she/he wants to start a name game or join a game
-    // different prompt when there's no available games to join
-    String str = player.recvMessage();
-    player.display(str);
-    if (!str.equals("Hi, there's no available game in the system, so we will start a game for you.")) {
-      // the user send s or j from stdin
-      typeUtilCorrect("Successfully choose an action!", player);
-      player.display(player.recvMessage());
-      // user type in how many player do you want/the available games list
-      typeUtilCorrect("Success!", player);
-    } else {
-      player.display(player.recvMessage());
-      typeUtilCorrect("Success!", player);
+        // ask the player whether she/he wants to start a name game or join a game
+        // different prompt when there's no available games to join
+        String str = player.recvMessage();
+        player.display(str);
+        if (!str.equals(Constant.NO_GAME_AVAILABLE_INFO)) {
+            // the user send s or j from stdin
+            player.typeUntilCorrect(Constant.SUCCESS_ACTION_CHOOSED);
+            player.display(player.recvMessage());
+            // user type in how many player do you want/the available games list
+            player.typeUntilCorrect(Constant.SUCCESS_NUMBER_CHOOSED);
+        } else {
+            player.display(player.recvMessage());
+            player.typeUntilCorrect(Constant.SUCCESS_NUMBER_CHOOSED);
+        }
+        String name = player.recvMessage();
+        player.setName(name);
+        s.close();
     }
-    String name = player.recvMessage();
-    System.out.println(name);
-    player.setName(name);
-    s.close();
-  }
 
 }

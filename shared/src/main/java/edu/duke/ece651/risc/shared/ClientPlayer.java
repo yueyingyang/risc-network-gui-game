@@ -42,4 +42,23 @@ public class ClientPlayer extends Player {
   public String readFromUser() throws IOException {
     return this.userIn.readLine();
   }
+
+  /**
+   * wait in the loop until the user type in a valid string
+   * 
+   * @param s      the successful message from the server
+   * @param player
+   * @throws IOException
+   */
+  public void typeUntilCorrect(String correct_msg) throws IOException {
+    sendMessage(readFromUser());
+    String msg = recvMessage();
+    while (!msg.equals(correct_msg)) {
+      display(msg);
+      sendMessage(readFromUser());
+      msg = recvMessage();
+    }
+    display(msg);
+  }
+
 }
