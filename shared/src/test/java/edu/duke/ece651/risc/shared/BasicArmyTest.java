@@ -29,9 +29,16 @@ class BasicArmyTest {
     public void test_fight() {
         Army army0 = new BasicArmy("HanMeiMei", 5);
         Army army1 = new BasicArmy("LiLei", 8);
+        test_fight(army0, army1, "HanMeiMei");
+
+        Army army3 = new BasicArmy("Kitty", 12);
+        test_fight(army0, army3,"Kitty");
+    }
+
+    private void test_fight(Army army0, Army army1, String expectWinner) {
         Random myRandom = new Random(0);
         Army winner = army0.fight(army1, myRandom);
-        assertEquals("HanMeiMei", winner.getOwnerName());
+        assertEquals(expectWinner, winner.getOwnerName());
     }
 
     @Test
