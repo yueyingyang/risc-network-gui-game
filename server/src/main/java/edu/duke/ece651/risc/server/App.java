@@ -3,13 +3,11 @@
  */
 package edu.duke.ece651.risc.server;
 
-import java.net.Socket;
-
 import java.io.BufferedReader;
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.ArrayList;
 
 import edu.duke.ece651.risc.shared.Player;
@@ -18,14 +16,12 @@ import edu.duke.ece651.risc.shared.ServerPlayer;
 public class App {
   ArrayList<Game> games;
   HostSocket hostSocket;
-  BufferedReader input;
 
   /**
    * the constructor of App build the socket based on the portnumber initialize
    * the games list
    */
   public App() {
-    input = new BufferedReader(new InputStreamReader(System.in));
     games = new ArrayList<Game>();
     int portNumber = 4444;
     this.hostSocket = new HostSocket(portNumber);
@@ -37,9 +33,9 @@ public class App {
    */
   private ArrayList<Game> getAvailablGames() {
     ArrayList<Game> res = new ArrayList<Game>();
-    for (int i = 0; i < this.games.size(); i++) {
-      if (this.games.get(i).isGameFull() == false) {
-        res.add(this.games.get(i));
+    for (Game g : this.games) {
+      if (g.isGameFull() == false) {
+        res.add(g);
       }
     }
     return res;
@@ -51,31 +47,26 @@ public class App {
    * @param player
    * @throws IOException
    */
-  public void startNewGame(Player player) throws IOException {
-    player.sendMessage("Hi ^_^, We will create a new game for you. How many players do you want to have in your Game"
-        + games.size() + "?");
-    String s = player.recvMessage();
+  public void startNewGame(Player player, String prompt) throws IOException {
+    player.sendMessage(prompt);
     while (true) {
-      Boolean isValid = true;
-      for (int i = 0; i < s.length(); i++) {
-        if (s.charAt(i) > '9' || s.charAt(i) <= '0') {
-          player.sendMessage("Please input a number between 1-9.");
-          isValid = false;
+      try {
+        String s = player.recvMessage();
+        int playerNum = Integer.parseInt(s);
+        if(playerNum<2 || playerNum>5){
+            player.sendMessage("Please input a number between 2-5."); 
+            continue;
         }
-      }
-      if (isValid == true) {
         player.sendMessage("Success!");
-        break;
-      } else {
-        s = player.recvMessage();
+        Game newGame = new Game(playerNum);
+        if (newGame.addPlayer(player).equals("")) {
+          player.sendMessage(player.getName()); // send name to client player
+          this.games.add(newGame);
+          break;
+        }
+      } catch (NumberFormatException e) {
+        player.sendMessage("Please input a valid number.");
       }
-    }
-
-    int playerNum = Integer.parseInt(s);
-    Game newGame = new Game(playerNum);
-    if (newGame.addPlayer(player).equals("")) {
-      player.sendMessage(player.getName()); // send name to client player
-      this.games.add(newGame);
     }
   }
 
@@ -85,9 +76,9 @@ public class App {
    * @param player
    * @throws IOException
    */
-  public void joinExistingGame(Player player) throws IOException {
+  public void joinExistingGame(Player player, String prompt) throws IOException {
     // send the available games to user to choose from
-    StringBuilder sb = new StringBuilder("The available games here are: ");
+    StringBuilder sb = new StringBuilder(prompt);
     ArrayList<Game> availableGames = this.getAvailablGames();
     for (int i = 0; i < availableGames.size(); i++) {
       sb.append(Integer.toString(games.indexOf(availableGames.get(i))));
@@ -97,19 +88,24 @@ public class App {
     player.sendMessage(availables);
     // wait util the user give a valid game number
     while (true) {
-      int chosenGame = Integer.parseInt(player.recvMessage());
-      if (chosenGame >= this.games.size()) {
-        player.sendMessage("You should only chose from the available list!");
-        continue;
+      try {
+        int chosenGame = Integer.parseInt(player.recvMessage());
+        if (chosenGame >= this.games.size()) {
+          player.sendMessage("You should only chose from the available list!");
+          continue;
+        }
+        String msg = games.get(chosenGame).addPlayer(player);
+        if (msg.equals("")) {
+          player.sendMessage("Success!");
+          player.sendMessage(player.getName()); // send name to client player
+          break;
+        } else {
+          player.sendMessage(msg);
+        }
+      } catch (NumberFormatException e) {
+        player.sendMessage("You should type a valid number!");
       }
-      String msg = games.get(chosenGame).addPlayer(player);
-      if (msg.equals("")) {
-        player.sendMessage("Success!");
-        player.sendMessage(player.getName()); // send name to client player
-        break;
-      } else {
-        player.sendMessage(msg);
-      }
+
     }
 
   }
@@ -130,17 +126,19 @@ public class App {
         Player player = new ServerPlayer(in, out);
         // let the player choose whether to join a game or start a new one
         // when there are existing games
+
         if (this.getAvailablGames().size() > 0) {
           out.println("Hi, Do you want to start a new game(type s) or join an existing game(type j)?");
           while (true) {
             String action = in.readLine();
             if (action.equals("s")) {
-              player.sendMessage("Successfully choose an action!");  
-              startNewGame(player);
+              player.sendMessage("Successfully choose an action!");
+              startNewGame(player,
+                  "Hi ^_^, We will create a new game for you. How many players do you want to have in your Game(2-5)?");
               break;
             } else if (action.equals("j")) {
               player.sendMessage("Successfully choose an action!");
-              joinExistingGame(player);
+              joinExistingGame(player, "The available games here are: ");
               break;
             } else {
               player.sendMessage("You should only input s/j");
@@ -149,7 +147,8 @@ public class App {
 
         } else { // when there's no existing games
           out.println("Hi, there's no available game in the system, so we will start a game for you.");
-          startNewGame(player);
+          startNewGame(player,
+              "Hi ^_^, We will create a new game for you. How many players do you want to have in your Game?");
         }
       } catch (IOException e) {
         System.out.println("Exception caught when listening for a connection");
