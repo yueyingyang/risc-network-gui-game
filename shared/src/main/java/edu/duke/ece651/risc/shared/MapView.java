@@ -3,39 +3,75 @@ package edu.duke.ece651.risc.shared;
 import java.util.function.Function;
 import java.util.*;
 
-public class MapView{
-  GameMap toView;
-  public MapView(GameMap toView){
-    this.toView=toView;
-  }
+public class MapView {
+    GameMap toView;
 
-  public String display(){
-      
-    StringBuilder msg=new StringBuilder();
-    /* 
-    for(String name:toView.getAllPlayerNames()){
-        msg.append(name+" player:\n");
-        msg.append("-------------\n");
-        Iterable<Territory> territories=toView.getPlayerTerritories(name);
-        for(Territory territory:territories){
-            msg.append(territory.getNumSoldiersInArmy()+" units in "+territory.getName());
-            msg.append("(next to: ");
-            boolean hasNeighbor=false;
-            for(Territory neighbor: territory.getNeighbours()){
-                msg.append(neighbor.getName());
-                msg.append(", ");
-                hasNeighbor=true;
-            }
-            if(hasNeighbor){
-                msg.delete(msg.length()-2,msg.length());
-            }
-            msg.append(")\n");
-        }
-        msg.append("\n");
+    public MapView(GameMap toView) {
+        this.toView = toView;
     }
-    */
-    return msg.toString();
-    
-  }
+
+    /**
+     * MapView includes player's territories and neighbors with it
+     * <p>
+     * Formatted:
+     * <p>
+     * Green player:
+     * -------------
+     * 10 units in Narnia (next to: Elantris, Midkemia)
+     * 12 units in Midkemia (next to: Narnia, Elantris, Scadrial, Oz)
+     * 8 units in Oz (next to: Midkemia, Scadrial, Mordor, Gondor)
+     *
+     * @return a informational string
+     */
+    public String display() {
+        StringBuilder toDisplay = new StringBuilder();
+        Map<String, Set<Territory>> playerTerritories = toView.getAllPlayerTerritories();
+
+        // Iterate all players
+        for (Map.Entry<String, Set<Territory>> player : playerTerritories.entrySet()) {
+            // append header
+            toDisplay.append(printHeader(player.getKey()));
+            for (Territory t : player.getValue()) {
+                // append # of territories
+                toDisplay.append(t.getNumSoldiersInArmy()).append(" units in ").append(t.getName());
+                // append joined neighbors
+                toDisplay.append(printNeighbours(t.getNeighbours()));
+                toDisplay.append(System.getProperty("line.separator"));
+            }
+            toDisplay.append(System.getProperty("line.separator"));
+        }
+        return toDisplay.toString();
+    }
+
+    /**
+     * Generate header string as format:
+     * <p>
+     * Green player:
+     * -------------
+     *
+     * @param name is the name of the player
+     * @return the table header
+     */
+    private String printHeader(String name) {
+        return name + " player:\n" + "-------------\n";
+    }
+
+    /**
+     * Generate neighbor string as format:
+     * (next to: Roshar, Scadrial, Midkemia, Narnia)
+     *
+     * @param neighbours is the neighbors to display
+     * @return the formatted string
+     */
+    private String printNeighbours(Iterable<Territory> neighbours) {
+        // Extract all the names from Iterable of Territory, for joining them together
+        List<String> territoriesName = new ArrayList<>();
+        for (Territory t : neighbours) {
+            territoriesName.add(t.getName());
+        }
+        return " (next to: " +
+                String.join(", ", territoriesName) +
+                ")";
+    }
 }
 
