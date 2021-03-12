@@ -37,28 +37,45 @@ public class ClientPlayer extends Player {
 
   /**
    * @return string read from stdin
-   * @throws IOException
+   * @throws IOException if read/write exception
    */
   public String readFromUser() throws IOException {
     return this.userIn.readLine();
   }
 
   /**
-   * wait in the loop until the user type in a valid string
-   * 
-   * @param s      the successful message from the server
-   * @param player
-   * @throws IOException
+   * Error handling for user's input:
+   * continue to readinput until receive correctMsg
+   * display correctMsg and go to next step after receive expected correctMsg
+   *
+   * @param correctMsg is the correct signal
+   * @throws IOException if read/write exception
    */
-  public void typeUntilCorrect(String correct_msg) throws IOException {
+  public void typeUntilCorrect(String correctMsg) throws IOException {
     sendMessage(readFromUser());
     String msg = recvMessage();
-    while (!msg.equals(correct_msg)) {
+    while (!msg.equals(correctMsg)) {
       display(msg);
       sendMessage(readFromUser());
       msg = recvMessage();
     }
     display(msg);
+  }
+
+  public void loginGame() throws IOException {
+    // ask the player whether she/he wants to start a name game or join a game
+    // different prompt when there's no available games to join
+    String str = this.recvMessage();
+    this.display(str);
+    if (!str.equals(Constant.NO_GAME_AVAILABLE_INFO)) {
+      // the user send s or j from stdin
+      this.typeUntilCorrect(Constant.SUCCESS_ACTION_CHOOSED);
+      // user type in how many player do you want/the available games list
+    }
+    this.display(this.recvMessage());
+    this.typeUntilCorrect(Constant.SUCCESS_NUMBER_CHOOSED);
+    String name = this.recvMessage();
+    this.setName(name);
   }
 
 }
