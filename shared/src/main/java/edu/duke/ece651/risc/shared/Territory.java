@@ -143,8 +143,17 @@ public class Territory {
 
     /**
      * Add attackers to attacker buffer
+     *
+     * @param attacker is the army that attack the territory
      */
-    public void bufferAttacker() {
-        // TODO
+    public void bufferAttacker(Army attacker) {
+        String owner = attacker.getOwnerName();
+        if (attackerBuffer.containsKey(owner)) {
+            Army curr = attackerBuffer.get(owner);
+            curr.mergeForce(attacker);
+        }
+        else {
+            attackerBuffer.put(owner, attacker);
+        }
     }
 }
