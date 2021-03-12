@@ -112,6 +112,8 @@ public class BasicArmy implements Army {
 
     /**
      * Merge the force of the same owner
+     *
+     * @param myArmy is the army from the same owner
      */
     @Override
     public void mergeForce(Army myArmy) {

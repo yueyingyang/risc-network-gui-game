@@ -54,6 +54,8 @@ public interface Army {
 
     /**
      * Merge the force of the same owner
+     *
+     * @param myArmy is the army from the same owner
      */
     public void mergeForce(Army myArmy);
 }
