@@ -29,12 +29,12 @@ public class MapViewTest {
                 "-------------\n" +
                 "1 units in 3 (next to: 1, 2, 4, 5)\n" +
                 "1 units in 4 (next to: 0, 2, 3, 5)\n" +
-                "1 units in 5 (next to: 3, 4)\n" +
+                "1 units in 5 (next to: 0, 1, 3, 4)\n" +
                 "\n" +
                 "John player:\n" +
                 "-------------\n" +
-                "1 units in 0 (next to: 1, 2, 4)\n" +
-                "1 units in 1 (next to: 0, 2, 3)\n" +
+                "1 units in 0 (next to: 1, 2, 4, 5)\n" +
+                "1 units in 1 (next to: 0, 2, 3, 5)\n" +
                 "1 units in 2 (next to: 0, 1, 3, 4)\n" +
                 "\n";
         assertEquals(expected, actual);

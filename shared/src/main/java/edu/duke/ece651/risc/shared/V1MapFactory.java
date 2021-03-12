@@ -18,7 +18,7 @@ public class V1MapFactory implements AbstractMapFactory{
       List<List<String>> connections=new ArrayList<>();
       int size=territory_list.size();
       for(int dist=1;dist<=player_num;dist++){
-        for(int i=0;i<territory_list.size()-1;i++){
+        for(int i=0;i<territory_list.size();i++){
           List<String> connection=new ArrayList<>();
           connection.add(territory_list.get(i).getName());
           connection.add(territory_list.get((i+dist)%size).getName());
