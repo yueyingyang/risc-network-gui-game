@@ -114,7 +114,9 @@ public class BasicArmy implements Army {
      * Merge the force of the same owner
      */
     @Override
-    public void mergeForce() {
-        // TODO
+    public void mergeForce(Army myArmy) {
+        if (myArmy.getOwnerName().equals(getOwnerName())) {
+            getForce().addAll(myArmy.getForce());
+        }
     }
 }

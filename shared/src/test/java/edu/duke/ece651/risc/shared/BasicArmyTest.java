@@ -46,4 +46,15 @@ class BasicArmyTest {
         assertEquals(4, army0.getNumSoldiers());
         assertEquals(7, army1.getNumSoldiers());
     }
+
+    @Test
+    public void test_mergeForce() {
+        Army army0 = new BasicArmy("HanMeiMei", 5);
+        Army army1 = new BasicArmy("LiLei", 3);
+        Army army2 = new BasicArmy("HanMeiMei", 6);
+        army0.mergeForce(army1);
+        assertEquals(5, army0.getNumSoldiers());
+        army0.mergeForce(army2);
+        assertEquals(11, army0.getNumSoldiers());
+    }
 }

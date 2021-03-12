@@ -55,5 +55,5 @@ public interface Army {
     /**
      * Merge the force of the same owner
      */
-    public void mergeForce();
+    public void mergeForce(Army myArmy);
 }
