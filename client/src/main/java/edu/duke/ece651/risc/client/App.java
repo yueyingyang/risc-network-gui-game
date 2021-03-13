@@ -4,8 +4,6 @@
 package edu.duke.ece651.risc.client;
 
 import edu.duke.ece651.risc.shared.ClientPlayer;
-import edu.duke.ece651.risc.shared.Player;
-import edu.duke.ece651.risc.shared.ServerPlayer;
 
 import java.io.*;
 import java.net.Socket;
@@ -13,27 +11,42 @@ import java.util.Properties;
 
 public class App {
 
-    public static void main(String[] args) throws IOException {
-        // load a properties file
-        InputStream propFileInputStream = App.class.getClassLoader().getResourceAsStream("config.properties");
-        Properties prop = new Properties();
-        prop.load(propFileInputStream);
 
-        // init socket
-        String hostName = prop.getProperty("server.hostname");
-        int portNumber = Integer.parseInt(prop.getProperty("server.port"));
-        Socket s = new Socket(hostName, portNumber);
-        BufferedReader userIn = new BufferedReader(new InputStreamReader(System.in));
+  private final Socket socket;
+  private final ClientPlayer player;
 
-        ClientPlayer player = new ClientPlayer(new BufferedReader(new InputStreamReader(s.getInputStream())),
-                new PrintWriter(s.getOutputStream(), true),
-                userIn,
-                System.out
-        );
-        String name = player.recvMessage();
-        player.sendMessage("test message from Player" + name);
-        player.setName(name);
-        s.close();
-    }
+  public App(Socket s, BufferedReader userIn, PrintStream userOut) throws IOException {
+    this.socket = s;
+    player = new ClientPlayer(new BufferedReader(new InputStreamReader(s.getInputStream())),
+            new PrintWriter(s.getOutputStream(), true), userIn, userOut);
+  }
 
+  public void loginGame() throws IOException {
+    player.loginGame();
+  }
+
+  public void endGame() throws IOException {
+    socket.close();
+  }
+
+  public void run() throws IOException {
+    // login game: join an existed game / start a new game
+    this.loginGame();
+    this.endGame();
+  }
+
+  public static void main(String[] args) throws IOException {
+    // load a properties file
+    InputStream propFileInputStream = App.class.getClassLoader().getResourceAsStream("config.properties");
+    Properties prop = new Properties();
+    prop.load(propFileInputStream);
+
+    // init socket
+    String hostName = prop.getProperty("server.hostname");
+    int portNumber = Integer.parseInt(prop.getProperty("server.port"));
+    Socket s = new Socket(hostName, portNumber);
+    BufferedReader userIn = new BufferedReader(new InputStreamReader(System.in));
+    App app = new App(s, userIn, System.out);
+    app.run();
+  }
 }

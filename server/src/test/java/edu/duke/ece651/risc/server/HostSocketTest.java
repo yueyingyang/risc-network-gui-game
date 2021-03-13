@@ -7,25 +7,13 @@ import java.util.ArrayList;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
-
 public class HostSocketTest {
   @Test
-  public void test_waitForConnections() throws IOException{
-    //HostSocket hs = new HostSocket(4444,1);
-    //ArrayList<ClientSocket> clients = hs.waitForConnections();
-    //Socket clientSocket = new Socket("vcm-18515.vm.duke.edu", 4444);
-    //assertEquals(1, clients.size());
+  public void test_waitForConnections() throws IOException {
+    // HostSocket hs = new HostSocket(4444,1);
+    // ArrayList<ClientSocket> clients = hs.waitForConnections();
+    // Socket clientSocket = new Socket("vcm-18515.vm.duke.edu", 4444);
+    // assertEquals(1, clients.size());
   }
 
 }
-
-
-
-
-
-
-
-
-
-
-
