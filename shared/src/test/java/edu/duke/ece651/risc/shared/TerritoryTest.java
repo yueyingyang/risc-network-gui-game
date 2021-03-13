@@ -2,64 +2,105 @@ package edu.duke.ece651.risc.shared;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+import java.util.Random;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TerritoryTest {
 
     @Test
     public void test_getName() {
-        Territory territory = new Territory("NANJING");
-        assertEquals("NANJING", territory.getName());
+        Territory terr = new Territory("NANJING");
+        assertEquals("NANJING", terr.getName());
     }
 
     @Test
     public void test_equals() {
-        Territory territory0 = new Territory("NANJING");
-        Territory territory1 = new Territory("BEIJING");
-        Territory territory2 = new Territory("NANJING");
-        assertEquals(territory0, territory2);
-        assertNotEquals(territory0, territory1);
-        assertNotEquals(territory1, "BEIJING");
+        Territory terr0 = new Territory("NANJING");
+        Territory terr1 = new Territory("BEIJING");
+        Territory terr2 = new Territory("NANJING");
+        assertEquals(terr0, terr2);
+        assertNotEquals(terr0, terr1);
+        assertNotEquals(terr1, "BEIJING");
     }
 
     @Test
     public void test_hashCode() {
-        Territory territory0 = new Territory("HANGZHOU");
-        Territory territory1 = new Territory("SHANGHAI");
-        Territory territory2 = new Territory("HANGZHOU");
-        assertEquals(territory0.hashCode(), territory2.hashCode());
-        assertNotEquals(territory0.hashCode(), territory1.hashCode());
+        Territory terr0 = new Territory("HANGZHOU");
+        Territory terr1 = new Territory("SHANGHAI");
+        Territory terr2 = new Territory("HANGZHOU");
+        assertEquals(terr0.hashCode(), terr2.hashCode());
+        assertNotEquals(terr0.hashCode(), terr1.hashCode());
     }
 
     @Test
     public void test_addNeighbour_isAdjacent() {
-        Territory territory0 = new Territory("NANJING");
-        Territory territory1 = new Territory("SHANGHAI");
-        Territory territory2 = new Territory("HUNAN");
-        territory0.addNeighbour(territory1);
-        territory1.addNeighbour(territory0);
-        assertTrue(territory0.isAdjacent(territory1));
-        assertTrue(territory1.isAdjacent(territory0));
-        assertFalse(territory0.isAdjacent(territory2));
+        Territory terr0 = new Territory("NANJING");
+        Territory terr1 = new Territory("SHANGHAI");
+        Territory terr2 = new Territory("HUNAN");
+        terr0.addNeighbour(terr1);
+        terr1.addNeighbour(terr0);
+        assertTrue(terr0.isAdjacent(terr1));
+        assertTrue(terr1.isAdjacent(terr0));
+        assertFalse(terr0.isAdjacent(terr2));
     }
 
     @Test
     public void test_getOwnerName_setOwnerName() {
-        Territory territory = new Territory("NANJING");
-        territory.setOwnerName("Green");
-        assertEquals("Green", territory.getOwnerName());
+        Territory terr = new Territory("NANJING");
+        terr.setOwnerName("Green");
+        assertEquals("Green", terr.getOwnerName());
     }
 
     @Test
     public void test_add_remove() {
-        Territory territory = new Territory("NANJING");
-        Army myArmy = new BasicArmy("NANJING", 3);
-        territory.setMyArmy(myArmy);
-        assertEquals(3, territory.getNumSoldiersInArmy());
-        territory.addSoldiersToArmy(4);
-        assertEquals(7, territory.getNumSoldiersInArmy());
-        territory.removeSoldiersFromArmy(2);
-        assertEquals(5, territory.getNumSoldiersInArmy());
+        Territory terr = new Territory("NANJING");
+        Army myArmy = new BasicArmy("HanMeiMei", 3);
+        terr.setMyArmy(myArmy);
+        assertEquals(3, terr.getNumSoldiersInArmy());
+        terr.addSoldiersToArmy(4);
+        assertEquals(7, terr.getNumSoldiersInArmy());
+        terr.removeSoldiersFromArmy(2);
+        assertEquals(5, terr.getNumSoldiersInArmy());
+    }
+
+    @Test
+    public void test_bufferAttacker() {
+        Territory terr = new Territory("NANJING");
+        Army myArmy = new BasicArmy("LiLei", 5);
+        terr.setMyArmy(myArmy);
+
+        Army attacker0 = new BasicArmy("HanMeiMei", 4);
+        Army attacker1 = new BasicArmy("Kitty", 6);
+        Army attacker2 = new BasicArmy("HanMeiMei", 8);
+
+        Army[] attackers = {attacker0, attacker1, attacker2};
+        for (Army attacker : attackers) {
+            terr.bufferAttacker(attacker);
+        }
+
+        assertEquals(6, terr.getNumSoldiersInAttacker("Kitty"));
+        assertEquals(12, terr.getNumSoldiersInAttacker("HanMeiMei"));
+    }
+
+    @Test
+    public void test_resolveCombat() {
+        Territory terr = new Territory("NANJING");
+        Army myArmy = new BasicArmy("LiLei", 5);
+        terr.setMyArmy(myArmy);
+
+        Army attacker0 = new BasicArmy("HanMeiMei", 4);
+        Army attacker1 = new BasicArmy("Kitty", 6);
+        Army attacker2 = new BasicArmy("HanMeiMei", 8);
+
+        Army[] attackers = {attacker0, attacker1, attacker2};
+        for (Army attacker : attackers) {
+            terr.bufferAttacker(attacker);
+        }
+
+        terr.resolveCombat(new Random(0));
+        assertEquals("Kitty", terr.getOwnerName());
     }
 
 }

@@ -43,6 +43,15 @@ public class Territory {
     }
 
     /**
+     * Get neighbors
+     *
+     * @return the neighbor territories
+     */
+    public Set<Territory> getNeighbours() {
+        return neighbours;
+    }
+
+    /**
      * Set the owner of the territory
      *
      * @param ownerName is the name of the owner
@@ -70,8 +79,8 @@ public class Territory {
     @Override
     public boolean equals(Object myObject) {
         if (myObject.getClass().equals(getClass())) {
-            Territory territory = (Territory) myObject;
-            return territory.getName().equals(getName());
+            Territory terr = (Territory) myObject;
+            return terr.getName().equals(getName());
         }
         return false;
     }
@@ -89,20 +98,20 @@ public class Territory {
     /**
      * Connect the territory to its neighbour
      *
-     * @param neighbour is an territory adjacent to the territory
+     * @param neigh is an territory adjacent to the territory
      */
-    public void addNeighbour(Territory neighbour) {
-        neighbours.add(neighbour);
+    public void addNeighbour(Territory neigh) {
+        neighbours.add(neigh);
     }
 
     /**
      * Check the if the given territory is adjacent to this
      *
-     * @param territory is the given territory
+     * @param terr is the given territory
      * @return ture if they are adjacent else false
      */
-    public boolean isAdjacent(Territory territory) {
-        return neighbours.contains(territory);
+    public boolean isAdjacent(Territory terr) {
+        return neighbours.contains(terr);
     }
 
     /**
@@ -133,18 +142,35 @@ public class Territory {
     }
 
     /**
-     * Get neighbors
+     * Add attackers to attacker buffer
      *
-     * @return the neighbor territories
+     * @param attacker is the army that attack the territory
      */
-    public Iterable<Territory> getNeighbours() {
-        return neighbours;
+    public void bufferAttacker(Army attacker) {
+        String owner = attacker.getOwnerName();
+        if (attackerBuffer.containsKey(owner)) {
+            Army curr = attackerBuffer.get(owner);
+            curr.mergeForce(attacker);
+        } else {
+            attackerBuffer.put(owner, attacker);
+        }
     }
 
     /**
-     * Add attackers to attacker buffer
+     * Resolve combat on the territory
+     *
+     * @param myRandom is the random object set by the game
      */
-    public void bufferAttacker() {
-        // TODO
+    public void resolveCombat(Random myRandom) {
+        Army defender = myArmy;
+        for (Army attacker : attackerBuffer.values()) {
+            defender = defender.fight(attacker, myRandom);
+        }
+        myArmy = defender;
+        ownerName = myArmy.getOwnerName();
+    }
+
+    public int getNumSoldiersInAttacker(String name) {
+        return attackerBuffer.get(name).getNumSoldiers();
     }
 }

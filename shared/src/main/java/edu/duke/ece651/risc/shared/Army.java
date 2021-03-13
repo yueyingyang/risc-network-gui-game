@@ -1,6 +1,7 @@
 package edu.duke.ece651.risc.shared;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * An interface represents an army
@@ -38,10 +39,11 @@ public interface Army {
     /**
      * Fight with the attacker
      *
-     * @param attacker is the army that attack the territory
+     * @param attacker is the army that attack the
+     * @param myRandom is the random object set by the game
      * @return the army that wins the fight
      */
-    public Army fight(Army attacker);
+    public Army fight(Army attacker, Random myRandom);
 
     /**
      * Get the force of the army
@@ -52,6 +54,8 @@ public interface Army {
 
     /**
      * Merge the force of the same owner
+     *
+     * @param myArmy is the army from the same owner
      */
-    public void mergeForce();
+    public void mergeForce(Army myArmy);
 }
