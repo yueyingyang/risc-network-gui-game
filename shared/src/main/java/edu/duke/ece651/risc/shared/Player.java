@@ -53,5 +53,4 @@ public abstract class Player {
   public String recvMessage() throws IOException {
     return in.readLine();
   }
-
 }

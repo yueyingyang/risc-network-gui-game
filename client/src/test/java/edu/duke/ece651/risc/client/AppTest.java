@@ -31,7 +31,7 @@ class AppTest {
   private OutputStream mockOutputStream;
 
   @Test
-  void test_app_constructor() throws IOException {
+  void test_app() throws IOException {
     s.getInputStream();
     // mock prepration
     String serverIn = Constant.NO_GAME_AVAILABLE_INFO + "\n" +

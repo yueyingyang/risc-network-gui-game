@@ -1,6 +1,7 @@
 package edu.duke.ece651.risc.server;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -18,7 +19,7 @@ public class GameTest {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     Player p = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes, true));
     Game g = new Game(1);
-    assertEquals("", g.addPlayer(p));
+    assertNull(g.addPlayer(p));
     Player p1 = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes, true));
     assertEquals("This game is full, please select another game from the available list.", g.addPlayer(p1));
   }

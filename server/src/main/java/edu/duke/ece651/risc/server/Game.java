@@ -13,19 +13,19 @@ public class Game {
   /**
    * all players in the game
    */
-  private int playerNum;
-  private ArrayList<Player> players;
-  private HashSet<String> colorSet;
+  private final int playerNum;
+  private final ArrayList<Player> players;
+  private final HashSet<String> colorSet;
 
   /**
    * the construtor of the game
-   * 
-   * @param hostSocket the server socket that all players will need to connect
+   *
+   * @param playerNum is the number of players in this game
    */
   public Game(int playerNum) {
     this.playerNum = playerNum;
-    this.players = new ArrayList<Player>();
-    this.colorSet = new HashSet<String>();
+    this.players = new ArrayList<>();
+    this.colorSet = new HashSet<>();
     makeColors();
   }
 
@@ -42,9 +42,9 @@ public class Game {
 
   /**
    * check if the game's player number limit has been reached
-   * 
+   *
    * @return true if no more players can be accepted
-   * @return false if can accpet more players
+   * false if can accpet more players
    */
   public Boolean isGameFull() {
     return (this.players.size() >= this.playerNum);
@@ -52,25 +52,23 @@ public class Game {
 
   /**
    * try to add one player to the game
-   * 
-   * @return a helper message if the player cannot be accpeted into the game
+   *
    * @return null if the player is successfully added into the game
    */
   public String addPlayer(Player player) {
-    if (this.isGameFull() == false) {
-      String playerColor = colorSet.iterator().next();
-      player.setName(playerColor);
-      colorSet.remove(playerColor);
-      this.players.add(player);
-      return "";
-    } else {
-      String s = "This game is full, please select another game from the available list.";
-      return s;
+    if (this.isGameFull()) {
+      // error information
+      return "This game is full, please select another game from the available list.";
     }
+    // add successfully
+    String playerColor = colorSet.iterator().next();
+    player.setName(playerColor);
+    colorSet.remove(playerColor);
+    this.players.add(player);
+    return null;
   }
 
   /**
-   * 
    * @return the number of players that can start a game
    */
   public int getPlayerNum() {
