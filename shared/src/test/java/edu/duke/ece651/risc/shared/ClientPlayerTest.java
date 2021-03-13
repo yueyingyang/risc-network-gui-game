@@ -1,5 +1,6 @@
 package edu.duke.ece651.risc.shared;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
@@ -7,10 +8,18 @@ import java.io.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ClientPlayerTest {
+  ByteArrayOutputStream serverOut;
+  ByteArrayOutputStream userOut;
+
+  // run before each test to initialize outputstream
+  @BeforeEach
+  private void initEach() {
+    serverOut = new ByteArrayOutputStream();
+    userOut = new ByteArrayOutputStream();
+  }
+
   @Test
   void test_constructor() throws IOException {
-    ByteArrayOutputStream serverOut = new ByteArrayOutputStream();
-    ByteArrayOutputStream userOut = new ByteArrayOutputStream();
     ClientPlayer p = createClientPlayer("Hello Server", serverOut, "UserInput", userOut);
     assertEquals("Hello Server", p.recvMessage());
     p.sendMessage("Hello Client 1");
@@ -70,7 +79,7 @@ class ClientPlayerTest {
   }
 
   @Test
-  void test_get_name(){
+  void test_get_name() {
     ByteArrayOutputStream serverOut = new ByteArrayOutputStream();
     ByteArrayOutputStream userOut = new ByteArrayOutputStream();
     ClientPlayer p = createClientPlayer("",

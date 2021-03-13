@@ -4,15 +4,30 @@
 package edu.duke.ece651.risc.client;
 
 import edu.duke.ece651.risc.shared.ClientPlayer;
-import edu.duke.ece651.risc.shared.Constant;
-import edu.duke.ece651.risc.shared.Player;
-import edu.duke.ece651.risc.shared.ServerPlayer;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.Properties;
 
 public class App {
+
+
+  private final Socket socket;
+  private final ClientPlayer player;
+
+  public App(Socket s, BufferedReader userIn, PrintStream userOut) throws IOException {
+    this.socket = s;
+    player = new ClientPlayer(new BufferedReader(new InputStreamReader(s.getInputStream())),
+            new PrintWriter(s.getOutputStream(), true), userIn, userOut);
+  }
+
+  public void loginGame() throws IOException {
+    player.loginGame();
+  }
+
+  public void endGame() throws IOException {
+    socket.close();
+  }
 
   public static void main(String[] args) throws IOException {
     // load a properties file
@@ -25,12 +40,10 @@ public class App {
     int portNumber = Integer.parseInt(prop.getProperty("server.port"));
     Socket s = new Socket(hostName, portNumber);
     BufferedReader userIn = new BufferedReader(new InputStreamReader(System.in));
-
-    ClientPlayer player = new ClientPlayer(new BufferedReader(new InputStreamReader(s.getInputStream())),
-            new PrintWriter(s.getOutputStream(), true), userIn, System.out);
+    App app = new App(s, userIn, System.out);
     // login game: join an existed game / start a new game
-    player.loginGame();
-    s.close();
+    app.loginGame();
+    app.endGame();
   }
 
 }

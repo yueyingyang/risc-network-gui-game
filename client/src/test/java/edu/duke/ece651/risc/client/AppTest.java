@@ -3,16 +3,42 @@
  */
 package edu.duke.ece651.risc.client;
 
+import edu.duke.ece651.risc.shared.Constant;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import java.io.IOException;
-import java.net.ServerSocket;
+import java.io.*;
+import java.net.Socket;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+@RunWith(MockitoJUnitRunner.class)
 class AppTest {
-    @Test
-    void test_client_socket_init() throws IOException {
 
-    }
+  @Mock
+  private Socket s;
+
+  @Mock
+  private BufferedReader userIn;
+
+  @Mock
+  private PrintStream userOut;
+
+  @Mock
+  private InputStream mockInputStream;
+
+  @Mock
+  private OutputStream mockOutputStream;
+
+  @Test
+  void test_app_constructor() throws IOException {
+    Mockito.when(s.getInputStream()).thenReturn(mockInputStream);
+    Mockito.when(s.getOutputStream()).thenReturn(mockOutputStream);
+    App app = new App(s, userIn, userOut);
+    app.loginGame();
+    app.endGame();
+    Mockito.verify(s).close();
+  }
 }
