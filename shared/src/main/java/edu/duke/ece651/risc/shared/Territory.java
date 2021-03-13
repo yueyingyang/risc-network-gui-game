@@ -43,6 +43,24 @@ public class Territory {
     }
 
     /**
+     * Get neighbors
+     *
+     * @return the neighbor territories
+     */
+    public Set<Territory> getNeighbours() {
+        return neighbours;
+    }
+
+    /**
+     * Get attackerBuffer
+     *
+     * @return the attackBuffer
+     */
+    public Map<String, Army> getAttackerBuffer() {
+        return attackerBuffer;
+    }
+
+    /**
      * Set the owner of the territory
      *
      * @param ownerName is the name of the owner
@@ -133,15 +151,6 @@ public class Territory {
     }
 
     /**
-     * Get neighbors
-     *
-     * @return the neighbor territories
-     */
-    public Iterable<Territory> getNeighbours() {
-        return neighbours;
-    }
-
-    /**
      * Add attackers to attacker buffer
      *
      * @param attacker is the army that attack the territory
@@ -151,8 +160,7 @@ public class Territory {
         if (attackerBuffer.containsKey(owner)) {
             Army curr = attackerBuffer.get(owner);
             curr.mergeForce(attacker);
-        }
-        else {
+        } else {
             attackerBuffer.put(owner, attacker);
         }
     }
