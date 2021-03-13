@@ -31,8 +31,6 @@ class ClientPlayerTest {
 
   @Test
   void test_type_until_correct() throws IOException {
-    ByteArrayOutputStream serverOut = new ByteArrayOutputStream();
-    ByteArrayOutputStream userOut = new ByteArrayOutputStream();
     ClientPlayer p = createClientPlayer("read from server\nIt's correct", serverOut, "read from user\n ohh\n", userOut);
     p.typeUntilCorrect("It's correct");
     assertEquals("read from server\n" +
@@ -41,8 +39,6 @@ class ClientPlayerTest {
 
   @Test
   void test_login_game_no_available_game() throws IOException {
-    ByteArrayOutputStream serverOut = new ByteArrayOutputStream();
-    ByteArrayOutputStream userOut = new ByteArrayOutputStream();
     String serverIn = Constant.NO_GAME_AVAILABLE_INFO + "\n" +
             Constant.ASK_HOW_MANY_PLAYERS + "\n" +
             Constant.SUCCESS_NUMBER_CHOOSED;
@@ -58,8 +54,6 @@ class ClientPlayerTest {
 
   @Test
   void test_login_game_join_existed_game() throws IOException {
-    ByteArrayOutputStream serverOut = new ByteArrayOutputStream();
-    ByteArrayOutputStream userOut = new ByteArrayOutputStream();
     String serverIn = Constant.ASK_START_NEW_OR_JOIN + "\n" + Constant.SUCCESS_ACTION_CHOOSED + "\n" + "fake list of games" + "\n" + Constant.SUCCESS_NUMBER_CHOOSED;
     String userIn = "j\n1\n";
     ClientPlayer p = createClientPlayer(serverIn,
@@ -80,8 +74,6 @@ class ClientPlayerTest {
 
   @Test
   void test_get_name() {
-    ByteArrayOutputStream serverOut = new ByteArrayOutputStream();
-    ByteArrayOutputStream userOut = new ByteArrayOutputStream();
     ClientPlayer p = createClientPlayer("",
             serverOut,
             "",

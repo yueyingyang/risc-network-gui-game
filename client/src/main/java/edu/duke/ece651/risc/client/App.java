@@ -29,6 +29,12 @@ public class App {
     socket.close();
   }
 
+  public void run() throws IOException {
+    // login game: join an existed game / start a new game
+    this.loginGame();
+    this.endGame();
+  }
+
   public static void main(String[] args) throws IOException {
     // load a properties file
     InputStream propFileInputStream = App.class.getClassLoader().getResourceAsStream("config.properties");
@@ -41,9 +47,6 @@ public class App {
     Socket s = new Socket(hostName, portNumber);
     BufferedReader userIn = new BufferedReader(new InputStreamReader(System.in));
     App app = new App(s, userIn, System.out);
-    // login game: join an existed game / start a new game
-    app.loginGame();
-    app.endGame();
+    app.run();
   }
-
 }
