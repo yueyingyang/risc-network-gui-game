@@ -59,7 +59,8 @@ public class App {
     Game newGame = new Game(player.readGameSize());
     this.games.add(newGame);
     // a new game should always add a player successfully
-    assert newGame.addPlayer(player) == null;
+    // new game should assert newGame.addPlayer(player) == null;
+    output.println(newGame.addPlayer(player));
     // send name to client player
     player.sendMessage(player.getName());
   }

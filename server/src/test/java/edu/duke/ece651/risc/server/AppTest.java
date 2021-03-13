@@ -40,9 +40,13 @@ class AppTest {
 
   @Test
   void test_start_new_game() throws IOException {
-    Mockito.when(player.readGameSize()).thenReturn(3);
-    app.startNewGame(player);
-    Mockito.verify(player, atLeastOnce()).sendMessage(any());
+    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+    ServerPlayer sp = new ServerPlayer(new BufferedReader(new StringReader("2\n")),
+            new PrintWriter(bytes, true));
+    app.startNewGame(sp);
+    assertEquals("Hi ^_^, We will create a new game for you. How many players do you want to have in your Game?\n" +
+            "You are in a Game now!\n" +
+            "Red\n", bytes.toString());
   }
 
   @Test
