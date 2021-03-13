@@ -6,6 +6,18 @@ public class MoveEntry implements ActionEntry{
     private int numSoldiers;
 
     /**
+     * Construct a move entry
+     * @param fromName is the name of the territory where the soldiers are from
+     * @param toName is the name of the territory where the soldiers go to
+     * @param numSoldiers is the number of soldiers to move
+     */
+    public MoveEntry(String fromName, String toName, int numSoldiers) {
+        this.fromName = fromName;
+        this.toName = toName;
+        this.numSoldiers = numSoldiers;
+    }
+
+    /**
      * Move soldiers from one territory to another
      *
      * @param myMap is the map of the game

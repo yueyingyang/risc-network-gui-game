@@ -9,6 +9,19 @@ public class AttackEntry implements ActionEntry {
     private int numSoldiers;
 
     /**
+     * Create an attack entry object
+     *
+     * @param fromName    is the name of the territory where the attacker is from
+     * @param toName      is the name of the territory to attack
+     * @param numSoldiers is the number of soldiers participating in the attack
+     */
+    public AttackEntry(String fromName, String toName, int numSoldiers) {
+        this.fromName = fromName;
+        this.toName = toName;
+        this.numSoldiers = numSoldiers;
+    }
+
+    /**
      * Send attackers
      *
      * @param myMap is the map of the game
