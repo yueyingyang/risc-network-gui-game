@@ -8,6 +8,17 @@ public class PlaceEntry implements ActionEntry {
     private int numSoldiers;
 
     /**
+     * Construct a placeEntry
+     *
+     * @param terrName    is the name of the territory
+     * @param numSoldiers is the number of soldiers to place on the territory
+     */
+    public PlaceEntry(String terrName, int numSoldiers) {
+        this.terrName = terrName;
+        this.numSoldiers = numSoldiers;
+    }
+
+    /**
      * Place the soldier on the territory at the beginning
      *
      * @param myMap is the map of the game
