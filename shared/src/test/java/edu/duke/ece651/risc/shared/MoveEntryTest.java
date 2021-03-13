@@ -19,7 +19,7 @@ class MoveEntryTest {
         ActionEntry entry2 = new MoveEntry("0", "1", 2);
         ActionEntry[] entries = {entry0, entry1, entry2};
         for (ActionEntry entry : entries) {
-            entry.apply(myMap);
+            entry.apply(myMap, null);
         }
         Territory terr0 = myMap.getTerritory("0");
         Territory terr1 = myMap.getTerritory("1");

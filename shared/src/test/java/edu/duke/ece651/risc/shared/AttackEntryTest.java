@@ -16,8 +16,8 @@ class AttackEntryTest {
         GameMap myMap = f.createMap(names, 2);
         ActionEntry entry0 = new PlaceEntry("0", 8);
         ActionEntry entry1 = new AttackEntry("0", "2", 3);
-        entry0.apply(myMap);
-        entry1.apply(myMap);
+        entry0.apply(myMap, null);
+        entry1.apply(myMap, null);
         Territory terr0 = myMap.getTerritory("0");
         Territory terr1 = myMap.getTerritory("2");
         assertEquals(5, terr0.getNumSoldiersInArmy());

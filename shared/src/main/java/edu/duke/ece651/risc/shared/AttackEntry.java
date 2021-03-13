@@ -24,10 +24,11 @@ public class AttackEntry implements ActionEntry {
     /**
      * Send attackers
      *
-     * @param myMap is the map of the game
+     * @param myMap     is the map of the game
+     * @param myChecker is the rule checker for the action
      */
     @Override
-    public void apply(GameMap myMap) {
+    public void apply(GameMap myMap, Checker myChecker) {
         Territory fromTerr = myMap.getTerritory(fromName);
         Territory toTerr = myMap.getTerritory(toName);
         fromTerr.removeSoldiersFromArmy(numSoldiers);
