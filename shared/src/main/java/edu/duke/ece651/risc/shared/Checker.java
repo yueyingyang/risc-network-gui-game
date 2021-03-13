@@ -4,7 +4,7 @@ public abstract class Checker {
   private final Checker next;
 
   public Checker(Checker next){
-    this.next=next;
+    this.next = next;
   }
 
   protected abstract String checkMyRule();
