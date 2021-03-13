@@ -13,7 +13,8 @@ public class V1MapFactoryTest {
     nameList.add("Red");
     nameList.add("Blue");
     nameList.add("Green");
-    GameMap map=factory.createMap(nameList,3);
+    GameMap map=factory.createMap(3,3);
+    map.setOwnerName(nameList);
 
     assertTrue(map.getTerritory("0").isAdjacent(map.getTerritory("1")));
     assertTrue(map.getTerritory("0").isAdjacent(map.getTerritory("3")));
