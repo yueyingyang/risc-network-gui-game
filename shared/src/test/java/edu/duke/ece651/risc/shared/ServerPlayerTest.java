@@ -37,9 +37,7 @@ class ServerPlayerTest {
         p.readGameSize();
         String expected = Constant.ASK_HOW_MANY_PLAYERS + "\n" +
                 Constant.INVALID_NUMBER + "\n" +
-                Constant.ASK_HOW_MANY_PLAYERS + "\n" +
                 Constant.INVALID_NUMBER + "\n" +
-                Constant.ASK_HOW_MANY_PLAYERS + "\n" +
                 Constant.SUCCESS_NUMBER_CHOOSED + "\n";
         assertEquals(expected, bytes.toString());
     }

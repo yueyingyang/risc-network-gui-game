@@ -14,8 +14,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.atLeastOnce;
 
 class AppTest {
   App app;
