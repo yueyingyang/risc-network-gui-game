@@ -88,8 +88,8 @@ public class Territory {
     @Override
     public boolean equals(Object myObject) {
         if (myObject.getClass().equals(getClass())) {
-            Territory territory = (Territory) myObject;
-            return territory.getName().equals(getName());
+            Territory terr = (Territory) myObject;
+            return terr.getName().equals(getName());
         }
         return false;
     }
@@ -107,20 +107,20 @@ public class Territory {
     /**
      * Connect the territory to its neighbour
      *
-     * @param neighbour is an territory adjacent to the territory
+     * @param neigh is an territory adjacent to the territory
      */
-    public void addNeighbour(Territory neighbour) {
-        neighbours.add(neighbour);
+    public void addNeighbour(Territory neigh) {
+        neighbours.add(neigh);
     }
 
     /**
      * Check the if the given territory is adjacent to this
      *
-     * @param territory is the given territory
+     * @param terr is the given territory
      * @return ture if they are adjacent else false
      */
-    public boolean isAdjacent(Territory territory) {
-        return neighbours.contains(territory);
+    public boolean isAdjacent(Territory terr) {
+        return neighbours.contains(terr);
     }
 
     /**
