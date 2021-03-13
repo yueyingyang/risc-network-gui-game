@@ -52,15 +52,6 @@ public class Territory {
     }
 
     /**
-     * Get attackerBuffer
-     *
-     * @return the attackerBuffer
-     */
-    public Map<String, Army> getAttackerBuffer() {
-        return attackerBuffer;
-    }
-
-    /**
      * Set the owner of the territory
      *
      * @param ownerName is the name of the owner
@@ -177,5 +168,9 @@ public class Territory {
         }
         myArmy = defender;
         ownerName = myArmy.getOwnerName();
+    }
+
+    public int getNumSoldiersInAttacker(String name) {
+        return attackerBuffer.get(name).getNumSoldiers();
     }
 }

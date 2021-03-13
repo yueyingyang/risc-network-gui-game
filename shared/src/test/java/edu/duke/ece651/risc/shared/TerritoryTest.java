@@ -80,9 +80,8 @@ class TerritoryTest {
             terr.bufferAttacker(attacker);
         }
 
-        Map<String, Army> attackerBuffer = terr.getAttackerBuffer();
-        assertEquals(6, attackerBuffer.get("Kitty").getNumSoldiers());
-        assertEquals(12, attackerBuffer.get("HanMeiMei").getNumSoldiers());
+        assertEquals(6, terr.getNumSoldiersInAttacker("Kitty"));
+        assertEquals(12, terr.getNumSoldiersInAttacker("HanMeiMei"));
     }
 
     @Test
