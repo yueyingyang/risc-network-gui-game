@@ -1,9 +1,9 @@
 package edu.duke.ece651.risc.shared;
 
-public abstract class Checker<T> {
-  private final Checker<T> next;
+public abstract class Checker {
+  private final Checker next;
 
-  public Checker(Checker<T> next){
+  public Checker(Checker next){
     this.next=next;
   }
 
