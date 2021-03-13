@@ -54,7 +54,7 @@ public class Territory {
     /**
      * Get attackerBuffer
      *
-     * @return the attackBuffer
+     * @return the attackerBuffer
      */
     public Map<String, Army> getAttackerBuffer() {
         return attackerBuffer;
@@ -163,5 +163,19 @@ public class Territory {
         } else {
             attackerBuffer.put(owner, attacker);
         }
+    }
+
+    /**
+     * Resolve combat on the territory
+     *
+     * @param myRandom is the random object set by the game
+     */
+    public void resolveCombat(Random myRandom) {
+        Army defender = myArmy;
+        for (Army attacker : attackerBuffer.values()) {
+            defender = defender.fight(attacker, myRandom);
+        }
+        myArmy = defender;
+        ownerName = myArmy.getOwnerName();
     }
 }

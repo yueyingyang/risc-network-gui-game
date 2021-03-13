@@ -3,6 +3,7 @@ package edu.duke.ece651.risc.shared;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -82,6 +83,25 @@ class TerritoryTest {
         Map<String, Army> attckerBuffer = territory.getAttackerBuffer();
         assertEquals(6, attckerBuffer.get("Kitty").getNumSoldiers());
         assertEquals(12, attckerBuffer.get("HanMeiMei").getNumSoldiers());
+    }
+
+    @Test
+    public void test_resolveCombat() {
+        Territory territory = new Territory("NANJING");
+        Army myArmy = new BasicArmy("LiLei", 5);
+        territory.setMyArmy(myArmy);
+
+        Army attacker0 = new BasicArmy("HanMeiMei", 4);
+        Army attacker1 = new BasicArmy("Kitty", 6);
+        Army attacker2 = new BasicArmy("HanMeiMei", 8);
+
+        Army[] attackers = {attacker0, attacker1, attacker2};
+        for (Army attacker : attackers) {
+            territory.bufferAttacker(attacker);
+        }
+
+        territory.resolveCombat(new Random(0));
+        assertEquals("Kitty", territory.getOwnerName());
     }
 
 }
