@@ -3,56 +3,160 @@
  */
 package edu.duke.ece651.risc.server;
 
-import java.io.BufferedReader;
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 
+import edu.duke.ece651.risc.shared.Player;
+import edu.duke.ece651.risc.shared.ServerPlayer;
+import edu.duke.ece651.risc.shared.Constant;
 
 public class App {
-    ArrayList<Game> games;
-    BufferedReader input;
+  private final ArrayList<Game> games;
+  private final HostSocket hostSocket;
+  private final PrintStream output;
 
-    public App() {
-        input = new BufferedReader(new InputStreamReader(System.in));
-        games = new ArrayList();
+  /**
+   * the constructor of App build the socket based on the port number initialize
+   * the games list
+   */
+  public App(HostSocket s, PrintStream out) {
+    games = new ArrayList<>();
+    this.output = out;
+    this.hostSocket = s;
+  }
+
+  /**
+   * All steps of the server side program
+   */
+  public void run() {
+    this.acceptPlayers(this.hostSocket.getSocket());
+    this.hostSocket.closeSocket();
+  }
+
+  /**
+   * @return the list of available games for a player ro join
+   */
+  public List<Game> getAvailableGames() {
+    List<Game> res = new ArrayList<>();
+    for (Game g : this.games) {
+      if (!g.isGameFull()) {
+        res.add(g);
+      }
     }
+    return res;
+  }
 
+  /**
+   * start a new game for a user
+   *
+   * @param player is the player needs to login
+   * @throws IOException if R/W exception
+   */
+  public void startNewGame(ServerPlayer player) throws IOException {
+    Game newGame = new Game(player.readGameSize());
+    this.games.add(newGame);
+    // a new game should always add a player successfully
+    // new game should assert newGame.addPlayer(player) == null;
+    output.println(newGame.addPlayer(player));
+    // send name to client player
+    player.sendMessage(player.getName());
+  }
 
-    public Game startNewGame() throws IOException {
-        System.out.println("Hi ^_^, how many players are there in Game" + games.size() + "?");
-        String s = input.readLine();
-        if (s == null) {
-            throw new EOFException("You should input a line!");
+  /**
+   * let the player join into an existing game
+   *
+   * @param player is the player needs to login
+   * @throws IOException if R/W exception
+   */
+  public void joinExistingGame(Player player) throws IOException {
+    // send the available games to user to choose from
+    String available = printAvailableGameList();
+    player.sendMessage(available);
+    // wait util the user give a valid game number
+    while (true) {
+      try {
+        int chosenGame = Integer.parseInt(player.recvMessage());
+        if (chosenGame >= this.games.size()) {
+          player.sendMessage(Constant.OUT_OF_RANGE_CHOICE);
+          continue;
         }
-        int playerNum = Integer.parseInt(s);
-        int portNumber = 4444;
-        HostSocket hs = new HostSocket(portNumber, playerNum);
-        Game newGame = new Game(hs);
-        this.games.add(newGame);
-        //System.out.println("Number of player/players in Game "+games.indexOf(newGame)+": "+ newGame.getPlayerNum());
-        return newGame;
-    }
-
-    public void endOneGame(Game game) {
-        game.getHostSocket().closeSocket();
-    }
-
-    /**
-     * The main function to run
-     *
-     * @param args
-     */
-    public static void main(String[] args) throws IOException {
-        App myapp = new App();
-        myapp.startNewGame();
-        System.out.println("Number of games: " + myapp.games.size());
-        //close sockets of all the games
-        for (int i = 0; i < myapp.games.size(); i++) {
-            myapp.endOneGame(myapp.games.get(i));
+        String tryAddPlayerErrorMsg = games.get(chosenGame).addPlayer(player);
+        if (tryAddPlayerErrorMsg == null) {
+          player.sendMessage(Constant.SUCCESS_NUMBER_CHOOSED);
+          player.sendMessage(player.getName()); // send name to client player
+          break;
+        } else {
+          // in multi-thread env,
+          // it's possible to have another user fill in the selected game before current user
+          // not figure out a good way to test it tho
+          player.sendMessage(tryAddPlayerErrorMsg);
         }
+      } catch (NumberFormatException e) {
+        player.sendMessage(Constant.INVALID_NUMBER);
+      }
     }
+  }
 
+  public String printAvailableGameList() {
+    StringBuilder sb = new StringBuilder(Constant.AVAILABLE_LIST_INFO);
+    List<Game> availableGames = this.getAvailableGames();
+    for (Game availableGame : availableGames) {
+      sb.append(games.indexOf(availableGame));
+      sb.append(" ");
+    }
+    return sb.toString();
+  }
+
+  /**
+   * continuously accept connections and initialize players the player will be
+   * asked whether he/she want to start a new game or join a game
+   *
+   * @param ss is the server socket for accepting connection
+   */
+  public void acceptPlayers(ServerSocket ss) {
+    while (!Thread.currentThread().isInterrupted()) {
+      try {
+        // accept a new connection and create a new player based on that
+        Socket clientSocket = ss.accept();
+        PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+        BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        ServerPlayer player = new ServerPlayer(in, out);
+        // let the player choose whether to join a game or start a new one
+        // when there are existing games
+        this.handleIncomeRequest(player);
+      } catch (IOException e) {
+        this.output.println("Exception caught when listening for a connection");
+        this.output.println(e.getMessage());
+      }
+    }
+  }
+
+  public void handleIncomeRequest(ServerPlayer player) throws IOException {
+    if (this.getAvailableGames().size() == 0) {// when there's no existing games
+      player.sendMessage(Constant.NO_GAME_AVAILABLE_INFO);
+      startNewGame(player);
+      return;
+    }
+    String action = player.readActionType();
+    if (action.equals("s")) {
+      startNewGame(player);
+    } else if (action.equals("j")) {
+      joinExistingGame(player);
+    }
+  }
+
+
+  /**
+   * The main function to run
+   *
+   * @param args is command line args which is [] for this program
+   */
+  public static void main(String[] args) {
+    App app = new App(new HostSocket(4444), System.out);
+    app.run();
+  }
 
 }

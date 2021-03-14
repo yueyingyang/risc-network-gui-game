@@ -2,6 +2,8 @@ package edu.duke.ece651.risc.shared;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Random;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class BasicArmyTest {
@@ -27,8 +29,39 @@ class BasicArmyTest {
     public void test_fight() {
         Army army0 = new BasicArmy("HanMeiMei", 5);
         Army army1 = new BasicArmy("LiLei", 8);
-        Army winner = army0.fight(army1);
-        // TODO
-        System.out.println(winner.getOwnerName());
+        test_fight(army0, army1, "HanMeiMei");
+
+        Army army3 = new BasicArmy("Kitty", 12);
+        test_fight(army0, army3,"Kitty");
+    }
+
+    private void test_fight(Army army0, Army army1, String expectWinner) {
+        Random myRandom = new Random(0);
+        Army winner = army0.fight(army1, myRandom);
+        assertEquals(expectWinner, winner.getOwnerName());
+    }
+
+    @Test
+    public void test_fightOneRound() {
+        BasicArmy army0 = new BasicArmy("HanMeiMei", 5);
+        BasicArmy army1 = new BasicArmy("LiLei", 8);
+        Random myRandom = new Random(0);
+        army0.fightOneRound(army1, myRandom);
+        assertEquals(4, army0.getNumSoldiers());
+        assertEquals(8, army1.getNumSoldiers());
+        army0.fightOneRound(army1, myRandom);
+        assertEquals(4, army0.getNumSoldiers());
+        assertEquals(7, army1.getNumSoldiers());
+    }
+
+    @Test
+    public void test_mergeForce() {
+        Army army0 = new BasicArmy("HanMeiMei", 5);
+        Army army1 = new BasicArmy("LiLei", 3);
+        Army army2 = new BasicArmy("HanMeiMei", 6);
+        army0.mergeForce(army1);
+        assertEquals(5, army0.getNumSoldiers());
+        army0.mergeForce(army2);
+        assertEquals(11, army0.getNumSoldiers());
     }
 }

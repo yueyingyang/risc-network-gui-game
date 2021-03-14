@@ -3,6 +3,7 @@ package edu.duke.ece651.risc.shared;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 /**
  * A class represents a basic army
@@ -78,12 +79,13 @@ public class BasicArmy implements Army {
      * Fight with the attacker
      *
      * @param attacker is the army that attack the territory
+     * @param myRandom is the random object set by the game
      * @return the army that wins the fight
      */
     @Override
-    public Army fight(Army attacker) {
+    public Army fight(Army attacker, Random myRandom) {
         while (getNumSoldiers() > 0 && attacker.getNumSoldiers() > 0) {
-            fightOneRound(attacker);
+            fightOneRound(attacker, myRandom);
         }
         if (getNumSoldiers() > 0) {
             return this;
@@ -96,11 +98,11 @@ public class BasicArmy implements Army {
      *
      * @param attacker is the army that attack the territory
      */
-    protected void fightOneRound(Army attacker) {
+    protected void fightOneRound(Army attacker, Random myRandom) {
         List<Soldier> enemyForce = attacker.getForce();
         Soldier mySoldier = force.get(force.size() - 1);
         Soldier enemySoldier = enemyForce.get(enemyForce.size() - 1);
-        int res = mySoldier.fight(enemySoldier);
+        int res = mySoldier.fight(enemySoldier, myRandom);
         if (res >= 0) {
             attacker.removeSoldiers(1);
         } else {
@@ -110,9 +112,13 @@ public class BasicArmy implements Army {
 
     /**
      * Merge the force of the same owner
+     *
+     * @param myArmy is the army from the same owner
      */
     @Override
-    public void mergeForce() {
-        // TODO
+    public void mergeForce(Army myArmy) {
+        if (myArmy.getOwnerName().equals(getOwnerName())) {
+            getForce().addAll(myArmy.getForce());
+        }
     }
 }
