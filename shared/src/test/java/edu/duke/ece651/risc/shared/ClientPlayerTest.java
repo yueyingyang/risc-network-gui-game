@@ -1,5 +1,6 @@
 package edu.duke.ece651.risc.shared;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -93,9 +94,9 @@ class ClientPlayerTest {
     V1MapFactory v1f = new V1MapFactory();
     GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 3);
     Iterable<Territory> ts = map.getPlayerTerritories("player1");
-//    ObjectMapper objectMapper = new ObjectMapper();
-//    p.sendMessage(objectMapper.writeValueAsString(ts));
-//
-//    assertEquals("", objectMapper.writeValueAsString(ts));
+    System.out.println("debug");
+    ObjectMapper objectMapper = new ObjectMapper();
+    p.sendMessage(objectMapper.writeValueAsString(ts));
+    // assertEquals("", objectMapper.writeValueAsString(ts));
   }
 }

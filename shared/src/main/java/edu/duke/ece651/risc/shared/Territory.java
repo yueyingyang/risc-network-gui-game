@@ -1,14 +1,13 @@
 package edu.duke.ece651.risc.shared;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.*;
 
 /**
  * An class represents a territory
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
+
 public class Territory {
     private String name;
     private String ownerName;
@@ -141,8 +140,12 @@ public class Territory {
      * Get the number of soldier in myArmy
      *
      * @return the number of soldier in myArmy
+     * -1 if myArmy has not been setup
      */
     public int getNumSoldiersInArmy() {
+        if (myArmy == null) {
+            return -1;
+        }
         return myArmy.getNumSoldiers();
     }
 
