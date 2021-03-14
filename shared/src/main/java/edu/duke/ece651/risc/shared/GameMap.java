@@ -27,7 +27,7 @@ public class GameMap {
             end.addNeighbour(start);
         }
     }
-
+/*
     public void setOwnerName(List<String> playerNames){
         int numTerritories=territoryFinder.size();
         //assert(numTerritories%playerNames==0);
@@ -48,7 +48,7 @@ public class GameMap {
             }
         }
     }
-
+*/
     /**
      * find a terrority with its name
      *
