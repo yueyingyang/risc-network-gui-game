@@ -178,6 +178,12 @@ public class Territory {
         ownerName = myArmy.getOwnerName();
     }
 
+    /**
+     * get the number of soldiers in the attacker
+     *
+     * @param name is the name of the attacker owner
+     * @return the number of soldiers in the attacker
+     */
     public int getNumSoldiersInAttacker(String name) {
         return attackerBuffer.get(name).getNumSoldiers();
     }
