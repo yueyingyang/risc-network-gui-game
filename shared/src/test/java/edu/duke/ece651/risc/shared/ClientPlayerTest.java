@@ -1,9 +1,11 @@
 package edu.duke.ece651.risc.shared;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.io.*;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -80,5 +82,20 @@ class ClientPlayerTest {
             userOut);
     p.setName("test_player");
     assertEquals("test_player", p.getName());
+  }
+
+  @Test
+  void test_recv_map() throws JsonProcessingException {
+    ClientPlayer p = createClientPlayer("",
+            serverOut,
+            "",
+            userOut);
+    V1MapFactory v1f = new V1MapFactory();
+    GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 3);
+    Iterable<Territory> ts = map.getPlayerTerritories("player1");
+//    ObjectMapper objectMapper = new ObjectMapper();
+//    p.sendMessage(objectMapper.writeValueAsString(ts));
+//
+//    assertEquals("", objectMapper.writeValueAsString(ts));
   }
 }

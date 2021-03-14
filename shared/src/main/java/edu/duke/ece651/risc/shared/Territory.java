@@ -1,14 +1,19 @@
 package edu.duke.ece651.risc.shared;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.*;
 
 /**
  * An class represents a territory
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Territory {
     private String name;
     private String ownerName;
     private Army myArmy;
+    @JsonBackReference
     private Set<Territory> neighbours;
     private Map<String, Army> attackerBuffer;
 

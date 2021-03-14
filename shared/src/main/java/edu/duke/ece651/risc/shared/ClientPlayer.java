@@ -78,4 +78,7 @@ public class ClientPlayer extends Player {
     this.setName(name);
   }
 
+  public void recvMap() {
+
+  }
 }
