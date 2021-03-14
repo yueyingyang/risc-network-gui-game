@@ -7,23 +7,12 @@ public abstract class Checker {
     this.next = next;
   }
 
-  protected abstract String checkMyRule();
+  protected abstract void checkMyRule(Territory start, Territory end, GameMap map);
   
-  /*
-  public String checkPlacement(Ship<T> theShip, Board<T> theBoard){
-    //if we fail our own rule: stop the placement is not legal
-    String message=checkMyRule(theShip, theBoard);
-    if(message!=null){
-      return message;
-    }
-    //otherwise, ask the rest of the chain
+  public void checkAction(Territory start, Territory end, GameMap map){
+    checkMyRule(start,end,map);
     if(next!=null){
-      return next.checkPlacement(theShip,theBoard);
+      next.checkAction(start,end,map);
     }
-    //if there are no more rules, then the placement is legal
-    return null;
   }
-  */
-
-  
 }
