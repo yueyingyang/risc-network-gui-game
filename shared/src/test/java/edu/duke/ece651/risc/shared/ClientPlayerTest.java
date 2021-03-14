@@ -94,7 +94,6 @@ class ClientPlayerTest {
     V1MapFactory v1f = new V1MapFactory();
     GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 3);
     Iterable<Territory> ts = map.getPlayerTerritories("player1");
-    System.out.println("debug");
     ObjectMapper objectMapper = new ObjectMapper();
     p.sendMessage(objectMapper.writeValueAsString(ts));
     // assertEquals("", objectMapper.writeValueAsString(ts));
