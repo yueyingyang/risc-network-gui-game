@@ -1,9 +1,6 @@
 package edu.duke.ece651.risc.shared;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -13,7 +10,6 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class JSONSerializerTest {
   @Test
@@ -29,16 +25,11 @@ class JSONSerializerTest {
     for (ActionEntry pe : placement) {
       pe.apply(map, null);
     }
-    // test serializer
-    ObjectMapper om = new ObjectMapper();
-    om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
-    om.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
 
     Serializer s = new JSONSerializer();
     String result = s.serialize(map);
 
     GameMap deMap = (GameMap) s.deserialize(result, GameMap.class);
-    MapView mv = new MapView(deMap);
 
     assertDoesNotThrow(() -> new MapView(map).display());
   }
