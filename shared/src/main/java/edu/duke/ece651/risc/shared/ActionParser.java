@@ -21,6 +21,9 @@ public class ActionParser {
 
   public ActionEntry makeMoveEntry(String input) {
     String[] s = input.split("\\s+");
+    if (s.length != 3) {
+      throw new IllegalArgumentException("Input format should be <type from to unit>");
+    }
     Integer unit = parseUnitNumber(s[2]);
     return new MoveEntry(s[0], s[1], unit);
   }

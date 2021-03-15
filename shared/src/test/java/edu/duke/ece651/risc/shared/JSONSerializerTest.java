@@ -11,6 +11,7 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class JSONSerializerTest {
   @Test
@@ -59,7 +60,6 @@ class JSONSerializerTest {
   }
 
   @Test
-  @Disabled
   void test_serialize_and_de_placement_list() {
     List<ActionEntry> p = new ArrayList<>();
     p.add(new PlaceEntry("0", 2));
