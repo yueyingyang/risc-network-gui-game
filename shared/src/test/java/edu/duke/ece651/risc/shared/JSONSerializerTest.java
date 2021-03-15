@@ -1,11 +1,13 @@
 package edu.duke.ece651.risc.shared;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Collection;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -56,4 +58,7 @@ class JSONSerializerTest {
     deMove.apply(map, null);
     assertDoesNotThrow(() -> new MapView(map).display());
   }
+
+
+
 }

@@ -55,7 +55,7 @@ public class App {
    * @param player is the player needs to login
    * @throws IOException if R/W exception
    */
-  public void startNewGame(ServerPlayer player) throws IOException {
+  public Game startNewGame(ServerPlayer player) throws IOException {
     Game newGame = new Game(player.readGameSize());
     this.games.add(newGame);
     // a new game should always add a player successfully
@@ -63,6 +63,7 @@ public class App {
     output.println(newGame.addPlayer(player));
     // send name to client player
     player.sendMessage(player.getName());
+    return newGame;
   }
 
   /**
@@ -71,7 +72,7 @@ public class App {
    * @param player is the player needs to login
    * @throws IOException if R/W exception
    */
-  public void joinExistingGame(Player player) throws IOException {
+  public Game joinExistingGame(Player player) throws IOException {
     // send the available games to user to choose from
     String available = printAvailableGameList();
     player.sendMessage(available);
@@ -94,10 +95,12 @@ public class App {
           // not figure out a good way to test it tho
           player.sendMessage(tryAddPlayerErrorMsg);
         }
+        return games.get(chosenGame);
       } catch (NumberFormatException e) {
         player.sendMessage(Constant.INVALID_NUMBER);
       }
     }
+    return null;
   }
 
   public String printAvailableGameList() {
@@ -137,14 +140,17 @@ public class App {
   public void handleIncomeRequest(ServerPlayer player) throws IOException {
     if (this.getAvailableGames().size() == 0) {// when there's no existing games
       player.sendMessage(Constant.NO_GAME_AVAILABLE_INFO);
-      startNewGame(player);
+      Game g = startNewGame(player);
+      g.runGame();
       return;
     }
     String action = player.readActionType();
     if (action.equals("s")) {
-      startNewGame(player);
+      Game g = startNewGame(player);
+      g.runGame();
     } else if (action.equals("j")) {
-      joinExistingGame(player);
+      Game g = joinExistingGame(player);
+      g.runGame();
     }
   }
 

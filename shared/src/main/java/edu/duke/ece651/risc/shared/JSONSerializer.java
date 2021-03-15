@@ -1,5 +1,7 @@
 package edu.duke.ece651.risc.shared;
 
+import java.io.IOException;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -10,6 +12,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * JSONSerializer based on JACKSON
  */
 public class JSONSerializer implements Serializer {
+  public ObjectMapper getOm() {
+    return om;
+  }
+
   private final ObjectMapper om;
 
   public JSONSerializer() {
