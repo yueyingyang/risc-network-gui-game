@@ -16,6 +16,7 @@ public class Constant {
     public static final String NOR_JOIN_START = "You should only input s/j!";
     public static final String ORDER_COMMIT = "order commit";
     public static final String LOSE_GAME = "You have lost all your territories.";
+     public static final String CONTINUE_PLAYING = "You can continue playing.";
     public static final String GAME_OVER = "Game over ~";
     public static final String VALID_ACTION = "The action is valid.";
 
