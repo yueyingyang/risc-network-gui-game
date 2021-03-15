@@ -17,6 +17,6 @@ public class Constant {
     public static final String ORDER_COMMIT = "order commit";
     public static final String LOSE_GAME = "You have lost all your territories.";
     public static final String GAME_OVER = "Game over ~";
-    public static final String VALID_ACTION = "The action is valid."
+    public static final String VALID_ACTION = "The action is valid.";
 
 }
