@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -54,6 +56,9 @@ class JSONSerializerTest {
     ActionEntry deMove = (ActionEntry) s.deserialize(s.serialize(moveEntry), ActionEntry.class);
     V1MapFactory v1f = new V1MapFactory();
     GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 2);
+    assertThat(dePlace, instanceOf(PlaceEntry.class));
+    assertThat(deAttack, instanceOf(AttackEntry.class));
+    assertThat(deMove, instanceOf(MoveEntry.class));
     dePlace.apply(map, null);
     place1Entry.apply(map, null);
     deAttack.apply(map, null);
