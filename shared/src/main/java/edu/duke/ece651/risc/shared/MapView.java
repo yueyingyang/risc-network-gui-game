@@ -24,23 +24,16 @@ public class MapView {
      * @return a informational string
      */
     public String display() {
-        StringBuilder toDisplay = new StringBuilder();
-        Map<String, Set<Territory>> playerTerritories = toView.getAllPlayerTerritories();
+      return toDisplay(true);
+    }
 
-        // Iterate all players
-        for (Map.Entry<String, Set<Territory>> player : playerTerritories.entrySet()) {
-            // append header
-            toDisplay.append(printHeader(player.getKey()));
-            for (Territory t : player.getValue()) {
-                // append # of territories
-                toDisplay.append(t.getNumSoldiersInArmy()).append(" units in ").append(t.getName());
-                // append joined neighbors
-                toDisplay.append(printNeighbours(t.getNeighbours()));
-                toDisplay.append(System.getProperty("line.separator"));
-            }
-            toDisplay.append(System.getProperty("line.separator"));
-        }
-        return toDisplay.toString();
+    /**
+     * Only territory names and neighbors, without unit
+     *
+     * @return string
+     */
+    public String displayMapShape() {
+      return toDisplay(false);
     }
 
     /**
@@ -72,6 +65,29 @@ public class MapView {
         return " (next to: " +
                 String.join(", ", territoriesName) +
                 ")";
+    }
+
+    private String toDisplay(boolean wUnitInfo){
+      StringBuilder toDisplay = new StringBuilder();
+      Map<String, Set<Territory>> playerTerritories = toView.getAllPlayerTerritories();
+
+      // Iterate all players
+      for (Map.Entry<String, Set<Territory>> player : playerTerritories.entrySet()) {
+        // append header
+        toDisplay.append(printHeader(player.getKey()));
+        for (Territory t : player.getValue()) {
+          // append # of territories
+          if(wUnitInfo){
+            toDisplay.append(t.getNumSoldiersInArmy()).append(" units in ");
+          }
+          toDisplay.append(t.getName());
+          // append joined neighbors
+          toDisplay.append(printNeighbours(t.getNeighbours()));
+          toDisplay.append(System.getProperty("line.separator"));
+        }
+        toDisplay.append(System.getProperty("line.separator"));
+      }
+      return toDisplay.toString();
     }
 }
 

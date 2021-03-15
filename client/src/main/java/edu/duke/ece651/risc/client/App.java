@@ -5,6 +5,8 @@ package edu.duke.ece651.risc.client;
 
 import edu.duke.ece651.risc.shared.ActionEntry;
 import edu.duke.ece651.risc.shared.ClientPlayer;
+import edu.duke.ece651.risc.shared.Constant;
+import edu.duke.ece651.risc.shared.GameMap;
 
 import java.io.*;
 import java.net.Socket;
@@ -24,6 +26,7 @@ public class App {
 
   public void loginGame() throws IOException {
     player.loginGame();
+    player.display("Please wait for the game to start!");
   }
 
   public void endGame() throws IOException {
@@ -33,7 +36,27 @@ public class App {
   public void run() throws IOException {
     // login game: join an existed game / start a new game
     this.loginGame();
+    this.placementPhase();
+    this.attackPhase();
     this.endGame();
+  }
+
+  private void attackPhase() throws IOException {
+    while (true) {
+      player.playOneTurn();
+      player.display("Please wait for combat resolution...");
+      // recv combat result
+      String turnRes = player.recvMessage();
+      if (turnRes.equals(Constant.LOSE_GAME) || turnRes.equals(Constant.GAME_OVER)) {
+        player.display(turnRes);
+        // can choose watch or disconnect
+        break;
+      }
+    }
+  }
+
+  private void placementPhase() throws IOException {
+    player.placementPhase();
   }
 
   public static void main(String[] args) throws IOException {

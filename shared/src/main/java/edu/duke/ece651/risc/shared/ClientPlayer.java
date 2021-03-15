@@ -1,12 +1,14 @@
 package edu.duke.ece651.risc.shared;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 import java.io.BufferedReader;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 /**
  * ClientPlayer: Used on the client-side game
@@ -19,6 +21,7 @@ public class ClientPlayer extends Player {
   protected final PrintStream userOut;
   protected final Map<String, Function<String, ActionEntry>> actionCreationFns;
   protected final ActionParser parser;
+  protected final JSONSerializer serializer;
 
   /**
    * @param in      is the reader to game server.
@@ -34,6 +37,7 @@ public class ClientPlayer extends Player {
     actionCreationFns = new HashMap<>();
     parser = new ActionParser();
     setupActionCreationFns();
+    serializer = new JSONSerializer();
   }
 
   private void setupActionCreationFns() {
@@ -76,6 +80,11 @@ public class ClientPlayer extends Player {
     display(msg);
   }
 
+  /**
+   * Player join the game: select a existed game to join or start a new game.
+   *
+   * @throws IOException if R/W exception
+   */
   public void loginGame() throws IOException {
     // ask the player whether she/he wants to start a name game or join a game
     // different prompt when there's no available games to join
@@ -92,28 +101,111 @@ public class ClientPlayer extends Player {
     this.setName(name);
   }
 
+  /**
+   * Prompt to user to input action entry
+   *
+   * @param prompt is the prompt to instruct
+   * @return is a ActionEntry object
+   * @throws IOException if R/W exception
+   */
   public ActionEntry readOneActionEntry(String prompt) throws IOException {
     userOut.println(prompt);
     ActionEntry ae = null;
+    String line = userIn.readLine();
+    if (line.contains("commit")) return null;
     try {
-      ae = readInputActionEntry();
+      ae = parseActionEntry(line);
     } catch (IllegalArgumentException e) {
       userOut.println(e.getMessage());
-      readInputActionEntry();
+      line = userIn.readLine();
+      parseActionEntry(line);
     }
     return ae;
   }
 
-  private ActionEntry readInputActionEntry() throws IOException {
+  /**
+   * Call parser to parse a string into Action entry object
+   *
+   * @param line is the string to be parse
+   * @return ActionEntry
+   * @throws IOException if io exception
+   */
+  private ActionEntry parseActionEntry(String line) throws IOException {
     /*
       format: Type from To Unit
      */
-    String line = userIn.readLine();
+
     // split by space
-    String type = line.split("\\s+")[0];
+    String type = line.split("\\s+")[0].toLowerCase(Locale.ROOT);
     if (!actionCreationFns.containsKey(type)) {
       throw new IllegalArgumentException("Type letter need to be (a)ttack, (m)ove, but now is " + type);
     }
-    return actionCreationFns.get(type).apply(line.split("[^ ]* (.*)")[1]);
+    String actionEntryPart = line.split("\\s", 2)[1];
+    return actionCreationFns.get(type).apply(actionEntryPart);
+  }
+
+  /**
+   * Recv map and total units, instruct user to input placement
+   *
+   * @throws IOException if IO exception
+   */
+  public void placementPhase() throws IOException {
+    List<ActionEntry> placementList = new ArrayList<>();
+    GameMap m = this.recvMap();
+    display(new MapView(m).displayMapShape());
+    display("Here is the game map, and you have total units of " + this.recvMessage());
+    Iterable<Territory> ts = m.getPlayerTerritories(name);
+    for (Territory t : ts) {
+      display("How many units you want to place on territory " + t.getName() + "?");
+      placementList.add(parseActionEntry("p " + t.getName() + " " + readFromUser()));
+    }
+    sendMessage(serializer.getOm().writerFor(new TypeReference<List<ActionEntry>>() {
+    }).writeValueAsString(placementList));
+  }
+
+  /**
+   * Receive a string and parse into gamemap
+   *
+   * @return a GameMap
+   * @throws IOException if IO exception
+   */
+  private GameMap recvMap() throws IOException {
+    String mapJSON = recvMessage();
+    return (GameMap) serializer.deserialize(mapJSON, GameMap.class);
+  }
+
+  /**
+   * Recv map and read action entry, validate by server, update local map each time, then commit.
+   *
+   * @throws IOException if IO exception
+   */
+  public void playOneTurn() throws IOException {
+    GameMap m = this.recvMap();
+    display("CURRENT GAME MAP");
+    display(new MapView(m).display());
+    display("Hi here is your turn to place orders:\n" +
+            "You can either move, attack, or commit for ending this order turn.\n" +
+            "Here is the format example:\n" +
+            "m a b 1 (means  (m)ove 1 unit from territory a to territory b)\n" +
+            "a a b 1 (means  (a)ttack territory b using 1 unit from territory a)\n" +
+            "commit  (means  you finish placing orders in this turn)\n");
+    while (true) {
+      ActionEntry a = readOneActionEntry("Please enter order(1 line at a time):");
+      if (a == null) break;
+      // server-side check and update
+      sendMessage(serializer.serialize(a));
+      String serverValidationResult = recvMessage();
+      if (!serverValidationResult.equals(Constant.VALID_ACTION)) {
+        display(serverValidationResult);
+        continue;
+      }
+      try {
+        a.apply(m, null);
+        display(Constant.VALID_ACTION);
+      } catch (IllegalArgumentException e) {
+        display(e.getMessage());
+      }
+    }
+    sendMessage(Constant.ORDER_COMMIT);
   }
 }
