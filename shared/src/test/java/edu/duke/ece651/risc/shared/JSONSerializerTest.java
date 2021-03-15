@@ -1,6 +1,7 @@
 package edu.duke.ece651.risc.shared;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -54,6 +55,26 @@ class JSONSerializerTest {
     place1Entry.apply(map, null);
     deAttack.apply(map, null);
     deMove.apply(map, null);
+    assertDoesNotThrow(() -> new MapView(map).display());
+  }
+
+  @Test
+  @Disabled
+  void test_serialize_and_de_placement_list() {
+    List<ActionEntry> p = new ArrayList<>();
+    p.add(new PlaceEntry("0", 2));
+    p.add(new PlaceEntry("1", 2));
+    p.add(new AttackEntry("0", "1", 1));
+    p.add(new MoveEntry("0", "1", 1));
+    // test serializer
+    JSONSerializer s = new JSONSerializer();
+    String listJSON = s.serialize(p);
+    V1MapFactory v1f = new V1MapFactory();
+    GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 2);
+    ActionEntry[] pd = (ActionEntry[]) s.deserialize(listJSON, ActionEntry[].class);
+    for(ActionEntry a : pd){
+      a.apply(map, null);
+    }
     assertDoesNotThrow(() -> new MapView(map).display());
   }
 }

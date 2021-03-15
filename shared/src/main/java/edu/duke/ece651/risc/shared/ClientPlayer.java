@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 /**
  * ClientPlayer: Used on the client-side game
@@ -14,6 +17,8 @@ public class ClientPlayer extends Player {
    */
   protected final BufferedReader userIn;
   protected final PrintStream userOut;
+  protected final Map<String, Function<String, ActionEntry>> actionCreationFns;
+  protected final ActionParser parser;
 
   /**
    * @param in      is the reader to game server.
@@ -26,6 +31,15 @@ public class ClientPlayer extends Player {
     super(in, out);
     this.userIn = userIn;
     this.userOut = userOut;
+    actionCreationFns = new HashMap<>();
+    parser = new ActionParser();
+    setupActionCreationFns();
+  }
+
+  private void setupActionCreationFns() {
+    actionCreationFns.put("a", parser::makeAttackEntry);
+    actionCreationFns.put("p", parser::makePlaceEntry);
+    actionCreationFns.put("m", parser::makeMoveEntry);
   }
 
   /**
@@ -76,5 +90,30 @@ public class ClientPlayer extends Player {
     this.typeUntilCorrect(Constant.SUCCESS_NUMBER_CHOOSED);
     String name = this.recvMessage();
     this.setName(name);
+  }
+
+  public ActionEntry readOneActionEntry(String prompt) throws IOException {
+    userOut.println(prompt);
+    ActionEntry ae = null;
+    try {
+      ae = readInputActionEntry();
+    } catch (IllegalArgumentException e) {
+      userOut.println(e.getMessage());
+      readInputActionEntry();
+    }
+    return ae;
+  }
+
+  private ActionEntry readInputActionEntry() throws IOException {
+    /*
+      format: Type from To Unit
+     */
+    String line = userIn.readLine();
+    // split by space
+    String type = line.split("\\s+")[0];
+    if (!actionCreationFns.containsKey(type)) {
+      throw new IllegalArgumentException("Type letter need to be (a)ttack, (m)ove, but now is " + type);
+    }
+    return actionCreationFns.get(type).apply(line.split("[^ ]* (.*)")[1]);
   }
 }
