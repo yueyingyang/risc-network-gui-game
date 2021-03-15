@@ -10,6 +10,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * JSONSerializer based on JACKSON
  */
 public class JSONSerializer implements Serializer {
+  public ObjectMapper getOm() {
+    return om;
+  }
+
   private final ObjectMapper om;
 
   public JSONSerializer() {

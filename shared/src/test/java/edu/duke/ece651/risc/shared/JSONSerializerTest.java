@@ -1,11 +1,13 @@
 package edu.duke.ece651.risc.shared;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -60,7 +62,7 @@ class JSONSerializerTest {
   }
 
   @Test
-  void test_serialize_and_de_placement_list() {
+  void test_serialize_and_de_placement_list() throws JsonProcessingException {
     List<ActionEntry> p = new ArrayList<>();
     p.add(new PlaceEntry("0", 2));
     p.add(new PlaceEntry("1", 2));
@@ -68,10 +70,10 @@ class JSONSerializerTest {
     p.add(new MoveEntry("0", "1", 1));
     // test serializer
     JSONSerializer s = new JSONSerializer();
-    String listJSON = s.serialize(p);
+    String listJSON = s.getOm().writerFor(new TypeReference<List<ActionEntry>>() {}).writeValueAsString(p);
     V1MapFactory v1f = new V1MapFactory();
     GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 2);
-    ActionEntry[] pd = (ActionEntry[]) s.deserialize(listJSON, ActionEntry[].class);
+    Collection<ActionEntry> pd =  s.getOm().readValue(listJSON, new TypeReference<Collection<ActionEntry>>() {});
     for(ActionEntry a : pd){
       a.apply(map, null);
     }
