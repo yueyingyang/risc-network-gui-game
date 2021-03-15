@@ -1,17 +1,33 @@
 package edu.duke.ece651.risc.shared;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import java.util.*;
 
 /**
  * An class represents a territory
+ *
+ * Annotation JsonIdentityInfo is added for bidirectional serialization
  */
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "name")
 public class Territory {
     private String name;
     private String ownerName;
+
     private Army myArmy;
+
     private Set<Territory> neighbours;
     private Map<String, Army> attackerBuffer;
 
+    /**
+     * Add for Jackson deserialization
+     */
+    public Territory(){
+
+    }
     /**
      * Create a territory object
      *
@@ -136,8 +152,12 @@ public class Territory {
      * Get the number of soldier in myArmy
      *
      * @return the number of soldier in myArmy
+     * -1 if myArmy has not been setup
      */
     public int getNumSoldiersInArmy() {
+        if (myArmy == null) {
+            return -1;
+        }
         return myArmy.getNumSoldiers();
     }
 
@@ -170,6 +190,12 @@ public class Territory {
         ownerName = myArmy.getOwnerName();
     }
 
+    /**
+     * get the number of soldiers in the attacker
+     *
+     * @param name is the name of the attacker owner
+     * @return the number of soldiers in the attacker
+     */
     public int getNumSoldiersInAttacker(String name) {
         return attackerBuffer.get(name).getNumSoldiers();
     }

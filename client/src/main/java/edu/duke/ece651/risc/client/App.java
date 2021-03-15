@@ -3,6 +3,7 @@
  */
 package edu.duke.ece651.risc.client;
 
+import edu.duke.ece651.risc.shared.ActionEntry;
 import edu.duke.ece651.risc.shared.ClientPlayer;
 
 import java.io.*;

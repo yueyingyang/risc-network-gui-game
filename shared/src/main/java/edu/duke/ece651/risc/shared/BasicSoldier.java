@@ -1,7 +1,10 @@
 package edu.duke.ece651.risc.shared;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.Random;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BasicSoldier implements Soldier {
 
     /**
