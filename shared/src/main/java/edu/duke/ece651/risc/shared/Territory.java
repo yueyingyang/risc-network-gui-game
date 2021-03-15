@@ -3,20 +3,22 @@ package edu.duke.ece651.risc.shared;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.*;
 
 /**
  * An class represents a territory
  */
-
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "name")
 public class Territory {
     private String name;
     private String ownerName;
+
     private Army myArmy;
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "name")
+
     private Set<Territory> neighbours;
     private Map<String, Army> attackerBuffer;
 

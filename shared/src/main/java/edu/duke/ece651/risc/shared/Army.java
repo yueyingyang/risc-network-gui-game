@@ -1,11 +1,14 @@
 package edu.duke.ece651.risc.shared;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import java.util.List;
 import java.util.Random;
 
 /**
  * An interface represents an army
  */
+@JsonDeserialize(as = BasicArmy.class)
 public interface Army {
 
     /**
