@@ -1,12 +1,17 @@
 package edu.duke.ece651.risc.shared;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -87,15 +92,33 @@ class ClientPlayerTest {
 
   @Test
   void test_recv_map() throws JsonProcessingException {
+
     ClientPlayer p = createClientPlayer("",
             serverOut,
             "",
             userOut);
     V1MapFactory v1f = new V1MapFactory();
-    GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 3);
+    GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 2);
     Iterable<Territory> ts = map.getPlayerTerritories("player1");
+    Territory t1 = ts.iterator().next();
     ObjectMapper objectMapper = new ObjectMapper();
-    p.sendMessage(objectMapper.writeValueAsString(ts));
-    // assertEquals("", objectMapper.writeValueAsString(ts));
+    objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
+    objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+    List<ActionEntry> placement = new ArrayList<>();
+    placement.add(new PlaceEntry("0", 1));
+    placement.add(new PlaceEntry("1", 1));
+    placement.add(new PlaceEntry("2", 1));
+    placement.add(new PlaceEntry("3", 1));
+//    List<PlaceEntry> listaction = objectMapper.readValue(pjson, new TypeReference<>(){});
+    for (ActionEntry pe : placement) {
+      pe.apply(map, null);
+    }
+    String mapjson = objectMapper.writeValueAsString(map);
+
+
+    GameMap mafter = objectMapper.readValue(mapjson, GameMap.class);
+//    map.getAllPlayerTerritories();
+//    assertEquals("", new MapView(map).display());
+
   }
 }

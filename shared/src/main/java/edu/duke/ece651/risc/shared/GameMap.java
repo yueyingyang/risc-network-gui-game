@@ -6,7 +6,10 @@ import java.util.*;
 
 
 public class GameMap {
-    private final Map<String, Territory> territoryFinder;
+    private Map<String, Territory> territoryFinder;
+
+    public GameMap() {
+    }
 
     public GameMap(List<List<String>> connections, Map<String, Territory> territoryFinder) {
         this.territoryFinder = territoryFinder;
