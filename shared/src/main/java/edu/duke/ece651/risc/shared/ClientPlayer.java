@@ -77,8 +77,4 @@ public class ClientPlayer extends Player {
     String name = this.recvMessage();
     this.setName(name);
   }
-
-  public void recvMap() {
-
-  }
 }

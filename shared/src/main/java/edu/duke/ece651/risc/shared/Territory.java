@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+import java.beans.ConstructorProperties;
 import java.util.*;
 
 /**
@@ -22,9 +23,12 @@ public class Territory {
     private Set<Territory> neighbours;
     private Map<String, Army> attackerBuffer;
 
-    public Territory() {
-    }
+    /**
+     * Add for Jackson
+     */
+    public Territory(){
 
+    }
     /**
      * Create a territory object
      *

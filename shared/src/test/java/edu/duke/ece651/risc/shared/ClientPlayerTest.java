@@ -92,31 +92,18 @@ class ClientPlayerTest {
 
   @Test
   void test_recv_map() throws JsonProcessingException {
-
-    ClientPlayer p = createClientPlayer("",
-            serverOut,
-            "",
-            userOut);
-    V1MapFactory v1f = new V1MapFactory();
-    GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 2);
-    Iterable<Territory> ts = map.getPlayerTerritories("player1");
-    Territory t1 = ts.iterator().next();
-    ObjectMapper objectMapper = new ObjectMapper();
-    objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
-    objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-    List<ActionEntry> placement = new ArrayList<>();
-    placement.add(new PlaceEntry("0", 1));
-    placement.add(new PlaceEntry("1", 1));
-    placement.add(new PlaceEntry("2", 1));
-    placement.add(new PlaceEntry("3", 1));
-//    List<PlaceEntry> listaction = objectMapper.readValue(pjson, new TypeReference<>(){});
-    for (ActionEntry pe : placement) {
-      pe.apply(map, null);
-    }
-    String mapjson = objectMapper.writeValueAsString(map);
-
-
-    GameMap mafter = objectMapper.readValue(mapjson, GameMap.class);
+//
+//    ClientPlayer p = createClientPlayer("",
+//            serverOut,
+//            "",
+//            userOut);
+//
+////    List<PlaceEntry> listaction = objectMapper.readValue(pjson, new TypeReference<>(){});
+//
+//    String mapjson = objectMapper.writeValueAsString(map);
+//
+//
+//    GameMap mafter = objectMapper.readValue(mapjson, GameMap.class);
 //    map.getAllPlayerTerritories();
 //    assertEquals("", new MapView(map).display());
 

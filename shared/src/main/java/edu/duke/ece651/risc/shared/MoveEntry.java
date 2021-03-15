@@ -1,5 +1,7 @@
 package edu.duke.ece651.risc.shared;
 
+import java.beans.ConstructorProperties;
+
 public class MoveEntry implements ActionEntry {
     private String fromName;
     private String toName;
@@ -12,6 +14,7 @@ public class MoveEntry implements ActionEntry {
      * @param toName      is the name of the territory where the soldiers go to
      * @param numSoldiers is the number of soldiers to move
      */
+    @ConstructorProperties({"fromName", "toName", "numSoldiers"})
     public MoveEntry(String fromName, String toName, int numSoldiers) {
         this.fromName = fromName;
         this.toName = toName;

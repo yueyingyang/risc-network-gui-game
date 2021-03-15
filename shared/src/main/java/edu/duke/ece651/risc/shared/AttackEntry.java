@@ -1,5 +1,7 @@
 package edu.duke.ece651.risc.shared;
 
+import java.beans.ConstructorProperties;
+
 /**
  * A class represents an attack entry
  */
@@ -15,6 +17,7 @@ public class AttackEntry implements ActionEntry {
      * @param toName      is the name of the territory to attack
      * @param numSoldiers is the number of soldiers participating in the attack
      */
+    @ConstructorProperties({"fromName", "toName", "numSoldiers"})
     public AttackEntry(String fromName, String toName, int numSoldiers) {
         this.fromName = fromName;
         this.toName = toName;

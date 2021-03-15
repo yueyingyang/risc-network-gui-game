@@ -1,5 +1,8 @@
 package edu.duke.ece651.risc.shared;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.beans.ConstructorProperties;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,6 +21,7 @@ public class BasicArmy implements Army {
      * @param ownerName   is the name of the owner of the army
      * @param numSoldiers is the number of soldiers in the force
      */
+    @ConstructorProperties({"ownerName", "numSoldiers"})
     public BasicArmy(String ownerName, int numSoldiers) {
         this.ownerName = ownerName;
         this.force = new ArrayList<>(Collections.nCopies(numSoldiers, new BasicSoldier()));

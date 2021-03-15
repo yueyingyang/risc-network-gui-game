@@ -1,5 +1,7 @@
 package edu.duke.ece651.risc.shared;
 
+import java.beans.ConstructorProperties;
+
 /**
  * A class represents a place entry
  */
@@ -13,6 +15,7 @@ public class PlaceEntry implements ActionEntry {
      * @param terrName    is the name of the territory
      * @param numSoldiers is the number of soldiers to place on the territory
      */
+    @ConstructorProperties({"terrName", "numSoldiers"})
     public PlaceEntry(String terrName, int numSoldiers) {
         this.terrName = terrName;
         this.numSoldiers = numSoldiers;
