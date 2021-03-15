@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
  * An interface represent an action entry
+ *
+ * Annotation added for jackson subtype deserialization: https://www.baeldung.com/jackson-inheritance
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({

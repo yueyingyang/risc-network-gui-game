@@ -13,6 +13,7 @@ public class MoveEntry implements ActionEntry {
      * @param fromName    is the name of the territory where the soldiers are from
      * @param toName      is the name of the territory where the soldiers go to
      * @param numSoldiers is the number of soldiers to move
+     * @annotation ConstructorProperties is for JSON deserialization
      */
     @ConstructorProperties({"fromName", "toName", "numSoldiers"})
     public MoveEntry(String fromName, String toName, int numSoldiers) {

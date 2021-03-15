@@ -14,6 +14,7 @@ public class PlaceEntry implements ActionEntry {
      *
      * @param terrName    is the name of the territory
      * @param numSoldiers is the number of soldiers to place on the territory
+     * @annotation ConstructorProperties is for JSON deserialization
      */
     @ConstructorProperties({"terrName", "numSoldiers"})
     public PlaceEntry(String terrName, int numSoldiers) {

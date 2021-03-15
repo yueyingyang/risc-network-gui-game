@@ -1,15 +1,14 @@
 package edu.duke.ece651.risc.shared;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import java.beans.ConstructorProperties;
 import java.util.*;
 
 /**
  * An class represents a territory
+ *
+ * Annotation JsonIdentityInfo is added for bidirectional serialization
  */
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
@@ -24,7 +23,7 @@ public class Territory {
     private Map<String, Army> attackerBuffer;
 
     /**
-     * Add for Jackson
+     * Add for Jackson deserialization
      */
     public Territory(){
 

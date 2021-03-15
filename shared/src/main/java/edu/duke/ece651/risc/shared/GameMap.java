@@ -8,6 +8,9 @@ import java.util.*;
 public class GameMap {
     private Map<String, Territory> territoryFinder;
 
+    /**
+     * Added for jackson deserialization
+     */
     public GameMap() {
     }
 

@@ -33,14 +33,7 @@ public class App {
   public void run() throws IOException {
     // login game: join an existed game / start a new game
     this.loginGame();
-    this.initPhase();
     this.endGame();
-  }
-
-  private void initPhase() {
-//    player.recvMap();
-//    List<ActionEntry> placeActions = player.placeArmy();
-//    player.sendMessage(placeActions);
   }
 
   public static void main(String[] args) throws IOException {

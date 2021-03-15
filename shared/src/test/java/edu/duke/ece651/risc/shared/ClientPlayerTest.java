@@ -90,22 +90,4 @@ class ClientPlayerTest {
     assertEquals("test_player", p.getName());
   }
 
-  @Test
-  void test_recv_map() throws JsonProcessingException {
-//
-//    ClientPlayer p = createClientPlayer("",
-//            serverOut,
-//            "",
-//            userOut);
-//
-////    List<PlaceEntry> listaction = objectMapper.readValue(pjson, new TypeReference<>(){});
-//
-//    String mapjson = objectMapper.writeValueAsString(map);
-//
-//
-//    GameMap mafter = objectMapper.readValue(mapjson, GameMap.class);
-//    map.getAllPlayerTerritories();
-//    assertEquals("", new MapView(map).display());
-
-  }
 }
