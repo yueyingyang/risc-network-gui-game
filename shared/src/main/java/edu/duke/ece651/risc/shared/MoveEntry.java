@@ -31,4 +31,31 @@ public class MoveEntry implements ActionEntry {
         fromTerr.removeSoldiersFromArmy(numSoldiers);
         toTerr.addSoldiersToArmy(numSoldiers);
     }
+
+    /**
+     * get the starting territory name
+     * 
+     * @return fromName is the name of starting territory
+     */
+    public String getFromName(){
+        return fromName;
+    }
+
+    /**
+     * get the destionation territory name
+     * 
+     * @return toName is the name of destionation territory
+     */
+    public String getToName(){
+        return toName;
+    }
+
+    /**
+     * get number of soliders
+     * 
+     * @return numSoldiers is the number of soliders
+     */
+    public int getNumSoliders(){
+        return numSoldiers;
+    }
 }
