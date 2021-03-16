@@ -39,4 +39,31 @@ public class AttackEntry implements ActionEntry {
         Army attacker = new BasicArmy(fromTerr.getOwnerName(), numSoldiers);
         toTerr.bufferAttacker(attacker);
     }
+
+    /**
+     * get the starting territory name
+     * 
+     * @return fromName is the name of starting territory
+     */
+    public String getFromName(){
+        return fromName;
+    }
+
+    /**
+     * get the destionation territory name
+     * 
+     * @return toName is the name of destionation territory
+     */
+    public String getToName(){
+        return toName;
+    }
+
+    /**
+     * get number of soliders
+     * 
+     * @return numSoldiers is the number of soliders
+     */
+    public int getNumSoliders(){
+        return numSoldiers;
+    }
 }
