@@ -101,8 +101,8 @@ class TerritoryTest {
 
         String ans = terr.resolveCombat(new Random(0));
         String expect = "On territory 1:\n" +
-                "Purple player(5 soldiers) defends Blue player(12 soldiers). Purple wins.\n" +
-                "Purple player(1 soldiers) defends Green player(6 soldiers). Green wins.\n";
+                "Purple player(5 soldiers) defends Blue player(12 soldiers). Purple player wins.\n" +
+                "Purple player(1 soldiers) defends Green player(6 soldiers). Green player wins.\n";
         assertEquals(expect, ans);
     }
 

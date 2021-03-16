@@ -190,7 +190,7 @@ public class Territory {
         for (Army attacker : attackerBuffer.values()) {
             displayCombatInfo(defender, attacker, temp);
             defender = defender.fight(attacker, myRandom);
-            temp.append(defender.getOwnerName()).append(" wins.\n");
+            temp.append(defender.getOwnerName()).append(" player wins.\n");
         }
         myArmy = defender;
         ownerName = myArmy.getOwnerName();
