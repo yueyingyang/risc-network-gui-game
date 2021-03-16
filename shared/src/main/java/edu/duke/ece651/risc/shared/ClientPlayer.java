@@ -151,7 +151,7 @@ public class ClientPlayer extends Player {
    */
   public void placementPhase() throws IOException {
     List<ActionEntry> placementList = new ArrayList<>();
-    GameMap m = this.recvMap();
+    GameMap m = this.parseMap(recvMessage());
     display(new MapView(m).displayMapShape());
     display("Here is the game map, and you have total units of " + this.recvMessage());
     Iterable<Territory> ts = m.getPlayerTerritories(name);
@@ -169,8 +169,7 @@ public class ClientPlayer extends Player {
    * @return a GameMap
    * @throws IOException if IO exception
    */
-  private GameMap recvMap() throws IOException {
-    String mapJSON = recvMessage();
+  private GameMap parseMap(String mapJSON) throws IOException {
     return (GameMap) serializer.deserialize(mapJSON, GameMap.class);
   }
 
@@ -179,11 +178,11 @@ public class ClientPlayer extends Player {
    *
    * @throws IOException if IO exception
    */
-  public void playOneTurn() throws IOException {
-    GameMap m = this.recvMap();
+  public void playOneTurn(String map) throws IOException {
+    GameMap m = this.parseMap(map);
     display("CURRENT GAME MAP");
     display(new MapView(m).display());
-    display("Hi here is your turn to place orders:\n" +
+    display("Hi, " + getName() + "! \nIt's your turn to place orders:\n" +
             "You can either move, attack, or commit for ending this order turn.\n" +
             "Here is the format example:\n" +
             "m a b 1 (means  (m)ove 1 unit from territory a to territory b)\n" +
@@ -195,17 +194,32 @@ public class ClientPlayer extends Player {
       // server-side check and update
       sendMessage(serializer.serialize(a));
       String serverValidationResult = recvMessage();
+      display(serverValidationResult);
       if (!serverValidationResult.equals(Constant.VALID_ACTION)) {
-        display(serverValidationResult);
         continue;
       }
       try {
         a.apply(m, null);
-        display(Constant.VALID_ACTION);
+        display(new MapView(m).display());
       } catch (IllegalArgumentException e) {
         display(e.getMessage());
       }
     }
     sendMessage(Constant.ORDER_COMMIT);
+  }
+
+  public void watchGame() throws IOException {
+    userOut.println("You start to watch the game:");
+    while (true) {
+      String recv = this.recvMessage();
+      if (recv.equals(Constant.GAME_OVER)) {
+        display(Constant.GAME_OVER);
+        display(recvMessage());
+        break;
+      }
+      display("Current game status:");
+      GameMap m = this.parseMap(recv);
+      display(new MapView(m).display());
+    }
   }
 }

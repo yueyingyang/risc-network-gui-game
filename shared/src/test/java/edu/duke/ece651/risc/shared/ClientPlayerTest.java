@@ -135,12 +135,12 @@ class ClientPlayerTest {
     }
     Serializer s = new JSONSerializer();
     String mapjson = s.serialize(map);
-    ClientPlayer p = createClientPlayer(mapjson + "\n" + Constant.VALID_ACTION + "\n" + "Action is invalide\n",
+    ClientPlayer p = createClientPlayer(Constant.VALID_ACTION + "\n" + "Action is invalide\n",
             serverOut,
             "m 0 1 1\nm 0 1 1\ncommit\n",
             userOut);
     p.setName("player1");
-    p.playOneTurn();
+    p.playOneTurn(mapjson + "\n");
     assertEquals("{\"type\":\"move\",\"fromName\":\"0\",\"toName\":\"1\",\"numSoldiers\":1}\n" +
             "{\"type\":\"move\",\"fromName\":\"0\",\"toName\":\"1\",\"numSoldiers\":1}\n" +
             Constant.ORDER_COMMIT + "\n", serverOut.toString());

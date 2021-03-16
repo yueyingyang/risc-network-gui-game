@@ -42,14 +42,28 @@ public class App {
   }
 
   private void attackPhase() throws IOException {
+    String mapOrGameOver = player.recvMessage();
     while (true) {
-      player.playOneTurn();
+      player.playOneTurn(mapOrGameOver);
       player.display("Please wait for combat resolution...");
       // recv combat result
       String turnRes = player.recvMessage();
-      if (turnRes.equals(Constant.LOSE_GAME) || turnRes.equals(Constant.GAME_OVER)) {
+      if (turnRes.equals(Constant.LOSE_GAME)) {
         player.display(turnRes);
+        player.watchGame();
         // can choose watch or disconnect
+        break;
+      }
+//      if (turnRes.equals(Constant.GAME_OVER)) {
+//        // print winner
+//        player.display(turnRes);
+//        player.display(player.recvMessage());
+//        break;
+//      }
+      mapOrGameOver = player.recvMessage();
+      if (mapOrGameOver.equals(Constant.GAME_OVER)) {
+        player.display(mapOrGameOver);
+        player.display(player.recvMessage());
         break;
       }
     }

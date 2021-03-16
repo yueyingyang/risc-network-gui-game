@@ -70,13 +70,21 @@ class JSONSerializerTest {
     p.add(new MoveEntry("0", "1", 1));
     // test serializer
     JSONSerializer s = new JSONSerializer();
-    String listJSON = s.getOm().writerFor(new TypeReference<List<ActionEntry>>() {}).writeValueAsString(p);
+    String listJSON = s.getOm().writerFor(new TypeReference<List<ActionEntry>>() {
+    }).writeValueAsString(p);
     V1MapFactory v1f = new V1MapFactory();
     GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 2);
-    Collection<ActionEntry> pd =  s.getOm().readValue(listJSON, new TypeReference<Collection<ActionEntry>>() {});
-    for(ActionEntry a : pd){
+    Collection<ActionEntry> pd = s.getOm().readValue(listJSON, new TypeReference<Collection<ActionEntry>>() {
+    });
+    for (ActionEntry a : pd) {
       a.apply(map, null);
     }
     assertDoesNotThrow(() -> new MapView(map).display());
+  }
+
+  @Test
+  void test_serialize_string() {
+    JSONSerializer s = new JSONSerializer();
+    assertEquals(Constant.NO_GAME_AVAILABLE_INFO, s.serialize(Constant.NO_GAME_AVAILABLE_INFO));
   }
 }
