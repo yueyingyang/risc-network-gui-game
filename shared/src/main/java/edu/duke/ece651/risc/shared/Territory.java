@@ -7,7 +7,7 @@ import java.util.*;
 
 /**
  * An class represents a territory
- *
+ * <p>
  * Annotation JsonIdentityInfo is added for bidirectional serialization
  */
 @JsonIdentityInfo(
@@ -25,9 +25,10 @@ public class Territory {
     /**
      * Add for Jackson deserialization
      */
-    public Territory(){
+    public Territory() {
 
     }
+
     /**
      * Create a territory object
      *
@@ -180,14 +181,34 @@ public class Territory {
      * Resolve combat on the territory
      *
      * @param myRandom is the random object set by the game
+     * @return the information of the combat resolve process
      */
-    public void resolveCombat(Random myRandom) {
+    public String resolveCombat(Random myRandom) {
+        StringBuilder temp = new StringBuilder();
+        temp.append("On territory ").append(this.getName()).append(":\n");
         Army defender = myArmy;
         for (Army attacker : attackerBuffer.values()) {
+            displayCombatInfo(defender, attacker, temp);
             defender = defender.fight(attacker, myRandom);
+            temp.append(defender.getOwnerName()).append(" wins.\n");
         }
         myArmy = defender;
         ownerName = myArmy.getOwnerName();
+        return temp.toString();
+    }
+
+    /**
+     * Display the information of one combat
+     *
+     * @param defender the defender in the combat
+     * @param attacker the attacker in the combat
+     * @param temp     is the string builder
+     */
+    protected void displayCombatInfo(Army defender, Army attacker, StringBuilder temp) {
+        temp.append(defender.getOwnerName()).append(" player")
+                .append("(").append(defender.getNumSoldiers()).append(" soldiers) ")
+                .append("defends ").append(attacker.getOwnerName()).append(" player")
+                .append("(").append(attacker.getNumSoldiers()).append(" soldiers). ");
     }
 
     /**

@@ -86,21 +86,24 @@ class TerritoryTest {
 
     @Test
     public void test_resolveCombat() {
-        Territory terr = new Territory("NANJING");
-        Army myArmy = new BasicArmy("LiLei", 5);
+        Territory terr = new Territory("1");
+        Army myArmy = new BasicArmy("Purple", 5);
         terr.setMyArmy(myArmy);
 
-        Army attacker0 = new BasicArmy("HanMeiMei", 4);
-        Army attacker1 = new BasicArmy("Kitty", 6);
-        Army attacker2 = new BasicArmy("HanMeiMei", 8);
+        Army attacker0 = new BasicArmy("Blue", 4);
+        Army attacker1 = new BasicArmy("Green", 6);
+        Army attacker2 = new BasicArmy("Blue", 8);
 
         Army[] attackers = {attacker0, attacker1, attacker2};
         for (Army attacker : attackers) {
             terr.bufferAttacker(attacker);
         }
 
-        terr.resolveCombat(new Random(0));
-        assertEquals("Kitty", terr.getOwnerName());
+        String ans = terr.resolveCombat(new Random(0));
+        String expect = "On territory 1:\n" +
+                "Purple player(5 soldiers) defends Blue player(12 soldiers). Purple wins.\n" +
+                "Purple player(1 soldiers) defends Green player(6 soldiers). Green wins.\n";
+        assertEquals(expect, ans);
     }
 
 }
