@@ -2,16 +2,19 @@ package edu.duke.ece651.risc.shared;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Collection;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class JSONSerializerTest {
   @Test
@@ -59,6 +62,30 @@ class JSONSerializerTest {
     assertDoesNotThrow(() -> new MapView(map).display());
   }
 
+  @Test
+  void test_serialize_and_de_placement_list() throws JsonProcessingException {
+    List<ActionEntry> p = new ArrayList<>();
+    p.add(new PlaceEntry("0", 2));
+    p.add(new PlaceEntry("1", 2));
+    p.add(new AttackEntry("0", "1", 1));
+    p.add(new MoveEntry("0", "1", 1));
+    // test serializer
+    JSONSerializer s = new JSONSerializer();
+    String listJSON = s.getOm().writerFor(new TypeReference<List<ActionEntry>>() {
+    }).writeValueAsString(p);
+    V1MapFactory v1f = new V1MapFactory();
+    GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 2);
+    Collection<ActionEntry> pd = s.getOm().readValue(listJSON, new TypeReference<Collection<ActionEntry>>() {
+    });
+    for (ActionEntry a : pd) {
+      a.apply(map, null);
+    }
+    assertDoesNotThrow(() -> new MapView(map).display());
+  }
 
-
+  @Test
+  void test_serialize_string() {
+    JSONSerializer s = new JSONSerializer();
+    assertEquals(Constant.NO_GAME_AVAILABLE_INFO, s.serialize(Constant.NO_GAME_AVAILABLE_INFO));
+  }
 }
