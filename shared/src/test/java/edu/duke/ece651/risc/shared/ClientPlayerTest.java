@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ClientPlayerTest {
@@ -73,7 +75,7 @@ class ClientPlayerTest {
     assertEquals(serverIn + "\n", userOut.toString());
   }
 
-  private ClientPlayer createClientPlayer(String serverIn, ByteArrayOutputStream serverOut, String userIn, ByteArrayOutputStream userOut) {
+  public ClientPlayer createClientPlayer(String serverIn, ByteArrayOutputStream serverOut, String userIn, ByteArrayOutputStream userOut) {
     return new ClientPlayer(new BufferedReader(new StringReader(serverIn)),
             new PrintWriter(serverOut, true),
             new BufferedReader(new StringReader(userIn)),
@@ -88,6 +90,60 @@ class ClientPlayerTest {
             userOut);
     p.setName("test_player");
     assertEquals("test_player", p.getName());
+  }
+
+  @Test
+  void test_read_one_action() throws IOException {
+    String prompt = "Please enter an action(format: type from to):";
+    String userIn = "a 1 2 3\ne\na 1 2 3\n";
+    ClientPlayer p = createClientPlayer("",
+            serverOut,
+            userIn,
+            userOut);
+    assertThat(p.readOneActionEntry(prompt), instanceOf(ActionEntry.class));
+    assertEquals("Please enter an action(format: type from to):\n", userOut.toString());
+    userOut.reset();
+    p.readOneActionEntry(prompt);
+    assertEquals("Please enter an action(format: type from to):\n" +
+            "Type letter need to be (a)ttack, (m)ove, but now is e\n", userOut.toString());
+  }
+
+  @Test
+  void test_placement() throws IOException {
+    V1MapFactory v1f = new V1MapFactory();
+    GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 2);
+    Serializer s = new JSONSerializer();
+    String result = s.serialize(map);
+//    String prompt = "Please enter an action(format: type from to):";
+//    String userIn = "a 1 2 3\ne\na 1 2 3\n";
+    ClientPlayer p = createClientPlayer(result + "\n" + 4,
+            serverOut,
+            "1\n3\n",
+            userOut);
+    p.setName("player1");
+    p.placementPhase();
+    assertEquals("[{\"type\":\"place\",\"terrName\":\"0\",\"numSoldiers\":1},{\"type\":\"place\",\"terrName\":\"1\",\"numSoldiers\":3}]\n", serverOut.toString());
+  }
+
+  @Test
+  void test_play_one_turn() throws IOException {
+    V1MapFactory v1f = new V1MapFactory();
+    GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 2);
+    List<ActionEntry> pl = Arrays.asList(new PlaceEntry("0", 2), new PlaceEntry("1", 2));
+    for (ActionEntry ae : pl) {
+      ae.apply(map, null);
+    }
+    Serializer s = new JSONSerializer();
+    String mapjson = s.serialize(map);
+    ClientPlayer p = createClientPlayer(Constant.VALID_ACTION + "\n" + "Action is invalide\n",
+            serverOut,
+            "m 0 1 1\nm 0 1 1\ncommit\n",
+            userOut);
+    p.setName("player1");
+    p.playOneTurn(mapjson + "\n");
+    assertEquals("{\"type\":\"move\",\"fromName\":\"0\",\"toName\":\"1\",\"numSoldiers\":1}\n" +
+            "{\"type\":\"move\",\"fromName\":\"0\",\"toName\":\"1\",\"numSoldiers\":1}\n" +
+            Constant.ORDER_COMMIT + "\n", serverOut.toString());
   }
 
 }
