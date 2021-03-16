@@ -1,7 +1,6 @@
 package edu.duke.ece651.risc.shared;
 
 import java.beans.ConstructorProperties;
-
 /**
  * A class represents a place entry
  */

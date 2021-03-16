@@ -5,6 +5,7 @@ package edu.duke.ece651.risc.server;
 
 import edu.duke.ece651.risc.shared.ServerPlayer;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 
@@ -79,6 +80,7 @@ class AppTest {
     assertEquals(expected, bytes.toString());
   }
 
+  @Disabled
   @Test
   void test_handle_incoming_request_j() throws IOException {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -98,6 +100,7 @@ class AppTest {
     assertEquals(expected, bytes.toString());
   }
 
+  @Disabled
   @Test
   void test_handle_incoming_request_no_available() throws IOException {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -115,6 +118,7 @@ class AppTest {
     assertEquals(expected, bytes.toString());
   }
 
+  @Disabled
   @Test
   void test_handle_incoming_request_s() throws IOException {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
