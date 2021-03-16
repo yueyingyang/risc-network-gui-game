@@ -88,19 +88,17 @@ public class App {
         if (tryAddPlayerErrorMsg == null) {
           player.sendMessage(Constant.SUCCESS_NUMBER_CHOOSED);
           player.sendMessage(player.getName()); // send name to client player
-          break;
+          return games.get(chosenGame);
         } else {
           // in multi-thread env,
           // it's possible to have another user fill in the selected game before current user
           // not figure out a good way to test it tho
           player.sendMessage(tryAddPlayerErrorMsg);
         }
-        return games.get(chosenGame);
       } catch (NumberFormatException e) {
         player.sendMessage(Constant.INVALID_NUMBER);
       }
     }
-    return null;
   }
 
   public String printAvailableGameList() {

@@ -21,6 +21,7 @@ public class Game {
    */
   private final int playerNum;
   private final ArrayList<Player> players;
+  private ArrayList<Player> StillInplayers;
   private final HashSet<String> colorSet;
   private GameMap gameMap;
   private Checker myChecker;
@@ -35,6 +36,7 @@ public class Game {
   public Game(int playerNum) {
     this.playerNum = playerNum;
     this.players = new ArrayList<>();
+    this.StillInplayers = new ArrayList<>();
     this.colorSet = new HashSet<>();
     makeColors();
     this.myChecker = null;
@@ -129,7 +131,6 @@ public class Game {
    */
   public void sendToOne(Object o, Player p){
     p.sendMessage(js.serialize(o));
-    System.out.println(js.serialize(o));
   }
 
   /**
@@ -142,6 +143,15 @@ public class Game {
     }
   }
   
+  public void sendString(String s, Player p){
+    p.sendMessage(s);
+  }
+
+  public void sendStringToAll(String s){
+    for(Player player:players){
+      sendString(s,player);
+    }
+  }
 
   /**
    * place soldiers on the map according to the all players' input
@@ -172,16 +182,27 @@ public class Game {
 
           //need to catch exception here if fails
           action.apply(gameMap, myChecker);
-          sendToOne(Constant.VALID_ACTION, player);
+
+          MapView mv = new MapView(gameMap);
+          System.out.println(mv.display());
+
+          sendString(Constant.VALID_ACTION, player);
         }
+      }
+      else{
+        continue;
       }  
     }
     for(Territory t : gameMap.getAllTerritories()){
       t.resolveCombat(myRandom);
     } 
-    for(Player player:players){
-      if(checkLost(player)==true){sendToOne(Constant.LOSE_GAME,player);}
-      else{sendToOne(Constant.CONTINUE_PLAYING, player);}
+    ArrayList<Player> temp = new ArrayList<Player>(StillInplayers);
+    for(Player player:temp){
+      if(checkLost(player)==true){
+        sendString(Constant.LOSE_GAME,player);
+        StillInplayers.remove(player);
+      }
+      else{sendString(Constant.CONTINUE_PLAYING, player);}
     }    
     //add 1 soldier to all territories
     for(Territory t:gameMap.getAllTerritories()){
@@ -197,7 +218,7 @@ public class Game {
    * @return false if still has territories
    */
   Boolean checkLost(Player player){
-    if(((ArrayList<Territory>)gameMap.getPlayerTerritories(player.getName())).size()==0){
+    if(!gameMap.getPlayerTerritories(player.getName()).iterator().hasNext()){
       return true;
     }
     return false;
@@ -221,19 +242,20 @@ public class Game {
  */
   public void runGame()throws IOException{
     if(players.size()==playerNum){
+      StillInplayers = new ArrayList<>(players);
       int TerritoryPerPlayer = 3;//assume that one player has three territories
-      int totalSoldiers = 12;//assume that each player have 12 soldiers in total 
+      int totalSoldiers = 3;//assume that each player have 12 soldiers in total 
       makeMap(TerritoryPerPlayer);
       assignTerritories(TerritoryPerPlayer);
       sendToAll(this.gameMap);
-      sendToAll(String.valueOf(totalSoldiers));
+      sendStringToAll(String.valueOf(totalSoldiers));
       placementPhase();
       while(true){
         this.playOneTurn();
         if(checkWin()==true){
           String winner = this.gameMap.getAllPlayerTerritories().keySet().iterator().next();
+          sendStringToAll(Constant.GAME_OVER);
           sendToAll("The winner is "+winner);
-          sendToAll(Constant.GAME_OVER);
           break;
         }
       }
