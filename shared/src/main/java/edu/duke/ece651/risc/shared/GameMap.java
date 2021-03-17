@@ -28,33 +28,12 @@ public class GameMap {
         for (List<String> connection : connections) {
             Territory start = territoryFinder.get(connection.get(0));
             Territory end = territoryFinder.get(connection.get(1));
-            if(start==end) continue;
+
             start.addNeighbour(end);
             end.addNeighbour(start);
         }
     }
-/*
-    public void setOwnerName(List<String> playerNames){
-        int numTerritories=territoryFinder.size();
-        //assert(numTerritories%playerNames==0);
-        boolean[] visited=new boolean[numTerritories];
-        Random rand=new Random();
-        List<Territory> territories=new ArrayList<>();
-        for(String terrName:territoryFinder.keySet()){
-            territories.add(territoryFinder.get(terrName));
-        }
-        for(String name:playerNames){
-            int count=0;
-            while(count<numTerritories/playerNames.size()){
-                int i=rand.nextInt(numTerritories);
-                if(visited[i]) continue;
-                visited[i]=true;
-                territories.get(i).setOwnerName(name);
-                count++;
-            }
-        }
-    }
-*/
+
     /**
      * find a terrority with its name
      *
@@ -74,7 +53,7 @@ public class GameMap {
     public Iterable<Territory> getPlayerTerritories(String playerName) {
         Set<Territory> territorySet = new HashSet<>();
         for (String name : territoryFinder.keySet()) {
-            if (playerName.equals(territoryFinder.get(name).getOwnerName())) {
+            if (territoryFinder.get(name).getOwnerName().equals(playerName)) {
                 territorySet.add(territoryFinder.get(name));
             }
         }
