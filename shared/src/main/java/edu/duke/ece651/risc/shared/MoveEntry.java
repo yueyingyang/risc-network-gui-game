@@ -2,24 +2,19 @@ package edu.duke.ece651.risc.shared;
 
 import java.beans.ConstructorProperties;
 
-public class MoveEntry implements ActionEntry {
-    private String fromName;
-    private String toName;
-    private int numSoldiers;
+public class MoveEntry extends BasicEntry {
 
     /**
      * Construct a move entry
      *
-     * @param fromName    is the name of the territory where the soldiers are from
-     * @param toName      is the name of the territory where the soldiers go to
-     * @param numSoldiers is the number of soldiers to move
+     * @param fromName    is the name of the from-territory
+     * @param toName      is the name of the to-territory
+     * @param numSoldiers is the number of soldiers
      * @annotation ConstructorProperties is for JSON deserialization
      */
     @ConstructorProperties({"fromName", "toName", "numSoldiers"})
     public MoveEntry(String fromName, String toName, int numSoldiers) {
-        this.fromName = fromName;
-        this.toName = toName;
-        this.numSoldiers = numSoldiers;
+        super(fromName, toName, numSoldiers);
     }
 
     /**

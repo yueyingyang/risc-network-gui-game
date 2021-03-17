@@ -1,24 +1,22 @@
 package edu.duke.ece651.risc.shared;
 
 import java.beans.ConstructorProperties;
+
 /**
  * A class represents a place entry
  */
-public class PlaceEntry implements ActionEntry {
-    private String terrName;
-    private int numSoldiers;
+public class PlaceEntry extends BasicEntry {
 
     /**
      * Construct a placeEntry
      *
-     * @param terrName    is the name of the territory
-     * @param numSoldiers is the number of soldiers to place on the territory
+     * @param toName      is the name of the to-territory
+     * @param numSoldiers is the number of soldiers
      * @annotation ConstructorProperties is for JSON deserialization
      */
-    @ConstructorProperties({"terrName", "numSoldiers"})
-    public PlaceEntry(String terrName, int numSoldiers) {
-        this.terrName = terrName;
-        this.numSoldiers = numSoldiers;
+    @ConstructorProperties({"toName", "numSoldiers"})
+    public PlaceEntry(String toName, int numSoldiers) {
+        super(null, toName, numSoldiers);
     }
 
     /**
@@ -29,7 +27,7 @@ public class PlaceEntry implements ActionEntry {
      */
     @Override
     public void apply(GameMap myMap, Checker myChecker) {
-        Territory terr = myMap.getTerritory(terrName);
+        Territory terr = myMap.getTerritory(toName);
         Army myArmy = new BasicArmy(terr.getOwnerName(), numSoldiers);
         terr.setMyArmy(myArmy);
     }
