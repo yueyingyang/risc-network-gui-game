@@ -105,9 +105,9 @@ public class ClientPlayer extends Player {
     display("Here is the game map, and you have total units of " + remainingUnit);
     Iterable<Territory> ts = m.getPlayerTerritories(name);
     for (Territory t : ts) {
-      int num = readUnitNumber("How many units(" + remainingUnit + ") you want to place on territory " + t.getName() + "?");
+      int num = readUnitNumber("How many units(remaining: " + remainingUnit + ") you want to place on territory " + t.getName() + "?");
       while (num > remainingUnit) {
-        num = readUnitNumber("How many units(" + remainingUnit + ") you want to place on territory " + t.getName() + "?");
+        num = readUnitNumber(num + " exceeds your remaining limit(" + remainingUnit + ")!\n");
       }
       remainingUnit -= num;
       placementList.add(new PlaceEntry(t.getName(), num));
@@ -168,7 +168,9 @@ public class ClientPlayer extends Player {
     }
     if (selection.equals("E")) {
       sendMessage(Constant.DISCONNECT_GAME);
+      return;
     }
+    // chose "C"
     sendMessage(Constant.WATCH_GAME);
     display("You start to watch the game:");
     while (true) {
@@ -178,9 +180,9 @@ public class ClientPlayer extends Player {
         display(recvMessage());
         break;
       }
-//      display("Current game status:");
-//      GameMap m = this.parseMap(recv);
-//      display(new MapView(m).display());
+      display("Current game status:");
+      GameMap m = this.parseMap(recv);
+      display(new MapView(m).display());
       displayCombatRes();
     }
   }
@@ -249,12 +251,12 @@ public class ClientPlayer extends Player {
     if (actionType.equals("m")) {
       String fromTerritory = readTerritoryName("[Move] Which territory want to move from?");
       String toTerritory = readTerritoryName("[Move] Which territory want to move to?");
-      Integer unitNum = readUnitNumber("[Move] How many soldiers you want move?");
+      Integer unitNum = readUnitNumber("[Move] How many soldiers you want move from " + fromTerritory + "to " + toTerritory + "?");
       return new MoveEntry(fromTerritory, toTerritory, unitNum);
     } else if (actionType.equals("a")) {
       String fromTerritory = readTerritoryName("[Attack] From which territory you want to send soldiers out?");
       String toTerritory = readTerritoryName("[Attack] Which territory you want to attack?");
-      Integer unitNum = readUnitNumber("[Attack] How many soldiers you want to use from xxx?");
+      Integer unitNum = readUnitNumber("[Attack] How many soldiers you want to use from " + toTerritory + "?");
       return new AttackEntry(fromTerritory, toTerritory, unitNum);
     } else {
       return null;

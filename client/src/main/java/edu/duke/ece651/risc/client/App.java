@@ -53,10 +53,12 @@ public class App {
       String turnRes = player.recvMessage();
       if (turnRes.equals(Constant.LOSE_GAME)) {
         player.display(turnRes);
-        // can choose watch or disconnect
-        player.watchGame("You can either \n" +
-                "E Exit this game\n" +
-                "C Continue to watch game\n");
+        if(player.recvMessage().equals(Constant.CONTINUE_PLAYING)){
+          // can choose watch or disconnect
+          player.watchGame("You can either \n" +
+                  "E Exit this game\n" +
+                  "C Continue to watch game\n");
+        }
         break;
       }
 
@@ -64,10 +66,11 @@ public class App {
       mapOrGameOver = player.recvMessage();
       if (mapOrGameOver.equals(Constant.GAME_OVER)) {
         player.display(Constant.GAME_OVER);
-        player.display(player.recvMessage());
         break;
       }
     }
+    // display winner
+    player.display(player.recvMessage());
   }
 
   private void placementPhase() throws IOException {
