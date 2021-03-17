@@ -265,16 +265,6 @@ public class ClientPlayer extends Player {
   }
 
   /**
-   * Send the serialized object, currently is sending out the JSON string
-   *
-   * @param o is the object to be serialize and send
-   */
-  private void sendObject(Object o) {
-    sendMessage(serializer.serialize(o));
-  }
-
-
-  /**
    * Receive a string and parse into game map
    *
    * @return a GameMap
