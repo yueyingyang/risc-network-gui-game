@@ -60,7 +60,7 @@ class AppTest {
   void test_print_available_gameList() throws IOException {
     Mockito.when(player.readGameSize()).thenReturn(3);
     app.startNewGame(player);
-    assertEquals("The available games here are: 0 ", app.printAvailableGameList());
+    assertEquals("The available games here are: 0 ", app.AvailableGameList());
   }
 
   @Test

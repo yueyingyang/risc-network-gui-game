@@ -35,7 +35,7 @@ public class JSONSerializer implements Serializer {
    */
   @Override
   public String serialize(Object o) {
-    if(o.getClass() == String.class) return (String) o;
+    //if(o.getClass() == String.class) return (String) o;
     String res = null;
     try {
       res = om.writeValueAsString(o);
