@@ -184,6 +184,9 @@ public class Territory {
      * @return the information of the combat resolve process
      */
     public String resolveCombat(Random myRandom) {
+        if (attackerBuffer.size() == 0) {
+            return "";
+        }
         StringBuilder temp = new StringBuilder();
         temp.append("On territory ").append(this.getName()).append(":\n");
         Army defender = myArmy;
@@ -194,6 +197,7 @@ public class Territory {
         }
         myArmy = defender;
         ownerName = myArmy.getOwnerName();
+        attackerBuffer = new HashMap<>();
         return temp.toString();
     }
 
@@ -216,8 +220,13 @@ public class Territory {
      *
      * @param name is the name of the attacker owner
      * @return the number of soldiers in the attacker
+     * or -1 if the attacker does not exist
      */
     public int getNumSoldiersInAttacker(String name) {
-        return attackerBuffer.get(name).getNumSoldiers();
+        Army attacker = attackerBuffer.get(name);
+        if (attacker == null) {
+            return -1;
+        }
+        return attacker.getNumSoldiers();
     }
 }
