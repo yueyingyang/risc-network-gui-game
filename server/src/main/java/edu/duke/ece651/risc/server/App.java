@@ -54,6 +54,7 @@ public class App {
    *
    * @param player is the player needs to login
    * @throws IOException if R/W exception
+   * @return the game that just starts
    */
   public Game startNewGame(ServerPlayer player) throws IOException {
     Game newGame = new Game(player.readGameSize());
@@ -71,10 +72,11 @@ public class App {
    *
    * @param player is the player needs to login
    * @throws IOException if R/W exception
+   * @return the game that the player just joins
    */
   public Game joinExistingGame(Player player) throws IOException {
     // send the available games to user to choose from
-    String available = printAvailableGameList();
+    String available = AvailableGameList();
     player.sendMessage(available);
     // wait util the user give a valid game number
     while (true) {
@@ -101,12 +103,15 @@ public class App {
     }
   }
 
-  public String printAvailableGameList() {
+  /**
+   * 
+   * @return
+   */
+  public String AvailableGameList() {
     StringBuilder sb = new StringBuilder(Constant.AVAILABLE_LIST_INFO);
     List<Game> availableGames = this.getAvailableGames();
     for (Game availableGame : availableGames) {
-      sb.append(games.indexOf(availableGame));
-      sb.append(" ");
+      sb.append("Game ID: " + games.indexOf(availableGame)+" ");
     }
     return sb.toString();
   }
@@ -140,15 +145,16 @@ public class App {
       player.sendMessage(Constant.NO_GAME_AVAILABLE_INFO);
       Game g = startNewGame(player);
       g.runGame();
-      return;
     }
-    String action = player.readActionType();
-    if (action.equals("s")) {
-      Game g = startNewGame(player);
-      g.runGame();
-    } else if (action.equals("j")) {
-      Game g = joinExistingGame(player);
-      g.runGame();
+    else{
+      String action = player.readActionType();
+      if (action.equals("s")) {
+        Game g = startNewGame(player);
+        g.runGame();
+      } else if (action.equals("j")) {
+        Game g = joinExistingGame(player);
+        g.runGame();
+      }
     }
   }
 

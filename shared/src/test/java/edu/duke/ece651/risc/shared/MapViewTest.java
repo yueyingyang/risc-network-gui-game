@@ -53,4 +53,26 @@ public class MapViewTest {
         assertEquals(expectedEmptyMap,view.displayMapShape());
     }
 
+    @Test
+    void display_valid_neigh(){
+        V1MapFactory f1 = new V1MapFactory();
+        List<String> playerNames = new ArrayList<>();
+        playerNames.add("John");
+        playerNames.add("Tom");
+        GameMap map = f1.createMap(playerNames, 1);
+
+        for (String playerName : map.getAllPlayerTerritories().keySet()) {
+            for (Territory t : map.getPlayerTerritories(playerName)) {
+                t.setMyArmy(new BasicArmy(playerName, 1));
+            }
+        }
+        assertEquals("Tom player:\n" +
+                "-------------\n" +
+                "1 units in 1 (next to: 0)\n" +
+                "\n" +
+                "John player:\n" +
+                "-------------\n" +
+                "1 units in 0 (next to: 1)\n" +
+                "\n", new MapView(map).display());
+    }
 }

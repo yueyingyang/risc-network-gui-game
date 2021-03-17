@@ -9,7 +9,7 @@ public abstract class Player {
   // IO stream with game server
   protected BufferedReader in;
   protected PrintWriter out;
-  protected String name;
+  protected String name; 
 
   /**
    * Set name on players
@@ -31,6 +31,11 @@ public abstract class Player {
     this.out = out;
   }
 
+  /**
+   * get the player's name
+   * 
+   * @return the player's name
+   */
   public String getName() {
     return this.name;
   }
@@ -52,5 +57,15 @@ public abstract class Player {
    */
   public String recvMessage() throws IOException {
     return in.readLine();
+  }
+
+  /**
+   * Write to the output stream
+   * 
+   * @param o is the object to send
+   */
+  public void sendObject(Object o){
+    JSONSerializer js=new JSONSerializer();
+    out.println(js.serialize(o));
   }
 }

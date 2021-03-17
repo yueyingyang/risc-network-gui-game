@@ -3,12 +3,11 @@ package edu.duke.ece651.risc.shared;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 
 /**
  * ClientPlayer: Used on the client-side game
@@ -20,7 +19,6 @@ public class ClientPlayer extends Player {
   protected final BufferedReader userIn;
   protected final PrintStream userOut;
   protected final Map<String, Function<String, ActionEntry>> actionCreationFns;
-  protected final ActionParser parser;
   protected final JSONSerializer serializer;
 
   /**
@@ -35,15 +33,7 @@ public class ClientPlayer extends Player {
     this.userIn = userIn;
     this.userOut = userOut;
     actionCreationFns = new HashMap<>();
-    parser = new ActionParser();
-    setupActionCreationFns();
     serializer = new JSONSerializer();
-  }
-
-  private void setupActionCreationFns() {
-    actionCreationFns.put("a", parser::makeAttackEntry);
-    actionCreationFns.put("p", parser::makePlaceEntry);
-    actionCreationFns.put("m", parser::makeMoveEntry);
   }
 
   /**
@@ -99,49 +89,7 @@ public class ClientPlayer extends Player {
     this.typeUntilCorrect(Constant.SUCCESS_NUMBER_CHOOSED);
     String name = this.recvMessage();
     this.setName(name);
-  }
-
-  /**
-   * Prompt to user to input action entry
-   *
-   * @param prompt is the prompt to instruct
-   * @return is a ActionEntry object
-   * @throws IOException if R/W exception
-   */
-  public ActionEntry readOneActionEntry(String prompt) throws IOException {
-    userOut.println(prompt);
-    ActionEntry ae = null;
-    String line = userIn.readLine();
-    if (line.contains("commit")) return null;
-    try {
-      ae = parseActionEntry(line);
-    } catch (IllegalArgumentException e) {
-      userOut.println(e.getMessage());
-      line = userIn.readLine();
-      parseActionEntry(line);
-    }
-    return ae;
-  }
-
-  /**
-   * Call parser to parse a string into Action entry object
-   *
-   * @param line is the string to be parse
-   * @return ActionEntry
-   * @throws IOException if io exception
-   */
-  private ActionEntry parseActionEntry(String line) throws IOException {
-    /*
-      format: Type from To Unit
-     */
-
-    // split by space
-    String type = line.split("\\s+")[0].toLowerCase(Locale.ROOT);
-    if (!actionCreationFns.containsKey(type)) {
-      throw new IllegalArgumentException("Type letter need to be (a)ttack, (m)ove, but now is " + type);
-    }
-    String actionEntryPart = line.split("\\s", 2)[1];
-    return actionCreationFns.get(type).apply(actionEntryPart);
+    display("You login as " + name + " successfully.");
   }
 
   /**
@@ -153,24 +101,19 @@ public class ClientPlayer extends Player {
     List<ActionEntry> placementList = new ArrayList<>();
     GameMap m = this.parseMap(recvMessage());
     display(new MapView(m).displayMapShape());
-    display("Here is the game map, and you have total units of " + this.recvMessage());
+    int remainingUnit = Integer.parseInt(this.recvMessage());
+    display("Here is the game map, and you have total units of " + remainingUnit);
     Iterable<Territory> ts = m.getPlayerTerritories(name);
     for (Territory t : ts) {
-      display("How many units you want to place on territory " + t.getName() + "?");
-      placementList.add(parseActionEntry("p " + t.getName() + " " + readFromUser()));
+      int num = readUnitNumber("How many units(remaining: " + remainingUnit + ") you want to place on territory " + t.getName() + "?");
+      while (num > remainingUnit) {
+        num = readUnitNumber(num + " exceeds your remaining limit(" + remainingUnit + ")!\n");
+      }
+      remainingUnit -= num;
+      placementList.add(new PlaceEntry(t.getName(), num));
     }
     sendMessage(serializer.getOm().writerFor(new TypeReference<List<ActionEntry>>() {
     }).writeValueAsString(placementList));
-  }
-
-  /**
-   * Receive a string and parse into gamemap
-   *
-   * @return a GameMap
-   * @throws IOException if IO exception
-   */
-  private GameMap parseMap(String mapJSON) throws IOException {
-    return (GameMap) serializer.deserialize(mapJSON, GameMap.class);
   }
 
   /**
@@ -180,36 +123,57 @@ public class ClientPlayer extends Player {
    */
   public void playOneTurn(String map) throws IOException {
     GameMap m = this.parseMap(map);
-    display("CURRENT GAME MAP");
+    display("Hi, " + this.getName() + "!\n" +
+            "Here is current game map:");
     display(new MapView(m).display());
-    display("Hi, " + getName() + "! \nIt's your turn to place orders:\n" +
-            "You can either move, attack, or commit for ending this order turn.\n" +
-            "Here is the format example:\n" +
-            "m a b 1 (means  (m)ove 1 unit from territory a to territory b)\n" +
-            "a a b 1 (means  (a)ttack territory b using 1 unit from territory a)\n" +
-            "commit  (means  you finish placing orders in this turn)\n");
     while (true) {
-      ActionEntry a = readOneActionEntry("Please enter order(1 line at a time):");
-      if (a == null) break;
+      display("Possible actions options you can choose:\n" +
+              "M Move units between your territories\n" +
+              "A Attack other player territories \n" +
+              "C Commit for ending this turn\n");
+      String actionType = readActionType("Please enter the action type(M, A or C):");
+      if (actionType.equals("c")) break;
+      ActionEntry ae = readActionInformation(actionType);
+      // parse action entry fail
+      if (ae == null) continue;
       // server-side check and update
-      sendMessage(serializer.serialize(a));
-      String serverValidationResult = recvMessage();
-      display(serverValidationResult);
-      if (!serverValidationResult.equals(Constant.VALID_ACTION)) {
+      sendObject(ae);
+      String serverValidRes = recvMessage();
+      display(serverValidRes);
+      if (!serverValidRes.equals(Constant.VALID_ACTION)) {
         continue;
       }
       try {
-        a.apply(m, null);
-        display(new MapView(m).display());
+        ae.apply(m, null);
+        display("Updated game map:\n" + new MapView(m).display());
       } catch (IllegalArgumentException e) {
-        display(e.getMessage());
+        // actually should not happen
+        display("Failed to apply on current game map:" + e.getMessage());
       }
     }
     sendMessage(Constant.ORDER_COMMIT);
   }
 
-  public void watchGame() throws IOException {
-    userOut.println("You start to watch the game:");
+  /**
+   * User can watch the game after he lost and chose to watch
+   *
+   * @throws IOException if IOE
+   */
+  public void watchGame(String prompt) throws IOException {
+    display(prompt);
+    String selection = readFromUser().toUpperCase(Locale.ROOT);
+    if (!selection.equals("E") && !selection.equals("C")) {
+      watchGame("Please enter (E) or (C), but is " + selection);
+      return;
+    }
+    if (selection.equals("E")) {
+      display("Thanks for joining the game today, goodbye!");
+      sendMessage(Constant.DISCONNECT_GAME);
+      return;
+    }
+    // chose "C"
+    sendMessage(Constant.WATCH_GAME);
+    display("You start to watch the game:");
     while (true) {
       String recv = this.recvMessage();
       if (recv.equals(Constant.GAME_OVER)) {
@@ -220,6 +184,96 @@ public class ClientPlayer extends Player {
       display("Current game status:");
       GameMap m = this.parseMap(recv);
       display(new MapView(m).display());
+      displayCombatRes();
     }
+  }
+
+  /*
+    ======== Blow is some util functions read, send and parse ========
+   */
+
+  /**
+   * Read action type from user input
+   *
+   * @param prompt to let user input
+   * @return the action type string: currently should only be m, c, a.
+   * @throws IOException if IO exception
+   */
+  private String readActionType(String prompt) throws IOException {
+    display(prompt);
+    String actionType = userIn.readLine();
+    String type = actionType.toLowerCase(Locale.ROOT);
+    if (!type.equals("m") && !type.equals("c") && !type.equals("a")) {
+      return readActionType("Type letter need to be (a)ttack, (m)ove, (c)ommit but now is " + type + ". Please enter again:");
+    }
+    return type;
+  }
+
+  /**
+   * Read territory name
+   *
+   * @param prompt to let user input
+   * @return the name string
+   * @throws IOException if IOE
+   */
+  private String readTerritoryName(String prompt) throws IOException {
+    display(prompt);
+    return userIn.readLine();
+  }
+
+  /**
+   * Read unit number
+   *
+   * @param prompt for user to type / re-type
+   * @return an int
+   * @throws IOException if IOE
+   */
+  private Integer readUnitNumber(String prompt) throws IOException {
+    display(prompt);
+    int unit;
+    String s = readFromUser();
+    try {
+      unit = Integer.parseInt(s);
+    } catch (NumberFormatException e) {
+      return readUnitNumber("The soldier number should be an integer:" + e.getMessage());
+    }
+    return unit;
+  }
+
+  /**
+   * Not elegant way to read and parse an action
+   *
+   * @param actionType is the action type to decide the prompt and ActionEntry subtype
+   * @return an ActionEntry instance
+   * @throws IOException if IOE
+   */
+  private ActionEntry readActionInformation(String actionType) throws IOException {
+    // sorry for this RY, I just cannot figure out an easy but elegant way to do this
+    if (actionType.equals("m")) {
+      String fromTerritory = readTerritoryName("[Move] Which territory want to move from?");
+      String toTerritory = readTerritoryName("[Move] Which territory want to move to?");
+      Integer unitNum = readUnitNumber("[Move] How many soldiers you want move from " + fromTerritory + "to " + toTerritory + "?");
+      return new MoveEntry(fromTerritory, toTerritory, unitNum);
+    } else if (actionType.equals("a")) {
+      String fromTerritory = readTerritoryName("[Attack] From which territory you want to send soldiers out?");
+      String toTerritory = readTerritoryName("[Attack] Which territory you want to attack?");
+      Integer unitNum = readUnitNumber("[Attack] How many soldiers you want to use from " + toTerritory + "?");
+      return new AttackEntry(fromTerritory, toTerritory, unitNum);
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * Receive a string and parse into game map
+   *
+   * @return a GameMap
+   */
+  private GameMap parseMap(String mapJSON) {
+    return (GameMap) serializer.deserialize(mapJSON, GameMap.class);
+  }
+
+  public void displayCombatRes() throws IOException {
+    display((String) serializer.deserialize(recvMessage(), String.class));
   }
 }

@@ -74,7 +74,9 @@ public class GameTest {
     g.addPlayer(p);
     g.makeMap(3);
     g.assignTerritories(3);
-    g.sendToAll(g.getMap());
+    ArrayList<Player> list = new ArrayList<>();
+    list.add(p);
+    g.sendObjectToAll(g.getMap(),list);
     JSONSerializer js = new JSONSerializer();
     String s = js.serialize(g.getMap());
     assertEquals(s+"\n", bytes.toString());
