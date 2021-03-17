@@ -15,32 +15,27 @@ import java.util.Collection;
  * Game class is responsible for the one game's play
  */
 public class Game {
-
-  /**
-   * all players in the game
-   */
   private final int playerNum;
   private final ArrayList<Player> players;
-  private ArrayList<Player> StillInplayers;
+  private ArrayList<Player> stillInPlayers;//players still didn't lose
+  private ArrayList<Player> stillWatchPlayers;//players stillIn with those who want to watch after losing
   private final HashSet<String> colorSet;
   private GameMap gameMap;
   private Checker myChecker;
-  private JSONSerializer js;
   private Random myRandom;
 
   /**
    * the construtor of the game
-   *
-   * @param playerNum is the number of players in this game
+   * @param playerNum is the required number of players in this game
    */
   public Game(int playerNum) {
     this.playerNum = playerNum;
     this.players = new ArrayList<>();
-    this.StillInplayers = new ArrayList<>();
+    this.stillInPlayers = new ArrayList<>();
+    this.stillWatchPlayers = new ArrayList<>();
     this.colorSet = new HashSet<>();
     makeColors();
     this.myChecker = null;
-    this.js = new JSONSerializer();
     this.myRandom = new Random(1);
   }
 
@@ -56,18 +51,7 @@ public class Game {
   }
 
   /**
-   * check if the game's player number limit has been reached
-   *
-   * @return true if no more players can be accepted
-   * false if can accpet more players
-   */
-  public Boolean isGameFull() {
-    return (this.players.size() >= this.playerNum);
-  }
-
-  /**
    * try to add one player to the game
-   *
    * @return null if the player is successfully added into the game
    */
   public String addPlayer(Player player) {
@@ -84,10 +68,36 @@ public class Game {
   }
 
   /**
+   * check if the game's player number limit has been reached
+   * @return true if no more players can be accepted
+   * false if can accpet more players
+   */
+  public Boolean isGameFull() {
+    return (this.players.size() >= this.playerNum);
+  }
+
+  /**
+   * get the required number of players in the game
    * @return the number of players that can start a game
    */
   public int getPlayerNum() {
     return playerNum;
+  }
+  
+  /**
+   * get the number of players currently waiting in game to start
+   * @return the num of players participated in the game in total
+   */
+  public int getPLayerInGameNum(){
+    return this.players.size();
+  }
+
+  /**
+   * get the map pf this game
+   * @return the map of this game
+   */
+  public GameMap getMap(){
+    return this.gameMap;
   }
 
 
@@ -105,9 +115,7 @@ public class Game {
     this.gameMap = factory.createMap(nameList, territoriesPerPlayer);
   }
 
-  public GameMap getMap(){
-    return this.gameMap;
-  }
+
 
   /**
    * after creating the map, assign territorities to players
@@ -124,40 +132,35 @@ public class Game {
     }
   }
 
+
   /**
-   * send object to one player
+   * send object to all players in the player list
    * @param o the object to send
-   * @param p the player to send to
+   * @param p the player list
    */
-  public void sendToOne(Object o, Player p){
-    p.sendMessage(js.serialize(o));
+  public void sendObjectToAll(Object o,ArrayList<Player> p){
+    for(Player player:p){
+      player.sendObject(o);
+    }
   }
 
   /**
-   * send object to all players in the game
-   * @param o the object to send
+   * send string to all players in the player list
+   * @param s the message to send
+   * @param p the player list
    */
-  public void sendToAll(Object o){
-    for(Player player:players){
-      sendToOne(o,player);
+  public void sendStringToAll(String s,ArrayList<Player> p){
+    for(Player player:p){
+      player.sendMessage(s);
     }
   }
   
-  public void sendString(String s, Player p){
-    p.sendMessage(s);
-  }
-
-  public void sendStringToAll(String s){
-    for(Player player:players){
-      sendString(s,player);
-    }
-  }
-
   /**
    * place soldiers on the map according to the all players' input
    * @param soldierNum the number of soldiers one player has in total
    */
   public void placementPhase() throws IOException{
+    JSONSerializer js = new JSONSerializer();
     for(Player player:players){
       String s = player.recvMessage();
       Collection<ActionEntry> placements = js.getOm().readValue(s, new TypeReference<Collection<ActionEntry>>() {});
@@ -167,46 +170,85 @@ public class Game {
     }
   }
 
-
-  public void playOneTurn() throws IOException{
-    for(Player player:players){
-      //server send map to all players despite the player is lost or not
-      sendToOne(gameMap, player);
-      //if one player is lost, should not send anything to the server
-      if(checkLost(player)==false){
-        while(true){
-          String s = player.recvMessage();
-          //check if the player has done with his orders
-          if(s.equals(Constant.ORDER_COMMIT)){break;}
-          ActionEntry action = (ActionEntry)js.deserialize(s, ActionEntry.class);
-
-          //need to catch exception here if fails
-          action.apply(gameMap, myChecker);
-
-          MapView mv = new MapView(gameMap);
-          System.out.println(mv.display());
-
-          sendString(Constant.VALID_ACTION, player);
-        }
-      }
-      else{
-        continue;
-      }  
+  /**
+   * This method will create a thread for each player to receive their actions
+   * the move action and the move part in attack will be done immediately
+   */
+  public void receiveAndApplyMoves(){
+    ArrayList<OneTurnThread> threads = new ArrayList<>();
+    for(Player p:stillWatchPlayers){
+      p.sendObject(gameMap);
     }
-    for(Territory t : gameMap.getAllTerritories()){
-      t.resolveCombat(myRandom);
-    } 
-    ArrayList<Player> temp = new ArrayList<Player>(StillInplayers);
-    for(Player player:temp){
-      if(checkLost(player)==true){
-        sendString(Constant.LOSE_GAME,player);
-        StillInplayers.remove(player);
+    for(Player player:stillInPlayers){
+      OneTurnThread thread = new OneTurnThread(gameMap, player);
+      threads.add(thread);
+      thread.start();
+    }
+    for(OneTurnThread thread:threads){
+      try{
+        thread.join();
       }
-      else{sendString(Constant.CONTINUE_PLAYING, player);}
-    }    
-    //add 1 soldier to all territories
-    for(Territory t:gameMap.getAllTerritories()){
+      catch(InterruptedException e){
+        System.out.println("catch interruptException!\n" + e.getMessage());
+      }
+    }
+  }
+
+  /**
+   * do attacks according to the attack buffer
+   * @return the combat result string
+   */
+  public String doAttacks(){
+    StringBuilder sb = new StringBuilder("The combat results are:\n");
+    for(Territory t : gameMap.getAllTerritories()){
+      //resolve combats and create combat results
+      sb.append(t.resolveCombat(myRandom));
+    }
+    return sb.toString();
+  }
+
+  /**
+   * add one soldier to all territories after one turn
+   */
+  public void addSoldiersToAll(){
+    for(Territory t: gameMap.getAllTerritories()){
       t.addSoldiersToArmy(1);
+    }
+  }
+  
+  /**
+   * all players play one turn
+   * @throws IOException
+   */
+  public void playOneTurn() throws IOException{
+    //create a thread for each player to type their actions until receive commit
+    receiveAndApplyMoves();
+    //resolve all combats and send combat results to players still watch the game
+    String combatResult = doAttacks();
+    sendObjectToAll(combatResult, stillWatchPlayers);
+    //update the stillWatch players list and the stillIn players list
+    ArrayList<Player> temp = new ArrayList<Player>(stillInPlayers);
+    for(Player player:temp){
+      //if lost the game, the player can only watch or disconnect
+      if(checkLost(player)==true){
+        //we will only send lose game info to who has just lost the game
+        player.sendMessage(Constant.LOSE_GAME);
+        //remove the lost player from stillIn
+        stillInPlayers.remove(player);
+        if(stillInPlayers.size()==1){
+          break;
+        }
+        else{
+          player.sendMessage(Constant.CONTINUE_PLAYING);
+        }   
+        //if receive disconnect, rmv from the watch game list
+        if(player.recvMessage().equals(Constant.DISCONNECT_GAME)){
+          stillWatchPlayers.remove(player);
+        }
+ 
+      }
+      //for those who didn't lose, tell them to continue
+      else{player.sendMessage(Constant.CONTINUE_PLAYING);}
     }
   }
 
@@ -242,20 +284,26 @@ public class Game {
  */
   public void runGame()throws IOException{
     if(players.size()==playerNum){
-      StillInplayers = new ArrayList<>(players);
-      int TerritoryPerPlayer = 3;//assume that one player has three territories
-      int totalSoldiers = 3;//assume that each player have 12 soldiers in total 
+      //copy players list for stillIn and stillWatch
+      stillInPlayers = new ArrayList<>(players);
+      stillWatchPlayers = new ArrayList<>(players);
+      int TerritoryPerPlayer = 1;//assume that one player has three territories
+      int totalSoldiers = 1;//assume that each player have 12 soldiers in total 
       makeMap(TerritoryPerPlayer);
       assignTerritories(TerritoryPerPlayer);
-      sendToAll(this.gameMap);
-      sendStringToAll(String.valueOf(totalSoldiers));
+      sendObjectToAll(this.gameMap,players);
+      sendStringToAll(String.valueOf(totalSoldiers),players);
       placementPhase();
       while(true){
-        this.playOneTurn();
+        //multi thread in this function to handle simultaneous input
+        playOneTurn();
+        //add 1 soldier to all territories at the end of one turn;
+        addSoldiersToAll();
+        //check if the game is over
         if(checkWin()==true){
           String winner = this.gameMap.getAllPlayerTerritories().keySet().iterator().next();
-          sendStringToAll(Constant.GAME_OVER);
-          sendToAll("The winner is "+winner);
+          sendStringToAll(Constant.GAME_OVER,stillWatchPlayers);
+          sendStringToAll("The winner is " + winner,stillWatchPlayers);
           break;
         }
       }
