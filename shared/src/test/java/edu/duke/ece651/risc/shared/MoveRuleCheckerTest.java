@@ -10,38 +10,33 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-public class AttackRuleCheckerTest {
+public class MoveRuleCheckerTest {
   @Test
   public void test_checkMyRule() {
     GameMap map1=createTestMap();
-    Checker checker=new AttackRuleChecker(null);
-    // check not adjacent case
-    ActionEntry attack1=new AttackEntry("1", "4", 2);
-    // check same owner case
-    ActionEntry attack2=new AttackEntry("1","2",1);
-    // check normal case
-    ActionEntry attack3=new AttackEntry("3","4",1);
-    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(attack1,map1));
-    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(attack2,map1));
-    checker.checkAction(attack3,map1);
+    Checker checker=new MoveRuleChecker(null);
+    ActionEntry move1=new MoveEntry("3","4",1);
+    ActionEntry move2=new MoveEntry("1", "1", 2);
+    ActionEntry move3=new MoveEntry("1","7",1);
+    ActionEntry move4=new MoveEntry("1","3",1);
+    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move1,map1));
+    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move2,map1));
+    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move3,map1));
+    checker.checkAction(move4,map1);
   }
 
   @Test
   public void test_combinedRule(){
     GameMap map1=createTestMap();
-    Checker checker=new ClientChecker(new AttackRuleChecker(null));
-    // check same owner case
-    ActionEntry attack1=new AttackEntry("1", "2", 2);
-    // check not enough arm available case
-    ActionEntry attack2=new AttackEntry("4", "3", 7);
-    //check no such territory case
-    ActionEntry attack3=new AttackEntry("a", "3", 7);
-    // check normal case
-    ActionEntry attack4=new AttackEntry("3","4",1);
-    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(attack1,map1));
-    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(attack2,map1));
-    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(attack3,map1));
-    checker.checkAction(attack4,map1);
+    Checker checker=new ClientChecker(new MoveRuleChecker(null));
+    ActionEntry move1=new MoveEntry("4", "3", 2);
+    ActionEntry move2=new MoveEntry("2", "3", 7);
+    ActionEntry move3=new MoveEntry("a", "3", 7);
+    ActionEntry move4=new MoveEntry("1","3",1);
+    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move1,map1));
+    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move2,map1));
+    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move3,map1));
+    checker.checkAction(move4,map1);
   }
 
   private GameMap createTestMap(){

@@ -91,4 +91,42 @@ public class GameMap {
         }
         return territories;
     }
+
+    /**
+     * check if two territory has a path between them within the same player's territory
+     * 
+     * @param start from territory
+     * @param end   to territory
+     * @return      turn if there is a such path otherwise return false
+     */
+    public boolean isConnected(Territory start, Territory end){
+        Set<Territory> visited=new HashSet<>();
+        String ownerName=start.getOwnerName();
+        visited.add(start);
+        return dfs(start,end,visited,ownerName);
+    }
+    /**
+     * input the current territory and destination territory with a set
+     * 
+     * @param curr      the current territory in search
+     * @param end       the destination territory
+     * @param visited   the set record all visited territory
+     * @param ownerName the name of the from and two territories' owner 
+     * @return          true if there is a path from curr to end otherwise return false
+     */
+    private boolean dfs(Territory curr, Territory end,Set<Territory> visited, String ownerName){
+        for(Territory t:curr.getNeighbours()){
+            if(!t.getOwnerName().equals(ownerName) || visited.contains(t)){
+                continue;
+            }
+            if(t==end){
+                return true;
+            }
+            visited.add(t);
+            if(dfs(t,end,visited,ownerName)){
+                return true;
+            }
+        }
+        return false;
+    }
 }

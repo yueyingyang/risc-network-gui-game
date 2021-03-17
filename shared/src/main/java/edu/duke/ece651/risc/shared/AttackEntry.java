@@ -58,7 +58,7 @@ public class AttackEntry extends BasicEntry {
      * 
      * @return numSoldiers is the number of soliders
      */
-    public int getNumSoliders(){
+    public int getNumSoldiers(){
         return numSoldiers;
     }
 }

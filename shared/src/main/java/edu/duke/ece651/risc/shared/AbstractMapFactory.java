@@ -10,7 +10,7 @@ public interface AbstractMapFactory{
   @param territoriesPerPlayer how many territories each player have
   @return a game map
    */
-  public GameMap createMap(int numPlayers, int territoriesPerPlayer);
+  public GameMap createMap(List<String> nameList, int territoriesPerPlayer);
   
 
 }

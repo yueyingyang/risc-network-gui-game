@@ -7,7 +7,9 @@ public class AttackRuleChecker extends Checker{
     }
 
     /**
-     * 
+     * check 2 rules:
+     * 1. the "from territory" should be adjacent to the "to territory"
+     * 2. the "from territory" and "to territory" should belong to different owners.
      */
     public void checkMyRule(ActionEntry action, GameMap map){
         Territory start=map.getTerritory(action.getFromName());

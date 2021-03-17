@@ -36,14 +36,14 @@ public class V1MapFactory implements AbstractMapFactory{
    * @param territoryFinder the hashmap for the relationship of name-sterritory, we will add key and value in this method
    * @return a list of territories
    */
-  private List<Territory> createTerrority(int numPlayer, int num,Map<String,Territory> territoryFinder){
+  private List<Territory> createTerrority(List<String> nameList, int num,Map<String,Territory> territoryFinder){
     int territory_id=0;
     List<Territory> territory_list=new ArrayList<>();
-    for(int j=0;j<numPlayer;j++){
+    for(String playerName: nameList){
       for(int i=0;i<num;i++){
         String territory_name=""+territory_id;
         Territory temp=new Territory(territory_name);
-        //temp.setOwnerName(playerName);
+        temp.setOwnerName(playerName);
         territoryFinder.put(territory_name,temp);
         territory_list.add(temp);
         territory_id++;
@@ -58,9 +58,10 @@ public class V1MapFactory implements AbstractMapFactory{
   @param territoriesPerPlayer how many territories each player have
   @return a game map
    */
-  public GameMap createMap(int numPlayer, int territoriesPerPlayer){
+  public GameMap createMap(List<String> nameList, int territoriesPerPlayer){
+    int numPlayer=nameList.size();
     Map<String,Territory> territoryFinder=new HashMap<>();
-    List<Territory> territories=createTerrority(numPlayer, territoriesPerPlayer,territoryFinder);
+    List<Territory> territories=createTerrority(nameList, territoriesPerPlayer,territoryFinder);
     List<List<String>> connections=createConnection(territories, numPlayer);
     GameMap gamemap=new GameMap(connections,territoryFinder);
     return gamemap;
