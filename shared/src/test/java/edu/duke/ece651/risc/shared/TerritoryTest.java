@@ -125,4 +125,16 @@ class TerritoryTest {
         }
     }
 
+    @Test
+    public void test_belongToSameOwner() {
+        Territory terr0 = new Territory("0");
+        Territory terr1 = new Territory("1");
+        Territory terr2 = new Territory("2");
+        terr0.setOwnerName("LiLei");
+        terr1.setOwnerName("HanMeiMei");
+        terr2.setOwnerName("LiLei");
+        assertTrue(terr0.belongToSameOwner(terr2));
+        assertFalse(terr1.belongToSameOwner(terr0));
+    }
+
 }
