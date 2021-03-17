@@ -92,6 +92,7 @@ public class GameMap {
         return territories;
     }
 
+
     /**
      * check if two territory has a path between them within the same player's territory
      * 
