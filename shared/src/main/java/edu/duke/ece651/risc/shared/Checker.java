@@ -7,12 +7,12 @@ public abstract class Checker {
     this.next = next;
   }
 
-  protected abstract void checkMyRule(Territory start, Territory end, GameMap map);
+  protected abstract void checkMyRule(ActionEntry action, GameMap map);
   
-  public void checkAction(Territory start, Territory end, GameMap map){
-    checkMyRule(start,end,map);
+  public void checkAction(ActionEntry action, GameMap map){
+    checkMyRule(action,map);
     if(next!=null){
-      next.checkAction(start,end,map);
+      next.checkAction(action,map);
     }
   }
 }
