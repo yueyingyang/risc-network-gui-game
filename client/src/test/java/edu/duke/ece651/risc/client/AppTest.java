@@ -38,14 +38,15 @@ class AppTest {
     // mock prepration
     String serverIn = Constant.NO_GAME_AVAILABLE_INFO + "\n" +
             Constant.ASK_HOW_MANY_PLAYERS + "\n" +
-            Constant.SUCCESS_NUMBER_CHOOSED;
+            Constant.SUCCESS_NUMBER_CHOOSED + "\n" + "name";
     InputStream mockInputStream = new ByteArrayInputStream(serverIn.getBytes());
     Mockito.when(s.getInputStream()).thenReturn(mockInputStream);
     Mockito.when(s.getOutputStream()).thenReturn(mockOutputStream);
     Mockito.when(userIn.readLine()).thenReturn("3");
 
     App app = new App(s, userIn, userOut);
-//    app.run();
+    app.loginGame();
 //    Mockito.verify(s).close();
   }
+
 }

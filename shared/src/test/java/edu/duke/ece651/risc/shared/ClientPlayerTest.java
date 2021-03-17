@@ -1,27 +1,20 @@
 package edu.duke.ece651.risc.shared;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ClientPlayerTest {
   ByteArrayOutputStream serverOut;
   ByteArrayOutputStream userOut;
 
-  // run before each test to initialize outputstream
+  // run before each test to initialize output stream
   @BeforeEach
   private void initEach() {
     serverOut = new ByteArrayOutputStream();
@@ -93,32 +86,14 @@ class ClientPlayerTest {
   }
 
   @Test
-  void test_read_one_action() throws IOException {
-    String prompt = "Please enter an action(format: type from to):";
-    String userIn = "a 1 2 3\ne\na 1 2 3\n";
-    ClientPlayer p = createClientPlayer("",
-            serverOut,
-            userIn,
-            userOut);
-    assertThat(p.readOneActionEntry(prompt), instanceOf(ActionEntry.class));
-    assertEquals("Please enter an action(format: type from to):\n", userOut.toString());
-    userOut.reset();
-    p.readOneActionEntry(prompt);
-    assertEquals("Please enter an action(format: type from to):\n" +
-            "Type letter need to be (a)ttack, (m)ove, but now is e\n", userOut.toString());
-  }
-
-  @Test
   void test_placement() throws IOException {
     V1MapFactory v1f = new V1MapFactory();
     GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 2);
     Serializer s = new JSONSerializer();
     String result = s.serialize(map);
-//    String prompt = "Please enter an action(format: type from to):";
-//    String userIn = "a 1 2 3\ne\na 1 2 3\n";
     ClientPlayer p = createClientPlayer(result + "\n" + 4,
             serverOut,
-            "1\n3\n",
+            "1\n5\n3\n",
             userOut);
     p.setName("player1");
     p.placementPhase();
@@ -127,23 +102,61 @@ class ClientPlayerTest {
 
   @Test
   void test_play_one_turn() throws IOException {
+    GameMap map = createMap();
+    Serializer s = new JSONSerializer();
+    String mapjson = s.serialize(map);
+    ClientPlayer p = createClientPlayer(Constant.VALID_ACTION + "\n" + "Action is invalid\n" + Constant.VALID_ACTION + "\n",
+            serverOut,
+            "b\nm\n0\n1\n1\nm\n0\n1\n1\na\n1\n2\na\n1\nc\n",
+            userOut);
+    p.setName("player1");
+    assertDoesNotThrow(() -> p.playOneTurn(mapjson + "\n"));
+  }
+
+  private GameMap createMap() {
     V1MapFactory v1f = new V1MapFactory();
     GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 2);
-    List<ActionEntry> pl = Arrays.asList(new PlaceEntry("0", 2), new PlaceEntry("1", 2));
+    List<ActionEntry> pl = Arrays.asList(new PlaceEntry("0", 2),
+            new PlaceEntry("1", 2),
+            new PlaceEntry("2", 2),
+            new PlaceEntry("3", 2));
     for (ActionEntry ae : pl) {
       ae.apply(map, null);
     }
-    Serializer s = new JSONSerializer();
-    String mapjson = s.serialize(map);
-    ClientPlayer p = createClientPlayer(Constant.VALID_ACTION + "\n" + "Action is invalide\n",
+    return map;
+  }
+
+  @Test
+  void test_watch_game() throws IOException {
+    GameMap map = createMap();
+    ClientPlayer p = createClientPlayer(Constant.GAME_OVER + "\nwinner is\n" + new JSONSerializer().serialize(map) + "\n" + Constant.GAME_OVER + "\nwinner is\n",
             serverOut,
-            "m 0 1 1\nm 0 1 1\ncommit\n",
+            "a\ne\nc\n",
             userOut);
-    p.setName("player1");
-    p.playOneTurn(mapjson + "\n");
-    assertEquals("{\"type\":\"move\",\"fromName\":\"0\",\"toName\":\"1\",\"numSoldiers\":1}\n" +
-            "{\"type\":\"move\",\"fromName\":\"0\",\"toName\":\"1\",\"numSoldiers\":1}\n" +
-            Constant.ORDER_COMMIT + "\n", serverOut.toString());
+    p.watchGame("Please choose");
+    assertEquals("Please choose\n" +
+            "Please enter (E) or (C), but is A\n" +
+            "You start to watch the game:\n" +
+            "Game over ~\n" +
+            "winner is\n", userOut.toString());
+    userOut.reset();
+    p.watchGame("Please choose");
+    assertEquals("Please choose\n" +
+            "You start to watch the game:\n" +
+            "Current game status:\n" +
+            "player1 player:\n" +
+            "-------------\n" +
+            "2 units in 0 (next to: 1, 2, 3)\n" +
+            "2 units in 1 (next to: 0, 2, 3)\n" +
+            "\n" +
+            "player2 player:\n" +
+            "-------------\n" +
+            "2 units in 2 (next to: 0, 1, 3)\n" +
+            "2 units in 3 (next to: 0, 1, 2)\n" +
+            "\n" +
+            "\n" +
+            "Game over ~\n" +
+            "winner is\n", userOut.toString());
   }
 
 }
