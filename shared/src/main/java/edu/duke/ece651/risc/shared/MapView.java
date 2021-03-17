@@ -1,6 +1,5 @@
 package edu.duke.ece651.risc.shared;
 
-import java.util.function.Function;
 import java.util.*;
 
 public class MapView {
@@ -82,7 +81,9 @@ public class MapView {
           }
           toDisplay.append(t.getName());
           // append joined neighbors
-          toDisplay.append(printNeighbours(t.getNeighbours()));
+          Set<Territory> validNeigh = t.getNeighbours();
+          validNeigh.remove(t);
+          toDisplay.append(printNeighbours(validNeigh));
           toDisplay.append(System.getProperty("line.separator"));
         }
         toDisplay.append(System.getProperty("line.separator"));

@@ -1,27 +1,20 @@
 package edu.duke.ece651.risc.shared;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ClientPlayerTest {
   ByteArrayOutputStream serverOut;
   ByteArrayOutputStream userOut;
 
-  // run before each test to initialize outputstream
+  // run before each test to initialize output stream
   @BeforeEach
   private void initEach() {
     serverOut = new ByteArrayOutputStream();
@@ -51,7 +44,11 @@ class ClientPlayerTest {
   void test_login_game_no_available_game() throws IOException {
     String serverIn = Constant.NO_GAME_AVAILABLE_INFO + "\n" +
             Constant.ASK_HOW_MANY_PLAYERS + "\n" +
-            Constant.SUCCESS_NUMBER_CHOOSED;
+            Constant.SUCCESS_NUMBER_CHOOSED + "\n" + "test player\n";
+    String userPrint = "Hi, there's no available game in the system, so we will start a game for you.\n" +
+            "Hi ^_^, We will create a new game for you. How many players do you want to have in your Game?\n" +
+            "You are in a Game now!\n" +
+            "You login as test player successfully.\n";
     String userIn = "3\n";
     ClientPlayer p = createClientPlayer(serverIn,
             serverOut,
@@ -59,20 +56,23 @@ class ClientPlayerTest {
             userOut);
     p.loginGame();
     assertEquals(userIn, serverOut.toString());
-    assertEquals(serverIn + "\n", userOut.toString());
+    assertEquals(userPrint, userOut.toString());
   }
 
   @Test
   void test_login_game_join_existed_game() throws IOException {
-    String serverIn = Constant.ASK_START_NEW_OR_JOIN + "\n" + Constant.SUCCESS_ACTION_CHOOSED + "\n" + "fake list of games" + "\n" + Constant.SUCCESS_NUMBER_CHOOSED;
-    String userIn = "j\n1\n";
+    String serverInstruction = Constant.ASK_START_NEW_OR_JOIN + "\n" + Constant.SUCCESS_ACTION_CHOOSED + "\n" + "fake list of games" + "\n" + Constant.SUCCESS_NUMBER_CHOOSED + "\n";
+    String serverIn = serverInstruction + "fake player\n";
+    String userOutput = serverInstruction + "You login as fake player successfully.\n";
+
+            String userIn = "j\n1\n";
     ClientPlayer p = createClientPlayer(serverIn,
             serverOut,
             userIn,
             userOut);
     p.loginGame();
     assertEquals(userIn, serverOut.toString());
-    assertEquals(serverIn + "\n", userOut.toString());
+    assertEquals(userOutput, userOut.toString());
   }
 
   public ClientPlayer createClientPlayer(String serverIn, ByteArrayOutputStream serverOut, String userIn, ByteArrayOutputStream userOut) {
@@ -93,32 +93,14 @@ class ClientPlayerTest {
   }
 
   @Test
-  void test_read_one_action() throws IOException {
-    String prompt = "Please enter an action(format: type from to):";
-    String userIn = "a 1 2 3\ne\na 1 2 3\n";
-    ClientPlayer p = createClientPlayer("",
-            serverOut,
-            userIn,
-            userOut);
-    assertThat(p.readOneActionEntry(prompt), instanceOf(ActionEntry.class));
-    assertEquals("Please enter an action(format: type from to):\n", userOut.toString());
-    userOut.reset();
-    p.readOneActionEntry(prompt);
-    assertEquals("Please enter an action(format: type from to):\n" +
-            "Type letter need to be (a)ttack, (m)ove, but now is e\n", userOut.toString());
-  }
-
-  @Test
   void test_placement() throws IOException {
     V1MapFactory v1f = new V1MapFactory();
     GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 2);
     Serializer s = new JSONSerializer();
     String result = s.serialize(map);
-//    String prompt = "Please enter an action(format: type from to):";
-//    String userIn = "a 1 2 3\ne\na 1 2 3\n";
     ClientPlayer p = createClientPlayer(result + "\n" + 4,
             serverOut,
-            "1\n3\n",
+            "1\n5\n3\n",
             userOut);
     p.setName("player1");
     p.placementPhase();
@@ -129,23 +111,43 @@ class ClientPlayerTest {
 
   @Test
   void test_play_one_turn() throws IOException {
+    GameMap map = createMap();
+    Serializer s = new JSONSerializer();
+    String mapjson = s.serialize(map);
+    ClientPlayer p = createClientPlayer(Constant.VALID_ACTION + "\n" + "Action is invalid\n" + Constant.VALID_ACTION + "\n",
+            serverOut,
+            "b\nm\n0\n1\n1\nm\n0\n1\n1\na\n1\n2\na\n1\nc\n",
+            userOut);
+    p.setName("player1");
+    assertDoesNotThrow(() -> p.playOneTurn(mapjson + "\n"));
+  }
+
+  private GameMap createMap() {
     V1MapFactory v1f = new V1MapFactory();
     GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 2);
-    List<ActionEntry> pl = Arrays.asList(new PlaceEntry("0", 2), new PlaceEntry("1", 2));
+    List<ActionEntry> pl = Arrays.asList(new PlaceEntry("0", 2),
+            new PlaceEntry("1", 2),
+            new PlaceEntry("2", 2),
+            new PlaceEntry("3", 2));
     for (ActionEntry ae : pl) {
       ae.apply(map, null);
     }
-    Serializer s = new JSONSerializer();
-    String mapjson = s.serialize(map);
-    ClientPlayer p = createClientPlayer(Constant.VALID_ACTION + "\n" + "Action is invalide\n",
+    return map;
+  }
+
+  @Test
+  void test_watch_game() throws IOException {
+    GameMap map = createMap();
+    ClientPlayer p = createClientPlayer(Constant.GAME_OVER + "\nwinner is\n" + new JSONSerializer().serialize(map) + "\n" + Constant.GAME_OVER + "\nwinner is\n",
             serverOut,
-            "m 0 1 1\nm 0 1 1\ncommit\n",
+            "a\ne\nc\n",
             userOut);
-    p.setName("player1");
-    p.playOneTurn(mapjson + "\n");
-    assertEquals("{\"type\":\"move\",\"fromName\":\"0\",\"toName\":\"1\",\"numSoldiers\":1}\n" +
-            "{\"type\":\"move\",\"fromName\":\"0\",\"toName\":\"1\",\"numSoldiers\":1}\n" +
-            Constant.ORDER_COMMIT + "\n", serverOut.toString());
+    p.watchGame("Please choose");
+    assertEquals("Please choose\n" +
+            "Please enter (E) or (C), but is A\n" +
+            "Thanks for joining the game today, goodbye!\n", userOut.toString());
+    userOut.reset();
+    assertDoesNotThrow(() -> p.watchGame("Please choose"));
   }
 
 }

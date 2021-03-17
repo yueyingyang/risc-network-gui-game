@@ -46,27 +46,31 @@ public class App {
     while (true) {
       player.playOneTurn(mapOrGameOver);
       player.display("Please wait for combat resolution...");
-      // recv combat result
+      // 1. recv combat result
+      player.displayCombatRes();
+
+      // 2. turnRes: Constant.LOSE_GAME or Constant.CONTINUE_PLAYING
       String turnRes = player.recvMessage();
       if (turnRes.equals(Constant.LOSE_GAME)) {
         player.display(turnRes);
-        player.watchGame();
-        // can choose watch or disconnect
+        if(player.recvMessage().equals(Constant.CONTINUE_PLAYING)){
+          // can choose watch or disconnect
+          player.watchGame("You can either \n" +
+                  "E Exit this game\n" +
+                  "C Continue to watch game\n");
+        }
         break;
       }
-//      if (turnRes.equals(Constant.GAME_OVER)) {
-//        // print winner
-//        player.display(turnRes);
-//        player.display(player.recvMessage());
-//        break;
-//      }
+
+      // 3. prepare for next step
       mapOrGameOver = player.recvMessage();
       if (mapOrGameOver.equals(Constant.GAME_OVER)) {
-        player.display(mapOrGameOver);
-        player.display(player.recvMessage());
+        player.display(Constant.GAME_OVER);
         break;
       }
     }
+    // display winner
+    player.display(player.recvMessage());
   }
 
   private void placementPhase() throws IOException {
