@@ -8,6 +8,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlaceEntryTest {
+    @Test
+    public void test_getters() {
+        ActionEntry entry = new PlaceEntry("0", 5);
+        assertNull(entry.getFromName());
+        assertEquals("0", entry.getToName());
+        assertEquals(5, entry.getNumSoldiers());
+    }
 
     @Test
     public void test_apply() {
