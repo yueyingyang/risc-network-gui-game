@@ -56,6 +56,7 @@ class AppTest {
     assertEquals(1, app.getAvailableGames().size());
   }
 
+  @Disabled
   @Test
   void test_print_available_gameList() throws IOException {
     Mockito.when(player.readGameSize()).thenReturn(3);
@@ -63,6 +64,7 @@ class AppTest {
     assertEquals("The available games here are: 0 ", app.AvailableGameList());
   }
 
+  @Disabled
   @Test
   void test_join_exist_game() throws IOException {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
