@@ -16,15 +16,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 })
 public interface ActionEntry {
 
-<<<<<<< HEAD
-  /**
-   * Apply the action on the action entry
-   *
-   * @param myMap     is the map of the game
-   * @param myChecker is the rule checker for the action
-   */
-  public void apply(GameMap myMap, Checker myChecker);
-=======
     /**
      * Apply the action on the action entry
      *
@@ -53,5 +44,4 @@ public interface ActionEntry {
      * @return numSoldiers is the number of soliders
      */
     public int getNumSoliders();
->>>>>>> 124e13702c668145b5e1205eab27ca4f9d76880f
 }

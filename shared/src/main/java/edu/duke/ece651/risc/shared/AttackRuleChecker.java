@@ -6,6 +6,9 @@ public class AttackRuleChecker extends Checker{
         super(next);
     }
 
+    /**
+     * 
+     */
     public void checkMyRule(ActionEntry action, GameMap map){
         Territory start=map.getTerritory(action.getFromName());
         Territory end=map.getTerritory(action.getToName());
