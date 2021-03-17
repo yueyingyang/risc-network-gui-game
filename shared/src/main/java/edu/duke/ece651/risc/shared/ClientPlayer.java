@@ -167,6 +167,7 @@ public class ClientPlayer extends Player {
       return;
     }
     if (selection.equals("E")) {
+      display("Thanks for joining the game today, goodbye!");
       sendMessage(Constant.DISCONNECT_GAME);
       return;
     }

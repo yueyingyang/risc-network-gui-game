@@ -44,7 +44,11 @@ class ClientPlayerTest {
   void test_login_game_no_available_game() throws IOException {
     String serverIn = Constant.NO_GAME_AVAILABLE_INFO + "\n" +
             Constant.ASK_HOW_MANY_PLAYERS + "\n" +
-            Constant.SUCCESS_NUMBER_CHOOSED;
+            Constant.SUCCESS_NUMBER_CHOOSED + "\n" + "test player\n";
+    String userPrint = "Hi, there's no available game in the system, so we will start a game for you.\n" +
+            "Hi ^_^, We will create a new game for you. How many players do you want to have in your Game?\n" +
+            "You are in a Game now!\n" +
+            "You login as test player successfully.\n";
     String userIn = "3\n";
     ClientPlayer p = createClientPlayer(serverIn,
             serverOut,
@@ -52,20 +56,23 @@ class ClientPlayerTest {
             userOut);
     p.loginGame();
     assertEquals(userIn, serverOut.toString());
-    assertEquals(serverIn + "\n", userOut.toString());
+    assertEquals(userPrint, userOut.toString());
   }
 
   @Test
   void test_login_game_join_existed_game() throws IOException {
-    String serverIn = Constant.ASK_START_NEW_OR_JOIN + "\n" + Constant.SUCCESS_ACTION_CHOOSED + "\n" + "fake list of games" + "\n" + Constant.SUCCESS_NUMBER_CHOOSED;
-    String userIn = "j\n1\n";
+    String serverInstruction = Constant.ASK_START_NEW_OR_JOIN + "\n" + Constant.SUCCESS_ACTION_CHOOSED + "\n" + "fake list of games" + "\n" + Constant.SUCCESS_NUMBER_CHOOSED + "\n";
+    String serverIn = serverInstruction + "fake player\n";
+    String userOutput = serverInstruction + "You login as fake player successfully.\n";
+
+            String userIn = "j\n1\n";
     ClientPlayer p = createClientPlayer(serverIn,
             serverOut,
             userIn,
             userOut);
     p.loginGame();
     assertEquals(userIn, serverOut.toString());
-    assertEquals(serverIn + "\n", userOut.toString());
+    assertEquals(userOutput, userOut.toString());
   }
 
   public ClientPlayer createClientPlayer(String serverIn, ByteArrayOutputStream serverOut, String userIn, ByteArrayOutputStream userOut) {
@@ -138,27 +145,9 @@ class ClientPlayerTest {
     p.watchGame("Please choose");
     assertEquals("Please choose\n" +
             "Please enter (E) or (C), but is A\n" +
-            "You start to watch the game:\n" +
-            "Game over ~\n" +
-            "winner is\n", userOut.toString());
+            "Thanks for joining the game today, goodbye!\n", userOut.toString());
     userOut.reset();
-    p.watchGame("Please choose");
-    assertEquals("Please choose\n" +
-            "You start to watch the game:\n" +
-            "Current game status:\n" +
-            "player1 player:\n" +
-            "-------------\n" +
-            "2 units in 0 (next to: 1, 2, 3)\n" +
-            "2 units in 1 (next to: 0, 2, 3)\n" +
-            "\n" +
-            "player2 player:\n" +
-            "-------------\n" +
-            "2 units in 2 (next to: 0, 1, 3)\n" +
-            "2 units in 3 (next to: 0, 1, 2)\n" +
-            "\n" +
-            "\n" +
-            "Game over ~\n" +
-            "winner is\n", userOut.toString());
+    assertDoesNotThrow(() -> p.watchGame("Please choose"));
   }
 
 }
