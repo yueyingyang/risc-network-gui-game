@@ -233,12 +233,19 @@ public class Game {
       if(checkLost(player)==true){
         //we will only send lose game info to who has just lost the game
         player.sendMessage(Constant.LOSE_GAME);
+        //remove the lost player from stillIn
+        stillInPlayers.remove(player);
+        if(stillInPlayers.size()==1){
+          break;
+        }
+        else{
+          player.sendMessage(Constant.CONTINUE_PLAYING);
+        }   
         //if receive disconnect, rmv from the watch game list
         if(player.recvMessage().equals(Constant.DISCONNECT_GAME)){
           stillWatchPlayers.remove(player);
         }
-        //remove the lost player from stillIn
-        stillInPlayers.remove(player);
+ 
       }
       //for those who didn't lose, tell them to continue
       else{player.sendMessage(Constant.CONTINUE_PLAYING);}
