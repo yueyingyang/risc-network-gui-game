@@ -45,7 +45,7 @@ public class OneTurnThread extends Thread{
      */
     public void run(){
         JSONSerializer js=new JSONSerializer();
-        player.sendObject(gameMap);
+        //player.sendObject(gameMap);
         while(true){
             try{
                 String s = player.recvMessage();

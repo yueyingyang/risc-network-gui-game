@@ -176,6 +176,9 @@ public class Game {
    */
   public void receiveAndApplyMoves(){
     ArrayList<OneTurnThread> threads = new ArrayList<>();
+    for(Player p:stillWatchPlayers){
+      p.sendObject(gameMap);
+    }
     for(Player player:stillInPlayers){
       OneTurnThread thread = new OneTurnThread(gameMap, player);
       threads.add(thread);
