@@ -9,7 +9,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MoveEntryTest {
 
-
+   @Test
+   public void test_getters() {
+       ActionEntry entry = new MoveEntry("0", "1", 5);
+       assertEquals("0", entry.getFromName());
+       assertEquals("1", entry.getToName());
+       assertEquals(5, entry.getNumSoldiers());
+   }
 
     @Test
     public void test_apply() {
