@@ -97,7 +97,9 @@ class ClientPlayerTest {
             userOut);
     p.setName("player1");
     p.placementPhase();
-    assertEquals("[{\"type\":\"place\",\"terrName\":\"0\",\"numSoldiers\":1},{\"type\":\"place\",\"terrName\":\"1\",\"numSoldiers\":3}]\n", serverOut.toString());
+    String expect = "[{\"type\":\"place\",\"toName\":\"0\",\"numSoldiers\":1,\"fromName\":null}," +
+            "{\"type\":\"place\",\"toName\":\"1\",\"numSoldiers\":3,\"fromName\":null}]\n";
+    assertEquals(expect, serverOut.toString());
   }
 
   @Test

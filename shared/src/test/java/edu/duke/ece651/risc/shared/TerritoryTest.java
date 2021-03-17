@@ -87,23 +87,43 @@ class TerritoryTest {
     @Test
     public void test_resolveCombat() {
         Territory terr = new Territory("1");
+        terr.setOwnerName("Purple");
         Army myArmy = new BasicArmy("Purple", 5);
         terr.setMyArmy(myArmy);
 
+        // no combat on territory 1
+        String ans2 = terr.resolveCombat(new Random(0));
+        assertEquals("", ans2);
+        assertEquals("Purple", terr.getOwnerName());
+
+        // first combat on territory 1
         Army attacker0 = new BasicArmy("Blue", 4);
         Army attacker1 = new BasicArmy("Green", 6);
         Army attacker2 = new BasicArmy("Blue", 8);
-
-        Army[] attackers = {attacker0, attacker1, attacker2};
-        for (Army attacker : attackers) {
-            terr.bufferAttacker(attacker);
-        }
+        addAttackers(terr, attacker0, attacker1, attacker2);
 
         String ans = terr.resolveCombat(new Random(0));
         String expect = "On territory 1:\n" +
                 "Purple player(5 soldiers) defends Blue player(12 soldiers). Purple player wins.\n" +
                 "Purple player(1 soldiers) defends Green player(6 soldiers). Green player wins.\n";
         assertEquals(expect, ans);
+        assertEquals(-1, terr.getNumSoldiersInAttacker("Green"));
+
+        // second combat on territory 1
+        Army attacker3 = new BasicArmy("Yellow", 4);
+        Army attacker4 = new BasicArmy("Orange", 10);
+        addAttackers(terr, attacker3, attacker4);
+        String ans1 = terr.resolveCombat(new Random(0));
+        String expect1 = "On territory 1:\n" +
+                "Green player(4 soldiers) defends Yellow player(4 soldiers). Green player wins.\n" +
+                "Green player(3 soldiers) defends Orange player(10 soldiers). Orange player wins.\n";
+        assertEquals(expect1, ans1);
+    }
+
+    private void addAttackers(Territory terr, Army... attackers) {
+        for (Army attacker : attackers) {
+            terr.bufferAttacker(attacker);
+        }
     }
 
 }
