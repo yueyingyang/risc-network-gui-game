@@ -9,6 +9,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MoveEntryTest {
 
+
+
     @Test
     public void test_apply() {
         AbstractMapFactory f = new V1MapFactory();
