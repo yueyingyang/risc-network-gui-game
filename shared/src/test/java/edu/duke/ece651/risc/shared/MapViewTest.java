@@ -27,28 +27,28 @@ public class MapViewTest {
 
         String expected = "Tom player:\n" +
                 "-------------\n" +
-                "1 units in 3 (next to: 1, 2, 4, 5)\n" +
-                "1 units in 4 (next to: 0, 2, 3, 5)\n" +
-                "1 units in 5 (next to: 0, 1, 3, 4)\n" +
+                "1 units in 3 (next to: 2, 4)\n" +
+                "1 units in 4 (next to: 3, 5)\n" +
+                "1 units in 5 (next to: 0, 4)\n" +
                 "\n" +
                 "John player:\n" +
                 "-------------\n" +
-                "1 units in 0 (next to: 1, 2, 4, 5)\n" +
-                "1 units in 1 (next to: 0, 2, 3, 5)\n" +
-                "1 units in 2 (next to: 0, 1, 3, 4)\n" +
+                "1 units in 0 (next to: 1, 5)\n" +
+                "1 units in 1 (next to: 0, 2)\n" +
+                "1 units in 2 (next to: 1, 3)\n" +
                 "\n";
         assertEquals(expected, actual);
         String expectedEmptyMap = "Tom player:\n" +
                 "-------------\n" +
-                "3 (next to: 1, 2, 4, 5)\n" +
-                "4 (next to: 0, 2, 3, 5)\n" +
-                "5 (next to: 0, 1, 3, 4)\n" +
+                "3 (next to: 2, 4)\n" +
+                "4 (next to: 3, 5)\n" +
+                "5 (next to: 0, 4)\n" +
                 "\n" +
                 "John player:\n" +
                 "-------------\n" +
-                "0 (next to: 1, 2, 4, 5)\n" +
-                "1 (next to: 0, 2, 3, 5)\n" +
-                "2 (next to: 0, 1, 3, 4)\n" +
+                "0 (next to: 1, 5)\n" +
+                "1 (next to: 0, 2)\n" +
+                "2 (next to: 1, 3)\n" +
                 "\n";
         assertEquals(expectedEmptyMap,view.displayMapShape());
     }

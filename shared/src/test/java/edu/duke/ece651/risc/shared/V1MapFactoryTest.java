@@ -17,8 +17,8 @@ public class V1MapFactoryTest {
     //map.setOwnerName(nameList);
 
     assertTrue(map.getTerritory("0").isAdjacent(map.getTerritory("1")));
-    assertTrue(map.getTerritory("0").isAdjacent(map.getTerritory("3")));
-    assertTrue(map.getTerritory("0").isAdjacent(map.getTerritory("6")));
+    assertTrue(map.getTerritory("0").isAdjacent(map.getTerritory("8")));
+    assertFalse(map.getTerritory("0").isAdjacent(map.getTerritory("2")));
     assertFalse(map.getTerritory("0").isAdjacent(map.getTerritory("4")));
     assertFalse(map.getTerritory("0").isAdjacent(map.getTerritory("5")));
   }

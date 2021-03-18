@@ -43,7 +43,7 @@ class JSONSerializerTest {
   void test_serialize_and_de_action() throws JsonProcessingException {
     ActionEntry placeEntry = new PlaceEntry("0", 2);
     ActionEntry place1Entry = new PlaceEntry("1", 2);
-    ActionEntry attackEntry = new AttackEntry("0", "2", 1);
+    ActionEntry attackEntry = new AttackEntry("0", "3", 1);
     ActionEntry moveEntry = new MoveEntry("0", "1", 1);
     // test serializer
     JSONSerializer s = new JSONSerializer();
@@ -68,7 +68,7 @@ class JSONSerializerTest {
     List<ActionEntry> p = new ArrayList<>();
     p.add(new PlaceEntry("0", 2));
     p.add(new PlaceEntry("1", 2));
-    p.add(new AttackEntry("0", "2", 1));
+    p.add(new AttackEntry("0", "3", 1));
     p.add(new MoveEntry("0", "1", 1));
     // test serializer
     JSONSerializer s = new JSONSerializer();

@@ -1,5 +1,6 @@
 package edu.duke.ece651.risc.shared;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -23,8 +24,8 @@ class AttackEntryTest {
         GameMap myMap = f.createMap(names, 2);
 
         ActionEntry entry0 = new PlaceEntry("0", 8);  // LiLei
-        ActionEntry entry1 = new PlaceEntry("2", 4);  // HanMeiMei
-        ActionEntry entry2 = new AttackEntry("0", "2", 3);
+        ActionEntry entry1 = new PlaceEntry("3", 4);  // HanMeiMei
+        ActionEntry entry2 = new AttackEntry("0", "3", 3);
 
         ActionEntry[] entries = {entry0, entry1, entry2};
         for (ActionEntry entry : entries) {
@@ -32,7 +33,7 @@ class AttackEntryTest {
         }
 
         Territory terr0 = myMap.getTerritory("0");
-        Territory terr2 = myMap.getTerritory("2");
+        Territory terr2 = myMap.getTerritory("3");
         assertEquals(5, terr0.getNumSoldiersInArmy());
         assertEquals(4, terr2.getNumSoldiersInArmy());
         assertEquals(3, terr2.getNumSoldiersInAttacker("LiLei"));
