@@ -13,17 +13,18 @@ public class AttackEntry extends BasicEntry {
      * @param fromName    is the name of the from-territory
      * @param toName      is the name of the to-territory
      * @param numSoldiers is the number of soldiers
+     * @param playerName  is the name of the player
      * @annotation ConstructorProperties is for JSON deserialization
      */
-    @ConstructorProperties({"fromName", "toName", "numSoldiers"})
-    public AttackEntry(String fromName, String toName, int numSoldiers) {
-        super(fromName, toName, numSoldiers);
+    @ConstructorProperties({"fromName", "toName", "numSoldiers", "playerName"})
+    public AttackEntry(String fromName, String toName, int numSoldiers, String playerName) {
+        super(fromName, toName, numSoldiers, playerName);
     }
 
     /**
      * Send attackers
      *
-     * @param myMap     is the map of the game
+     * @param myMap is the map of the game
      */
     @Override
     public void apply(GameMap myMap) {

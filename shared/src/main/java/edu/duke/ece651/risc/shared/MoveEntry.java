@@ -10,11 +10,12 @@ public class MoveEntry extends BasicEntry {
      * @param fromName    is the name of the from-territory
      * @param toName      is the name of the to-territory
      * @param numSoldiers is the number of soldiers
+     * @param playerName  is the name of the player
      * @annotation ConstructorProperties is for JSON deserialization
      */
-    @ConstructorProperties({"fromName", "toName", "numSoldiers"})
-    public MoveEntry(String fromName, String toName, int numSoldiers) {
-        super(fromName, toName, numSoldiers);
+    @ConstructorProperties({"fromName", "toName", "numSoldiers", "playerName"})
+    public MoveEntry(String fromName, String toName, int numSoldiers, String playerName) {
+        super(fromName, toName, numSoldiers, playerName);
     }
 
     /**
