@@ -120,24 +120,6 @@ public class Game {
         this.gameMap = factory.createMap(nameList, territoriesPerPlayer);
     }
 
-
-    /**
-     * after creating the map, assign territorities to players
-     * each player will have territoriesPerPlayer territories
-     *
-     * @param territoriesPerPlayer
-     */
-    public void assignTerritories(int territoriesPerPlayer) {
-        ArrayList<Territory> territories = this.getMap().getAllTerritories();
-        for (int i = 0; i < players.size(); i++) {
-            String playerName = players.get(i).getName();
-            for (int j = 0; j < territoriesPerPlayer; j++) {
-                territories.get(i * territoriesPerPlayer + j).setOwnerName(playerName);
-            }
-        }
-    }
-
-
     /**
      * send object to all players in the player list
      *
@@ -329,7 +311,6 @@ public class Game {
             int TerritoryPerPlayer = 1;//assume that one player has three territories
             int totalSoldiers = 1;//assume that each player have 12 soldiers in total
             makeMap(TerritoryPerPlayer);
-            assignTerritories(TerritoryPerPlayer);
             sendObjectToAll(this.gameMap, players);
             sendStringToAll(String.valueOf(totalSoldiers), players);
             placementPhase();

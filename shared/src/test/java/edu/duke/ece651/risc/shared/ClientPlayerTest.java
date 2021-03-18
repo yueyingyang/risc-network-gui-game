@@ -103,8 +103,7 @@ class ClientPlayerTest {
             userOut);
     p.setName("player1");
     p.placementPhase();
-    String expect = "[{\"type\":\"place\",\"toName\":\"0\",\"numSoldiers\":1,\"fromName\":null}," +
-            "{\"type\":\"place\",\"toName\":\"1\",\"numSoldiers\":2,\"fromName\":null}]\n";
+    String expect = "[{\"type\":\"place\",\"toName\":\"0\",\"numSoldiers\":1,\"playerName\":\"player1\",\"fromName\":null},{\"type\":\"place\",\"toName\":\"1\",\"numSoldiers\":2,\"playerName\":\"player1\",\"fromName\":null}]\n";
     assertEquals(expect, serverOut.toString());
   }
 
@@ -124,10 +123,10 @@ class ClientPlayerTest {
   public static GameMap createMap() {
     V1MapFactory v1f = new V1MapFactory();
     GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 2);
-    List<ActionEntry> pl = Arrays.asList(new PlaceEntry("0", 2),
-            new PlaceEntry("1", 2),
-            new PlaceEntry("2", 2),
-            new PlaceEntry("3", 2));
+    List<ActionEntry> pl = Arrays.asList(new PlaceEntry("0", 2, "player1"),
+            new PlaceEntry("1", 2, "player1"),
+            new PlaceEntry("2", 2, "player2"),
+            new PlaceEntry("3", 2, "player2"));
     for (ActionEntry ae : pl) {
       ae.apply(map);
     }

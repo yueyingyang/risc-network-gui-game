@@ -12,11 +12,12 @@ public class PlaceEntry extends BasicEntry {
      *
      * @param toName      is the name of the to-territory
      * @param numSoldiers is the number of soldiers
+     * @param playerName  is the name of the player
      * @annotation ConstructorProperties is for JSON deserialization
      */
-    @ConstructorProperties({"toName", "numSoldiers"})
-    public PlaceEntry(String toName, int numSoldiers) {
-        super(null, toName, numSoldiers);
+    @ConstructorProperties({"toName", "numSoldiers", "playerName"})
+    public PlaceEntry(String toName, int numSoldiers, String playerName) {
+        super(null, toName, numSoldiers, playerName);
     }
 
     /**

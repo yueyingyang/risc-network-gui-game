@@ -23,10 +23,10 @@ class JSONSerializerTest {
     V1MapFactory v1f = new V1MapFactory();
     GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 2);
     List<ActionEntry> placement = new ArrayList<>();
-    placement.add(new PlaceEntry("0", 1));
-    placement.add(new PlaceEntry("1", 1));
-    placement.add(new PlaceEntry("2", 1));
-    placement.add(new PlaceEntry("3", 1));
+    placement.add(new PlaceEntry("0", 1, "player1"));
+    placement.add(new PlaceEntry("1", 1, "player1"));
+    placement.add(new PlaceEntry("2", 1, "player1"));
+    placement.add(new PlaceEntry("3", 1, "player1"));
     for (ActionEntry pe : placement) {
       pe.apply(map);
     }
@@ -41,10 +41,10 @@ class JSONSerializerTest {
 
   @Test
   void test_serialize_and_de_action() throws JsonProcessingException {
-    ActionEntry placeEntry = new PlaceEntry("0", 2);
-    ActionEntry place1Entry = new PlaceEntry("1", 2);
-    ActionEntry attackEntry = new AttackEntry("0", "3", 1);
-    ActionEntry moveEntry = new MoveEntry("0", "1", 1);
+    ActionEntry placeEntry = new PlaceEntry("0", 2, "player1");
+    ActionEntry place1Entry = new PlaceEntry("1", 2, "player1");
+    ActionEntry attackEntry = new AttackEntry("0", "3", 1, "player1");
+    ActionEntry moveEntry = new MoveEntry("0", "1", 1, "player1");
     // test serializer
     JSONSerializer s = new JSONSerializer();
     ActionEntry dePlace = (ActionEntry) s.deserialize(s.serialize(placeEntry), ActionEntry.class);
@@ -66,10 +66,10 @@ class JSONSerializerTest {
   @Test
   void test_serialize_and_de_placement_list() throws JsonProcessingException {
     List<ActionEntry> p = new ArrayList<>();
-    p.add(new PlaceEntry("0", 2));
-    p.add(new PlaceEntry("1", 2));
-    p.add(new AttackEntry("0", "3", 1));
-    p.add(new MoveEntry("0", "1", 1));
+    p.add(new PlaceEntry("0", 2, "player1"));
+    p.add(new PlaceEntry("1", 2, "player1"));
+    p.add(new AttackEntry("0", "3", 1, "player1"));
+    p.add(new MoveEntry("0", "1", 1, "player1"));
     // test serializer
     JSONSerializer s = new JSONSerializer();
     String listJSON = s.getOm().writerFor(new TypeReference<List<ActionEntry>>() {

@@ -110,7 +110,7 @@ public class ClientPlayer extends Player {
         num = readUnitNumber(num + " exceeds your remaining limit(" + remainingUnit + ")!\n");
       }
       remainingUnit -= num;
-      placementList.add(new PlaceEntry(t.getName(), num));
+      placementList.add(new PlaceEntry(t.getName(), num, getName()));
     }
     sendMessage(serializer.getOm().writerFor(new TypeReference<List<ActionEntry>>() {
     }).writeValueAsString(placementList));
@@ -255,12 +255,12 @@ public class ClientPlayer extends Player {
       String fromTerritory = readTerritoryName("[Move] Which territory want to move from?");
       String toTerritory = readTerritoryName("[Move] Which territory want to move to?");
       Integer unitNum = readUnitNumber("[Move] How many soldiers you want move from " + fromTerritory + " to " + toTerritory + "?");
-      return new MoveEntry(fromTerritory, toTerritory, unitNum);
+      return new MoveEntry(fromTerritory, toTerritory, unitNum, getName());
     } else if (actionType.equals("a")) {
       String fromTerritory = readTerritoryName("[Attack] From which territory you want to send soldiers out?");
       String toTerritory = readTerritoryName("[Attack] Which territory you want to attack?");
       Integer unitNum = readUnitNumber("[Attack] How many soldiers you want to use from " + fromTerritory + "?");
-      return new AttackEntry(fromTerritory, toTerritory, unitNum);
+      return new AttackEntry(fromTerritory, toTerritory, unitNum, getName());
     } else {
       return null;
     }
