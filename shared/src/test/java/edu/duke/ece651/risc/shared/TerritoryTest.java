@@ -103,8 +103,8 @@ class TerritoryTest {
 
         String ans = terr.resolveCombat(new Random(0));
         String expect = "On territory 1:\n" +
-                "Purple player(5 soldiers) defends Blue player(12 soldiers). Purple player wins.\n" +
-                "Purple player(1 soldiers) defends Green player(6 soldiers). Green player wins.\n";
+                "Purple player(5 soldiers) defends Blue player(12 soldiers). Blue player wins.\n" +
+                "Blue player(10 soldiers) defends Green player(6 soldiers). Blue player wins.\n";
         assertEquals(expect, ans);
         assertEquals(-1, terr.getNumSoldiersInAttacker("Green"));
 
@@ -114,8 +114,8 @@ class TerritoryTest {
         addAttackers(terr, attacker3, attacker4);
         String ans1 = terr.resolveCombat(new Random(0));
         String expect1 = "On territory 1:\n" +
-                "Green player(4 soldiers) defends Yellow player(4 soldiers). Green player wins.\n" +
-                "Green player(3 soldiers) defends Orange player(10 soldiers). Orange player wins.\n";
+                "Blue player(2 soldiers) defends Yellow player(4 soldiers). Yellow player wins.\n" +
+                "Yellow player(4 soldiers) defends Orange player(10 soldiers). Orange player wins.\n";
         assertEquals(expect1, ans1);
     }
 
