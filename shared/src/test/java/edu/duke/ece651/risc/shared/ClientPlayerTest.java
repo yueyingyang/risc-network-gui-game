@@ -75,7 +75,7 @@ class ClientPlayerTest {
     assertEquals(userOutput, userOut.toString());
   }
 
-  public ClientPlayer createClientPlayer(String serverIn, ByteArrayOutputStream serverOut, String userIn, ByteArrayOutputStream userOut) {
+  public static ClientPlayer createClientPlayer(String serverIn, ByteArrayOutputStream serverOut, String userIn, ByteArrayOutputStream userOut) {
     return new ClientPlayer(new BufferedReader(new StringReader(serverIn)),
             new PrintWriter(serverOut, true),
             new BufferedReader(new StringReader(userIn)),
@@ -94,18 +94,17 @@ class ClientPlayerTest {
 
   @Test
   void test_placement() throws IOException {
-    V1MapFactory v1f = new V1MapFactory();
-    GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 2);
+    GameMap map = createMap();
     Serializer s = new JSONSerializer();
     String result = s.serialize(map);
     ClientPlayer p = createClientPlayer(result + "\n" + 4,
             serverOut,
-            "1\n5\n3\n",
+            "1\n5\n1a\n-2\n2\n",
             userOut);
     p.setName("player1");
     p.placementPhase();
     String expect = "[{\"type\":\"place\",\"toName\":\"0\",\"numSoldiers\":1,\"fromName\":null}," +
-            "{\"type\":\"place\",\"toName\":\"1\",\"numSoldiers\":3,\"fromName\":null}]\n";
+            "{\"type\":\"place\",\"toName\":\"1\",\"numSoldiers\":2,\"fromName\":null}]\n";
     assertEquals(expect, serverOut.toString());
   }
 
@@ -113,16 +112,16 @@ class ClientPlayerTest {
   void test_play_one_turn() throws IOException {
     GameMap map = createMap();
     Serializer s = new JSONSerializer();
-    String mapjson = s.serialize(map);
+    String mapJSON = s.serialize(map);
     ClientPlayer p = createClientPlayer(Constant.VALID_ACTION + "\n" + "Action is invalid\n" + Constant.VALID_ACTION + "\n",
             serverOut,
             "b\nm\n0\n1\n1\nm\n0\n1\n1\na\n1\n2\na\n1\nc\n",
             userOut);
     p.setName("player1");
-    assertDoesNotThrow(() -> p.playOneTurn(mapjson + "\n"));
+    assertDoesNotThrow(() -> p.playOneTurn(mapJSON + "\n"));
   }
 
-  private GameMap createMap() {
+  public static GameMap createMap() {
     V1MapFactory v1f = new V1MapFactory();
     GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 2);
     List<ActionEntry> pl = Arrays.asList(new PlaceEntry("0", 2),
