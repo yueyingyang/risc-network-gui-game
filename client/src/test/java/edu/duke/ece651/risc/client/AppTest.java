@@ -83,15 +83,6 @@ class AppTest {
     app2.attackPhase();
   }
 
-
-  // Helper function
-  public static ClientPlayer createClientPlayer(String serverIn, ByteArrayOutputStream serverOut, String userIn, ByteArrayOutputStream userOut) {
-    return new ClientPlayer(new BufferedReader(new StringReader(serverIn)),
-            new PrintWriter(serverOut, true),
-            new BufferedReader(new StringReader(userIn)),
-            new PrintStream(userOut));
-  }
-
   public static GameMap createMap() {
     V1MapFactory v1f = new V1MapFactory();
     GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 2);
