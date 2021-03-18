@@ -68,8 +68,6 @@ project (':server'){
 project (':client'){
     dependencies {
         implementation project(':shared')
-        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.1'
-        testImplementation(testFixtures(project(":shared")))
     } 
 }
 

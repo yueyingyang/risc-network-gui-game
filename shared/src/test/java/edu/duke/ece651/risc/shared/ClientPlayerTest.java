@@ -7,8 +7,6 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 
-import static edu.duke.ece651.risc.shared.TestHelper.createClientPlayer;
-import static edu.duke.ece651.risc.shared.TestHelper.createMap;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -139,6 +137,26 @@ class ClientPlayerTest {
             "combat result\n" +
             "Game over ~\n" +
             "winner is\n", userOut.toString());
+  }
+
+  public static ClientPlayer createClientPlayer(String serverIn, ByteArrayOutputStream serverOut, String userIn, ByteArrayOutputStream userOut) {
+    return new ClientPlayer(new BufferedReader(new StringReader(serverIn)),
+            new PrintWriter(serverOut, true),
+            new BufferedReader(new StringReader(userIn)),
+            new PrintStream(userOut));
+  }
+
+  public static GameMap createMap() {
+    V1MapFactory v1f = new V1MapFactory();
+    GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 2);
+    List<ActionEntry> pl = Arrays.asList(new PlaceEntry("0", 2, "player1"),
+            new PlaceEntry("1", 2, "player1"),
+            new PlaceEntry("2", 2, "player2"),
+            new PlaceEntry("3", 2, "player2"));
+    for (ActionEntry ae : pl) {
+      ae.apply(map);
+    }
+    return map;
   }
 
 }

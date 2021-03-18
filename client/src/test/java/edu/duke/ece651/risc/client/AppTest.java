@@ -1,10 +1,7 @@
 
 package edu.duke.ece651.risc.client;
 
-import edu.duke.ece651.risc.shared.Constant;
-import edu.duke.ece651.risc.shared.GameMap;
-import edu.duke.ece651.risc.shared.JSONSerializer;
-import edu.duke.ece651.risc.shared.Serializer;
+import edu.duke.ece651.risc.shared.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -14,9 +11,8 @@ import org.mockito.Spy;
 
 import java.io.*;
 import java.net.Socket;
-
-import static edu.duke.ece651.risc.shared.TestHelper.createEasyMap;
-import static edu.duke.ece651.risc.shared.TestHelper.createMap;
+import java.util.Arrays;
+import java.util.List;
 
 class AppTest {
   OutputStream testOutStream = new ByteArrayOutputStream();
@@ -85,5 +81,38 @@ class AppTest {
                     Constant.GAME_OVER + "\n winner\n",
             "a\n0\n1\n1\nc\na\n0\n1\n1\nc\n");
     app2.attackPhase();
+  }
+
+
+  // Helper function
+  public static ClientPlayer createClientPlayer(String serverIn, ByteArrayOutputStream serverOut, String userIn, ByteArrayOutputStream userOut) {
+    return new ClientPlayer(new BufferedReader(new StringReader(serverIn)),
+            new PrintWriter(serverOut, true),
+            new BufferedReader(new StringReader(userIn)),
+            new PrintStream(userOut));
+  }
+
+  public static GameMap createMap() {
+    V1MapFactory v1f = new V1MapFactory();
+    GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 2);
+    List<ActionEntry> pl = Arrays.asList(new PlaceEntry("0", 2, "player1"),
+            new PlaceEntry("1", 2, "player1"),
+            new PlaceEntry("2", 2, "player2"),
+            new PlaceEntry("3", 2, "player2"));
+    for (ActionEntry ae : pl) {
+      ae.apply(map);
+    }
+    return map;
+  }
+
+  public static GameMap createEasyMap(){
+    V1MapFactory v1f = new V1MapFactory();
+    GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 1);
+    List<ActionEntry> pl = Arrays.asList(new PlaceEntry("0", 1, "player1"),
+            new PlaceEntry("1", 0, "player2"));
+    for (ActionEntry ae : pl) {
+      ae.apply(map);
+    }
+    return map;
   }
 }
