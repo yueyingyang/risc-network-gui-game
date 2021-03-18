@@ -15,7 +15,7 @@ public class ClientChecker extends Checker {
         Territory start = map.getTerritory(action.getFromName());
 
         if (start.getNumSoldiersInArmy() < action.getNumSoldiers()) {
-            throw new IllegalArgumentException("The army in this territory is not enough for this action!\n");
+            throw new IllegalArgumentException("The army in this territory is not enough for this action!");
         }
     }
 }
