@@ -36,13 +36,13 @@ public class App {
 
   public void run() throws IOException {
     // login game: join an existed game / start a new game
-    this.loginGame();
-    this.placementPhase();
-    this.attackPhase();
-    this.endGame();
+    loginGame();
+    placementPhase();
+    attackPhase();
+    endGame();
   }
 
-  private void attackPhase() throws IOException {
+  public void attackPhase() throws IOException {
     String mapOrGameOver = player.recvMessage();
     while (true) {
       player.playOneTurn(mapOrGameOver);
@@ -94,7 +94,7 @@ public class App {
     }
   }
 
-  private void placementPhase() throws IOException {
+  public void placementPhase() throws IOException {
     player.placementPhase();
   }
 

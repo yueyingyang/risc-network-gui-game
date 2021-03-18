@@ -107,7 +107,7 @@ public class ClientPlayer extends Player {
     for (Territory t : ts) {
       int num = readUnitNumber("How many units(remaining: " + remainingUnit + ") you want to place on territory " + t.getName() + "?");
       while (num > remainingUnit) {
-        num = readUnitNumber(num + " exceeds your remaining limit(" + remainingUnit + ")!\n");
+        num = readUnitNumber(num + " exceeds your remaining limit(" + remainingUnit + ")!");
       }
       remainingUnit -= num;
       placementList.add(new PlaceEntry(t.getName(), num, getName()));
@@ -142,6 +142,7 @@ public class ClientPlayer extends Player {
       String serverValidRes = recvMessage();
       display(serverValidRes);
       if (!serverValidRes.equals(Constant.VALID_ACTION)) {
+        display("Please enter again: ");
         continue;
       }
       try {
@@ -208,6 +209,7 @@ public class ClientPlayer extends Player {
     String actionType = userIn.readLine();
     String type = actionType.toLowerCase(Locale.ROOT);
     if (!type.equals("m") && !type.equals("c") && !type.equals("a")) {
+      display("wrong type " + type);
       return readActionType("Type letter need to be (a)ttack, (m)ove, (c)ommit but now is " + type + ". Please enter again:");
     }
     return type;
@@ -238,9 +240,9 @@ public class ClientPlayer extends Player {
     String s = readFromUser();
     try {
       unit = Integer.parseInt(s);
-      if(unit < 0) return readUnitNumber("Unit number must be positive, but is " + unit + "!");
+      if (unit < 0) return readUnitNumber("Unit number must be positive, but is " + unit + "!\n Please enter again: ");
     } catch (NumberFormatException e) {
-      return readUnitNumber("The soldier number should be an integer:" + e.getMessage());
+      return readUnitNumber("The soldier number should be an integer:" + e.getMessage() + "\n Please enter again: ");
     }
     return unit;
   }
@@ -264,9 +266,8 @@ public class ClientPlayer extends Player {
       String toTerritory = readTerritoryName("[Attack] Which territory you want to attack?");
       Integer unitNum = readUnitNumber("[Attack] How many soldiers you want to use from " + fromTerritory + "?");
       return new AttackEntry(fromTerritory, toTerritory, unitNum, getName());
-    } else {
-      return null;
     }
+    return null;
   }
 
   /**
