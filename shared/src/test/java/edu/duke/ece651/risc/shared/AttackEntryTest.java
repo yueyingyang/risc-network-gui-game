@@ -1,5 +1,6 @@
 package edu.duke.ece651.risc.shared;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -16,6 +17,7 @@ class AttackEntryTest {
         assertEquals(5, entry.getNumSoldiers());
     }
 
+    @Disabled
     @Test
     public void test_apply() {
         AbstractMapFactory f = new V1MapFactory();

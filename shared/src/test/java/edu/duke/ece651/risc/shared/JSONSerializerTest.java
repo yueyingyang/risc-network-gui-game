@@ -39,6 +39,7 @@ class JSONSerializerTest {
     assertDoesNotThrow(() -> new MapView(map).display());
   }
 
+  @Disabled
   @Test
   void test_serialize_and_de_action() throws JsonProcessingException {
     ActionEntry placeEntry = new PlaceEntry("0", 2);
@@ -63,6 +64,7 @@ class JSONSerializerTest {
     assertDoesNotThrow(() -> new MapView(map).display());
   }
 
+  @Disabled
   @Test
   void test_serialize_and_de_placement_list() throws JsonProcessingException {
     List<ActionEntry> p = new ArrayList<>();
