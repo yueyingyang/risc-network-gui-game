@@ -114,6 +114,7 @@ public class ClientPlayer extends Player {
     }
     sendMessage(serializer.getOm().writerFor(new TypeReference<List<ActionEntry>>() {
     }).writeValueAsString(placementList));
+    display("Placement succeed! Please wait the game to start...");
   }
 
   /**
