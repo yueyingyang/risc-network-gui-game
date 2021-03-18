@@ -21,7 +21,7 @@ public class HostSocket {
     try {
       this.serverSocket = new ServerSocket(this.portNumber);
     } catch (IOException e) {
-      System.out.println("Exception caught when listening fon port" + portNumber);
+      System.out.println("Exception caught when listening on port" + portNumber);
       System.out.println(e.getMessage());
     }
   }
