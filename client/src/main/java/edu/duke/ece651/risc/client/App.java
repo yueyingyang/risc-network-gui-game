@@ -36,10 +36,10 @@ public class App {
 
   public void run() throws IOException {
     // login game: join an existed game / start a new game
-    this.loginGame();
-    this.placementPhase();
-    this.attackPhase();
-    this.endGame();
+    loginGame();
+    placementPhase();
+    attackPhase();
+    endGame();
   }
 
   public void attackPhase() throws IOException {
