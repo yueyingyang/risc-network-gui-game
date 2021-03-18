@@ -12,10 +12,10 @@ public abstract class BasicEntry implements ActionEntry {
     /**
      * Construct a basic entry
      *
-     * @param fromName is the name of the from-territory
-     * @param toName is the name of the to-territory
+     * @param fromName    is the name of the from-territory
+     * @param toName      is the name of the to-territory
      * @param numSoldiers is the number of soldiers
-     * @param playerName is the name of the player
+     * @param playerName  is the name of the player
      */
     public BasicEntry(String fromName, String toName, int numSoldiers, String playerName) {
         this.fromName = fromName;
@@ -52,5 +52,15 @@ public abstract class BasicEntry implements ActionEntry {
     @Override
     public int getNumSoldiers() {
         return numSoldiers;
+    }
+
+    /**
+     * Get the name of the player
+     *
+     * @return the name of the player
+     */
+    @Override
+    public String getPlayerName() {
+        return playerName;
     }
 }

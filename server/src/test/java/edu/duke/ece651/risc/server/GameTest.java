@@ -70,7 +70,6 @@ public class GameTest {
     ServerPlayer p = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes, true),s);
     g.addPlayer(p);
     g.makeMap(3);
-    g.assignTerritories(3);
     for(Territory t : g.getMap().getAllTerritories()){
       assertEquals("Red", t.getOwnerName());
     }
@@ -84,7 +83,6 @@ public class GameTest {
     ServerPlayer p = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes, true),socket);
     g.addPlayer(p);
     g.makeMap(3);
-    g.assignTerritories(3);
     ArrayList<ServerPlayer> list = new ArrayList<>();
     list.add(p);
     g.sendObjectToAll(g.getMap(),list);
@@ -112,8 +110,8 @@ public class GameTest {
   public void test_placementPhase() throws IOException{
     Socket socket = new Socket();
     Game g = new Game(1); 
-    ActionEntry p0 = new PlaceEntry("0",4);
-    ActionEntry p1 = new PlaceEntry("1",4);
+    ActionEntry p0 = new PlaceEntry("0",4, "");
+    ActionEntry p1 = new PlaceEntry("1",4, "");
     Collection<ActionEntry> ca = new ArrayList<ActionEntry>();
     ca.add(p0);
     ca.add(p1); 
@@ -123,7 +121,6 @@ public class GameTest {
     ServerPlayer p = new ServerPlayer(new BufferedReader(new StringReader(listJSON)), new PrintWriter(bytes, true),socket);
     g.addPlayer(p);
     g.makeMap(2);
-    g.assignTerritories(2);
     g.placementPhase();
     for(Territory t:g.getMap().getPlayerTerritories("Red")){
       assertEquals(4,t.getNumSoldiersInArmy());
@@ -138,7 +135,6 @@ public class GameTest {
     ServerPlayer p = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes, true),socket);
     g.addPlayer(p);
     g.makeMap(3);
-    g.assignTerritories(3);
     String res = g.doAttacks();
     String expected = "The combat results are:\n";
     assertEquals(expected,res);
@@ -152,7 +148,6 @@ public class GameTest {
     ServerPlayer p = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes, true),socket);
     g.addPlayer(p);
     g.makeMap(3);
-    g.assignTerritories(3);
     for(Territory t:g.getMap().getAllTerritories()){
       BasicArmy myArmy = new BasicArmy("Red",3);
       t.setMyArmy(myArmy);
@@ -170,7 +165,6 @@ public class GameTest {
     ServerPlayer p = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes, true),socket);
     g.addPlayer(p);
     g.makeMap(3);
-    g.assignTerritories(3);
     assertEquals(true, g.checkWin());
     assertEquals(false, g.checkLost(p));
   }
@@ -187,7 +181,6 @@ public class GameTest {
     g.addPlayer(p1);
     g.addPlayer(p2);
     g.makeMap(3);
-    g.assignTerritories(3);
     assertEquals(false, g.checkWin());
     for(Territory t:g.getMap().getAllTerritories()){
       t.setOwnerName("Red");

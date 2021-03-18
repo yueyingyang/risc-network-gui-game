@@ -15,10 +15,10 @@ public class MoveRuleCheckerTest {
   public void test_checkMyRule() {
     GameMap map1=createTestMap();
     Checker checker=new MoveRuleChecker(null);
-    ActionEntry move1=new MoveEntry("3","4",1);
-    ActionEntry move2=new MoveEntry("1", "1", 2);
-    ActionEntry move3=new MoveEntry("1","7",1);
-    ActionEntry move4=new MoveEntry("1","3",1);
+    ActionEntry move1=new MoveEntry("3","4",1, "player1");
+    ActionEntry move2=new MoveEntry("1", "1", 2, "player1");
+    ActionEntry move3=new MoveEntry("1","7",1, "player1");
+    ActionEntry move4=new MoveEntry("1","3",1, "player1");
     assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move1,map1));
     assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move2,map1));
     assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move3,map1));
@@ -29,10 +29,10 @@ public class MoveRuleCheckerTest {
   public void test_combinedRule(){
     GameMap map1=createTestMap();
     Checker checker=new ClientChecker(new MoveRuleChecker(null));
-    ActionEntry move1=new MoveEntry("4", "3", 2);
-    ActionEntry move2=new MoveEntry("2", "3", 7);
-    ActionEntry move3=new MoveEntry("a", "3", 7);
-    ActionEntry move4=new MoveEntry("1","3",1);
+    ActionEntry move1=new MoveEntry("4", "3", 2, "player2");
+    ActionEntry move2=new MoveEntry("2", "3", 7, "player1");
+    ActionEntry move3=new MoveEntry("a", "3", 7, "player1");
+    ActionEntry move4=new MoveEntry("1","3",1, "player1");
     assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move1,map1));
     assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move2,map1));
     assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move3,map1));
