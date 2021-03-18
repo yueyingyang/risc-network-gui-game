@@ -13,6 +13,7 @@ import java.io.PrintWriter;
  */
 public class ServerPlayer extends Player {
   private Socket clientSocket;
+
   public ServerPlayer(BufferedReader in, PrintWriter out, Socket cs) {
     super(in, out);
     this.clientSocket = cs;
@@ -62,13 +63,15 @@ public class ServerPlayer extends Player {
     return playerNum;
   }
 
-  public void closeSocket(){
-    try{
-      this.in.close();
-      this.out.close();
+  /**
+   * Close player's I/O stream
+   */
+  public void closeSocket() {
+    try {
+      this.closeIOStream();
       this.clientSocket.close();
-    }catch(Exception e){
+    } catch (Exception e) {
       System.out.println(e.getMessage());
-    }    
+    }
   }
 }

@@ -235,7 +235,7 @@ public class ClientPlayer extends Player {
     String s = readFromUser();
     try {
       unit = Integer.parseInt(s);
-      if(unit < 0) return readUnitNumber(" Unit number must be positive, but is " + unit + "!\n");
+      if(unit < 0) return readUnitNumber("Unit number must be positive, but is " + unit + "!");
     } catch (NumberFormatException e) {
       return readUnitNumber("The soldier number should be an integer:" + e.getMessage());
     }
@@ -254,7 +254,7 @@ public class ClientPlayer extends Player {
     if (actionType.equals("m")) {
       String fromTerritory = readTerritoryName("[Move] Which territory want to move from?");
       String toTerritory = readTerritoryName("[Move] Which territory want to move to?");
-      Integer unitNum = readUnitNumber("[Move] How many soldiers you want move from " + fromTerritory + "to " + toTerritory + "?");
+      Integer unitNum = readUnitNumber("[Move] How many soldiers you want move from " + fromTerritory + " to " + toTerritory + "?");
       return new MoveEntry(fromTerritory, toTerritory, unitNum);
     } else if (actionType.equals("a")) {
       String fromTerritory = readTerritoryName("[Attack] From which territory you want to send soldiers out?");

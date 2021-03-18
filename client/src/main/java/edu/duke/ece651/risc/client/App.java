@@ -30,6 +30,7 @@ public class App {
   }
 
   public void endGame() throws IOException {
+    player.closeIOStream();
     socket.close();
   }
 
@@ -53,7 +54,7 @@ public class App {
       String turnRes = player.recvMessage();
       if (turnRes.equals(Constant.LOSE_GAME)) {
         player.display(turnRes);
-        if(player.recvMessage().equals(Constant.CONTINUE_PLAYING)){
+        if (player.recvMessage().equals(Constant.CONTINUE_PLAYING)) {
           // can choose watch or disconnect
           player.watchGame("You can either \n" +
                   "E Exit this game\n" +
