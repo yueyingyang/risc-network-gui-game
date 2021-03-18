@@ -7,6 +7,8 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 
+import static edu.duke.ece651.risc.shared.TestHelper.createClientPlayer;
+import static edu.duke.ece651.risc.shared.TestHelper.createMap;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -65,7 +67,7 @@ class ClientPlayerTest {
     String serverIn = serverInstruction + "fake player\n";
     String userOutput = serverInstruction + "You login as fake player successfully.\n";
 
-            String userIn = "j\n1\n";
+    String userIn = "j\n1\n";
     ClientPlayer p = createClientPlayer(serverIn,
             serverOut,
             userIn,
@@ -75,12 +77,6 @@ class ClientPlayerTest {
     assertEquals(userOutput, userOut.toString());
   }
 
-  public static ClientPlayer createClientPlayer(String serverIn, ByteArrayOutputStream serverOut, String userIn, ByteArrayOutputStream userOut) {
-    return new ClientPlayer(new BufferedReader(new StringReader(serverIn)),
-            new PrintWriter(serverOut, true),
-            new BufferedReader(new StringReader(userIn)),
-            new PrintStream(userOut));
-  }
 
   @Test
   void test_get_name() {
@@ -120,23 +116,12 @@ class ClientPlayerTest {
     assertDoesNotThrow(() -> p.playOneTurn(mapJSON + "\n"));
   }
 
-  public static GameMap createMap() {
-    V1MapFactory v1f = new V1MapFactory();
-    GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 2);
-    List<ActionEntry> pl = Arrays.asList(new PlaceEntry("0", 2, "player1"),
-            new PlaceEntry("1", 2, "player1"),
-            new PlaceEntry("2", 2, "player2"),
-            new PlaceEntry("3", 2, "player2"));
-    for (ActionEntry ae : pl) {
-      ae.apply(map);
-    }
-    return map;
-  }
-
   @Test
   void test_watch_game() throws IOException {
     GameMap map = createMap();
-    ClientPlayer p = createClientPlayer(Constant.GAME_OVER + "\nwinner is\n" + new JSONSerializer().serialize(map) + "\n" + Constant.GAME_OVER + "\nwinner is\n",
+    String testExit = "";
+    String testWatch = new JSONSerializer().serialize(map) + "\n" + "\"combat result\"\n" + Constant.GAME_OVER + "\nwinner is\n";
+    ClientPlayer p = createClientPlayer(testExit + testWatch,
             serverOut,
             "a\ne\nc\n",
             userOut);
@@ -146,6 +131,14 @@ class ClientPlayerTest {
             "Thanks for joining the game today, goodbye!\n", userOut.toString());
     userOut.reset();
     assertDoesNotThrow(() -> p.watchGame("Please choose"));
+    assertEquals("Please choose\n" +
+            "You start to watch the game:\n" +
+            "Current game status:\n" +
+            new MapView(map).display() +
+            "\n" +
+            "combat result\n" +
+            "Game over ~\n" +
+            "winner is\n", userOut.toString());
   }
 
 }

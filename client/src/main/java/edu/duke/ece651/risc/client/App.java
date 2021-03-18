@@ -42,7 +42,7 @@ public class App {
     this.endGame();
   }
 
-  private void attackPhase() throws IOException {
+  public void attackPhase() throws IOException {
     String mapOrGameOver = player.recvMessage();
     while (true) {
       player.playOneTurn(mapOrGameOver);
@@ -94,7 +94,7 @@ public class App {
     }
   }
 
-  private void placementPhase() throws IOException {
+  public void placementPhase() throws IOException {
     player.placementPhase();
   }
 

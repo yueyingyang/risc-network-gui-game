@@ -1,35 +1,34 @@
 
 package edu.duke.ece651.risc.client;
 
-import edu.duke.ece651.risc.shared.*;
+import edu.duke.ece651.risc.shared.Constant;
+import edu.duke.ece651.risc.shared.GameMap;
+import edu.duke.ece651.risc.shared.JSONSerializer;
+import edu.duke.ece651.risc.shared.Serializer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 
 import java.io.*;
 import java.net.Socket;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static edu.duke.ece651.risc.shared.TestHelper.createEasyMap;
+import static edu.duke.ece651.risc.shared.TestHelper.createMap;
 
 class AppTest {
-
+  OutputStream testOutStream = new ByteArrayOutputStream();
   @BeforeEach
   public void init() {
     MockitoAnnotations.initMocks(this);
   }
 
   @Mock
-  private Socket s;
-
-  @Mock
-  private BufferedReader userIn;
-
-  @Mock
   private PrintStream userOut;
 
-  @Mock
+  @Spy
   private OutputStream mockOutputStream;
 
   @Test
@@ -38,41 +37,53 @@ class AppTest {
     String serverIn = Constant.NO_GAME_AVAILABLE_INFO + "\n" +
             Constant.ASK_HOW_MANY_PLAYERS + "\n" +
             Constant.SUCCESS_NUMBER_CHOOSED + "\n" + "name";
+    Socket s = Mockito.mock(Socket.class);
+    App app = getApp(s, serverIn, "3");
+    app.loginGame();
+  }
+
+  private App getApp(Socket s, String serverIn, String userInString) throws IOException {
     InputStream mockInputStream = new ByteArrayInputStream(serverIn.getBytes());
     Mockito.when(s.getInputStream()).thenReturn(mockInputStream);
     Mockito.when(s.getOutputStream()).thenReturn(mockOutputStream);
-    Mockito.when(userIn.readLine()).thenReturn("3");
-
-    App app = new App(s, userIn, userOut);
-    app.loginGame();
+    BufferedReader userInputStream = new BufferedReader(new StringReader(userInString));
+    return new App(s, userInputStream, userOut);
   }
 
   @Test
   void test_end_game() throws IOException {
     // mock preparation
-    InputStream mockInputStream = new ByteArrayInputStream("".getBytes());
-    Mockito.when(s.getInputStream()).thenReturn(mockInputStream);
-    Mockito.when(s.getOutputStream()).thenReturn(mockOutputStream);
-    Mockito.when(userIn.readLine()).thenReturn("");
-
-    App app = new App(s, userIn, userOut);
+    Socket s = Mockito.mock(Socket.class);
+    App app = getApp(s, "", "");
     app.endGame();
     Mockito.verify(s).close();
   }
 
   @Test
-  void test_placement() {
-//    GameMap map = createMap();
-//    Serializer s = new JSONSerializer();
-//    String result = s.serialize(map);
-//    ClientPlayer p = createClientPlayer(result + "\n" + 4,
-//            serverOut,
-//            "1\n5\n3\n",
-//            userOut);
-//    p.setName("player1");
-//    p.placementPhase();
-//    String expect = "[{\"type\":\"place\",\"toName\":\"0\",\"numSoldiers\":1,\"fromName\":null}," +
-//            "{\"type\":\"place\",\"toName\":\"1\",\"numSoldiers\":3,\"fromName\":null}]\n";
-//    assertEquals(expect, serverOut.toString());
+  void test_placement() throws IOException {
+    GameMap map = createMap();
+    Serializer serializer = new JSONSerializer();
+    String result = serializer.serialize(map);
+    Socket s = Mockito.mock(Socket.class);
+    App app = getApp(s, result + "\n" + 4, "1\n2\n");
+
+    app.placementPhase();
+    Mockito.verify(mockOutputStream).flush();
+  }
+
+  @Test
+  void test_attack() throws IOException {
+    GameMap map = createEasyMap();
+    Serializer serializer = new JSONSerializer();
+    String mapJSON = serializer.serialize(map);
+    Socket s = Mockito.mock(Socket.class);
+    // play 2 turn and win
+    App app2 = getApp(s,
+            mapJSON + "\n" + Constant.VALID_ACTION + "\n" +
+                    "\"combat result\"\n" + Constant.CONTINUE_PLAYING + "\n" +
+                    mapJSON + "\n" + Constant.VALID_ACTION + "\n\"combat result\"\n" +  Constant.CONTINUE_PLAYING + "\n" +
+                    Constant.GAME_OVER + "\n winner\n",
+            "a\n0\n1\n1\nc\na\n0\n1\n1\nc\n");
+    app2.attackPhase();
   }
 }
