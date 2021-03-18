@@ -9,13 +9,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MoveEntryTest {
 
-   @Test
-   public void test_getters() {
-       ActionEntry entry = new MoveEntry("0", "1", 5);
-       assertEquals("0", entry.getFromName());
-       assertEquals("1", entry.getToName());
-       assertEquals(5, entry.getNumSoldiers());
-   }
+    @Test
+    public void test_getters() {
+        ActionEntry entry = new MoveEntry("0", "1", 5);
+        assertEquals("0", entry.getFromName());
+        assertEquals("1", entry.getToName());
+        assertEquals(5, entry.getNumSoldiers());
+    }
 
     @Test
     public void test_apply() {
@@ -25,10 +25,12 @@ class MoveEntryTest {
         ActionEntry entry0 = new PlaceEntry("0", 8);
         ActionEntry entry1 = new PlaceEntry("1", 3);
         ActionEntry entry2 = new MoveEntry("0", "1", 2);
+
         ActionEntry[] entries = {entry0, entry1, entry2};
         for (ActionEntry entry : entries) {
-            entry.apply(myMap, null);
+            entry.apply(myMap);
         }
+
         Territory terr0 = myMap.getTerritory("0");
         Territory terr1 = myMap.getTerritory("1");
         assertEquals(6, terr0.getNumSoldiersInArmy());

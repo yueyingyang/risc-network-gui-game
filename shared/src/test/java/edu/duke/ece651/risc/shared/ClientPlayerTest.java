@@ -130,7 +130,7 @@ class ClientPlayerTest {
             new PlaceEntry("2", 2),
             new PlaceEntry("3", 2));
     for (ActionEntry ae : pl) {
-      ae.apply(map, null);
+      ae.apply(map);
     }
     return map;
   }

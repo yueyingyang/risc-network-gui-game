@@ -25,9 +25,10 @@ class AttackEntryTest {
         ActionEntry entry0 = new PlaceEntry("0", 8);  // LiLei
         ActionEntry entry1 = new PlaceEntry("2", 4);  // HanMeiMei
         ActionEntry entry2 = new AttackEntry("0", "2", 3);
+
         ActionEntry[] entries = {entry0, entry1, entry2};
         for (ActionEntry entry : entries) {
-            entry.apply(myMap, null);
+            entry.apply(myMap);
         }
 
         Territory terr0 = myMap.getTerritory("0");
