@@ -60,7 +60,7 @@ public class ClientPlayer extends Player {
    * @throws IOException if read/write exception
    */
   public void typeUntilCorrect(String correctMsg) throws IOException {
-    sendMessage(readFromUser());
+    sendMessage(readFromUser().toLowerCase(Locale.ROOT));
     String msg = recvMessage();
     while (!msg.equals(correctMsg)) {
       display(msg);
@@ -167,23 +167,26 @@ public class ClientPlayer extends Player {
       watchGame("Please enter (E) or (C), but is " + selection);
       return;
     }
+    // 2.1.1.1 Choose to exit
     if (selection.equals("E")) {
       display("Thanks for joining the game today, goodbye!");
       sendMessage(Constant.DISCONNECT_GAME);
       return;
     }
-    // chose "C"
+    // 2.1.1.2 Choose to watch
     sendMessage(Constant.WATCH_GAME);
     display("You start to watch the game:");
     while (true) {
       String recv = this.recvMessage();
       if (recv.equals(Constant.GAME_OVER)) {
+        // 2.1.1.2 Watch till game over
         display(Constant.GAME_OVER);
+        // display winner
         display(recvMessage());
         break;
       }
       display("Current game status:");
-      GameMap m = this.parseMap(recv);
+      GameMap m = parseMap(recv);
       display(new MapView(m).display());
       displayCombatRes();
     }
