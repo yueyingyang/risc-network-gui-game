@@ -186,9 +186,11 @@ public class Territory {
             return "";
         }
         StringBuilder temp = new StringBuilder();
+        List<Army> attackers = new ArrayList<>(attackerBuffer.values());
+        Collections.shuffle(attackers, myRandom);
         temp.append("On territory ").append(this.getName()).append(":\n");
         Army defender = myArmy;
-        for (Army attacker : attackerBuffer.values()) {
+        for (Army attacker : attackers) {
             displayCombatInfo(defender, attacker, temp);
             defender = defender.fight(attacker, myRandom);
             temp.append(defender.getOwnerName()).append(" player wins.\n");
