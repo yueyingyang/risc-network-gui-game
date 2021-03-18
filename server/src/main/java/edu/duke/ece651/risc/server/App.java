@@ -61,7 +61,7 @@ public class App {
     this.games.add(newGame);
     // a new game should always add a player successfully
     // new game should assert newGame.addPlayer(player) == null;
-    output.println(newGame.addPlayer(player));
+    newGame.addPlayer(player);
     // send name to client player
     player.sendMessage(player.getName());
     return newGame;

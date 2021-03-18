@@ -308,8 +308,8 @@ public class Game {
             //copy players list for stillIn and stillWatch
             stillInPlayers = new ArrayList<>(players);
             stillWatchPlayers = new ArrayList<>(players);
-            int TerritoryPerPlayer = 1;//assume that one player has three territories
-            int totalSoldiers = 1;//assume that each player have 12 soldiers in total
+            int TerritoryPerPlayer = 2;//assume that one player has three territories
+            int totalSoldiers = 6;//assume that each player have 12 soldiers in total
             makeMap(TerritoryPerPlayer);
             sendObjectToAll(this.gameMap, players);
             sendStringToAll(String.valueOf(totalSoldiers), players);
