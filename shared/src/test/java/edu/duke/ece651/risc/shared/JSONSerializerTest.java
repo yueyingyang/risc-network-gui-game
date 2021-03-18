@@ -28,7 +28,7 @@ class JSONSerializerTest {
     placement.add(new PlaceEntry("2", 1));
     placement.add(new PlaceEntry("3", 1));
     for (ActionEntry pe : placement) {
-      pe.apply(map, null);
+      pe.apply(map);
     }
 
     Serializer s = new JSONSerializer();
@@ -43,7 +43,7 @@ class JSONSerializerTest {
   void test_serialize_and_de_action() throws JsonProcessingException {
     ActionEntry placeEntry = new PlaceEntry("0", 2);
     ActionEntry place1Entry = new PlaceEntry("1", 2);
-    ActionEntry attackEntry = new AttackEntry("0", "1", 1);
+    ActionEntry attackEntry = new AttackEntry("0", "2", 1);
     ActionEntry moveEntry = new MoveEntry("0", "1", 1);
     // test serializer
     JSONSerializer s = new JSONSerializer();
@@ -55,10 +55,11 @@ class JSONSerializerTest {
     assertThat(dePlace, instanceOf(PlaceEntry.class));
     assertThat(deAttack, instanceOf(AttackEntry.class));
     assertThat(deMove, instanceOf(MoveEntry.class));
-    dePlace.apply(map, null);
-    place1Entry.apply(map, null);
-    deAttack.apply(map, null);
-    deMove.apply(map, null);
+
+    dePlace.apply(map);
+    place1Entry.apply(map);
+    deAttack.apply(map);
+    deMove.apply(map);
     assertDoesNotThrow(() -> new MapView(map).display());
   }
 
@@ -67,7 +68,7 @@ class JSONSerializerTest {
     List<ActionEntry> p = new ArrayList<>();
     p.add(new PlaceEntry("0", 2));
     p.add(new PlaceEntry("1", 2));
-    p.add(new AttackEntry("0", "1", 1));
+    p.add(new AttackEntry("0", "2", 1));
     p.add(new MoveEntry("0", "1", 1));
     // test serializer
     JSONSerializer s = new JSONSerializer();
@@ -78,7 +79,7 @@ class JSONSerializerTest {
     Collection<ActionEntry> pd = s.getOm().readValue(listJSON, new TypeReference<Collection<ActionEntry>>() {
     });
     for (ActionEntry a : pd) {
-      a.apply(map, null);
+      a.apply(map);
     }
     assertDoesNotThrow(() -> new MapView(map).display());
   }
