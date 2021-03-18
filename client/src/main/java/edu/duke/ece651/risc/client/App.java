@@ -54,11 +54,14 @@ public class App {
       String turnRes = player.recvMessage();
       if (turnRes.equals(Constant.LOSE_GAME)) {
         player.display(turnRes);
-        if (player.recvMessage().equals(Constant.CONTINUE_PLAYING)) {
+        String continueOrGameOver = player.recvMessage();
+        if (continueOrGameOver.equals(Constant.CONTINUE_PLAYING)) {
           // can choose watch or disconnect
           player.watchGame("You can either \n" +
                   "E Exit this game\n" +
                   "C Continue to watch game\n");
+        }else{
+          player.display(continueOrGameOver);
         }
         break;
       }
