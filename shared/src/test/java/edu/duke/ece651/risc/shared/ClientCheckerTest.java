@@ -16,13 +16,13 @@ public class ClientCheckerTest {
     GameMap map1=createTestMap();
     Checker checker=new ClientChecker(null);
     // check not enough army available case
-    ActionEntry move1=new MoveEntry("3","2",7);
+    ActionEntry move1=new MoveEntry("3","2",7, "player1");
     // check no such territory case
-    ActionEntry move2=new MoveEntry("1","a",1);
+    ActionEntry move2=new MoveEntry("1","a",1, "player1");
     // check no such territory case
-    ActionEntry move3=new MoveEntry("a","3",1);
+    ActionEntry move3=new MoveEntry("a","3",1, "player1");
     // normal case
-    ActionEntry move4=new MoveEntry("1","3",1);
+    ActionEntry move4=new MoveEntry("1","3",1, "player1");
     assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move1,map1));
     assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move2,map1));
     assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move3,map1));

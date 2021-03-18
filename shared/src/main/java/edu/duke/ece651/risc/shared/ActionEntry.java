@@ -44,4 +44,12 @@ public interface ActionEntry {
      */
     public int getNumSoldiers();
 
+    /**
+     * Get the name of the player
+     *
+     * @return the name of the player
+     */
+    public String getPlayerName();
+
+
 }

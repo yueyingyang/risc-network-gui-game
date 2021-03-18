@@ -10,10 +10,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class PlaceEntryTest {
     @Test
     public void test_getters() {
-        ActionEntry entry = new PlaceEntry("0", 5);
+        ActionEntry entry = new PlaceEntry("0", 5, "LiLei");
         assertNull(entry.getFromName());
         assertEquals("0", entry.getToName());
         assertEquals(5, entry.getNumSoldiers());
+        assertEquals("LiLei", entry.getPlayerName());
     }
 
     @Test
@@ -21,7 +22,7 @@ class PlaceEntryTest {
         AbstractMapFactory f = new V1MapFactory();
         List<String> names = Arrays.asList("LiLei", "HanMeiMei");
         GameMap myMap = f.createMap(names, 2);
-        ActionEntry entry = new PlaceEntry("2", 5);
+        ActionEntry entry = new PlaceEntry("2", 5, "HanMeiMei");
         entry.apply(myMap);
         Territory terr = myMap.getTerritory("2");
         assertEquals(5, terr.getNumSoldiersInArmy());
