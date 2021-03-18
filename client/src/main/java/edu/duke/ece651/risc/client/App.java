@@ -50,31 +50,48 @@ public class App {
       // 1. recv combat result
       player.displayCombatRes();
 
-      // 2. turnRes: Constant.LOSE_GAME or Constant.CONTINUE_PLAYING
+      // 2. turnRes:
       String turnRes = player.recvMessage();
+      // 2.1 Loser: Constant.LOSE_GAME
       if (turnRes.equals(Constant.LOSE_GAME)) {
-        player.display(turnRes);
-        String continueOrGameOver = player.recvMessage();
-        if (continueOrGameOver.equals(Constant.CONTINUE_PLAYING)) {
-          // can choose watch or disconnect
-          player.watchGame("You can either \n" +
-                  "E Exit this game\n" +
-                  "C Continue to watch game\n");
-        }else{
-          player.display(continueOrGameOver);
-        }
-        break;
-      }
-
-      // 3. prepare for next step
-      mapOrGameOver = player.recvMessage();
-      if (mapOrGameOver.equals(Constant.GAME_OVER)) {
-        player.display(Constant.GAME_OVER);
-        break;
+        handleLosers(turnRes);
+        return;
+        // 2.2 Other players: Constant.CONTINUE_PLAYING
+      } else {
+        mapOrGameOver = getMapOrGameOver();
+        if (mapOrGameOver == null) return;
       }
     }
-    // display winner
-    player.display(player.recvMessage());
+  }
+
+  private String getMapOrGameOver() throws IOException {
+    String mapOrGameOver;
+    // 2.2.1 mapOrGameOver = map, next turn starts
+    mapOrGameOver = player.recvMessage();
+    if (mapOrGameOver.equals(Constant.GAME_OVER)) {
+      // 2.2.2 mapOrGameOver = GAME_OVER: prepare for next step
+      player.display(Constant.GAME_OVER);
+      // display winner
+      player.display(player.recvMessage());
+      return null;
+    }
+    return mapOrGameOver;
+  }
+
+  private void handleLosers(String turnRes) throws IOException {
+    // 2.1 Loser: Constant.LOSE_GAME
+    player.display(turnRes);
+    String continueOrGameOver = player.recvMessage();
+    if (continueOrGameOver.equals(Constant.CONTINUE_PLAYING)) {
+      // 2.1.1 Lost but game still go on: can choose watch or disconnect
+      player.watchGame("You can either \n" +
+              "E Exit this game\n" +
+              "C Continue to watch game\n");
+    } else {
+      // 2.1.2 Lost and game ends: continueOrGameOver = GAME OVER, winner
+      player.display(continueOrGameOver);
+      player.display(player.recvMessage());
+    }
   }
 
   private void placementPhase() throws IOException {
