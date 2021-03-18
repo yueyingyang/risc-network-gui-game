@@ -16,9 +16,7 @@ import java.util.*;
 public class Territory {
     private String name;
     private String ownerName;
-
     private Army myArmy;
-
     private Set<Territory> neighbours;
     private Map<String, Army> attackerBuffer;
 
@@ -26,7 +24,6 @@ public class Territory {
      * Add for Jackson deserialization
      */
     public Territory() {
-
     }
 
     /**
@@ -36,6 +33,7 @@ public class Territory {
      */
     public Territory(String name) {
         this.name = name;
+        this.ownerName = null;
         this.myArmy = null;
         this.neighbours = new HashSet<>();
         this.attackerBuffer = new HashMap<>();
@@ -216,7 +214,7 @@ public class Territory {
     }
 
     /**
-     * get the number of soldiers in the attacker
+     * Get the number of soldiers in the attacker
      *
      * @param name is the name of the attacker owner
      * @return the number of soldiers in the attacker
@@ -228,5 +226,15 @@ public class Territory {
             return -1;
         }
         return attacker.getNumSoldiers();
+    }
+
+    /**
+     * Check if the two territories belong to the same owner
+     *
+     * @param terr is a territory
+     * @return true if the two territories belong to the same owner else false
+     */
+    public boolean belongToSameOwner(Territory terr) {
+        return ownerName.equals(terr.getOwnerName());
     }
 }

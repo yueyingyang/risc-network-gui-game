@@ -1,5 +1,7 @@
 package edu.duke.ece651.risc.shared;
 
+import java.net.Socket;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,8 +12,10 @@ import java.io.PrintWriter;
  * Could add more features based on server-side needs
  */
 public class ServerPlayer extends Player {
-  public ServerPlayer(BufferedReader in, PrintWriter out) {
+  private Socket clientSocket;
+  public ServerPlayer(BufferedReader in, PrintWriter out, Socket cs) {
     super(in, out);
+    this.clientSocket = cs;
   }
 
   /**
@@ -56,5 +60,15 @@ public class ServerPlayer extends Player {
     }
     this.sendMessage(Constant.SUCCESS_NUMBER_CHOOSED);
     return playerNum;
+  }
+
+  public void closeSocket(){
+    try{
+      this.in.close();
+      this.out.close();
+      this.clientSocket.close();
+    }catch(Exception e){
+      System.out.println(e.getMessage());
+    }    
   }
 }

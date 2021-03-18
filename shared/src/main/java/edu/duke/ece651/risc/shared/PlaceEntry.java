@@ -22,11 +22,10 @@ public class PlaceEntry extends BasicEntry {
     /**
      * Place the soldier on the territory at the beginning
      *
-     * @param myMap     is the map of the game
-     * @param myChecker is the rule checker for the action
+     * @param myMap is the map of the game
      */
     @Override
-    public void apply(GameMap myMap, Checker myChecker) {
+    public void apply(GameMap myMap) {
         Territory terr = myMap.getTerritory(toName);
         Army myArmy = new BasicArmy(terr.getOwnerName(), numSoldiers);
         terr.setMyArmy(myArmy);

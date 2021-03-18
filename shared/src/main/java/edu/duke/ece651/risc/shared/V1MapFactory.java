@@ -39,7 +39,7 @@ public class V1MapFactory implements AbstractMapFactory{
   private List<Territory> createTerrority(List<String> nameList, int num,Map<String,Territory> territoryFinder){
     int territory_id=0;
     List<Territory> territory_list=new ArrayList<>();
-    for(String playerName:nameList){
+    for(String playerName: nameList){
       for(int i=0;i<num;i++){
         String territory_name=""+territory_id;
         Territory temp=new Territory(territory_name);
@@ -59,9 +59,10 @@ public class V1MapFactory implements AbstractMapFactory{
   @return a game map
    */
   public GameMap createMap(List<String> nameList, int territoriesPerPlayer){
+    int numPlayer=nameList.size();
     Map<String,Territory> territoryFinder=new HashMap<>();
     List<Territory> territories=createTerrority(nameList, territoriesPerPlayer,territoryFinder);
-    List<List<String>> connections=createConnection(territories,nameList.size());
+    List<List<String>> connections=createConnection(territories, numPlayer);
     GameMap gamemap=new GameMap(connections,territoryFinder);
     return gamemap;
   }

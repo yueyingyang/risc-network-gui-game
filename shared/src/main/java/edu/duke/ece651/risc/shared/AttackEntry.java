@@ -24,10 +24,11 @@ public class AttackEntry extends BasicEntry {
      * Send attackers
      *
      * @param myMap     is the map of the game
-     * @param myChecker is the rule checker for the action
      */
     @Override
-    public void apply(GameMap myMap, Checker myChecker) {
+    public void apply(GameMap myMap) {
+        Checker myChecker = new ClientChecker(new AttackRuleChecker(null));
+        myChecker.checkAction(this, myMap);
         Territory fromTerr = myMap.getTerritory(fromName);
         Territory toTerr = myMap.getTerritory(toName);
         fromTerr.removeSoldiersFromArmy(numSoldiers);

@@ -74,7 +74,7 @@ public class App {
    * @throws IOException if R/W exception
    * @return the game that the player just joins
    */
-  public Game joinExistingGame(Player player) throws IOException {
+  public Game joinExistingGame(ServerPlayer player) throws IOException {
     // send the available games to user to choose from
     String available = AvailableGameList();
     player.sendMessage(available);
@@ -129,7 +129,7 @@ public class App {
         Socket clientSocket = ss.accept();
         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
         BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        ServerPlayer player = new ServerPlayer(in, out);
+        ServerPlayer player = new ServerPlayer(in, out, clientSocket);
         // let the player choose whether to join a game or start a new one
         // when there are existing games
         this.handleIncomeRequest(player);

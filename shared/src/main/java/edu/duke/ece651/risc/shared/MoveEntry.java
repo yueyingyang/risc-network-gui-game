@@ -20,11 +20,12 @@ public class MoveEntry extends BasicEntry {
     /**
      * Move soldiers from one territory to another
      *
-     * @param myMap     is the map of the game
-     * @param myChecker is the rule checker for the action
+     * @param myMap is the map of the game
      */
     @Override
-    public void apply(GameMap myMap, Checker myChecker) {
+    public void apply(GameMap myMap) {
+        Checker myChecker = new ClientChecker(new MoveRuleChecker(null));
+        myChecker.checkAction(this, myMap);
         Territory fromTerr = myMap.getTerritory(fromName);
         Territory toTerr = myMap.getTerritory(toName);
         fromTerr.removeSoldiersFromArmy(numSoldiers);

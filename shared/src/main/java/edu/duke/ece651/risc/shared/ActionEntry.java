@@ -20,9 +20,8 @@ public interface ActionEntry {
      * Apply the action on the action entry
      *
      * @param myMap     is the map of the game
-     * @param myChecker is the rule checker for the action
      */
-    public void apply(GameMap myMap, Checker myChecker);
+    public void apply(GameMap myMap);
 
     /**
      * Get the name of the from-territory
