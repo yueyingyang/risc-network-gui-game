@@ -38,10 +38,16 @@ public class AttackRuleCheckerTest {
     ActionEntry attack3=new AttackEntry("a", "3", 7, "player1");
     // check normal case
     ActionEntry attack4=new AttackEntry("3","4",1, "player1");
+    // check negative unit
+    ActionEntry attack5=new AttackEntry("3","4",-1, "player1");
+    // check attack from other player's territoy
+    ActionEntry attack6=new AttackEntry("3","4",1, "player2");
     assertThrows(IllegalArgumentException.class, () -> checker.checkAction(attack1,map1));
     assertThrows(IllegalArgumentException.class, () -> checker.checkAction(attack2,map1));
     assertThrows(IllegalArgumentException.class, () -> checker.checkAction(attack3,map1));
     checker.checkAction(attack4,map1);
+    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(attack5,map1));
+    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(attack6,map1));
   }
 
   private GameMap createTestMap(){

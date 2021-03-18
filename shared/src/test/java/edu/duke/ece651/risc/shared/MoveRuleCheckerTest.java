@@ -15,10 +15,15 @@ public class MoveRuleCheckerTest {
   public void test_checkMyRule() {
     GameMap map1=createTestMap();
     Checker checker=new MoveRuleChecker(null);
+    // check move to other player's territory
     ActionEntry move1=new MoveEntry("3","4",1, "player1");
+    // check move to itself
     ActionEntry move2=new MoveEntry("1", "1", 2, "player1");
+    // check no path case
     ActionEntry move3=new MoveEntry("1","7",1, "player1");
+    // normal case
     ActionEntry move4=new MoveEntry("1","3",1, "player1");
+
     assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move1,map1));
     assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move2,map1));
     assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move3,map1));
@@ -29,14 +34,24 @@ public class MoveRuleCheckerTest {
   public void test_combinedRule(){
     GameMap map1=createTestMap();
     Checker checker=new ClientChecker(new MoveRuleChecker(null));
+    // check move to other player's territory
     ActionEntry move1=new MoveEntry("4", "3", 2, "player2");
+    // check too many units
     ActionEntry move2=new MoveEntry("2", "3", 7, "player1");
+    // check illegal territory name
     ActionEntry move3=new MoveEntry("a", "3", 7, "player1");
+    // normal case
     ActionEntry move4=new MoveEntry("1","3",1, "player1");
+    // check negative unit
+    ActionEntry move5=new MoveEntry("1","3",-1,"player1");
+    // check move other player's unit
+    ActionEntry move6=new MoveEntry("5","6",1,"player1");
     assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move1,map1));
     assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move2,map1));
     assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move3,map1));
     checker.checkAction(move4,map1);
+    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move5,map1));
+    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move6,map1));
   }
 
   private GameMap createTestMap(){
