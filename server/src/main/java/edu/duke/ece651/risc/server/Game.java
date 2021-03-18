@@ -249,9 +249,6 @@ public class Game {
 
         // should end game as only winner left in the room
         if(stillInPlayers.size() == 1){
-            for(Player p : losers){
-                p.sendMessage("Game ends");
-            }
             return;
         }
 
