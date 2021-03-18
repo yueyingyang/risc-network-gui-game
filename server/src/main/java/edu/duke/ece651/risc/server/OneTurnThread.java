@@ -35,7 +35,7 @@ public class OneTurnThread extends Thread{
                 a.apply(gameMap, myChecker);
                 player.sendMessage(Constant.VALID_ACTION);
             }catch(Exception e){
-                player.sendMessage(Constant.INVALID_ACTION);
+                player.sendMessage(e.getMessage());
             }
         }
     }

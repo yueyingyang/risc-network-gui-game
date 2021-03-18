@@ -16,9 +16,9 @@ import java.util.Collection;
  */
 public class Game {
   private final int playerNum;
-  private final ArrayList<Player> players;
-  private ArrayList<Player> stillInPlayers;//players still didn't lose
-  private ArrayList<Player> stillWatchPlayers;//players stillIn with those who want to watch after losing
+  private final ArrayList<ServerPlayer> players;
+  private ArrayList<ServerPlayer> stillInPlayers;//players still didn't lose
+  private ArrayList<ServerPlayer> stillWatchPlayers;//players stillIn with those who want to watch after losing
   private final HashSet<String> colorSet;
   private GameMap gameMap;
   private Checker myChecker;
@@ -54,7 +54,7 @@ public class Game {
    * try to add one player to the game
    * @return null if the player is successfully added into the game
    */
-  public String addPlayer(Player player) {
+  public String addPlayer(ServerPlayer player) {
     if (this.isGameFull()) {
       // error information
       return "This game is full, please select another game from the available list.";
@@ -138,7 +138,7 @@ public class Game {
    * @param o the object to send
    * @param p the player list
    */
-  public void sendObjectToAll(Object o,ArrayList<Player> p){
+  public void sendObjectToAll(Object o,ArrayList<ServerPlayer> p){
     for(Player player:p){
       player.sendObject(o);
     }
@@ -149,7 +149,7 @@ public class Game {
    * @param s the message to send
    * @param p the player list
    */
-  public void sendStringToAll(String s,ArrayList<Player> p){
+  public void sendStringToAll(String s,ArrayList<ServerPlayer> p){
     for(Player player:p){
       player.sendMessage(s);
     }
@@ -165,7 +165,11 @@ public class Game {
       String s = player.recvMessage();
       Collection<ActionEntry> placements = js.getOm().readValue(s, new TypeReference<Collection<ActionEntry>>() {});
       for(ActionEntry placement : placements){
-        placement.apply(gameMap, myChecker);
+        try{
+          placement.apply(gameMap, myChecker);
+        }catch(Exception e){
+          System.out.println(e.getMessage());//should never reach here
+        }       
       }
     }
   }
@@ -174,11 +178,8 @@ public class Game {
    * This method will create a thread for each player to receive their actions
    * the move action and the move part in attack will be done immediately
    */
-  public void receiveAndApplyMoves(){
+  public void receiveAndApplyMoves(){   
     ArrayList<OneTurnThread> threads = new ArrayList<>();
-    for(Player p:stillWatchPlayers){
-      p.sendObject(gameMap);
-    }
     for(Player player:stillInPlayers){
       OneTurnThread thread = new OneTurnThread(gameMap, player);
       threads.add(thread);
@@ -221,14 +222,25 @@ public class Game {
    * @throws IOException
    */
   public void playOneTurn() throws IOException{
+    //send map to players in the stillWatch list
+    for(Player p:stillWatchPlayers){
+      p.sendObject(gameMap);
+    }
     //create a thread for each player to type their actions until receive commit
     receiveAndApplyMoves();
     //resolve all combats and send combat results to players still watch the game
     String combatResult = doAttacks();
-    sendObjectToAll(combatResult, stillWatchPlayers);
+    sendObjectToAll(combatResult, stillWatchPlayers);  
+  }
+
+  /**
+   * update the stillIn and stillWatch players lists after each round
+   * @throws IOException
+   */
+  public void updatePlayerLists() throws IOException{
     //update the stillWatch players list and the stillIn players list
-    ArrayList<Player> temp = new ArrayList<Player>(stillInPlayers);
-    for(Player player:temp){
+    ArrayList<ServerPlayer> temp = new ArrayList<ServerPlayer>(stillInPlayers);
+    for(ServerPlayer player:temp){
       //if lost the game, the player can only watch or disconnect
       if(checkLost(player)==true){
         //we will only send lose game info to who has just lost the game
@@ -244,6 +256,7 @@ public class Game {
         //if receive disconnect, rmv from the watch game list
         if(player.recvMessage().equals(Constant.DISCONNECT_GAME)){
           stillWatchPlayers.remove(player);
+          player.closeSocket();
         }
  
       }
@@ -251,7 +264,6 @@ public class Game {
       else{player.sendMessage(Constant.CONTINUE_PLAYING);}
     }
   }
-
 
   /**
    * check whether a particular player has lost all his/her territories
@@ -278,6 +290,15 @@ public class Game {
     return false;
   }
 
+  /**
+   * close all sockets when the game ends
+   */
+  public void endGame(){
+    for(ServerPlayer p:stillWatchPlayers){
+      p.closeSocket();
+    }
+  }
+
 /**
  * after the game room's required number of people is reached, run the game
  * @throws IOException
@@ -297,6 +318,8 @@ public class Game {
       while(true){
         //multi thread in this function to handle simultaneous input
         playOneTurn();
+        //update stillIn and stillWatch players list
+        updatePlayerLists();
         //add 1 soldier to all territories at the end of one turn;
         addSoldiersToAll();
         //check if the game is over
@@ -307,6 +330,8 @@ public class Game {
           break;
         }
       }
+      //close sockets
+      endGame();
     }
   }
   

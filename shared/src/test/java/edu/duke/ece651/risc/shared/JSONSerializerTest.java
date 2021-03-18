@@ -83,10 +83,4 @@ class JSONSerializerTest {
     assertDoesNotThrow(() -> new MapView(map).display());
   }
 
-  @Disabled
-  @Test
-  void test_serialize_string() {
-    JSONSerializer s = new JSONSerializer();
-    assertEquals(Constant.NO_GAME_AVAILABLE_INFO, s.serialize(Constant.NO_GAME_AVAILABLE_INFO));
-  }
 }
