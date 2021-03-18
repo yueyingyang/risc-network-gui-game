@@ -231,30 +231,39 @@ public class Game {
     public void updatePlayerLists() throws IOException {
         //update the stillWatch players list and the stillIn players list
         ArrayList<ServerPlayer> temp = new ArrayList<ServerPlayer>(stillInPlayers);
+        ArrayList<ServerPlayer> losers = new ArrayList<>();
         for (ServerPlayer player : temp) {
             //if lost the game, the player can only watch or disconnect
-            if (checkLost(player) == true) {
+            if (checkLost(player)) {
                 //we will only send lose game info to who has just lost the game
                 player.sendMessage(Constant.LOSE_GAME);
                 //remove the lost player from stillIn
                 stillInPlayers.remove(player);
-                if (stillInPlayers.size() == 1) {
-                    break;
-                } else {
-                    player.sendMessage(Constant.CONTINUE_PLAYING);
-                }
-                //if receive disconnect, rmv from the watch game list
-                if (player.recvMessage().equals(Constant.DISCONNECT_GAME)) {
-                    stillWatchPlayers.remove(player);
-                    player.closeSocket();
-                }
-
+                losers.add(player);
             }
             //for those who didn't lose, tell them to continue
             else {
                 player.sendMessage(Constant.CONTINUE_PLAYING);
             }
         }
+
+        // should end game as only winner left in the room
+        if(stillInPlayers.size() == 1){
+            for(Player p : losers){
+                p.sendMessage("Game ends");
+            }
+            return;
+        }
+
+        for(ServerPlayer player : losers){
+          player.sendMessage(Constant.CONTINUE_PLAYING);
+          //if receive disconnect, rmv from the watch game list
+          if (player.recvMessage().equals(Constant.DISCONNECT_GAME)) {
+            stillWatchPlayers.remove(player);
+            player.closeSocket();
+          }
+        }
+
     }
 
     /**

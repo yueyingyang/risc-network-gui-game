@@ -9,7 +9,7 @@ public abstract class Player {
   // IO stream with game server
   protected BufferedReader in;
   protected PrintWriter out;
-  protected String name; 
+  protected String name;
 
   /**
    * Set name on players
@@ -33,7 +33,7 @@ public abstract class Player {
 
   /**
    * get the player's name
-   * 
+   *
    * @return the player's name
    */
   public String getName() {
@@ -61,11 +61,21 @@ public abstract class Player {
 
   /**
    * Write to the output stream
-   * 
+   *
    * @param o is the object to send
    */
-  public void sendObject(Object o){
-    JSONSerializer js=new JSONSerializer();
+  public void sendObject(Object o) {
+    JSONSerializer js = new JSONSerializer();
     out.println(js.serialize(o));
+  }
+
+  /**
+   * Close IO stream
+   *
+   * @throws IOException if IOE
+   */
+  public void closeIOStream() throws IOException {
+    in.close();
+    out.close();
   }
 }
