@@ -24,6 +24,7 @@ public class GameMapTest {
     assertEquals(a.getName(),"A");
     assertEquals(b.getName(),"B");
     assertEquals(c.getName(),"C");
+    assertTrue(map.getTerritory("D")==null);
   }
 
   @Test
