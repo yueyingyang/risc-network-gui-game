@@ -15,11 +15,11 @@ public class ClientChecker extends Checker {
         Territory start = map.getTerritory(action.getFromName());
 
         if(!start.getOwnerName().equals(action.getPlayerName())){
-            throw new IllegalArgumentException("Don't modify other player's territory!");
+            throw new IllegalArgumentException("Don't modify other player's territory!");
         }
         
         if(action.getNumSoldiers()<0){
-            throw new IllegalArgumentException("The input unit should not be negative!");
+            throw new IllegalArgumentException("The input unit should not be negative!");
         }
 
         if (start.getNumSoldiersInArmy() < action.getNumSoldiers()) {
