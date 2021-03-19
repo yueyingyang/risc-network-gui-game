@@ -2,9 +2,13 @@ package edu.duke.ece651.risc.shared;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -36,7 +40,7 @@ class JSONSerializerTest {
 
     GameMap deMap = (GameMap) s.deserialize(result, GameMap.class);
 
-    assertDoesNotThrow(() -> new MapView(map).display());
+    assertDoesNotThrow(() -> new MapView(deMap).display());
   }
 
   @Test
@@ -82,6 +86,23 @@ class JSONSerializerTest {
       a.apply(map);
     }
     assertDoesNotThrow(() -> new MapView(map).display());
+  }
+
+  @Test
+  void test_exception() {
+    PrintStream originalStream = System.err;
+    PrintStream dummyStream = new PrintStream(new OutputStream(){
+      public void write(int b) {
+        // NO-OP
+      }
+    });
+    System.setErr(dummyStream);
+    try {
+      JSONSerializer s = new JSONSerializer();
+      s.deserialize("it's not a json string", String.class);
+    }finally {
+      System.setErr(originalStream);
+    }
   }
 
 }
