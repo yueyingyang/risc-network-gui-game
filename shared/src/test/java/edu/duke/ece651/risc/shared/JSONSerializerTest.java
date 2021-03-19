@@ -2,8 +2,10 @@ package edu.duke.ece651.risc.shared;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +38,7 @@ class JSONSerializerTest {
 
     GameMap deMap = (GameMap) s.deserialize(result, GameMap.class);
 
-    assertDoesNotThrow(() -> new MapView(map).display());
+    assertDoesNotThrow(() -> new MapView(deMap).display());
   }
 
   @Test

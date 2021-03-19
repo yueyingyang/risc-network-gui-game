@@ -106,12 +106,27 @@ class ClientPlayerTest {
     GameMap map = createMap();
     Serializer s = new JSONSerializer();
     String mapJSON = s.serialize(map);
+    // corner case
     ClientPlayer p = createClientPlayer(Constant.VALID_ACTION + "\n" + "Action is invalid\n" + Constant.VALID_ACTION + "\n",
             serverOut,
             "b\nm\n0\n1\n1\nm\n0\n1\n1\na\n1\n2\na\n1\nc\n",
             userOut);
     p.setName("player1");
     assertDoesNotThrow(() -> p.playOneTurn(mapJSON + "\n"));
+    // valid attack and move
+    ClientPlayer p2 = createClientPlayer( Constant.VALID_ACTION + "\n" + Constant.VALID_ACTION + "\n",
+            serverOut,
+            "a\n1\n2\n1\nm\n0\n1\n1\nc\n",
+            userOut);
+    p2.setName("player1");
+    assertDoesNotThrow(() -> p2.playOneTurn(mapJSON + "\n"));
+    // exception wrong validation result
+    ClientPlayer p3 = createClientPlayer( Constant.VALID_ACTION + "\n",
+            serverOut,
+            "a\n2\n3\n1\nc\n",
+            userOut);
+    p3.setName("player1");
+    assertDoesNotThrow(() -> p3.playOneTurn(mapJSON + "\n"));
   }
 
   @Test
