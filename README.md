@@ -16,8 +16,6 @@ The version is the newest version of all branches.
 i.e. everytime after running CI/CD pipeline(no matter on which branch), the new code will be deployed on `vcm-16514.vm.duke.edu`.
 
 ## UML v1
-![shared](./UMLs/shared.PNG)
-
-![server](./UMLs/server.PNG)
-
-![client](./UMLs/client.PNG)
+<img src="./UMLs/server.PNG" alt="server" width="500" />
+<img src="./UMLs/client.PNG" alt="client" width="500" />
+<img src="./UMLs/shared.PNG" alt="shared" width="1000" />
