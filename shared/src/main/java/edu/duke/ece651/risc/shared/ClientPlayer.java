@@ -135,8 +135,6 @@ public class ClientPlayer extends Player {
       String actionType = readActionType("Please enter the action type(M, A or C):");
       if (actionType.equals("c")) break;
       ActionEntry ae = readActionInformation(actionType);
-      // parse action entry fail
-      if (ae == null) continue;
       // server-side check and update
       sendObject(ae);
       String serverValidRes = recvMessage();
