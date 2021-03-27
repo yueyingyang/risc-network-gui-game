@@ -90,9 +90,9 @@ public class App {
    * @param player is the player needs to login
    * @throws IOException if R/W exception
    */
-  public void startNewGame(ServerPlayer player, String gameSize) throws IOException {
+  public void startNewGame(ServerPlayer player, Integer gameSize) throws IOException {
     int gameID = games.size();
-    Game newGame = new Game(Integer.parseInt(gameSize),gameID);
+    Game newGame = new Game(gameSize,gameID);
     player.setCurrentGameID(gameID);
     this.games.add(newGame);
     // a new game should always add a player successfully
@@ -106,14 +106,14 @@ public class App {
    * @param player is the player needs to login
    * @throws IOException if R/W exception
    */
-  public void joinExistingGame(ServerPlayer player,String gameID) throws IOException {
+  public void joinExistingGame(ServerPlayer player, Integer gameID) throws IOException {
     // wait util the user give a valid game number
     while (true) {
-      String tryAddPlayerErrorMsg = games.get(Integer.parseInt(gameID)).addPlayer(player);
+      String tryAddPlayerErrorMsg = games.get(gameID).addPlayer(player);
       if (tryAddPlayerErrorMsg == null) {
-        player.setCurrentGameID(Integer.parseInt(gameID));
+        player.setCurrentGameID(gameID);
         player.sendMessage(Constant.SUCCESS_NUMBER_CHOOSED);
-        games.get(Integer.parseInt(gameID)).runGame();
+        games.get(gameID).runGame();
         return;
       } else {
         // in multi-thread env,
@@ -129,8 +129,8 @@ public class App {
    * @param player
    * @param gameID
    */
-  public void rejoinGame(ServerPlayer player,String gameID){
-    player.setCurrentGameID(Integer.parseInt(gameID));
+  public void rejoinGame(ServerPlayer player, Integer gameID){
+    player.setCurrentGameID(gameID);
   }
 
   /**
@@ -199,13 +199,13 @@ public class App {
           sendGameList(player,playerName);
         }
         else if(actionType.equals("start")){
-          startNewGame(player, rootNode.path("gameSize").textValue());
+          startNewGame(player, Integer.parseInt(rootNode.path("gameSize").textValue()));
         }
         else if(actionType.equals("join")){
-          joinExistingGame(player, rootNode.path("gameID").textValue());
+          joinExistingGame(player, Integer.parseInt(rootNode.path("gameID").textValue()));
         }
         else if(actionType.equals("rejoin")){
-          rejoinGame(player,rootNode.path("gameID").textValue());
+          rejoinGame(player,Integer.parseInt(rootNode.path("gameID").textValue()));
         }
       } catch (IOException e) {
         this.output.println("Exception caught when listening for a connection");
