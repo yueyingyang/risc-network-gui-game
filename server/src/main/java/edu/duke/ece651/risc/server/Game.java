@@ -3,7 +3,8 @@ package edu.duke.ece651.risc.server;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
-
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.*;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -15,38 +16,39 @@ import java.util.Collection;
  * Game class is responsible for the one game's play
  */
 public class Game {
-    private final int playerNum;
-    private final ArrayList<ServerPlayer> players;
+    private int gameID;
+    private int playerNum;
+    private ArrayList<ServerPlayer> players;
     private ArrayList<ServerPlayer> stillInPlayers;//players still didn't lose
     private ArrayList<ServerPlayer> stillWatchPlayers;//players stillIn with those who want to watch after losing
-    private final HashSet<String> colorSet;
     private GameMap gameMap;
     private Random myRandom;
+
 
     /**
      * the construtor of the game
      *
      * @param playerNum is the required number of players in this game
      */
-    public Game(int playerNum) {
+    public Game(int playerNum,int gameID) {
+        this.gameID = gameID;
         this.playerNum = playerNum;
         this.players = new ArrayList<>();
         this.stillInPlayers = new ArrayList<>();
         this.stillWatchPlayers = new ArrayList<>();
-        this.colorSet = new HashSet<>();
-        makeColors();
-        this.myRandom = new Random(1);
+        this.myRandom = new Random();
     }
 
-    /**
-     * make a color set at the beginning of the game
-     */
-    private void makeColors() {
-        this.colorSet.add("Red");
-        this.colorSet.add("Orange");
-        this.colorSet.add("Green");
-        this.colorSet.add("Blue");
-        this.colorSet.add("Purple");
+    public Integer getGameID(){
+        return this.gameID;
+    }
+
+    public ArrayList<String> getAllPlayers(){
+        ArrayList<String> res = new ArrayList<String>();
+        for(Player p:players){
+            res.add(p.getName());
+        }
+        return res;
     }
 
     /**
@@ -59,10 +61,6 @@ public class Game {
             // error information
             return "This game is full, please select another game from the available list.";
         }
-        // add successfully
-        String playerColor = colorSet.iterator().next();
-        player.setName(playerColor);
-        colorSet.remove(playerColor);
         this.players.add(player);
         return null;
     }
@@ -93,6 +91,20 @@ public class Game {
      */
     public int getPLayerInGameNum() {
         return this.players.size();
+    }
+
+    /**
+     * return the player itself by name
+     * @param playerName is the name of the player
+     * @return
+     */
+    public Player getPlayerByName(String playerName){
+        for(Player p:players){
+            if(p.getName().equals(playerName)){
+                return p;
+            }
+        }
+        return null;
     }
 
     /**
@@ -128,7 +140,8 @@ public class Game {
      */
     public void sendObjectToAll(Object o, ArrayList<ServerPlayer> p) {
         for (Player player : p) {
-            player.sendObject(o);
+            try{player.sendObject(o);}catch(Exception e){}
+            
         }
     }
 
@@ -140,7 +153,7 @@ public class Game {
      */
     public void sendStringToAll(String s, ArrayList<ServerPlayer> p) {
         for (Player player : p) {
-            player.sendMessage(s);
+            try{player.sendMessage(s);}catch(Exception e){} 
         }
     }
 
@@ -169,10 +182,13 @@ public class Game {
      */
     public void receiveAndApplyMoves() {
         ArrayList<OneTurnThread> threads = new ArrayList<>();
-        for (Player player : stillInPlayers) {
-            OneTurnThread thread = new OneTurnThread(gameMap, player);
-            threads.add(thread);
-            thread.start();
+        for (ServerPlayer player : stillInPlayers) {
+            //if the player is still active in this game
+            if(player.getCurrentGame().equals(gameID)){
+                OneTurnThread thread = new OneTurnThread(gameMap, player);
+                threads.add(thread);
+                thread.start();
+            }
         }
         for (OneTurnThread thread : threads) {
             try {
@@ -214,9 +230,10 @@ public class Game {
     public void playOneTurn() throws IOException {
         //send map to players in the stillWatch list
         for (Player p : stillWatchPlayers) {
-            p.sendObject(gameMap);
+            try{p.sendObject(gameMap);}catch(Exception e){}
         }
         //create a thread for each player to type their actions until receive commit
+        //for inactive players, do nothing, just like they drectly type in Commit
         receiveAndApplyMoves();
         //resolve all combats and send combat results to players still watch the game
         String combatResult = doAttacks();
