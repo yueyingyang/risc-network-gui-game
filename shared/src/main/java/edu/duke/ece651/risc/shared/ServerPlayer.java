@@ -13,10 +13,19 @@ import java.io.PrintWriter;
  */
 public class ServerPlayer extends Player {
   private Socket clientSocket;
+  private Integer currentGameID;
 
   public ServerPlayer(BufferedReader in, PrintWriter out, Socket cs) {
     super(in, out);
     this.clientSocket = cs;
+  }
+
+  public void setCurrentGameID(Integer gameID){
+    this.currentGameID = gameID;
+  }
+
+  public Integer getCurrentGame(){
+    return this.currentGameID;
   }
 
   /**

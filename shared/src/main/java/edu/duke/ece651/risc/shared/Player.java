@@ -78,4 +78,16 @@ public abstract class Player {
     in.close();
     out.close();
   }
+
+  /**
+   * 
+   * @param in is inputstream of the player
+   * @param out is the outputstream of the player
+   */
+  public void setInOut(BufferedReader in, PrintWriter out){
+    this.in = in;
+    this.out = out;
+  }
+  
 }
+
