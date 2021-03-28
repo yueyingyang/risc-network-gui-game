@@ -1,8 +1,9 @@
 package edu.duke.ece651.risc.web;
 
-import edu.duke.ece651.risc.shared.ClientPlayer;
-import edu.duke.ece651.risc.shared.GameMap;
+import edu.duke.ece651.risc.shared.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,10 +14,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.List;
 
 @SpringBootApplication
 @RestController
-public class WebApplication {
+public class WebApplication implements ApplicationRunner {
 
   @Value("${spring.application.server.hostname}")
   String hostname;
@@ -28,11 +31,9 @@ public class WebApplication {
     SpringApplication.run(WebApplication.class, args);
   }
 
-  @GetMapping
-  public String hello() throws IOException {
-    Socket s = new Socket(hostname, port);
-    ClientPlayer player = new ClientPlayer(new BufferedReader(new InputStreamReader(s.getInputStream())),
-            new PrintWriter(s.getOutputStream(), true), null, null);
-    return player.recvMessage();
+  @Override
+  public void run(ApplicationArguments arg) throws Exception {
+    // create a global bean
   }
+
 }
