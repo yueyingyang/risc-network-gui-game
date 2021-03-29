@@ -1,11 +1,12 @@
 package edu.duke.ece651.risc.server;
+import com.ctc.wstx.shaded.msv_core.verifier.jarv.Const;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
+import org.mockito.*;
 import java.io.*;
 import java.util.*;
 import java.net.Socket;
@@ -43,6 +44,12 @@ public class GameTest {
   public void test_getPlayerNum() {
     Game g = new Game(1,0);
     assertEquals(1, g.getPlayerNum());
+  }
+
+  @Test
+  public void test_getPlayerByGame(){
+    Game g = new Game(1,0);
+    assertEquals(null,g.getPlayerByName("Red"));
   }
 
   @Test
@@ -198,7 +205,7 @@ public class GameTest {
   }
 
   @Test
-  public void test_endGame(){
+  public void test_endGame() throws InterruptedException, IOException{
     Socket socket1 = new Socket();
     Socket socket2 = new Socket();
     Game g = new Game(2,0);        
@@ -206,14 +213,68 @@ public class GameTest {
     ByteArrayOutputStream bytes2 = new ByteArrayOutputStream();                                                                                                   
     ServerPlayer p1 = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes1, true),socket1);
     p1.setName("Red");
+    p1.setCurrentGameID(0);
     ServerPlayer p2 = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes2, true),socket2);
     p2.setName("Blue");
+    p2.setCurrentGameID(0);
     g.addPlayer(p1);
     g.addPlayer(p2);
-    ArrayList<ServerPlayer> list = new ArrayList<>();
-    list.add(p1);
-    list.add(p2);
+    Thread t = new Thread(() -> {
+      try {
+        g.runGame(2,6);
+      } catch (Exception ignored) {
+      }
+    });
+    t.start();
+    // wait for "acceptPlayers" finishing
+    Thread.sleep(2000);
     g.endGame();
+    assertEquals(2,p2.getCurrentGame());
+    assertThrows(Exception.class, ()->{p2.recvMessage();});   
   }
+
+  @Test
+  public void test_updatePlayerLists() throws IOException, InterruptedException{
+    PlaceEntry pe1 = new PlaceEntry("0", 2, "Red");
+    PlaceEntry pe2 = new PlaceEntry("1", 0, "Blue");
+    JSONSerializer js = new JSONSerializer();
+    String placement1 =js.serialize(pe1);
+    String placement2 =js.serialize(pe2);
+    Socket socket1 = new Socket();
+    Socket socket2 = new Socket();
+    Game g = new Game(2,0);        
+    ByteArrayOutputStream bytes1 = new ByteArrayOutputStream();  
+    ByteArrayOutputStream bytes2 = new ByteArrayOutputStream();                                                                                                   
+    ServerPlayer p1 = new ServerPlayer(new BufferedReader(new StringReader(placement1)), new PrintWriter(bytes1, true),socket1);
+    p1.setName("Red");
+    p1.setCurrentGameID(0);
+    ServerPlayer p2 = new ServerPlayer(new BufferedReader(new StringReader(placement2)), new PrintWriter(bytes2, true),socket2);
+    p2.setName("Blue");
+    p2.setCurrentGameID(0);
+    g.addPlayer(p1);
+    g.addPlayer(p2);
+    Thread t = new Thread(() -> {
+      try {
+        g.runGame(1,2);
+      } catch (Exception ignored) {
+      }
+    });
+    t.start();
+    // wait for "acceptPlayers" finishing
+    Thread.sleep(5000);  
+    assertEquals(2,g.getMap().getTerritory("0").getNumSoldiersInArmy());
+    assertEquals(2,g.getMap().getTerritory("1").getNumSoldiersInArmy());
+    AttackEntry a = new AttackEntry("0", "1", 2, "Red");
+    a.apply(g.getMap());
+    g.doAttacks();
+    assertEquals("Red", g.getMap().getTerritory("1").getOwnerName());   
+    assertEquals(true,g.checkLost(p2));
+    g.updatePlayerLists();
+    //assertThrows(Exception.class,()->{p1.recvMessage();});
+    //assertThrows(Exception.class,()->{p2.recvMessage();});
+
+  }
+
+  
 
 }

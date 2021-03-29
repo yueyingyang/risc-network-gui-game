@@ -72,7 +72,7 @@ public class Game {
      * false if can accpet more players
      */
     public Boolean isGameFull() {
-        return (this.players.size() >= this.playerNum);
+        return (this.players.size() == this.playerNum);
     }
 
     /**
@@ -253,14 +253,14 @@ public class Game {
             //if lost the game, the player can only watch or disconnect
             if (checkLost(player)) {
                 //we will only send lose game info to who has just lost the game
-                player.sendMessage(Constant.LOSE_GAME);
+                try{player.sendMessage(Constant.LOSE_GAME);}catch(Exception e){}               
                 //remove the lost player from stillIn
                 stillInPlayers.remove(player);
                 losers.add(player);
             }
             //for those who didn't lose, tell them to continue
             else {
-                player.sendMessage(Constant.CONTINUE_PLAYING);
+                try{player.sendMessage(Constant.CONTINUE_PLAYING);}catch(Exception e){}               
             }
         }
 
@@ -270,12 +270,14 @@ public class Game {
         }
 
         for(ServerPlayer player : losers){
-          player.sendMessage(Constant.CONTINUE_PLAYING);
-          //if receive disconnect, rmv from the watch game list
-          if (player.recvMessage().equals(Constant.DISCONNECT_GAME)) {
-            stillWatchPlayers.remove(player);
-            player.closeSocket();
-          }
+            if(player.getCurrentGame()==gameID){
+                player.sendMessage(Constant.CONTINUE_PLAYING);
+                //if receive disconnect, rmv from the watch game list
+                if (player.recvMessage().equals(Constant.DISCONNECT_GAME)) {
+                  stillWatchPlayers.remove(player);
+                  player.closeSocket();
+                }
+            }
         }
 
     }
@@ -306,9 +308,12 @@ public class Game {
     /**
      * close all sockets when the game ends
      */
-    public void endGame() {
+    public void endGame() throws IOException{
         for (ServerPlayer p : stillWatchPlayers) {
-            p.closeSocket();
+            if(p.getCurrentGame()==gameID){
+                p.closeSocket();
+                p.setCurrentGameID(2);
+            }
         }
     }
 
@@ -317,35 +322,31 @@ public class Game {
      *
      * @throws IOException
      */
-    public void runGame() throws IOException {
-        if (players.size() == playerNum) {
-            //copy players list for stillIn and stillWatch
-            stillInPlayers = new ArrayList<>(players);
-            stillWatchPlayers = new ArrayList<>(players);
-            int TerritoryPerPlayer = 2;//assume that one player has three territories
-            int totalSoldiers = 6;//assume that each player have 12 soldiers in total
-            makeMap(TerritoryPerPlayer);
-            sendObjectToAll(this.gameMap, players);
-            sendStringToAll(String.valueOf(totalSoldiers), players);
-            placementPhase();
-            while (true) {
-                //multi thread in this function to handle simultaneous input
-                playOneTurn();
-                //update stillIn and stillWatch players list
-                updatePlayerLists();
-                //add 1 soldier to all territories at the end of one turn;
-                addSoldiersToAll();
-                //check if the game is over
-                if (checkWin() == true) {
-                    String winner = this.gameMap.getAllPlayerTerritories().keySet().iterator().next();
-                    sendStringToAll(Constant.GAME_OVER, stillWatchPlayers);
-                    sendStringToAll("The winner is " + winner, stillWatchPlayers);
-                    break;
-                }
+    public void runGame(int TerritoryPerPlayer, int totalSoldiers) throws IOException {
+        //copy players list for stillIn and stillWatch
+        stillInPlayers = new ArrayList<>(players);
+        stillWatchPlayers = new ArrayList<>(players);
+        makeMap(TerritoryPerPlayer);
+        sendObjectToAll(this.gameMap, players);
+        sendStringToAll(String.valueOf(totalSoldiers), players);
+        placementPhase();
+        while (true) {
+            //multi thread in this function to handle simultaneous input
+            playOneTurn();
+            //update stillIn and stillWatch players list
+            updatePlayerLists();
+            //add 1 soldier to all territories at the end of one turn;
+            addSoldiersToAll();
+            //check if the game is over
+            if (checkWin() == true) {
+                String winner = this.gameMap.getAllPlayerTerritories().keySet().iterator().next();
+                sendStringToAll(Constant.GAME_OVER, stillWatchPlayers);
+                sendStringToAll("The winner is " + winner, stillWatchPlayers);
+                break;
             }
-            //close sockets
-            endGame();
         }
+        //close sockets
+        endGame();
     }
 
 }

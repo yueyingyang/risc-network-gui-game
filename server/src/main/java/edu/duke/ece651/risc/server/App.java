@@ -11,19 +11,19 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
-import java.util.function.BiConsumer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.duke.ece651.risc.shared.*;
+import edu.duke.ece651.risc.shared.game.*;
 
 
 public class App {
   private final ArrayList<Game> games;
   private final HostSocket hostSocket;
   private final PrintStream output;
-  private final JSONSerializer js;
   private Set<String> playerNames;
   private Map<String, ServerPlayer> players;
 
@@ -35,7 +35,6 @@ public class App {
     games = new ArrayList<>();
     this.output = out;
     this.hostSocket = s;
-    this.js = new JSONSerializer();
     this.playerNames = new HashSet<>();
     this.players = new HashMap<>();
   }
@@ -49,12 +48,13 @@ public class App {
   }
 
   /**
-   * @return the list of available games for a player ro join
+   * @return the list of available games for a player to join
+   * should exclude the games that the player is already in
    */
-  private List<Game> getAvailableGames() {
+  private List<Game> getAvailableGames(String playerName) {
     List<Game> res = new ArrayList<>();
     for (Game g : this.games) {
-      if (!g.isGameFull()) {
+      if (!g.isGameFull() && g.getPlayerByName(playerName).equals(null)) {
         res.add(g);
       }
     }
@@ -86,6 +86,28 @@ public class App {
   }
 
   /**
+   * @param playerName is the player's name
+   */
+
+  public String allGameList(String playerName) {
+    List<GameInfo> allOpen = new ArrayList<>();
+    for (Game g : this.getAvailableGames(playerName)) {
+      allOpen.add(new GameInfo(g.getGameID(), g.getAllPlayers()));
+    }
+    List<GameInfo> allJoined = new ArrayList<>();
+    for (Game g : this.getPlayerGame(playerName)) {
+      allJoined.add(new GameInfo(g.getGameID(), g.getAllPlayers()));
+    }
+    String res = null;
+    try {
+      res = new JSONSerializer().getOm().writeValueAsString(allOpen) + "\n" + new JSONSerializer().getOm().writeValueAsString(allJoined);
+    } catch (JsonProcessingException ignored) {
+    }
+    return res;
+  }
+
+
+  /**
    * start a new game for a user
    * @param player is the player needs to login
    * @throws IOException if R/W exception
@@ -98,7 +120,6 @@ public class App {
     // a new game should always add a player successfully
     // new game should assert newGame.addPlayer(player) == null;
     newGame.addPlayer(player);
-    newGame.runGame();
   }
 
   /**
@@ -106,15 +127,14 @@ public class App {
    * @param player is the player needs to login
    * @throws IOException if R/W exception
    */
-  public void joinExistingGame(ServerPlayer player, Integer gameID) throws IOException {
+  public Game joinExistingGame(ServerPlayer player, Integer gameID) throws IOException {
     // wait util the user give a valid game number
     while (true) {
       String tryAddPlayerErrorMsg = games.get(gameID).addPlayer(player);
       if (tryAddPlayerErrorMsg == null) {
         player.setCurrentGameID(gameID);
         player.sendMessage(Constant.SUCCESS_NUMBER_CHOOSED);
-        games.get(gameID).runGame();
-        return;
+        return games.get(gameID);
       } else {
         // in multi-thread env,
         // it's possible to have another user fill in the selected game before current user
@@ -133,25 +153,7 @@ public class App {
     player.setCurrentGameID(gameID);
   }
 
-  /**
-   * @param playerName is the player's name 
-   * @param out is the player's outputstream
-   */
-  public String allGameList(String playerName){
-    List<Map<Integer,List<String>>> toSend = new ArrayList<Map<Integer,List<String>>>();
-    Map<Integer,List<String>> allOpenGames = new HashMap<Integer,List<String>>();
-    for(Game g:this.getAvailableGames()){
-      allOpenGames.put(g.getGameID(), g.getAllPlayers());
-    }
-    Map<Integer,List<String>> playerGames = new HashMap<Integer,List<String>>();
-    for(Game g:this.getPlayerGame(playerName)){
-      playerGames.put(g.getGameID(), g.getAllPlayers());
-    }
-    toSend.add(allOpenGames);
-    toSend.add(playerGames);
-    return js.serialize(toSend);
-  }
-
+  
   /**
    * This function will create a server player if he/she doesn't exist in the server side
    * or return the player from the player list if he/she has already exist
@@ -165,13 +167,16 @@ public class App {
   private ServerPlayer createOrUpdatePlayer(String playerName,BufferedReader in,PrintWriter out, Socket clientSocket){
     ServerPlayer player = null;
     if(!playerNames.contains(playerName)){
+      playerNames.add(playerName);     
       player = new ServerPlayer(in, out, clientSocket);
+      players.put(playerName, player);
       player.setName(playerName);
     }
     else{
       player = players.get(playerName);
       //update the player's inputstream and outputstream
       player.setInOut(in, out);
+      player.setSocket(clientSocket);
     }
     return player;
   }
@@ -202,7 +207,12 @@ public class App {
           startNewGame(player, Integer.parseInt(rootNode.path("gameSize").textValue()));
         }
         else if(actionType.equals("join")){
-          joinExistingGame(player, Integer.parseInt(rootNode.path("gameID").textValue()));
+          Game g = joinExistingGame(player, Integer.parseInt(rootNode.path("gameID").textValue()));
+          //use multi thread here
+          if(g.isGameFull()){
+            GameThread newRun = new GameThread(g);
+            newRun.start();
+          }
         }
         else if(actionType.equals("rejoin")){
           rejoinGame(player,Integer.parseInt(rootNode.path("gameID").textValue()));

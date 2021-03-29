@@ -83,4 +83,12 @@ public class ServerPlayer extends Player {
       System.out.println(e.getMessage());
     }
   }
+
+  /**
+   * change client socket
+   * @param clientSocket
+   */
+  public void setSocket(Socket clientSocket){
+    this.clientSocket = clientSocket;
+  }
 }
