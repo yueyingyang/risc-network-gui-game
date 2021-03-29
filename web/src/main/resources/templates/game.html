@@ -71,6 +71,7 @@
     </div>
     <button class="ui submit button" style="user-select: auto;" type="submit">Submit</button>
 </form>
+<button class="ui submit button" style="user-select: auto;" id="refresh" type="submit">Refresh</button>
 
 <!--Set interaction of action tabs-->
 <script th:inline="javascript">
@@ -80,8 +81,27 @@
             .siblings()
             .removeClass('active');
     })
+
     $('select.dropdown')
         .dropdown();
+
+    const refresh_map = () => {
+        const config = {
+            "url":"/update_map",
+            "async":true,
+            "type":get,
+            "success":res => {
+                let colors = res.map(territory => territory['color']);
+                option.dataset.source = res;
+                option.series[0].color = colors;
+                myChart.clear();
+                myChart.setOptions(option);
+            }
+        }
+        $.ajax(config);
+    }
+
+    $('#refresh').submit(refresh_map);
 </script>
 <!--JS to render MAP -->
 <th:block th:insert="fragments/map.html
