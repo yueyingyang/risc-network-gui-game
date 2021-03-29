@@ -56,15 +56,15 @@
 </div>
 
 
-<form th:if="${wrapper.getTerrUnitList()} != null" class="ui form" th:action="@{/place}" method="post" th:object="${wrapper}">
+<form class="ui form" th:action="@{/place}" method="post" th:object="${wrapper}">
     <div class="ui header">Please enter the placement below:</div>
     <div class="fields">
         <!--        Render territory-->
         <div class="field" th:each="terrUnit, stat: ${wrapper.terrUnitList}">
             <label th:text="'Territory ' + ${terrUnit.getTerrName()}"></label>
             <div class="four wide fields">
-                <select th:name="${terrUnit.getTerrName()}" class="ui fluid search dropdown">
-                    <!--                    Render option -->
+                <select th:name="${terrUnit.getTerrName()}" class="ui fluid search dropdown" >
+                    <!-- Render option -->
                     <option th:each="i: ${#numbers.sequence(0, units)}" th:text="${i}" th:value="${terrUnit.getUnit()}">
                     </option>
                 </select>
@@ -73,10 +73,53 @@
     </div>
     <button class="ui submit button" style="user-select: auto;" type="submit">Submit</button>
 </form>
-<button class="ui submit button" style="user-select: auto;" id="refresh" type="submit">Refresh</button>
+<button class="ui submit button" style="user-select: auto;" id="refresh">Refresh</button>
 
+
+<!--JS to render MAP -->
 <!--Set interaction of action tabs-->
 <script th:inline="javascript">
+    const myChart = echarts.init(document.getElementById('map'));
+    const colors = [[${graphData}]].map(territory => territory['color'])
+    const innerLabelFormatter = "{@name}";
+    const dimensions = ['name', 'owner', 'resources', 'value'];
+    let option;
+    option = {
+        tooltip: {
+            trigger: 'item',
+            formatter: params => `😉\t${params.data.owner}<br />💎\t${params.data.resources}<br />📏\t${params.data.value}`
+        },
+        series: [
+            {
+                name: 'map',
+                type: 'pie',
+                radius: ['40%', '70%'],
+                avoidLabelOverlap: false,
+                itemStyle: {
+                    borderRadius: 10,
+                    borderColor: '#fff',
+                    borderWidth: 4,
+                },
+                color: colors,
+                label: {
+                    position: 'inner',
+                    fontSize: 20,
+                    fontWeight: 'bold',
+                    color: "#fff",
+                    formatter: innerLabelFormatter,
+                },
+                labelLine: {
+                    show: false
+                },
+                dimensions: dimensions,
+            }
+        ],
+        dataset: {
+            source: [[${graphData}]]
+        }
+    };
+    myChart.setOption(option);
+
     $('#actions a.item').on('click', function () {
         $(this)
             .addClass('active')
@@ -91,24 +134,20 @@
         const config = {
             "url": "/update_map",
             "async": true,
-            "type": get,
+            "type": "get",
             "success": res => {
                 let colors = res.map(territory => territory['color']);
                 option.dataset.source = res;
                 option.series[0].color = colors;
                 myChart.clear();
-                myChart.setOptions(option);
+                myChart.setOption(option);
             }
         }
         $.ajax(config);
     }
 
-    $('#refresh').submit(refresh_map);
+    $('#refresh').click(refresh_map);
 </script>
-<!--JS to render MAP -->
-<th:block th:insert="fragments/map.html
-          :: mapjs(graphData=${graphData})">
-</th:block>
 </body>
 
 </html>
