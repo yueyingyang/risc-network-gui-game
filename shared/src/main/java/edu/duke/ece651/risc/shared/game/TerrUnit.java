@@ -28,4 +28,7 @@ public class TerrUnit {
     this.terrName = terrName;
     this.unit = unit;
   }
+
+  public TerrUnit() {
+  }
 }

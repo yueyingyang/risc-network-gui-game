@@ -128,3 +128,9 @@ tasks.register("run-client") {
     group = 'Run Client/Server'
     description = 'Run the Client'
 }
+
+tasks.register("run-web") {
+    dependsOn project('web').getTasksByName('run',false)
+    group = 'Run Client/Server'
+    description = 'Run the Web'
+}

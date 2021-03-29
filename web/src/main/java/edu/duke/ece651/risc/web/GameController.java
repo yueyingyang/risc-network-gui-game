@@ -6,12 +6,15 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import edu.duke.ece651.risc.shared.*;
 import edu.duke.ece651.risc.shared.game.TerrUnit;
 import edu.duke.ece651.risc.shared.game.TerrUnitList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.*;
@@ -30,7 +33,7 @@ public class GameController {
   private final ObjectMapper mapper;
   private final JSONSerializer jsonSerializer;
   private final List<String> colorPalette;
-
+  Logger logger = LoggerFactory.getLogger(GameController.class);
 
   public GameController() {
     this.jsonSerializer = new JSONSerializer();
@@ -64,22 +67,23 @@ public class GameController {
   /**
    * Placement submission API
    *
-   * @param list  is the TerrUnitList user input
-   * @param model idk if it's needed
+   * @param list is the TerrUnitList user input
    * @return redirect to game page
    * @throws IOException if recv/send exception
    */
   @PostMapping(value = "/place")
-  public String place(@ModelAttribute(value = "wrapper") TerrUnitList list, Model model) throws IOException {
+  public String place(@ModelAttribute(value = "wrapper") TerrUnitList list, RedirectAttributes redirectAttributes) throws IOException {
     List<ActionEntry> placementList = new ArrayList<>();
-    ClientSocket cs = playerMapping.getSocket(currentUserName);
     for (TerrUnit tu : list.getTerrUnitList()) {
       placementList.add(new PlaceEntry(tu.getTerrName(), tu.getUnit(), currentUserName));
-      System.out.println(tu.getUnit());
     }
-    playerMapping.getSocket(currentUserName).sendMessage(jsonSerializer.getOm().writerFor(new TypeReference<List<ActionEntry>>() {
-    }).writeValueAsString(placementList));
-    return "game";
+    String json = jsonSerializer.getOm().writerFor(new TypeReference<List<ActionEntry>>() {
+    }).writeValueAsString(placementList);
+    logger.info(json);
+    playerMapping.getSocket(currentUserName).sendMessage(json);
+
+    redirectAttributes.addAttribute("name", currentUserName);
+    return "redirect:game";
   }
 
   /**
@@ -149,7 +153,6 @@ public class GameController {
    */
   private GameMap createMap() {
     V1MapFactory v1f = new V1MapFactory();
-    List<String> players = Arrays.asList("test", "p2");
     Collections.shuffle(players);
     return v1f.createMap(players, 2);
   }

@@ -22,18 +22,9 @@ class GameControllerTest {
   @Autowired
   private GameController controller;
 
-//  @Test
-//  void test_getTerrUnitList(){
-//    List<TerrUnitList> list = controller.getTerrUnitList(createMap(), "test", 3);
-////    option 0-3 included
-//    assertEquals(4, list.get(0).getTerrUnitList().size());
-//  }
+  @Test
+  void test_getTerrUnitList() {
 
-  //  mock a map
-  private GameMap createMap() {
-    V1MapFactory v1f = new V1MapFactory();
-    List<String> players = Arrays.asList("test", "p2");
-    GameMap map = v1f.createMap(players, 2);
-    return map;
   }
+
 }

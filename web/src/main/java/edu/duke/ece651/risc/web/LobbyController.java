@@ -86,7 +86,7 @@ public class LobbyController {
     startReq.put("gameID", gameID);
     c.sendMessage(new ObjectMapper().writeValueAsString(startReq));
     if (c.recvMessage().equals(Constant.SUCCESS_NUMBER_CHOOSED)) {
-      redirectAttributes.addAttribute("name", "test");
+      redirectAttributes.addAttribute("name", currentUserName);
       return "redirect:game";
     }
     return "lobby";

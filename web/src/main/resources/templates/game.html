@@ -63,9 +63,11 @@
         <div class="field" th:each="terrUnit, stat: ${wrapper.terrUnitList}">
             <label th:text="'Territory ' + ${terrUnit.getTerrName()}"></label>
             <div class="four wide fields">
-                <select th:name="${terrUnit.getTerrName()}" class="ui fluid search dropdown" >
+                <input th:field="*{terrUnitList[__${stat.index}__].terrName}" th:value="${terrUnit.getTerrName()}" hidden>
+                <select th:field="*{terrUnitList[__${stat.index}__].unit}"
+                        class="ui fluid search dropdown">
                     <!-- Render option -->
-                    <option th:each="i: ${#numbers.sequence(0, units)}" th:text="${i}" th:value="${terrUnit.getUnit()}">
+                    <option th:each="i: ${#numbers.sequence(0, units)}" th:text="${i}" th:value="${i}">
                     </option>
                 </select>
             </div>
