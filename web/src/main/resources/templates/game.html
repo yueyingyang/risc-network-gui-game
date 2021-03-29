@@ -32,7 +32,7 @@
 <!--<p th:text="${graphData}"></p>-->
 <div class="ui grid vertically divided">
     <div class="two column centered row">
-        <div id="map" class="five wide column" style="width:600px; height:400px;"></div>
+        <div id="map" class="six wide column" style="width:600px; height:400px;"></div>
         <div class="eight wide column" style="user-select: auto;">
             <div class="ui secondary pointing menu" id="actions">
                 <a class="active item" style="user-select: auto;">
@@ -56,76 +56,37 @@
 </div>
 
 
-<div class="ui form">
+<form class="ui form" th:action="@{/place}" method="post">
     <div class="ui header">Please enter the placement below:</div>
     <div class="fields">
-        <div class="field">
-            <label>Territory 1</label>
-            <input placeholder="" type="text">
-        </div>
-        <div class="field">
-            <label>Territory 2</label>
-            <input placeholder="" type="text">
-        </div>
-        <div class="field">
-            <label>Territory 3</label>
-            <input placeholder="" type="text">
+        <div class="field" th:each="territory: ${territories}">
+            <label th:text="'Territory ' + ${territory}"></label>
+            <div class="four wide fields">
+                <select th:name="${territory}" class="ui fluid search dropdown">
+                    <option th:each="i: ${#numbers.sequence(0, units)}" th:value="${i}" th:text="${i}">
+                    </option>
+                </select>
+            </div>
         </div>
     </div>
-    <div class="ui submit button" style="user-select: auto;">Submit</div>
-</div>
+    <button class="ui submit button" style="user-select: auto;" type="submit">Submit</button>
+</form>
 
+<!--Set interaction of action tabs-->
 <script th:inline="javascript">
-
     $('#actions a.item').on('click', function() {
         $(this)
             .addClass('active')
             .siblings()
             .removeClass('active');
     })
-
-    const myChart = echarts.init(document.getElementById('map'));
-    const colors = [[${graphData}]].map(territory => territory['color'])
-    const innerLabelFormatter = "{@name}";
-    const dimensions = ['name', 'owner', 'resources', 'value'];
-    let option;
-    option = {
-        tooltip: {
-            trigger: 'item',
-            formatter: params => `😉\t${params.data.owner}<br />💎\t${params.data.resources}<br />📏\t${params.data.value}`
-        },
-        series: [
-            {
-                name: 'map',
-                type: 'pie',
-                radius: ['40%', '70%'],
-                avoidLabelOverlap: false,
-                itemStyle: {
-                    borderRadius: 10,
-                    borderColor: '#fff',
-                    borderWidth: 4,
-                },
-                color: colors,
-                label: {
-                    position: 'inner',
-                    fontSize: 20,
-                    fontWeight: 'bold',
-                    color: "#fff",
-                    formatter: innerLabelFormatter,
-                },
-                labelLine: {
-                    show: false
-                },
-                dimensions: dimensions,
-            }
-        ],
-        dataset: {
-            source: [[${graphData}]]
-        }
-    };
-    myChart.setOption(option);
+    $('select.dropdown')
+        .dropdown();
 </script>
-
+<!--JS to render MAP -->
+<th:block th:insert="fragments/map.html
+          :: mapjs(graphData=${graphData})">
+</th:block>
 </body>
 
 </html>
