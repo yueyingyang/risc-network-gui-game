@@ -1,16 +1,15 @@
 package edu.duke.ece651.risc.web;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import edu.duke.ece651.risc.shared.*;
-import edu.duke.ece651.risc.shared.game.GameInfo;
+import edu.duke.ece651.risc.shared.game.TerrUnit;
+import edu.duke.ece651.risc.shared.game.TerrUnitList;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.*;
@@ -18,7 +17,7 @@ import java.util.*;
 @Controller
 public class GameController {
   @Autowired
-  private PlayerConnectionMapping playerMapping;
+  private PlayerSocketMap playerMapping;
 
   // todo: change after user login
   private String currentUserName;
@@ -47,21 +46,26 @@ public class GameController {
 
     List<ObjectNode> graphData = getObjectNodes(colorMapping, map);
     model.addAttribute("graphData", graphData);
-    model.addAttribute("territories", getTerritoryNameList(map, userName));
+    model.addAttribute("wrapper", createTerriUnitList(map, userName));
     model.addAttribute("units", totalUnits);
     return "game";
   }
 
   @PostMapping(value = "/place")
-  public String start(@RequestBody String placement) throws IOException {
+  public String place(@ModelAttribute(value = "wrapper") TerrUnitList list, Model model) throws IOException {
     List<ActionEntry> placementList = new ArrayList<>();
-    System.out.println(placement);
+    for(TerrUnit tu : list.getTerrUnitList()){
+      System.out.println(tu.getTerrName());
+      System.out.println(tu.getUnit());
+    }
+
 //    placements.add()
 //    c.sendMessage(new ObjectMapper().writeValueAsString(startReq));
 //    placementList.add(new PlaceEntry(t.getName(), num, getName()));
 
 //    playerMapping.getClientPlayer("test").sendMessage(jsonSerializer.getOm().writerFor(new TypeReference<List<ActionEntry>>() {
 //    }).writeValueAsString(placementList));
+    model.addAttribute("wrapper", list);
     return "game";
   }
 
@@ -114,11 +118,11 @@ public class GameController {
     return map;
   }
 
-  private List<String> getTerritoryNameList(GameMap map, String userName) {
-    List<String> ans = new ArrayList<>();
+  protected TerrUnitList createTerriUnitList(GameMap map, String userName) {
+    List<TerrUnit> ans = new ArrayList<>();
     for (Territory t : map.getPlayerTerritories(userName)) {
-      ans.add(t.getName());
+      ans.add(new TerrUnit(t.getName(), 0));
     }
-    return ans;
+    return new TerrUnitList(ans);
   }
 }

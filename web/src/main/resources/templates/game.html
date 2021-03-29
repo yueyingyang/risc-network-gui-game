@@ -56,14 +56,16 @@
 </div>
 
 
-<form class="ui form" th:action="@{/place}" method="post">
+<form th:if="${wrapper.getTerrUnitList()} != null" class="ui form" th:action="@{/place}" method="post" th:object="${wrapper}">
     <div class="ui header">Please enter the placement below:</div>
     <div class="fields">
-        <div class="field" th:each="territory: ${territories}">
-            <label th:text="'Territory ' + ${territory}"></label>
+        <!--        Render territory-->
+        <div class="field" th:each="terrUnit, stat: ${wrapper.terrUnitList}">
+            <label th:text="'Territory ' + ${terrUnit.getTerrName()}"></label>
             <div class="four wide fields">
-                <select th:name="${territory}" class="ui fluid search dropdown">
-                    <option th:each="i: ${#numbers.sequence(0, units)}" th:value="${i}" th:text="${i}">
+                <select th:name="${terrUnit.getTerrName()}" class="ui fluid search dropdown">
+                    <!--                    Render option -->
+                    <option th:each="i: ${#numbers.sequence(0, units)}" th:text="${i}" th:value="${terrUnit.getUnit()}">
                     </option>
                 </select>
             </div>
@@ -75,7 +77,7 @@
 
 <!--Set interaction of action tabs-->
 <script th:inline="javascript">
-    $('#actions a.item').on('click', function() {
+    $('#actions a.item').on('click', function () {
         $(this)
             .addClass('active')
             .siblings()
@@ -87,10 +89,10 @@
 
     const refresh_map = () => {
         const config = {
-            "url":"/update_map",
-            "async":true,
-            "type":get,
-            "success":res => {
+            "url": "/update_map",
+            "async": true,
+            "type": get,
+            "success": res => {
                 let colors = res.map(territory => territory['color']);
                 option.dataset.source = res;
                 option.series[0].color = colors;

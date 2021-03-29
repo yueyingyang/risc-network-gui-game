@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class WebApplicationTests {
 
 	@Test
-	void contextLoads() {
+	public void main() {
+		WebApplication.main(new String[] {});
 	}
-
 }

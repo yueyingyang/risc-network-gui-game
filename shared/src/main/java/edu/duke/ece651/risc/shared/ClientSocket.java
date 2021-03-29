@@ -5,13 +5,13 @@ import java.net.Socket;
 import java.util.logging.Logger;
 
 public class ClientSocket {
-  protected InputStream in;
-  protected OutputStream out;
+  protected BufferedReader in;
+  protected PrintWriter out;
   private static final Logger LOGGER = Logger.getLogger(ClientSocket.class.getName());
 
   public ClientSocket(Socket s) throws IOException {
-    this.in = s.getInputStream();
-    this.out = s.getOutputStream();
+    this.in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+    this.out = new PrintWriter(s.getOutputStream(), true);
   }
 
   /**
@@ -21,7 +21,7 @@ public class ClientSocket {
    */
   public void sendMessage(String msg) {
     LOGGER.info(msg);
-    new PrintWriter(out, true).println(msg);
+    out.println(msg);
   }
 
   /**
@@ -31,7 +31,7 @@ public class ClientSocket {
    * @throws IOException if readline throws exception
    */
   public String recvMessage() throws IOException {
-    String rev = new BufferedReader(new InputStreamReader(in)).readLine();
+    String rev = in.readLine();
     LOGGER.info(rev);
     return rev;
   }
@@ -43,6 +43,6 @@ public class ClientSocket {
    * @throws IOException if IO
    */
   public boolean hasNewMsg() throws IOException {
-    return in.available() > 0;
+    return in.ready();
   }
 }
