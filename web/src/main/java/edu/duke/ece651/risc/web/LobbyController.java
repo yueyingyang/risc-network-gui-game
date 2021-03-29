@@ -32,7 +32,7 @@ public class LobbyController {
 
   public LobbyController() {
     this.jsonSerializer = new JSONSerializer();
-    this.currentUserName = "test";
+    this.currentUserName = "p2";
     this.mapper = new ObjectMapper();
   }
 
@@ -68,17 +68,17 @@ public class LobbyController {
 
   @PostMapping(value = "/start")
   public String start(@RequestParam(name = "size") String size) throws IOException {
-    ClientSocket c = playerMapping.getSocket("p2");
+    ClientSocket c = playerMapping.getSocket(currentUserName);
     ObjectNode startReq = JsonNodeFactory.instance.objectNode();
     startReq.put("type", "start");
-    startReq.put("name", "p2");
+    startReq.put("name", currentUserName);
     startReq.put("gameSize", size);
     c.sendMessage(new ObjectMapper().writeValueAsString(startReq));
     return "game";
   }
 
   @GetMapping(value = "/join")
-  public String join(@RequestParam(value = "id") String gameID, RedirectAttributes redirectAttributes) throws IOException {
+  public String join(@RequestParam(value = "id") String gameID) throws IOException {
     ClientSocket c = playerMapping.getSocket(currentUserName);
     ObjectNode startReq = JsonNodeFactory.instance.objectNode();
     startReq.put("type", "join");
@@ -86,7 +86,6 @@ public class LobbyController {
     startReq.put("gameID", gameID);
     c.sendMessage(new ObjectMapper().writeValueAsString(startReq));
     if (c.recvMessage().equals(Constant.SUCCESS_NUMBER_CHOOSED)) {
-      redirectAttributes.addAttribute("name", currentUserName);
       return "redirect:game";
     }
     return "lobby";

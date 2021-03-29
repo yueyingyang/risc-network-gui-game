@@ -37,7 +37,7 @@ public class GameController {
 
   public GameController() {
     this.jsonSerializer = new JSONSerializer();
-    this.currentUserName = "test";
+    this.currentUserName = "p2";
     this.mapper = new ObjectMapper();
     this.colorPalette = Arrays.asList("#97B8A3", "#EDC3C7", "#FDF06F", "#A6CFE2", "#9C9CDD");
     this.players = Arrays.asList("p2", "test");
@@ -46,20 +46,19 @@ public class GameController {
   /**
    * The game page: after enter
    *
-   * @param userName for temporary usage, should be removed after adding user login
-   * @param model    is the model to add attribute for view to display
+   * @param model is the model to add attribute for view to display
    * @return is the name of view template html
    * @throws IOException
    */
   @GetMapping("/game")
-  public String greeting(@RequestParam(value = "name") String userName, Model model) throws IOException {
-//    GameMap map = (GameMap) jsonSerializer.deserialize(playerMapping.getClientPlayer(userName).recvMessage(), GameMap.class);
-//    int totalUnits = Integer.parseInt(playerMapping.getClientPlayer(userName).recvMessage());
-    GameMap map = createMap();
-    int totalUnits = 6;
+  public String greeting(Model model) throws IOException {
+    GameMap map = (GameMap) jsonSerializer.deserialize(playerMapping.getSocket(currentUserName).recvMessage(), GameMap.class);
+    int totalUnits = Integer.parseInt(playerMapping.getSocket(currentUserName).recvMessage());
+//    GameMap map = createMap();
+//    int totalUnits = 6;
     List<ObjectNode> graphData = getObjectNodes(map, players);
     model.addAttribute("graphData", graphData);
-    model.addAttribute("wrapper", createTerrUnitList(map, userName));
+    model.addAttribute("wrapper", createTerrUnitList(map, currentUserName));
     model.addAttribute("units", totalUnits);
     return "game";
   }
@@ -72,7 +71,7 @@ public class GameController {
    * @throws IOException if recv/send exception
    */
   @PostMapping(value = "/place")
-  public String place(@ModelAttribute(value = "wrapper") TerrUnitList list, RedirectAttributes redirectAttributes) throws IOException {
+  public String place(@ModelAttribute(value = "wrapper") TerrUnitList list) throws IOException {
     List<ActionEntry> placementList = new ArrayList<>();
     for (TerrUnit tu : list.getTerrUnitList()) {
       placementList.add(new PlaceEntry(tu.getTerrName(), tu.getUnit(), currentUserName));
@@ -81,8 +80,6 @@ public class GameController {
     }).writeValueAsString(placementList);
     logger.info(json);
     playerMapping.getSocket(currentUserName).sendMessage(json);
-
-    redirectAttributes.addAttribute("name", currentUserName);
     return "redirect:game";
   }
 
