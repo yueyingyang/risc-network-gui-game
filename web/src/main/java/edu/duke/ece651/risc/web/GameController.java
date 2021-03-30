@@ -39,7 +39,7 @@ public class GameController {
 
   public GameController() {
     this.jsonSerializer = new JSONSerializer();
-    this.currentUserName = "p2";
+    this.currentUserName = "test";
     this.mapper = new ObjectMapper();
     this.colorPalette = Arrays.asList("#97B8A3", "#EDC3C7", "#FDF06F", "#A6CFE2", "#9C9CDD");
     this.players = Arrays.asList("p2", "test");

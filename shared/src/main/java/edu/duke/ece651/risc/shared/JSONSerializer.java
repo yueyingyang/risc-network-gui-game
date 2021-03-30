@@ -62,4 +62,12 @@ public class JSONSerializer implements Serializer {
     return null;
   }
 
+  /**
+   * @param o is the object to be cloned
+   * @param c is the class of object
+   * @return a deep clone object
+   */
+  public Object clone(Object o, Class<?> c) {
+    return deserialize(serialize(o), c);
+  }
 }

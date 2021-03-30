@@ -31,7 +31,7 @@ public class LobbyController {
 
   public LobbyController() {
     this.jsonSerializer = new JSONSerializer();
-    this.currentUserName = "p2";
+    this.currentUserName = "test";
     this.mapper = new ObjectMapper();
   }
 
@@ -122,6 +122,6 @@ public class LobbyController {
     startReq.put("name", currentUserName);
     startReq.put("gameID", gameID);
     c.sendMessage(new ObjectMapper().writeValueAsString(startReq));
-    return "redirect:game";
+    return "redirect:/game/play";
   }
 }
