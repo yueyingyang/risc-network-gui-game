@@ -2,6 +2,10 @@ package edu.duke.ece651.risc.server;
 import com.ctc.wstx.shaded.msv_core.verifier.jarv.Const;
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import java.util.*;
+
+import javax.swing.Action;
+
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -11,6 +15,7 @@ import java.io.*;
 import java.util.*;
 import java.net.Socket;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import edu.duke.ece651.risc.shared.*;
@@ -234,21 +239,18 @@ public class GameTest {
   }
 
   @Test
-  public void test_updatePlayerLists() throws IOException, InterruptedException{
+  public void test_updatePlayerLists_2players() throws IOException, InterruptedException{
     PlaceEntry pe1 = new PlaceEntry("0", 2, "Red");
     PlaceEntry pe2 = new PlaceEntry("1", 0, "Blue");
-    JSONSerializer js = new JSONSerializer();
-    String placement1 =js.serialize(pe1);
-    String placement2 =js.serialize(pe2);
     Socket socket1 = new Socket();
     Socket socket2 = new Socket();
     Game g = new Game(2,0);        
     ByteArrayOutputStream bytes1 = new ByteArrayOutputStream();  
     ByteArrayOutputStream bytes2 = new ByteArrayOutputStream();                                                                                                   
-    ServerPlayer p1 = new ServerPlayer(new BufferedReader(new StringReader(placement1)), new PrintWriter(bytes1, true),socket1);
+    ServerPlayer p1 = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes1, true),socket1);
     p1.setName("Red");
     p1.setCurrentGameID(0);
-    ServerPlayer p2 = new ServerPlayer(new BufferedReader(new StringReader(placement2)), new PrintWriter(bytes2, true),socket2);
+    ServerPlayer p2 = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes2, true),socket2);
     p2.setName("Blue");
     p2.setCurrentGameID(0);
     g.addPlayer(p1);
@@ -261,20 +263,136 @@ public class GameTest {
     });
     t.start();
     // wait for "acceptPlayers" finishing
-    Thread.sleep(5000);  
+    Thread.sleep(1000);  
+    pe1.apply(g.getMap());
+    pe2.apply(g.getMap());
     assertEquals(2,g.getMap().getTerritory("0").getNumSoldiersInArmy());
-    assertEquals(2,g.getMap().getTerritory("1").getNumSoldiersInArmy());
+    assertEquals(0,g.getMap().getTerritory("1").getNumSoldiersInArmy());
     AttackEntry a = new AttackEntry("0", "1", 2, "Red");
     a.apply(g.getMap());
     g.doAttacks();
     assertEquals("Red", g.getMap().getTerritory("1").getOwnerName());   
-    assertEquals(true,g.checkLost(p2));
-    g.updatePlayerLists();
-    //assertThrows(Exception.class,()->{p1.recvMessage();});
-    //assertThrows(Exception.class,()->{p2.recvMessage();});
-
+    assertEquals(true,g.checkLost(p2));  
+    assertDoesNotThrow(()->{g.updatePlayerLists();});
   }
 
-  
+  @Test
+  public void test_updatePlayerLists_3players() throws IOException, InterruptedException{
+    PlaceEntry pe1 = new PlaceEntry("0", 2, "Red");
+    PlaceEntry pe2 = new PlaceEntry("1", 0, "Blue");
+    PlaceEntry pe3 = new PlaceEntry("2", 2, "Purple");
+    AttackEntry a1 = new AttackEntry("0", "1", 2, "Red");
+    AttackEntry a2 = new AttackEntry("2", "1", 2, "Purple");
+    Socket socket1 = new Socket();
+    Socket socket2 = new Socket();
+    Socket socket3 = new Socket();
+    Game g = new Game(3,0);        
+    ByteArrayOutputStream bytes1 = new ByteArrayOutputStream();  
+    ByteArrayOutputStream bytes2 = new ByteArrayOutputStream(); 
+    ByteArrayOutputStream bytes3 = new ByteArrayOutputStream();                                                                                                     
+    ServerPlayer p1 = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes1, true),socket1);
+    p1.setName("Red");
+    p1.setCurrentGameID(0);
+    ServerPlayer p2 = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes2, true),socket2);
+    p2.setName("Blue");
+    p2.setCurrentGameID(0);
+    ServerPlayer p3 = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes3, true),socket3);
+    p3.setName("Purple");
+    p3.setCurrentGameID(0);
+    g.addPlayer(p1);
+    g.addPlayer(p2);
+    g.addPlayer(p3);
+    Thread t = new Thread(() -> {
+      try {
+        g.runGame(1,2);
+      } catch (Exception ignored) {
+      }
+    });
+    t.start();
+    // wait for "acceptPlayers" finishing
+    Thread.sleep(1000);  
+    pe1.apply(g.getMap());
+    pe2.apply(g.getMap());
+    pe3.apply(g.getMap());
+    a1.apply(g.getMap());
+    a2.apply(g.getMap());
+    g.doAttacks();
+    assertEquals(true, g.checkLost(p2));
+    assertThrows(Exception.class, ()->{g.updatePlayerLists();});
+  }
+
+  @Test
+  public void test_runGameEnd() throws IOException, InterruptedException{
+    ServerPlayer player1 = Mockito.mock(ServerPlayer.class);
+    ServerPlayer player2 = Mockito.mock(ServerPlayer.class);
+    PlaceEntry pe1 = new PlaceEntry("0", 2, "Red");
+    PlaceEntry pe2 = new PlaceEntry("1", 0, "Blue");
+    AttackEntry a1 = new AttackEntry("0","1", 2, "Red");
+    List<ActionEntry> placements1 = new ArrayList<>();
+    placements1.add(pe1);
+    List<ActionEntry> placements2 = new ArrayList<>();
+    placements2.add(pe2);
+    JSONSerializer serializer = new JSONSerializer();
+    Mockito.when(player1.recvMessage()).thenReturn(serializer.getOm().writerFor(new TypeReference<List<ActionEntry>>() {
+    }).writeValueAsString(placements1)).thenReturn(serializer.serialize(a1)).thenReturn(Constant.ORDER_COMMIT).thenReturn(Constant.DISCONNECT_GAME);
+    Mockito.when(player2.recvMessage()).thenReturn(serializer.getOm().writerFor(new TypeReference<List<ActionEntry>>() {
+    }).writeValueAsString(placements2)).thenReturn(Constant.ORDER_COMMIT).thenReturn(Constant.DISCONNECT_GAME);  
+    Mockito.when(player1.getName()).thenReturn("Red");
+    Mockito.when(player2.getName()).thenReturn("Blue");
+    Game g = new Game(2,0);                                                                                    
+    g.addPlayer(player1);
+    g.addPlayer(player2); 
+    Thread t = new Thread(() -> {
+      try {
+        g.runGame(1,2);
+      } catch (Exception ignored) {
+      }
+    });
+    t.start();
+    // wait for "acceptPlayers" finishing
+    Thread.sleep(5000);  
+    assertEquals(true,g.checkWin());
+  }
+
+  @Test
+  public void test_runGameNotEnd() throws IOException, InterruptedException{
+    ServerPlayer player1 = Mockito.mock(ServerPlayer.class);
+    ServerPlayer player2 = Mockito.mock(ServerPlayer.class);
+    ServerPlayer player3 = Mockito.mock(ServerPlayer.class);
+    PlaceEntry pe1 = new PlaceEntry("0", 2, "Red");
+    PlaceEntry pe2 = new PlaceEntry("1", 0, "Blue");
+    PlaceEntry pe3 = new PlaceEntry("2", 2, "Purple");
+    AttackEntry a1 = new AttackEntry("0","1", 2, "Red");
+    List<ActionEntry> placements1 = new ArrayList<>();
+    placements1.add(pe1);
+    List<ActionEntry> placements2 = new ArrayList<>();
+    placements2.add(pe2);
+    List<ActionEntry> placements3 = new ArrayList<>();
+    placements3.add(pe3);
+    JSONSerializer serializer = new JSONSerializer();
+    Mockito.when(player1.recvMessage()).thenReturn(serializer.getOm().writerFor(new TypeReference<List<ActionEntry>>() {
+    }).writeValueAsString(placements1)).thenReturn(serializer.serialize(a1)).thenReturn(Constant.ORDER_COMMIT);
+    Mockito.when(player2.recvMessage()).thenReturn(serializer.getOm().writerFor(new TypeReference<List<ActionEntry>>() {
+    }).writeValueAsString(placements2)).thenReturn(Constant.ORDER_COMMIT).thenReturn(Constant.DISCONNECT_GAME); 
+    Mockito.when(player3.recvMessage()).thenReturn(serializer.getOm().writerFor(new TypeReference<List<ActionEntry>>() {
+    }).writeValueAsString(placements3)).thenReturn(Constant.ORDER_COMMIT);  
+    Mockito.when(player1.getName()).thenReturn("Red");
+    Mockito.when(player2.getName()).thenReturn("Blue");
+    Mockito.when(player3.getName()).thenReturn("Purple");
+    Game g = new Game(3,0);                                                                                    
+    g.addPlayer(player1);
+    g.addPlayer(player2); 
+    g.addPlayer(player3);
+    Thread t = new Thread(() -> {
+      try {
+        g.runGame(1,2);
+      } catch (Exception ignored) {
+      }
+    });
+    t.start();
+    // wait for "acceptPlayers" finishing
+    Thread.sleep(5000);  
+    assertEquals(false,g.checkWin());
+  }
 
 }

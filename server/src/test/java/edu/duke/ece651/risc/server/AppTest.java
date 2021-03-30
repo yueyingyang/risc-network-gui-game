@@ -40,60 +40,76 @@ class AppTest {
   @Mock
   private ServerPlayer player;
 
-  /*@Disabled
   @Test
   void test_start_new_game() throws IOException {
     Socket s = new Socket();
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     ServerPlayer sp = new ServerPlayer(new BufferedReader(new StringReader("2\n")),
             new PrintWriter(bytes, true),s);
-    app.startNewGame(sp);
-    assertEquals("Hi ^_^, We will create a new game for you. How many players do you want to have in your Game?\n" +
-            "You are in a Game now!\n" +
-            "Red\n", bytes.toString());
+    Game g = app.startNewGame(sp,2);
+    assertEquals(2,g.getPlayerNum());
   }
 
-  @Disabled
-  @Test
-  void test_get_available_game() throws IOException {
-    Mockito.when(player.readGameSize()).thenReturn(3);
-    app.startNewGame(player);
-    assertEquals(1, app.getAvailableGames().size());
-  }
-
-  @Disabled
+ 
   @Test
   void test_print_available_gameList() throws IOException {
-    Mockito.when(player.readGameSize()).thenReturn(3);
-    app.startNewGame(player);
-    assertEquals("The available games you can choose from are: Game ID: 0 ", app.AvailableGameList());
+    Socket socket1 = new Socket();      
+    ByteArrayOutputStream bytes1 = new ByteArrayOutputStream();   
+    ServerPlayer p1 = app.createOrUpdatePlayer("Red",new BufferedReader(new StringReader("")),new PrintWriter(bytes1, true),socket1);
+    Socket socket2 = new Socket();      
+    ByteArrayOutputStream bytes2 = new ByteArrayOutputStream();   
+    Socket socket3 = new Socket();      
+    ByteArrayOutputStream bytes3 = new ByteArrayOutputStream();   
+    ServerPlayer p2 = app.createOrUpdatePlayer("Blue",new BufferedReader(new StringReader("")),new PrintWriter(bytes2, true),socket2);                                                                                                
+    Game g1 = app.startNewGame(p1,3);
+    Game g2 = app.startNewGame(p2,3);
+    assertEquals("[{\"id\":1,\"players\":[\"Blue\"]}]\n[{\"id\":0,\"players\":[\"Red\"]}]", app.allGameList("Red"));
+    app.createOrUpdatePlayer("Blue",new BufferedReader(new StringReader("")),new PrintWriter(bytes3, true),socket3);
+    assertDoesNotThrow(()->{p2.sendMessage("msg");});
   }
 
-  @Disabled
   @Test
   void test_join_exist_game() throws IOException {
     Socket s = new Socket();
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-    ServerPlayer sp = new ServerPlayer(new BufferedReader(new StringReader("a\n1\n0\n")),
+    ServerPlayer sp = new ServerPlayer(new BufferedReader(new StringReader("")),
             new PrintWriter(bytes, true),s);
-    Mockito.when(player.readGameSize()).thenReturn(2);
-    Game g = app.startNewGame(player);
-    assertEquals(g, app.joinExistingGame(sp));
-    assertEquals(0, app.getAvailableGames().size());
-  }*/
+    Socket s1 = new Socket();
+    ByteArrayOutputStream bytes1 = new ByteArrayOutputStream();
+    ServerPlayer sp1 = new ServerPlayer(new BufferedReader(new StringReader("")),
+            new PrintWriter(bytes1, true),s1);
+    app.startNewGame(sp, 2);
+    Game g1 = app.joinExistingGame(sp1, 0);
+    assertEquals(0,g1.getGameID());
+    assertEquals(2,g1.getAllPlayers().size());
+  }
 
-  /*@Test
+  @Test
+  public void test_rejoinGame() throws IOException{
+    Socket s = new Socket();
+    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+    ServerPlayer sp = new ServerPlayer(new BufferedReader(new StringReader("")),
+            new PrintWriter(bytes, true),s);
+    Game g = app.startNewGame(sp, 2);
+    Game g1 = app.startNewGame(sp, 2);
+    app.rejoinGame(sp, 0);
+    assertEquals(0,sp.getCurrentGame());
+  }
+  @Test
   void test_accept_player() throws IOException, InterruptedException {
     Socket cs = Mockito.mock(Socket.class);
     Socket cs1 = Mockito.mock(Socket.class);
     Socket cs2 = Mockito.mock(Socket.class);
-    String clientIn = "3\n";
-    String clientIn1 = "s\n3\n";
-    String clientIn2 = "j\n0\n";
+    Socket cs3 = Mockito.mock(Socket.class);
+    String clientIn = "{\"type\":\"getGameList\",\"name\":\"test\"}\n";
+    String clientIn1 = "{\"type\":\"start\",\"name\":\"test\",\"gameSize\":\"3\"}\n";
+    String clientIn2 = "{\"type\":\"getGameList\",\"name\":\"p2\"}\n";
+    String clientIn3 = "{\"type\":\"join\",\"name\":\"p2\",\"gameID\":\"0\"}\n";
     OutputStream out = getMockClientOuput(cs, clientIn);
     OutputStream out1 = getMockClientOuput(cs1, clientIn1);
     OutputStream out2 = getMockClientOuput(cs2, clientIn2);
-    Mockito.when(ss.accept()).thenReturn(cs).thenReturn(cs1).thenReturn(cs2);
+    OutputStream out3 = getMockClientOuput(cs3, clientIn3);
+    Mockito.when(ss.accept()).thenReturn(cs).thenReturn(cs1).thenReturn(cs2).thenReturn(cs3);
     Thread t = new Thread(() -> {
       try {
         app.acceptPlayers(ss);
@@ -102,23 +118,9 @@ class AppTest {
     });
     t.start();
     // wait for "acceptPlayers" finishing
-    Thread.sleep(5000);
+    Thread.sleep(2000);
     // check the player's out - it should have sth???
-    assertEquals("Hi, there's no available game in the system, so we will start a game for you.\n"+
-    "Hi ^_^, We will create a new game for you. How many players do you want to have in your Game?\n"+
-    "You are in a Game now!\n"+
-    "Red\n"+
-    "Hi, Do you want to start a new game(type s) or join an existing game(type j)?\n"+
-    "Successfully choose an action!\n"+
-    "Hi ^_^, We will create a new game for you. How many players do you want to have in your Game?\n"+
-    "You are in a Game now!\n"+
-    "Red\n"+
-    "Hi, Do you want to start a new game(type s) or join an existing game(type j)?\n"+
-    "Successfully choose an action!\n"+
-    "The available games you can choose from are: Game ID: 0 Game ID: 1 \n"+
-    "You are in a Game now!\n"+
-    "Blue\n"+
-    "Hi, Do you want to start a new game(type s) or join an existing game(type j)?\n", out.toString()+out1.toString()+out2.toString());
+    assertEquals("[]\n[]\n[{\"id\":0,\"players\":[\"test\"]}]\n[]\nYou are in a Game now!\n", out.toString()+out1.toString()+out2.toString()+out3.toString());
     // end the acceptPlayers
     t.interrupt();
     t.join();
@@ -132,7 +134,7 @@ class AppTest {
     Mockito.when(cs.getInputStream()).thenReturn(in);
     Mockito.when(cs.getOutputStream()).thenReturn(out);
     return out;
-  }*/
+  }
 /*
   @Test
   void test_accept_player_exception_handling() throws IOException, InterruptedException {

@@ -1,5 +1,5 @@
-package edu.duke.ece651.risc.server;
 
+package edu.duke.ece651.risc.server;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;

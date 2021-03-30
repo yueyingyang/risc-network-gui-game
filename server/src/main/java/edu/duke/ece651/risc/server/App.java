@@ -54,7 +54,7 @@ public class App {
   private List<Game> getAvailableGames(String playerName) {
     List<Game> res = new ArrayList<>();
     for (Game g : this.games) {
-      if (!g.isGameFull() && g.getPlayerByName(playerName).equals(null)) {
+      if (!g.isGameFull() && g.getPlayerByName(playerName)==null) {
         res.add(g);
       }
     }
@@ -112,7 +112,7 @@ public class App {
    * @param player is the player needs to login
    * @throws IOException if R/W exception
    */
-  public void startNewGame(ServerPlayer player, Integer gameSize) throws IOException {
+  public Game startNewGame(ServerPlayer player, Integer gameSize) throws IOException {
     int gameID = games.size();
     Game newGame = new Game(gameSize,gameID);
     player.setCurrentGameID(gameID);
@@ -120,6 +120,7 @@ public class App {
     // a new game should always add a player successfully
     // new game should assert newGame.addPlayer(player) == null;
     newGame.addPlayer(player);
+    return newGame;
   }
 
   /**
@@ -153,6 +154,7 @@ public class App {
     player.setCurrentGameID(gameID);
   }
 
+
   
   /**
    * This function will create a server player if he/she doesn't exist in the server side
@@ -164,7 +166,7 @@ public class App {
    * @param clientSocket is the player's socket
    * @return the unique serverplayer
    */
-  private ServerPlayer createOrUpdatePlayer(String playerName,BufferedReader in,PrintWriter out, Socket clientSocket){
+  public ServerPlayer createOrUpdatePlayer(String playerName,BufferedReader in,PrintWriter out, Socket clientSocket){
     ServerPlayer player = null;
     if(!playerNames.contains(playerName)){
       playerNames.add(playerName);     
@@ -217,8 +219,7 @@ public class App {
         else if(actionType.equals("rejoin")){
           rejoinGame(player,Integer.parseInt(rootNode.path("gameID").textValue()));
         }
-      } catch (IOException e) {
-        this.output.println("Exception caught when listening for a connection");
+      } catch (Exception e) {
         this.output.println(e.getMessage());
       }
     }
