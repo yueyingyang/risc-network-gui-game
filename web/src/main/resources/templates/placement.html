@@ -14,7 +14,7 @@
     <div class="two column centered row">
         <div id="map" class="six wide column" style="width:600px; height:400px;"></div>
         <div class="eight wide column" style="user-select: auto;">
-            <div class="ui" id="actions">
+            <div class="ui">
                 <form th:if="${wrapper.terrUnitList.size()} != 0" class="ui form" th:action="@{/submit_place}"
                       method="post"
                       th:object="${wrapper}">

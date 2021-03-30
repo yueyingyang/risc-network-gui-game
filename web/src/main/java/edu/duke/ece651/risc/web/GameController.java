@@ -97,6 +97,7 @@ public class GameController {
     // todo: should refactor createMap() to retrieve stored game map
     List<ObjectNode> graphData = getObjectNodes(createMap(), players);
     model.addAttribute("graphData", graphData);
+    model.addAttribute("action", new AttackEntry("", "", 0, currentUserName));
     return "game";
   }
 
@@ -161,6 +162,7 @@ public class GameController {
       o.put("resources", 10);
       o.put("value", 2);
       o.put("color", colorMapping.get(t.getOwnerName()));
+      o.put("units", t.getNumSoldiersInArmy());
       graphData.add(o);
     }
     return graphData;
@@ -189,8 +191,16 @@ public class GameController {
    */
   private GameMap createMap() {
     V1MapFactory v1f = new V1MapFactory();
-    Collections.shuffle(players);
-    return v1f.createMap(players, 2);
+//    Collections.shuffle(players);
+    GameMap map = v1f.createMap(players, 2);
+    List<ActionEntry> pl = Arrays.asList(new PlaceEntry("0", 2, "p2"),
+            new PlaceEntry("1", 2, "p2"),
+            new PlaceEntry("2", 2, "test"),
+            new PlaceEntry("3", 2, "test"));
+    for (ActionEntry ae : pl) {
+      ae.apply(map);
+    }
+    return map;
   }
 
   /**

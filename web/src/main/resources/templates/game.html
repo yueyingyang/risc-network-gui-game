@@ -28,7 +28,17 @@
                 </a>
             </div>
             <div class="ui segment">
-                <p></p>
+
+                <form class="ui form" th:action="@{/}"
+                      method="post"
+                      th:object="${action}">
+                    <!--                    <div class="ui header">Please enter the placement below:</div>-->
+                    <div class="fields" style="user-select: auto;">
+
+                    </div>
+                    <button class="ui submit button" style="user-select: auto;" type="submit">Submit</button>
+                </form>
+
             </div>
         </div>
     </div>
@@ -61,7 +71,10 @@
     option = {
         tooltip: {
             trigger: 'item',
-            formatter: params => `😉\t${params.data.owner}<br />💎\t${params.data.resources}<br />📏\t${params.data.value}`
+            formatter: params => `😉\t${params.data.owner}<br />` +
+                `💂\t${params.data.units}<br />` +
+                `💎\t${params.data.resources}<br />` +
+                `📏\t${params.data.value}`
         },
         series: [
             {
