@@ -14,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -32,7 +31,7 @@ public class LobbyController {
 
   public LobbyController() {
     this.jsonSerializer = new JSONSerializer();
-    this.currentUserName = "p2";
+    this.currentUserName = "test";
     this.mapper = new ObjectMapper();
   }
 
@@ -65,7 +64,13 @@ public class LobbyController {
     return "lobby";
   }
 
-
+  /**
+   * Wrap input game size as a JSON request, send to socket server
+   *
+   * @param size is the user input game size
+   * @return redirect to waiting room, waiting for game to start
+   * @throws IOException if IO exception
+   */
   @PostMapping(value = "/start")
   public String start(@RequestParam(name = "size") String size) throws IOException {
     ClientSocket c = playerMapping.getSocket(currentUserName);
@@ -74,9 +79,16 @@ public class LobbyController {
     startReq.put("name", currentUserName);
     startReq.put("gameSize", size);
     c.sendMessage(new ObjectMapper().writeValueAsString(startReq));
-    return "game";
+    return "redirect:waiting";
   }
 
+  /**
+   * Wrap gameID as a JSON request, send to socket server
+   *
+   * @param gameID is the selected game
+   * @return redirect to waiting room
+   * @throws IOException if IO exception
+   */
   @GetMapping(value = "/join")
   public String join(@RequestParam(value = "id") String gameID) throws IOException {
     ClientSocket c = playerMapping.getSocket(currentUserName);
@@ -86,10 +98,21 @@ public class LobbyController {
     startReq.put("gameID", gameID);
     c.sendMessage(new ObjectMapper().writeValueAsString(startReq));
     if (c.recvMessage().equals(Constant.SUCCESS_NUMBER_CHOOSED)) {
-      return "redirect:game";
+      return "redirect:waiting";
     }
     return "lobby";
   }
+
+  /**
+   * Enter waiting room after START or JOIN
+   *
+   * @return waiting_room html
+   */
+  @GetMapping(value = "/waiting")
+  public String enterWaitingRoom() {
+    return "waiting_room";
+  }
+
 
   @PostMapping(value = "/rejoin")
   public String rejoin(@RequestParam(name = "gameID") String gameID) throws IOException {
@@ -99,6 +122,6 @@ public class LobbyController {
     startReq.put("name", currentUserName);
     startReq.put("gameID", gameID);
     c.sendMessage(new ObjectMapper().writeValueAsString(startReq));
-    return "game";
+    return "redirect:game";
   }
 }

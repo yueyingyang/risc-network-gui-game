@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+<head>
+    <header th:insert="fragments/common_header.html :: headerfiles"></header>
+    <title>Waiting Room</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:insert="fragments/common_header.html :: header"></div>
+<br>
+<div class="ui two column centered grid">
+    <div class="column" style="user-select: auto;">
+        <div class="ui message">
+            <div class="ui small feed">
+                <h4 class="ui header" style="user-select: auto;">Room Activity</h4>
+                <div class="event" style="user-select: auto;">
+                    <div class="content" style="user-select: auto;" id="msg_box">
+                        <div class="summary" style="user-select: auto;">
+                            Waiting for the game to start!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="column" style="user-select: auto;">
+        <button class="ui submit button" style="user-select: auto;" id="refresh">Refresh</button>
+    </div>
+</div>
+<script>
+    const check_room_status = () => {
+        const checkStatus = {
+            "url": "/check_room_status",
+            "async": true,
+            "type": "get",
+            "success": res => {
+                if (res) {
+                    location.href = "/game/place"
+                } else {
+                    $('#msg_box').append('<p> The room is not ready yet. Please wait... </p>');
+                }
+            }
+        }
+        $.ajax(checkStatus);
+    }
+
+    $('#refresh').click(check_room_status);
+</script>
+</body>
+</html>

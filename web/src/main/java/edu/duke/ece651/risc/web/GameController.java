@@ -13,8 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
 import java.util.*;
@@ -37,21 +39,21 @@ public class GameController {
 
   public GameController() {
     this.jsonSerializer = new JSONSerializer();
-    this.currentUserName = "p2";
+    this.currentUserName = "test";
     this.mapper = new ObjectMapper();
     this.colorPalette = Arrays.asList("#97B8A3", "#EDC3C7", "#FDF06F", "#A6CFE2", "#9C9CDD");
     this.players = Arrays.asList("p2", "test");
   }
 
   /**
-   * The game page: after enter
+   * The unit placement page
    *
    * @param model is the model to add attribute for view to display
    * @return is the name of view template html
    * @throws IOException
    */
-  @GetMapping("/game")
-  public String greeting(Model model) throws IOException {
+  @GetMapping("/game/place")
+  public String place(Model model) throws IOException {
     GameMap map = (GameMap) jsonSerializer.deserialize(playerMapping.getSocket(currentUserName).recvMessage(), GameMap.class);
     int totalUnits = Integer.parseInt(playerMapping.getSocket(currentUserName).recvMessage());
 //    GameMap map = createMap();
@@ -60,7 +62,8 @@ public class GameController {
     model.addAttribute("graphData", graphData);
     model.addAttribute("wrapper", createTerrUnitList(map, currentUserName));
     model.addAttribute("units", totalUnits);
-    return "game";
+    model.addAttribute("message", null);
+    return "placement";
   }
 
   /**
@@ -70,7 +73,7 @@ public class GameController {
    * @return redirect to game page
    * @throws IOException if recv/send exception
    */
-  @PostMapping(value = "/place")
+  @PostMapping(value = "/submit_place")
   public String place(@ModelAttribute(value = "wrapper") TerrUnitList list) throws IOException {
     List<ActionEntry> placementList = new ArrayList<>();
     for (TerrUnit tu : list.getTerrUnitList()) {
@@ -80,7 +83,20 @@ public class GameController {
     }).writeValueAsString(placementList);
     logger.info(json);
     playerMapping.getSocket(currentUserName).sendMessage(json);
-    return "redirect:game";
+    return "redirect:game/play";
+  }
+
+  /**
+   * Game play page, render the stored map
+   *
+   * @return game
+   */
+  @GetMapping(value = "/game/play")
+  public String playOneTurn(Model model) {
+    // todo: should refactor createMap() to retrieve stored game map
+    List<ObjectNode> graphData = getObjectNodes(createMap(), players);
+    model.addAttribute("graphData", graphData);
+    return "game";
   }
 
   /**
@@ -92,12 +108,32 @@ public class GameController {
   @GetMapping(value = "/update_map")
   public @ResponseBody
   ResponseEntity<?> tryUpdateMap() throws IOException {
+//    return ResponseEntity.status(HttpStatus.ACCEPTED).body(getObjectNodes(createMap(), players));
+//    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     ClientSocket cs = playerMapping.getSocket(currentUserName);
     if (cs.hasNewMsg()) {
       GameMap map = (GameMap) jsonSerializer.deserialize(cs.recvMessage(), GameMap.class);
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(getObjectNodes(map, players));
+      return ResponseEntity.status(HttpStatus.ACCEPTED).body(getObjectNodes(map, players));
     }
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+  }
+
+  /**
+   * Ajax GET API for update game status (after enter / join, should wait game to start)
+   *
+   * @return Response with true if room is ready, else false.
+   * @throws IOException if IO exception
+   */
+  @GetMapping(value = "/check_room_status")
+  public @ResponseBody
+  ResponseEntity<?> checkRoomStatus() throws IOException {
+//    return ResponseEntity.status(HttpStatus.ACCEPTED).body(true);
+    ClientSocket cs = playerMapping.getSocket(currentUserName);
+    if (cs.hasNewMsg()) {
+      // means the game is ready (the new msg will be the empty' game map)
+      return ResponseEntity.status(HttpStatus.ACCEPTED).body(true);
+    }
+    return ResponseEntity.status(HttpStatus.ACCEPTED).body(false);
   }
 
   // Below are helper functions

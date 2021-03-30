@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+<head>
+    <header th:insert="fragments/common_header.html :: headerfiles"></header>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.0.2/dist/echarts.min.js"></script>
+    <title>Game</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:insert="fragments/common_header.html :: header"></div>
+<br>
+
+<div class="ui grid">
+    <div class="two column centered row">
+        <div id="map" class="six wide column" style="width:600px; height:400px;"></div>
+        <div class="eight wide column" style="user-select: auto;">
+            <div class="ui" id="actions">
+                <form th:if="${wrapper.terrUnitList.size()} != 0" class="ui form" th:action="@{/submit_place}"
+                      method="post"
+                      th:object="${wrapper}">
+                    <div class="ui header">Please enter the placement below:</div>
+                    <div class="fields" style="user-select: auto;">
+                        <!-- Render territory -->
+                        <div class="field" th:each="terrUnit, stat: ${wrapper.terrUnitList}" style="user-select: auto;">
+                            <label th:text="'Territory ' + ${terrUnit.getTerrName()}"></label>
+                            <input th:field="*{terrUnitList[__${stat.index}__].terrName}"
+                                   th:value="${terrUnit.getTerrName()}" hidden>
+                            <select th:field="*{terrUnitList[__${stat.index}__].unit}"
+                                    class="ui fluid search dropdown">
+                                <!-- Render option -->
+                                <option th:each="i: ${#numbers.sequence(0, units)}" th:text="${i}" th:value="${i}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="ui submit button" style="user-select: auto;" type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--JS to render MAP -->
+<!--Set interaction of action tabs-->
+<script th:inline="javascript">
+    const myChart = echarts.init(document.getElementById('map'));
+    const colors = [[${graphData}]].map(territory => territory['color'])
+    const innerLabelFormatter = "{@name}";
+    const dimensions = ['name', 'owner', 'resources', 'value'];
+    let option;
+    option = {
+        tooltip: {
+            trigger: 'item',
+            formatter: params => `😉\t${params.data.owner}`
+        },
+        series: [
+            {
+                name: 'map',
+                type: 'pie',
+                radius: ['40%', '70%'],
+                avoidLabelOverlap: false,
+                itemStyle: {
+                    borderRadius: 10,
+                    borderColor: '#fff',
+                    borderWidth: 4,
+                },
+                color: colors,
+                label: {
+                    position: 'inner',
+                    fontSize: 20,
+                    fontWeight: 'bold',
+                    color: "#fff",
+                    formatter: innerLabelFormatter,
+                },
+                labelLine: {
+                    show: false
+                },
+                dimensions: dimensions,
+            }
+        ],
+        dataset: {
+            source: [[${graphData}]]
+        }
+    };
+    myChart.setOption(option);
+
+    $('select.dropdown')
+        .dropdown();
+</script>
+</body>
+
+</html>
+

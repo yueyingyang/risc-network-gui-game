@@ -7,29 +7,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
-<div class="ui menu">
-    <a th:href="@{/lobby}" class="header item" style="user-select: auto;color: blueviolet">
-        Back to lobby
-    </a>
-    <a class="right item" style="user-select: auto;">
-        <div class="ui button" style="user-select: auto;">Log-out</div>
-    </a>
-</div>
+<div th:insert="fragments/common_header.html :: header"></div>
 
-<div class="ui message">
-    <div class="ui small feed">
-        <h4 class="ui header" style="user-select: auto;">Room Activity</h4>
-        <div class="event" style="user-select: auto;">
-            <div class="content" style="user-select: auto;">
-                <div class="summary" style="user-select: auto;">
-                    Waiting for the game to start!
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!--<p th:text="${graphData}"></p>-->
 <div class="ui grid vertically divided">
     <div class="two column centered row">
         <div id="map" class="six wide column" style="width:600px; height:400px;"></div>
@@ -55,28 +34,21 @@
     </div>
 </div>
 
-
-<form class="ui form" th:action="@{/place}" method="post" th:object="${wrapper}">
-    <div class="ui header">Please enter the placement below:</div>
-    <div class="fields">
-        <!--        Render territory-->
-        <div class="field" th:each="terrUnit, stat: ${wrapper.terrUnitList}">
-            <label th:text="'Territory ' + ${terrUnit.getTerrName()}"></label>
-            <div class="four wide fields">
-                <input th:field="*{terrUnitList[__${stat.index}__].terrName}" th:value="${terrUnit.getTerrName()}" hidden>
-                <select th:field="*{terrUnitList[__${stat.index}__].unit}"
-                        class="ui fluid search dropdown">
-                    <!-- Render option -->
-                    <option th:each="i: ${#numbers.sequence(0, units)}" th:text="${i}" th:value="${i}">
-                    </option>
-                </select>
+<div class="ui two column centered grid">
+    <div class="six wide column" style="user-select: auto;">
+        <div class="ui icon message">
+            <i class="inbox icon" style="user-select: auto;"></i>
+            <div class="content">
+                <div class="header" style="user-select: auto;">Room Activity</div>
+                <div style="user-select: auto;" id="msg_box">
+                </div>
             </div>
         </div>
     </div>
-    <button class="ui submit button" style="user-select: auto;" type="submit">Submit</button>
-</form>
-<button class="ui submit button" style="user-select: auto;" id="refresh">Refresh</button>
-
+    <div class="column" style="user-select: auto;">
+        <button class="ui submit button" style="user-select: auto;" id="refresh">Refresh</button>
+    </div>
+</div>
 
 <!--JS to render MAP -->
 <!--Set interaction of action tabs-->
@@ -143,6 +115,10 @@
                 option.series[0].color = colors;
                 myChart.clear();
                 myChart.setOption(option);
+                $('#msg_box').append('<p style="user-select: auto;"> Update map </p>');
+            },
+            "error": () => {
+                $('#msg_box').append('<p style="user-select: auto;"> Please wait... </p>');
             }
         }
         $.ajax(config);
