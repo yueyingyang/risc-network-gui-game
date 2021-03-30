@@ -31,7 +31,7 @@ public class LobbyController {
 
   public LobbyController() {
     this.jsonSerializer = new JSONSerializer();
-    this.currentUserName = "test";
+    this.currentUserName = "p2";
     this.mapper = new ObjectMapper();
   }
 

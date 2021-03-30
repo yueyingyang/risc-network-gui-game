@@ -39,7 +39,7 @@ public class GameController {
 
   public GameController() {
     this.jsonSerializer = new JSONSerializer();
-    this.currentUserName = "test";
+    this.currentUserName = "p2";
     this.mapper = new ObjectMapper();
     this.colorPalette = Arrays.asList("#97B8A3", "#EDC3C7", "#FDF06F", "#A6CFE2", "#9C9CDD");
     this.players = Arrays.asList("p2", "test");
@@ -56,6 +56,7 @@ public class GameController {
   public String place(Model model) throws IOException {
     GameMap map = (GameMap) jsonSerializer.deserialize(playerMapping.getSocket(currentUserName).recvMessage(), GameMap.class);
     int totalUnits = Integer.parseInt(playerMapping.getSocket(currentUserName).recvMessage());
+//    Below 2 lines are for local test
 //    GameMap map = createMap();
 //    int totalUnits = 6;
     List<ObjectNode> graphData = getObjectNodes(map, players);
@@ -108,6 +109,7 @@ public class GameController {
   @GetMapping(value = "/update_map")
   public @ResponseBody
   ResponseEntity<?> tryUpdateMap() throws IOException {
+//    Below 2 lines are for local test
 //    return ResponseEntity.status(HttpStatus.ACCEPTED).body(getObjectNodes(createMap(), players));
 //    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     ClientSocket cs = playerMapping.getSocket(currentUserName);
@@ -127,6 +129,7 @@ public class GameController {
   @GetMapping(value = "/check_room_status")
   public @ResponseBody
   ResponseEntity<?> checkRoomStatus() throws IOException {
+//    Below 1 lines are for local test
 //    return ResponseEntity.status(HttpStatus.ACCEPTED).body(true);
     ClientSocket cs = playerMapping.getSocket(currentUserName);
     if (cs.hasNewMsg()) {
