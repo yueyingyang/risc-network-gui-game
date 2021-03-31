@@ -21,6 +21,7 @@ public class Game {
     private ArrayList<ServerPlayer> stillWatchPlayers;//players stillIn with those who want to watch after losing
     private GameMap gameMap;
     private Random myRandom;
+    private int randomSeed;
 
 
     /**
@@ -28,13 +29,14 @@ public class Game {
      *
      * @param playerNum is the required number of players in this game
      */
-    public Game(int playerNum,int gameID) {
+    public Game(int playerNum,int gameID,int r) {
         this.gameID = gameID;
         this.playerNum = playerNum;
         this.players = new ArrayList<>();
         this.stillInPlayers = new ArrayList<>();
         this.stillWatchPlayers = new ArrayList<>();
-        this.myRandom = new Random(1);
+        this.randomSeed = r;
+        this.myRandom = new Random(randomSeed);
     }
 
     public Integer getGameID(){

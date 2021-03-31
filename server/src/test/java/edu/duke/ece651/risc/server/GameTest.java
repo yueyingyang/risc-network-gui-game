@@ -28,7 +28,7 @@ public class GameTest {
     Socket s1 = new Socket();
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     ServerPlayer p = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes, true),s);
-    Game g = new Game(1,0);
+    Game g = new Game(1,0,1);
     assertNull(g.addPlayer(p));
     ServerPlayer p1 = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes, true),s1);
     assertEquals("This game is full, please select another game from the available list.", g.addPlayer(p1));
@@ -37,7 +37,7 @@ public class GameTest {
   @Test
   public void test_isGameFull() {
     Socket s = new Socket();
-    Game g = new Game(1,0);
+    Game g = new Game(1,0,1);
     assertEquals(false, g.isGameFull());
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     ServerPlayer p = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes, true),s);
@@ -47,26 +47,26 @@ public class GameTest {
 
   @Test
   public void test_getPlayerNum() {
-    Game g = new Game(1,0);
+    Game g = new Game(1,0,1);
     assertEquals(1, g.getPlayerNum());
   }
 
   @Test
   public void test_getPlayerByGame(){
-    Game g = new Game(1,0);
+    Game g = new Game(1,0,1);
     assertEquals(false,g.IsPlayerExist("Red"));
   }
 
   @Test
   public void test_getPlayerInGameNum(){
-    Game g = new Game(1,0);
+    Game g = new Game(1,0,1);
     assertEquals(0,g.getPLayerInGameNum());
   }
 
   @Test
   public void test_makeMap() {
     Socket s = new Socket();
-    Game g = new Game(1,0);
+    Game g = new Game(1,0,1);
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     ServerPlayer p = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes, true),s);
     g.addPlayer(p);
@@ -77,7 +77,7 @@ public class GameTest {
   @Test
   public void test_assignTerritories(){
     Socket s = new Socket();
-    Game g = new Game(1,0);
+    Game g = new Game(1,0,1);
     ByteArrayOutputStream bytes = new ByteArrayOutputStream(); 
     ServerPlayer p = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes, true),s);
     p.setName("Red");
@@ -91,7 +91,7 @@ public class GameTest {
   @Test
   public void test_sendObjectToAll() {
     Socket socket = new Socket();
-    Game g = new Game(1,0);        
+    Game g = new Game(1,0,1);        
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();                                                                                                   
     ServerPlayer p = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes, true),socket);
     p.setName("Red");
@@ -110,7 +110,7 @@ public class GameTest {
   @Test
   public void test_sendStringToAll(){
     Socket socket = new Socket();
-    Game g = new Game(1,0);        
+    Game g = new Game(1,0,1);        
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();                                                                                                   
     ServerPlayer p = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes, true),socket);
     p.setName("Red");
@@ -124,7 +124,7 @@ public class GameTest {
   @Test
   public void test_placementPhase() throws IOException{
     Socket socket = new Socket();
-    Game g = new Game(1,0); 
+    Game g = new Game(1,0,1); 
     ActionEntry p0 = new PlaceEntry("0",4, "");
     ActionEntry p1 = new PlaceEntry("1",4, "");
     Collection<ActionEntry> ca = new ArrayList<ActionEntry>();
@@ -146,7 +146,7 @@ public class GameTest {
   @Test
   public void test_doAttacks(){
     Socket socket = new Socket();
-    Game g = new Game(1,0);        
+    Game g = new Game(1,0,1);        
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();                                                                                                   
     ServerPlayer p = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes, true),socket);
     p.setName("Red");
@@ -160,7 +160,7 @@ public class GameTest {
   @Test
   public void test_addSoldiersToAll(){
     Socket socket = new Socket();
-    Game g = new Game(1,0);        
+    Game g = new Game(1,0,1);        
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();                                                                                                   
     ServerPlayer p = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes, true),socket);
     p.setName("Red");
@@ -178,7 +178,7 @@ public class GameTest {
   @Test
   public void test_checkWin(){
     Socket socket = new Socket();
-    Game g = new Game(1,0);        
+    Game g = new Game(1,0,1);        
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();                                                                                                   
     ServerPlayer p = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes, true),socket);
     p.setName("Red");
@@ -192,7 +192,7 @@ public class GameTest {
   public void test_checkLost(){
     Socket socket1 = new Socket();
     Socket socket2 = new Socket();
-    Game g = new Game(2,0);        
+    Game g = new Game(2,0,1);        
     ByteArrayOutputStream bytes1 = new ByteArrayOutputStream();  
     ByteArrayOutputStream bytes2 = new ByteArrayOutputStream();                                                                                                   
     ServerPlayer p1 = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes1, true),socket1);
@@ -213,7 +213,7 @@ public class GameTest {
   public void test_endGame() throws InterruptedException, IOException{
     Socket socket1 = new Socket();
     Socket socket2 = new Socket();
-    Game g = new Game(2,0);        
+    Game g = new Game(2,0,1);        
     ByteArrayOutputStream bytes1 = new ByteArrayOutputStream();  
     ByteArrayOutputStream bytes2 = new ByteArrayOutputStream();                                                                                                   
     ServerPlayer p1 = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes1, true),socket1);
@@ -244,7 +244,7 @@ public class GameTest {
     PlaceEntry pe2 = new PlaceEntry("1", 0, "Blue");
     Socket socket1 = new Socket();
     Socket socket2 = new Socket();
-    Game g = new Game(2,0);        
+    Game g = new Game(2,0,1);        
     ByteArrayOutputStream bytes1 = new ByteArrayOutputStream();  
     ByteArrayOutputStream bytes2 = new ByteArrayOutputStream();                                                                                                   
     ServerPlayer p1 = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes1, true),socket1);
@@ -286,7 +286,7 @@ public class GameTest {
     Socket socket1 = new Socket();
     Socket socket2 = new Socket();
     Socket socket3 = new Socket();
-    Game g = new Game(3,0);        
+    Game g = new Game(3,0,1);        
     ByteArrayOutputStream bytes1 = new ByteArrayOutputStream();  
     ByteArrayOutputStream bytes2 = new ByteArrayOutputStream(); 
     ByteArrayOutputStream bytes3 = new ByteArrayOutputStream();                                                                                                     
@@ -339,7 +339,7 @@ public class GameTest {
     }).writeValueAsString(placements2)).thenReturn(Constant.ORDER_COMMIT).thenReturn(Constant.DISCONNECT_GAME);  
     Mockito.when(player1.getName()).thenReturn("Red");
     Mockito.when(player2.getName()).thenReturn("Blue");
-    Game g = new Game(2,0);                                                                                    
+    Game g = new Game(2,0,1);                                                                                    
     g.addPlayer(player1);
     g.addPlayer(player2); 
     Thread t = new Thread(() -> {
@@ -379,7 +379,7 @@ public class GameTest {
     Mockito.when(player1.getName()).thenReturn("Red");
     Mockito.when(player2.getName()).thenReturn("Blue");
     Mockito.when(player3.getName()).thenReturn("Purple");
-    Game g = new Game(3,0);                                                                                    
+    Game g = new Game(3,0,1);                                                                                    
     g.addPlayer(player1);
     g.addPlayer(player2); 
     g.addPlayer(player3);

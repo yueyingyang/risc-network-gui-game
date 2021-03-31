@@ -126,7 +126,8 @@ public class App {
    */
   public Game startNewGame(ServerPlayer player, JsonNode rootNode) throws IOException {
     int gameID = games.size();
-    Game newGame = new Game(Integer.parseInt(rootNode.path("gameSize").textValue()),gameID);
+    int randomSeed = 1;
+    Game newGame = new Game(Integer.parseInt(rootNode.path("gameSize").textValue()),gameID,randomSeed);
     player.setCurrentGameID(gameID);
     this.games.add(newGame);
     // a new game should always add a player successfully
@@ -195,7 +196,7 @@ public class App {
    */
   public ServerPlayer createOrUpdatePlayer(String playerName,BufferedReader in,PrintWriter out, Socket clientSocket){
     ServerPlayer player = null;
-    if(!players.keySet().contains(playerName)){   
+    if(!players.containsKey(playerName)){   
       player = new ServerPlayer(in, out, clientSocket);
       players.put(playerName, player);
       player.setName(playerName);
@@ -228,7 +229,9 @@ public class App {
         String actionType = rootNode.path("type").textValue();
         String playerName = rootNode.path("name").textValue();
         ServerPlayer player = createOrUpdatePlayer(playerName,in,out,clientSocket);
-        actionHandlerMap.get(actionType).apply(player, rootNode);
+        if(actionHandlerMap.containsKey(actionType)){
+          actionHandlerMap.get(actionType).apply(player, rootNode);
+        }
       } catch (Exception e) {
         this.output.println(e.getMessage());
       }
