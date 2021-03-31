@@ -3,20 +3,29 @@
  */
 package edu.duke.ece651.risc.server;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import edu.duke.ece651.risc.shared.Player;
-import edu.duke.ece651.risc.shared.ServerPlayer;
-import edu.duke.ece651.risc.shared.Constant;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import edu.duke.ece651.risc.shared.*;
+import edu.duke.ece651.risc.shared.game.*;
+
 
 public class App {
   private final ArrayList<Game> games;
   private final HostSocket hostSocket;
   private final PrintStream output;
+  private Map<String, ServerPlayer> players;
+  private Map<String, actionHandler> actionHandlerMap;
 
   /**
    * the constructor of App build the socket based on the port number initialize
@@ -26,6 +35,20 @@ public class App {
     games = new ArrayList<>();
     this.output = out;
     this.hostSocket = s;
+    this.players = new HashMap<>();
+    this.actionHandlerMap = new HashMap<>();
+    actionHandlerMap.put(Constant.GET_GAMELIST, (p,n) -> sendGameList(p,n));
+    actionHandlerMap.put(Constant.STARTGAME, (p,n) -> {
+      try{startNewGame(p,n);}catch(Exception e){}   
+    });
+    actionHandlerMap.put(Constant.JOINGAME, (p,n) -> {
+      try{joinAndRun(p,n);}catch(Exception e){}   
+    });
+     
+    actionHandlerMap.put(Constant.REJOINGAME,(p,n) ->{
+      try{startNewGame(p,n);}catch(Exception e){}
+    });
+    
   }
 
   /**
@@ -37,12 +60,13 @@ public class App {
   }
 
   /**
-   * @return the list of available games for a player ro join
+   * @return the list of available games for a player to join
+   * should exclude the games that the player is already in
    */
-  public List<Game> getAvailableGames() {
+  private List<Game> getAvailableGames(String playerName) {
     List<Game> res = new ArrayList<>();
     for (Game g : this.games) {
-      if (!g.isGameFull()) {
+      if (!g.isGameFull() && g.IsPlayerExist(playerName).equals(false)) {
         res.add(g);
       }
     }
@@ -50,71 +74,142 @@ public class App {
   }
 
   /**
+   * 
+   * @param playerName is the name of the player
+   * @return the list of games that the player is in
+   */
+  private List<Game> getPlayerGame(String playerName){
+    List<Game> res = new ArrayList<>();
+    for(Game g:this.games){
+      if(g.IsPlayerExist(playerName).equals(true)){
+        res.add(g);
+      }
+    }
+    return res;
+  }
+
+  /**
+   * this function send all open games and the gamesthat the player participated to the player
+   * @param player
+   * @param playerName
+   */
+  public void sendGameList(ServerPlayer player,JsonNode rootNode){
+    player.sendMessage(allGameList(rootNode.path("name").textValue()));
+  }
+
+  /**
+   * @param playerName is the player's name
+   */
+
+  public String allGameList(String playerName) {
+    List<GameInfo> allOpen = new ArrayList<>();
+    for (Game g : this.getAvailableGames(playerName)) {
+      allOpen.add(new GameInfo(g.getGameID(), g.getAllPlayers()));
+    }
+    List<GameInfo> allJoined = new ArrayList<>();
+    for (Game g : this.getPlayerGame(playerName)) {
+      allJoined.add(new GameInfo(g.getGameID(), g.getAllPlayers()));
+    }
+    String res = null;
+    try {
+      res = new JSONSerializer().getOm().writeValueAsString(allOpen) + "\n" + new JSONSerializer().getOm().writeValueAsString(allJoined);
+    } catch (JsonProcessingException ignored) {
+    }
+    return res;
+  }
+
+
+  /**
    * start a new game for a user
-   *
    * @param player is the player needs to login
    * @throws IOException if R/W exception
-   * @return the game that just starts
    */
-  public Game startNewGame(ServerPlayer player) throws IOException {
-    Game newGame = new Game(player.readGameSize());
+  public Game startNewGame(ServerPlayer player, JsonNode rootNode) throws IOException {
+    int gameID = games.size();
+    int randomSeed = 1;
+    Game newGame = new Game(Integer.parseInt(rootNode.path("gameSize").textValue()),gameID,randomSeed);
+    player.setCurrentGameID(gameID);
     this.games.add(newGame);
     // a new game should always add a player successfully
     // new game should assert newGame.addPlayer(player) == null;
     newGame.addPlayer(player);
-    // send name to client player
-    player.sendMessage(player.getName());
     return newGame;
   }
 
   /**
    * let the player join into an existing game
-   *
    * @param player is the player needs to login
    * @throws IOException if R/W exception
-   * @return the game that the player just joins
    */
-  public Game joinExistingGame(ServerPlayer player) throws IOException {
-    // send the available games to user to choose from
-    String available = AvailableGameList();
-    player.sendMessage(available);
+  public Game joinExistingGame(ServerPlayer player, JsonNode rootNode) throws IOException {
     // wait util the user give a valid game number
+    int gameID = Integer.parseInt(rootNode.path("gameID").textValue());
     while (true) {
-      try {
-        int chosenGame = Integer.parseInt(player.recvMessage());
-        if (chosenGame >= this.games.size()) {
-          player.sendMessage(Constant.OUT_OF_RANGE_CHOICE);
-          continue;
-        }
-        String tryAddPlayerErrorMsg = games.get(chosenGame).addPlayer(player);
-        if (tryAddPlayerErrorMsg == null) {
-          player.sendMessage(Constant.SUCCESS_NUMBER_CHOOSED);
-          player.sendMessage(player.getName()); // send name to client player
-          return games.get(chosenGame);
-        } else {
-          // in multi-thread env,
-          // it's possible to have another user fill in the selected game before current user
-          // not figure out a good way to test it tho
-          player.sendMessage(tryAddPlayerErrorMsg);
-        }
-      } catch (NumberFormatException e) {
-        player.sendMessage(Constant.INVALID_NUMBER);
+      String tryAddPlayerErrorMsg = games.get(gameID).addPlayer(player);
+      if (tryAddPlayerErrorMsg == null) {
+        player.setCurrentGameID(gameID);
+        player.sendMessage(Constant.SUCCESS_NUMBER_CHOOSED);
+        return games.get(gameID);
+      } else {
+        // in multi-thread env,
+        // it's possible to have another user fill in the selected game before current user
+        // not figure out a good way to test it tho
+        player.sendMessage(tryAddPlayerErrorMsg);
       }
     }
   }
 
-  /**
-   * 
-   * @return
-   */
-  public String AvailableGameList() {
-    StringBuilder sb = new StringBuilder(Constant.AVAILABLE_LIST_INFO);
-    List<Game> availableGames = this.getAvailableGames();
-    for (Game availableGame : availableGames) {
-      sb.append("Game ID: " + games.indexOf(availableGame)+" ");
-    }
-    return sb.toString();
+  public void joinAndRun(ServerPlayer player, JsonNode rootNode) throws IOException{
+    Game g = this.joinExistingGame(player, rootNode);
+    if(g.isGameFull()){
+      Thread t = new Thread(() -> {
+        try {
+          g.runGame(2, 6);
+        } catch (Exception e) {
+          System.out.println("Exception catched when running the game!"+e.getMessage());
+        }
+      });
+      t.start();
+    }    
   }
+
+  /**
+   * This function will let the player reconnect to the game
+   * @param player
+   * @param gameID
+   */
+  public void rejoinGame(ServerPlayer player, Integer gameID){
+    player.setCurrentGameID(gameID);
+  }
+
+
+  
+  /**
+   * This function will create a server player if he/she doesn't exist in the server side
+   * or return the player from the player list if he/she has already exist
+   * need to update the inputstream and outputstream
+   * @param playerName is the name of the player
+   * @param in is the player's inputstream
+   * @param out is the player's outputstream
+   * @param clientSocket is the player's socket
+   * @return the unique serverplayer
+   */
+  public ServerPlayer createOrUpdatePlayer(String playerName,BufferedReader in,PrintWriter out, Socket clientSocket){
+    ServerPlayer player = null;
+    if(!players.containsKey(playerName)){   
+      player = new ServerPlayer(in, out, clientSocket);
+      players.put(playerName, player);
+      player.setName(playerName);
+    }
+    else{
+      player = players.get(playerName);
+      //update the player's inputstream and outputstream
+      player.setInOut(in, out);
+      player.setSocket(clientSocket);
+    }
+    return player;
+  }
+
 
   /**
    * continuously accept connections and initialize players the player will be
@@ -129,35 +224,19 @@ public class App {
         Socket clientSocket = ss.accept();
         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
         BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        ServerPlayer player = new ServerPlayer(in, out, clientSocket);
-        // let the player choose whether to join a game or start a new one
-        // when there are existing games
-        this.handleIncomeRequest(player);
-      } catch (IOException e) {
-        this.output.println("Exception caught when listening for a connection");
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(in.readLine());//use readTree when not knowing the exact type of object
+        String actionType = rootNode.path("type").textValue();
+        String playerName = rootNode.path("name").textValue();
+        ServerPlayer player = createOrUpdatePlayer(playerName,in,out,clientSocket);
+        if(actionHandlerMap.containsKey(actionType)){
+          actionHandlerMap.get(actionType).apply(player, rootNode);
+        }
+      } catch (Exception e) {
         this.output.println(e.getMessage());
       }
     }
   }
-
-  public void handleIncomeRequest(ServerPlayer player) throws IOException {
-    if (this.getAvailableGames().size() == 0) {// when there's no existing games
-      player.sendMessage(Constant.NO_GAME_AVAILABLE_INFO);
-      Game g = startNewGame(player);
-      g.runGame();
-    }
-    else{
-      String action = player.readActionType();
-      if (action.equals("s")) {
-        Game g = startNewGame(player);
-        g.runGame();
-      } else if (action.equals("j")) {
-        Game g = joinExistingGame(player);
-        g.runGame();
-      }
-    }
-  }
-
 
   /**
    * The main function to run
