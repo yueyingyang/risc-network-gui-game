@@ -37,18 +37,27 @@ public class App {
     this.hostSocket = s;
     this.players = new HashMap<>();
     this.actionHandlerMap = new HashMap<>();
-    actionHandlerMap.put(Constant.GET_GAMELIST, (p,n) -> sendGameList(p,n));
-    actionHandlerMap.put(Constant.STARTGAME, (p,n) -> {
-      try{startNewGame(p,n);}catch(Exception e){}   
+    actionHandlerMap.put(Constant.GET_GAMELIST, this::sendGameList);
+    actionHandlerMap.put(Constant.STARTGAME, (p, n) -> {
+      try {
+        startNewGame(p, n);
+      } catch (Exception e) {
+      }
     });
-    actionHandlerMap.put(Constant.JOINGAME, (p,n) -> {
-      try{joinAndRun(p,n);}catch(Exception e){}   
+    actionHandlerMap.put(Constant.JOINGAME, (p, n) -> {
+      try {
+        joinAndRun(p, n);
+      } catch (Exception e) {
+      }
     });
-     
-    actionHandlerMap.put(Constant.REJOINGAME,(p,n) ->{
-      try{startNewGame(p,n);}catch(Exception e){}
+
+    actionHandlerMap.put(Constant.REJOINGAME, (p, n) -> {
+      try {
+        startNewGame(p, n);
+      } catch (Exception e) {
+      }
     });
-    
+
   }
 
   /**
@@ -79,8 +88,8 @@ public class App {
    */
   private List<Game> getPlayerGame(String playerName) {
     List<Game> res = new ArrayList<>();
-    for(Game g:this.games){
-      if(g.IsPlayerExist(playerName).equals(true)){
+    for (Game g : this.games) {
+      if (g.IsPlayerExist(playerName).equals(true)) {
         res.add(g);
       }
     }
@@ -93,8 +102,8 @@ public class App {
    * @param player
    * @param playerName
    */
-  public void sendGameList(ServerPlayer player, String playerName) {
-    player.sendMessage(allGameList(playerName));
+  public void sendGameList(ServerPlayer player, JsonNode rootNode) {
+    player.sendMessage(allGameList(rootNode.path("name").textValue()));
   }
 
   /**
@@ -128,7 +137,7 @@ public class App {
   public Game startNewGame(ServerPlayer player, JsonNode rootNode) throws IOException {
     int gameID = games.size();
     int randomSeed = 1;
-    Game newGame = new Game(Integer.parseInt(rootNode.path("gameSize").textValue()),gameID,randomSeed);
+    Game newGame = new Game(Integer.parseInt(rootNode.path("gameSize").textValue()), gameID, randomSeed);
     player.setCurrentGameID(gameID);
     this.games.add(newGame);
     // a new game should always add a player successfully
@@ -161,18 +170,18 @@ public class App {
     }
   }
 
-  public void joinAndRun(ServerPlayer player, JsonNode rootNode) throws IOException{
+  public void joinAndRun(ServerPlayer player, JsonNode rootNode) throws IOException {
     Game g = this.joinExistingGame(player, rootNode);
-    if(g.isGameFull()){
+    if (g.isGameFull()) {
       Thread t = new Thread(() -> {
         try {
           g.runGame(2, 6);
         } catch (Exception e) {
-          System.out.println("Exception catched when running the game!"+e.getMessage());
+          System.out.println("Exception catched when running the game!" + e.getMessage());
         }
       });
       t.start();
-    }    
+    }
   }
 
   /**
@@ -185,27 +194,7 @@ public class App {
     player.setCurrentGameID(gameID);
   }
 
-  /**
-   * @param playerName is the player's name
-   */
-  public String allGameList(String playerName) {
-    List<GameInfo> allOpen = new ArrayList<>();
-    for (Game g : this.getAvailableGames()) {
-      allOpen.add(new GameInfo(g.getGameID(), g.getAllPlayers()));
-    }
-    List<GameInfo> allJoined = new ArrayList<>();
-    for (Game g : this.getPlayerGame(playerName)) {
-      allJoined.add(new GameInfo(g.getGameID(), g.getAllPlayers()));
-    }
-    String res = null;
-    try {
-      res = new JSONSerializer().getOm().writeValueAsString(allOpen) + "\n" + new JSONSerializer().getOm().writeValueAsString(allJoined);
-    } catch (JsonProcessingException ignored) {
-    }
-    return res;
-  }
 
-  
   /**
    * This function will create a server player if he/she doesn't exist in the server side
    * or return the player from the player list if he/she has already exist
@@ -217,9 +206,9 @@ public class App {
    * @param clientSocket is the player's socket
    * @return the unique serverplayer
    */
-  public ServerPlayer createOrUpdatePlayer(String playerName,BufferedReader in,PrintWriter out, Socket clientSocket){
+  public ServerPlayer createOrUpdatePlayer(String playerName, BufferedReader in, PrintWriter out, Socket clientSocket) {
     ServerPlayer player = null;
-    if(!players.containsKey(playerName)){   
+    if (!players.containsKey(playerName)) {
       player = new ServerPlayer(in, out, clientSocket);
       players.put(playerName, player);
       player.setName(playerName);
@@ -250,8 +239,8 @@ public class App {
         JsonNode rootNode = mapper.readTree(in.readLine());//use readTree when not knowing the exact type of object
         String actionType = rootNode.path("type").textValue();
         String playerName = rootNode.path("name").textValue();
-        ServerPlayer player = createOrUpdatePlayer(playerName,in,out,clientSocket);
-        if(actionHandlerMap.containsKey(actionType)){
+        ServerPlayer player = createOrUpdatePlayer(playerName, in, out, clientSocket);
+        if (actionHandlerMap.containsKey(actionType)) {
           actionHandlerMap.get(actionType).apply(player, rootNode);
         }
       } catch (Exception e) {
