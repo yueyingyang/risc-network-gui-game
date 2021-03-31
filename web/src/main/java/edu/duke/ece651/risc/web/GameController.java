@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Controller
+@RequestMapping("/game")
 public class GameController {
   private final PlayerSocketMap playerMapping;
 
@@ -49,7 +50,7 @@ public class GameController {
    * @return is the name of view template html
    * @throws IOException
    */
-  @GetMapping("/game/place")
+  @GetMapping("/place")
   public String place(Model model) throws IOException {
     GameMap map = (GameMap) jsonSerializer.deserialize(playerMapping.getSocket(currentUserName).recvMessage(), GameMap.class);
     int totalUnits = Integer.parseInt(playerMapping.getSocket(currentUserName).recvMessage());
@@ -89,7 +90,7 @@ public class GameController {
    *
    * @return game
    */
-  @GetMapping(value = "/game/play")
+  @GetMapping(value = "/play")
   public String playOneTurn(Model model) {
     // todo: should refactor createMap() to retrieve stored game map
     List<ObjectNode> graphData = getObjectNodes(createMap(), players);
@@ -99,6 +100,7 @@ public class GameController {
   }
 
   /**
+   * todo: need to be moved to AjaxController after refactoring with V2MapView
    * Ajax GET API for update map after placement
    *
    * @return Response with status error or success, if success then body is updated GAMEMAP

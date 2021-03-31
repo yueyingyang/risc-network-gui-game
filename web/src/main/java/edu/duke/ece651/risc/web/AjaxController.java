@@ -32,7 +32,7 @@ public class AjaxController {
   @GetMapping(value = "/check_room_status")
   public ResponseEntity<?> checkRoomStatus() throws IOException {
 //    Below 1 lines are for local test
-//    return ResponseEntity.status(HttpStatus.ACCEPTED).body(true);
+//    return ResponseEntity.status(HttpStatus.ACCEPTED).body(false);
     ClientSocket cs = playerMapping.getSocket(currentUserName);
     if (cs.hasNewMsg()) {
       // means the game is ready (the new msg will be the empty' game map)

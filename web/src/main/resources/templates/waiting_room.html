@@ -10,16 +10,15 @@
 <br>
 <div class="ui two column centered grid">
     <div class="column" style="user-select: auto;">
-        <div class="ui message">
-            <div class="ui small feed">
-                <h4 class="ui header" style="user-select: auto;">Room Activity</h4>
-                <div class="event" style="user-select: auto;">
-                    <div class="content" style="user-select: auto;" id="msg_box">
-                        <div class="summary" style="user-select: auto;">
-                            Waiting for the game to start!
-                        </div>
-                    </div>
+        <div class="ui icon message">
+            <i class="notched circle loading icon" style="user-select: auto;"></i>
+            <div class="content" style="user-select: auto;">
+                <div class="header" style="user-select: auto;">
+                    Just one second
                 </div>
+                <p style="user-select: auto;">We're trying to get enough players to join for starting the game. </p>
+                <p>Feel free to press <b>Refresh</b> button to get updates.</p>
+                <span id="last_update"> The room is not ready yet </span>
             </div>
         </div>
     </div>
@@ -27,7 +26,12 @@
         <button class="ui submit button" style="user-select: auto;" id="refresh">Refresh</button>
     </div>
 </div>
+<script th:src="@{/util.js}"></script>
 <script>
+    const changeUpdateTime = function () {
+        $('#last_update').text('[Last update: ' + new Date().toLocaleTimeString() + '] The room is not ready yet.');
+    }
+    $(document).ready(changeUpdateTime);
     const check_room_status = () => {
         const checkStatus = {
             "url": "/check_room_status",
@@ -37,7 +41,7 @@
                 if (res) {
                     location.href = "/game/place"
                 } else {
-                    $('#msg_box').append('<p> The room is not ready yet. Please wait... </p>');
+                    changeUpdateTime();
                 }
             }
         }
