@@ -54,7 +54,7 @@ public class GameTest {
   @Test
   public void test_getPlayerByGame(){
     Game g = new Game(1,0);
-    assertEquals(null,g.getPlayerByName("Red"));
+    assertEquals(false,g.IsPlayerExist("Red"));
   }
 
   @Test

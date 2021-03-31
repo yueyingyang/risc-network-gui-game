@@ -1,8 +1,6 @@
 
 package edu.duke.ece651.risc.server;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Random;
+import java.util.*;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.*;
@@ -36,14 +34,14 @@ public class Game {
         this.players = new ArrayList<>();
         this.stillInPlayers = new ArrayList<>();
         this.stillWatchPlayers = new ArrayList<>();
-        this.myRandom = new Random();
+        this.myRandom = new Random(1);
     }
 
     public Integer getGameID(){
         return this.gameID;
     }
 
-    public ArrayList<String> getAllPlayers(){
+    public List<String> getAllPlayers(){
         ArrayList<String> res = new ArrayList<String>();
         for(Player p:players){
             res.add(p.getName());
@@ -94,17 +92,17 @@ public class Game {
     }
 
     /**
-     * return the player itself by name
+     * check if a player exist in a game or not
      * @param playerName is the name of the player
      * @return
      */
-    public Player getPlayerByName(String playerName){
+    public Boolean IsPlayerExist(String playerName){
         for(Player p:players){
             if(p.getName().equals(playerName)){
-                return p;
+                return true;
             }
         }
-        return null;
+        return false;
     }
 
     /**

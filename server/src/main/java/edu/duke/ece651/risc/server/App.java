@@ -66,7 +66,7 @@ public class App {
   private List<Game> getAvailableGames(String playerName) {
     List<Game> res = new ArrayList<>();
     for (Game g : this.games) {
-      if (!g.isGameFull() && g.getPlayerByName(playerName)==null) {
+      if (!g.isGameFull() && g.IsPlayerExist(playerName).equals(false)) {
         res.add(g);
       }
     }
@@ -81,7 +81,7 @@ public class App {
   private List<Game> getPlayerGame(String playerName){
     List<Game> res = new ArrayList<>();
     for(Game g:this.games){
-      if(g.getPlayerByName(playerName)!=null){
+      if(g.IsPlayerExist(playerName).equals(true)){
         res.add(g);
       }
     }
