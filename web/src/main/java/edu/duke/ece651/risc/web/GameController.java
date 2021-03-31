@@ -80,9 +80,8 @@ public class GameController {
     }
     String json = jsonSerializer.getOm().writerFor(new TypeReference<List<ActionEntry>>() {
     }).writeValueAsString(placementList);
-    logger.info(json);
     playerMapping.getSocket(currentUserName).sendMessage(json);
-    return "redirect:game/play";
+    return "redirect:play";
   }
 
   /**

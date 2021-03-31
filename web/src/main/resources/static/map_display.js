@@ -1,10 +1,5 @@
-const display_map = (tooltip_formatter_fn) => {
-    const myChart = echarts.init(document.getElementById('map'));
-
-    const innerLabelFormatter = "{@name}";
-    const dimensions = ['name', 'owner', 'resources', 'value'];
-    let option;
-    option = {
+function getOption(tooltip_formatter_fn) {
+    return {
         tooltip: {
             trigger: 'item',
             formatter: tooltip_formatter_fn
@@ -26,17 +21,22 @@ const display_map = (tooltip_formatter_fn) => {
                     fontSize: 20,
                     fontWeight: 'bold',
                     color: "#fff",
-                    formatter: innerLabelFormatter,
+                    formatter: "{@name}",
                 },
                 labelLine: {
                     show: false
                 },
-                dimensions: dimensions,
             }
         ],
         dataset: {
             source: graphData
         }
     };
+}
+
+const display_map = (tooltip_formatter_fn) => {
+    const myChart = echarts.init(document.getElementById('map'));
+    let option;
+    option = getOption(tooltip_formatter_fn);
     myChart.setOption(option);
 }

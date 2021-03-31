@@ -2,7 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="">
 <head>
     <header th:insert="fragments/common_header.html :: headerfiles"></header>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.0.2/dist/echarts.min.js"></script>
     <title>Game</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
@@ -11,7 +10,12 @@
 
 <div class="ui grid vertically divided">
     <div class="two column centered row">
-        <div id="map" class="six wide column" style="width:600px; height:400px;"></div>
+        <div id="map" class="six wide column" style="width:600px; height:400px;"><div class="ui segment">
+            <div class="ui active inverted dimmer">
+                <div class="ui text loader">Loading</div>
+            </div>
+            <p></p>
+        </div></div>
         <div class="eight wide column" style="user-select: auto;">
             <div class="ui secondary pointing menu" id="actions">
                 <a class="active item" style="user-select: auto;">
@@ -86,12 +90,14 @@
     })
     // Refresh map ajax call
     const refresh_map = () => {
+        const myChart = echarts.init(document.getElementById('map'));
         const config = {
             "url": "/game/update_map",
             "async": true,
             "type": "get",
             "success": res => {
                 let colors = res.map(territory => territory['color']);
+                option = getOption(full_map_formatter)
                 option.dataset.source = res;
                 option.series[0].color = colors;
                 myChart.clear();
