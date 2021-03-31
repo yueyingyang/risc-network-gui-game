@@ -28,6 +28,7 @@ class JSONSerializerTest {
     GameMap map = getGameMap();
     String result = s.serialize(map);
     GameMap deMap = (GameMap) s.deserialize(result, GameMap.class);
+    assertEquals(map, deMap);
     assertDoesNotThrow(() -> new MapView(deMap).display());
   }
 
@@ -80,7 +81,7 @@ class JSONSerializerTest {
     }).writeValueAsString(p);
     V1MapFactory v1f = new V1MapFactory();
     GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 2);
-    Collection<ActionEntry> pd = s.getOm().readValue(listJSON, new TypeReference<Collection<ActionEntry>>() {
+    Collection<ActionEntry> pd = s.getOm().readValue(listJSON, new TypeReference<>() {
     });
     for (ActionEntry a : pd) {
       a.apply(map);
@@ -97,12 +98,7 @@ class JSONSerializerTest {
       }
     });
     System.setErr(dummyStream);
-    try {
-      JSONSerializer s = new JSONSerializer();
-      s.deserialize("it's not a json string", String.class);
-    } finally {
-      System.setErr(originalStream);
-    }
+    assertDoesNotThrow(() -> s.deserialize("it's not a json string", String.class));
   }
 
   @Test

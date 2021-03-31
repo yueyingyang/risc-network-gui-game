@@ -60,63 +60,31 @@
     </div>
 </div>
 
-<!--JS to render MAP -->
-<!--Set interaction of action tabs-->
-<script th:inline="javascript">
-    const myChart = echarts.init(document.getElementById('map'));
-    const colors = [[${graphData}]].map(territory => territory['color'])
-    const innerLabelFormatter = "{@name}";
-    const dimensions = ['name', 'owner', 'resources', 'value'];
-    let option;
-    option = {
-        tooltip: {
-            trigger: 'item',
-            formatter: params => `😉\t${params.data.owner}<br />` +
-                `💂\t${params.data.units}<br />` +
-                `💎\t${params.data.resources}<br />` +
-                `📏\t${params.data.value}`
-        },
-        series: [
-            {
-                name: 'map',
-                type: 'pie',
-                radius: ['40%', '70%'],
-                avoidLabelOverlap: false,
-                itemStyle: {
-                    borderRadius: 10,
-                    borderColor: '#fff',
-                    borderWidth: 4,
-                },
-                color: colors,
-                label: {
-                    position: 'inner',
-                    fontSize: 20,
-                    fontWeight: 'bold',
-                    color: "#fff",
-                    formatter: innerLabelFormatter,
-                },
-                labelLine: {
-                    show: false
-                },
-                dimensions: dimensions,
-            }
-        ],
-        dataset: {
-            source: [[${graphData}]]
-        }
-    };
-    myChart.setOption(option);
 
+<script th:inline="javascript">
+    <!--    use Thymeleaf inline javascript to convert controller passed data into plain js variable -->
+    const colors = [[${graphData}]].map(territory => territory['color']);
+    const graphData = [[${graphData}]];
+</script>
+<!--include JS to render MAP -->
+<script th:src="@{/map_display.js}"></script>
+<script th:inline="javascript">
+
+    const full_map_formatter = params => `😉\t${params.data.owner}<br />` +
+        `💂\t${params.data.units}<br />` +
+        `💎\t${params.data.resources}<br />` +
+        `📏\t${params.data.value}`
+
+    // Display the map function
+    display_map(full_map_formatter)
+    // Set interaction of action tabs
     $('#actions a.item').on('click', function () {
         $(this)
             .addClass('active')
             .siblings()
             .removeClass('active');
     })
-
-    $('select.dropdown')
-        .dropdown();
-
+    // Refresh map ajax call
     const refresh_map = () => {
         const config = {
             "url": "/update_map",

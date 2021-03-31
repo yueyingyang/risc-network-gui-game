@@ -24,7 +24,6 @@ public class JSONSerializer implements Serializer {
     // set the serialization as all fields
     om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
     om.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-
   }
 
   /**
@@ -46,7 +45,7 @@ public class JSONSerializer implements Serializer {
   }
 
   /**
-   * Deserialze JSON String into object
+   * Deserialize JSON String into object
    *
    * @param JSONString to be deserialized
    * @param c          is the type of the object

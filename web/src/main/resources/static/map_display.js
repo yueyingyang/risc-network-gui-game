@@ -1,18 +1,13 @@
-<!DOCTYPE HTML>
-<!--Reference: https://www.baeldung.com/spring-thymeleaf-fragments-->
-<html xmlns:th="http://www.thymeleaf.org" lang="">
-<body>
-</body>
-<script th:inline="javascript" th:fragment="mapjs">
+const display_map = (tooltip_formatter_fn) => {
     const myChart = echarts.init(document.getElementById('map'));
-    const colors = [[${graphData}]].map(territory => territory['color'])
+
     const innerLabelFormatter = "{@name}";
     const dimensions = ['name', 'owner', 'resources', 'value'];
     let option;
     option = {
         tooltip: {
             trigger: 'item',
-            formatter: params => `😉\t${params.data.owner}<br />💎\t${params.data.resources}<br />📏\t${params.data.value}`
+            formatter: tooltip_formatter_fn
         },
         series: [
             {
@@ -40,9 +35,8 @@
             }
         ],
         dataset: {
-            source: [[${graphData}]]
+            source: graphData
         }
     };
     myChart.setOption(option);
-</script>
-</html>
+}

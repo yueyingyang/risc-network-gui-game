@@ -13,18 +13,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.*;
 
 @Controller
 public class GameController {
-  @Autowired
-  private PlayerSocketMap playerMapping;
+  private final PlayerSocketMap playerMapping;
 
   // todo: change after user login
   private String currentUserName;
@@ -37,12 +33,13 @@ public class GameController {
   private final List<String> colorPalette;
   Logger logger = LoggerFactory.getLogger(GameController.class);
 
-  public GameController() {
+  public GameController(PlayerSocketMap playerMapping) {
     this.jsonSerializer = new JSONSerializer();
     this.currentUserName = "test";
     this.mapper = new ObjectMapper();
     this.colorPalette = Arrays.asList("#97B8A3", "#EDC3C7", "#FDF06F", "#A6CFE2", "#9C9CDD");
     this.players = Arrays.asList("p2", "test");
+    this.playerMapping = playerMapping;
   }
 
   /**
@@ -121,24 +118,6 @@ public class GameController {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
   }
 
-  /**
-   * Ajax GET API for update game status (after enter / join, should wait game to start)
-   *
-   * @return Response with true if room is ready, else false.
-   * @throws IOException if IO exception
-   */
-  @GetMapping(value = "/check_room_status")
-  public @ResponseBody
-  ResponseEntity<?> checkRoomStatus() throws IOException {
-//    Below 1 lines are for local test
-//    return ResponseEntity.status(HttpStatus.ACCEPTED).body(true);
-    ClientSocket cs = playerMapping.getSocket(currentUserName);
-    if (cs.hasNewMsg()) {
-      // means the game is ready (the new msg will be the empty' game map)
-      return ResponseEntity.status(HttpStatus.ACCEPTED).body(true);
-    }
-    return ResponseEntity.status(HttpStatus.ACCEPTED).body(false);
-  }
 
   // Below are helper functions
 
@@ -149,7 +128,7 @@ public class GameController {
    * @param players is the player list to do the color mapping
    * @return the MAP display info in JSON
    */
-  private List<ObjectNode> getObjectNodes(GameMap map, List<String> players) {
+  protected List<ObjectNode> getObjectNodes(GameMap map, List<String> players) {
     Map<String, String> colorMapping = new HashMap<>();
     for (int i = 0; i < players.size(); i++) {
       colorMapping.put(players.get(i), colorPalette.get(i));
@@ -189,7 +168,7 @@ public class GameController {
    *
    * @return a GameMap object
    */
-  private GameMap createMap() {
+  protected GameMap createMap() {
     V1MapFactory v1f = new V1MapFactory();
 //    Collections.shuffle(players);
     GameMap map = v1f.createMap(players, 2);

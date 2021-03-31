@@ -2,7 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="">
 <head>
     <header th:insert="fragments/common_header.html :: headerfiles"></header>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.0.2/dist/echarts.min.js"></script>
     <title>Game</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
@@ -15,7 +14,7 @@
         <div id="map" class="six wide column" style="width:600px; height:400px;"></div>
         <div class="eight wide column" style="user-select: auto;">
             <div class="ui">
-                <form th:if="${wrapper.terrUnitList.size()} != 0" class="ui form" th:action="@{/submit_place}"
+                <form th:if="${wrapper.terrUnitList.size()} != 0" class="ui form" th:action="@{/game/submit_place}"
                       method="post"
                       th:object="${wrapper}">
                     <div class="ui header">Please enter the placement below:</div>
@@ -40,52 +39,19 @@
     </div>
 </div>
 
-<!--JS to render MAP -->
-<!--Set interaction of action tabs-->
-<script th:inline="javascript">
-    const myChart = echarts.init(document.getElementById('map'));
-    const colors = [[${graphData}]].map(territory => territory['color'])
-    const innerLabelFormatter = "{@name}";
-    const dimensions = ['name', 'owner', 'resources', 'value'];
-    let option;
-    option = {
-        tooltip: {
-            trigger: 'item',
-            formatter: params => `😉\t${params.data.owner}`
-        },
-        series: [
-            {
-                name: 'map',
-                type: 'pie',
-                radius: ['40%', '70%'],
-                avoidLabelOverlap: false,
-                itemStyle: {
-                    borderRadius: 10,
-                    borderColor: '#fff',
-                    borderWidth: 4,
-                },
-                color: colors,
-                label: {
-                    position: 'inner',
-                    fontSize: 20,
-                    fontWeight: 'bold',
-                    color: "#fff",
-                    formatter: innerLabelFormatter,
-                },
-                labelLine: {
-                    show: false
-                },
-                dimensions: dimensions,
-            }
-        ],
-        dataset: {
-            source: [[${graphData}]]
-        }
-    };
-    myChart.setOption(option);
 
-    $('select.dropdown')
-        .dropdown();
+<script th:inline="javascript">
+    <!--    use Thymeleaf inline javascript to convert controller passed data into plain js variable -->
+    const colors = [[${graphData}]].map(territory => territory['color']);
+    const graphData = [[${graphData}]];
+</script>
+<!--include JS to render MAP -->
+<script th:src="@{/map_display.js}"></script>
+<script th:inline="javascript">
+    // only display player name
+    const empty_map_formatter = params => `😉\t${params.data.owner}<br />`;
+    // Display the map function
+    display_map(empty_map_formatter)
 </script>
 </body>
 

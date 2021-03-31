@@ -21,18 +21,18 @@ import java.util.List;
 
 @Controller
 public class LobbyController {
-  @Autowired
-  private PlayerSocketMap playerMapping;
+  private final PlayerSocketMap playerMapping;
 
   // todo: change after user login
   private String currentUserName;
   private final ObjectMapper mapper;
   private final JSONSerializer jsonSerializer;
 
-  public LobbyController() {
+  public LobbyController(PlayerSocketMap playerMapping) {
     this.jsonSerializer = new JSONSerializer();
     this.currentUserName = "test";
     this.mapper = new ObjectMapper();
+    this.playerMapping = playerMapping;
   }
 
   /**
@@ -114,7 +114,7 @@ public class LobbyController {
   }
 
 
-  @PostMapping(value = "/rejoin")
+  @GetMapping(value = "/rejoin")
   public String rejoin(@RequestParam(name = "gameID") String gameID) throws IOException {
     ClientSocket c = playerMapping.getSocket(currentUserName);
     ObjectNode startReq = JsonNodeFactory.instance.objectNode();
