@@ -9,6 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -46,7 +48,9 @@ class AppTest {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     ServerPlayer sp = new ServerPlayer(new BufferedReader(new StringReader("2\n")),
             new PrintWriter(bytes, true),s);
-    Game g = app.startNewGame(sp,2);
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode rootNode = mapper.readTree("{\"type\":\"start\",\"name\":\"test\",\"gameSize\":\"2\"}");
+    Game g = app.startNewGame(sp,rootNode);
     assertEquals(2,g.getPlayerNum());
   }
 
@@ -60,9 +64,11 @@ class AppTest {
     ByteArrayOutputStream bytes2 = new ByteArrayOutputStream();   
     Socket socket3 = new Socket();      
     ByteArrayOutputStream bytes3 = new ByteArrayOutputStream();   
-    ServerPlayer p2 = app.createOrUpdatePlayer("Blue",new BufferedReader(new StringReader("")),new PrintWriter(bytes2, true),socket2);                                                                                                
-    Game g1 = app.startNewGame(p1,3);
-    Game g2 = app.startNewGame(p2,3);
+    ServerPlayer p2 = app.createOrUpdatePlayer("Blue",new BufferedReader(new StringReader("")),new PrintWriter(bytes2, true),socket2);   
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode rootNode = mapper.readTree("{\"type\":\"start\",\"name\":\"test\",\"gameSize\":\"3\"}");                                                                                             
+    Game g1 = app.startNewGame(p1,rootNode);
+    Game g2 = app.startNewGame(p2,rootNode);
     assertEquals("[{\"id\":1,\"players\":[\"Blue\"]}]\n[{\"id\":0,\"players\":[\"Red\"]}]", app.allGameList("Red"));
     app.createOrUpdatePlayer("Blue",new BufferedReader(new StringReader("")),new PrintWriter(bytes3, true),socket3);
     assertDoesNotThrow(()->{p2.sendMessage("msg");});
@@ -78,8 +84,11 @@ class AppTest {
     ByteArrayOutputStream bytes1 = new ByteArrayOutputStream();
     ServerPlayer sp1 = new ServerPlayer(new BufferedReader(new StringReader("")),
             new PrintWriter(bytes1, true),s1);
-    app.startNewGame(sp, 2);
-    Game g1 = app.joinExistingGame(sp1, 0);
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode rootNode = mapper.readTree("{\"type\":\"start\",\"name\":\"test\",\"gameSize\":\"2\"}");
+    app.startNewGame(sp, rootNode);
+    JsonNode rootNode1 = mapper.readTree("{\"type\":\"join\",\"name\":\"p2\",\"gameID\":\"0\"}");
+    Game g1 = app.joinExistingGame(sp1, rootNode1);
     assertEquals(0,g1.getGameID());
     assertEquals(2,g1.getAllPlayers().size());
   }
@@ -88,10 +97,11 @@ class AppTest {
   public void test_rejoinGame() throws IOException{
     Socket s = new Socket();
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-    ServerPlayer sp = new ServerPlayer(new BufferedReader(new StringReader("")),
-            new PrintWriter(bytes, true),s);
-    Game g = app.startNewGame(sp, 2);
-    Game g1 = app.startNewGame(sp, 2);
+    ServerPlayer sp = new ServerPlayer(new BufferedReader(new StringReader("")),new PrintWriter(bytes, true),s);
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode rootNode = mapper.readTree("{\"type\":\"start\",\"name\":\"test\",\"gameSize\":\"2\"}");
+    Game g = app.startNewGame(sp, rootNode);
+    Game g1 = app.startNewGame(sp, rootNode);
     app.rejoinGame(sp, 0);
     assertEquals(0,sp.getCurrentGame());
   }
@@ -182,7 +192,9 @@ class AppTest {
     ServerPlayer sp = new ServerPlayer(new BufferedReader(new StringReader("")),
             new PrintWriter(bytes, true),s);
     sp.setName("Red");
-    app.startNewGame(sp,3);
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode rootNode = mapper.readTree("{\"type\":\"start\",\"name\":\"test\",\"gameSize\":\"3\"}");
+    app.startNewGame(sp,rootNode);
     String str = app.allGameList(sp.getName());
     assertEquals("[]\n[{\"id\":0,\"players\":[\"Red\"]}]",str);
   }

@@ -140,8 +140,7 @@ public class Game {
      */
     public void sendObjectToAll(Object o, ArrayList<ServerPlayer> p) {
         for (Player player : p) {
-            try{player.sendObject(o);}catch(Exception e){}
-            
+            try{player.sendObject(o);}catch(Exception e){}        
         }
     }
 

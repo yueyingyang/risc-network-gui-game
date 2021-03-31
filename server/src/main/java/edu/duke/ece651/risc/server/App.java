@@ -24,8 +24,8 @@ public class App {
   private final ArrayList<Game> games;
   private final HostSocket hostSocket;
   private final PrintStream output;
-  private Set<String> playerNames;
   private Map<String, ServerPlayer> players;
+  private Map<String, actionHandler> actionHandlerMap;
 
   /**
    * the constructor of App build the socket based on the port number initialize
@@ -35,8 +35,20 @@ public class App {
     games = new ArrayList<>();
     this.output = out;
     this.hostSocket = s;
-    this.playerNames = new HashSet<>();
     this.players = new HashMap<>();
+    this.actionHandlerMap = new HashMap<>();
+    actionHandlerMap.put(Constant.GET_GAMELIST, (p,n) -> sendGameList(p,n));
+    actionHandlerMap.put(Constant.STARTGAME, (p,n) -> {
+      try{startNewGame(p,n);}catch(Exception e){}   
+    });
+    actionHandlerMap.put(Constant.JOINGAME, (p,n) -> {
+      try{joinAndRun(p,n);}catch(Exception e){}   
+    });
+     
+    actionHandlerMap.put(Constant.REJOINGAME,(p,n) ->{
+      try{startNewGame(p,n);}catch(Exception e){}
+    });
+    
   }
 
   /**
@@ -81,8 +93,8 @@ public class App {
    * @param player
    * @param playerName
    */
-  public void sendGameList(ServerPlayer player,String playerName){
-    player.sendMessage(allGameList(playerName));
+  public void sendGameList(ServerPlayer player,JsonNode rootNode){
+    player.sendMessage(allGameList(rootNode.path("name").textValue()));
   }
 
   /**
@@ -112,9 +124,9 @@ public class App {
    * @param player is the player needs to login
    * @throws IOException if R/W exception
    */
-  public Game startNewGame(ServerPlayer player, Integer gameSize) throws IOException {
+  public Game startNewGame(ServerPlayer player, JsonNode rootNode) throws IOException {
     int gameID = games.size();
-    Game newGame = new Game(gameSize,gameID);
+    Game newGame = new Game(Integer.parseInt(rootNode.path("gameSize").textValue()),gameID);
     player.setCurrentGameID(gameID);
     this.games.add(newGame);
     // a new game should always add a player successfully
@@ -128,8 +140,9 @@ public class App {
    * @param player is the player needs to login
    * @throws IOException if R/W exception
    */
-  public Game joinExistingGame(ServerPlayer player, Integer gameID) throws IOException {
+  public Game joinExistingGame(ServerPlayer player, JsonNode rootNode) throws IOException {
     // wait util the user give a valid game number
+    int gameID = Integer.parseInt(rootNode.path("gameID").textValue());
     while (true) {
       String tryAddPlayerErrorMsg = games.get(gameID).addPlayer(player);
       if (tryAddPlayerErrorMsg == null) {
@@ -143,6 +156,20 @@ public class App {
         player.sendMessage(tryAddPlayerErrorMsg);
       }
     }
+  }
+
+  public void joinAndRun(ServerPlayer player, JsonNode rootNode) throws IOException{
+    Game g = this.joinExistingGame(player, rootNode);
+    if(g.isGameFull()){
+      Thread t = new Thread(() -> {
+        try {
+          g.runGame(2, 6);
+        } catch (Exception e) {
+          System.out.println("Exception catched when running the game!"+e.getMessage());
+        }
+      });
+      t.start();
+    }    
   }
 
   /**
@@ -168,8 +195,7 @@ public class App {
    */
   public ServerPlayer createOrUpdatePlayer(String playerName,BufferedReader in,PrintWriter out, Socket clientSocket){
     ServerPlayer player = null;
-    if(!playerNames.contains(playerName)){
-      playerNames.add(playerName);     
+    if(!players.keySet().contains(playerName)){   
       player = new ServerPlayer(in, out, clientSocket);
       players.put(playerName, player);
       player.setName(playerName);
@@ -202,23 +228,7 @@ public class App {
         String actionType = rootNode.path("type").textValue();
         String playerName = rootNode.path("name").textValue();
         ServerPlayer player = createOrUpdatePlayer(playerName,in,out,clientSocket);
-        if(actionType.equals("getGameList")){
-          sendGameList(player,playerName);
-        }
-        else if(actionType.equals("start")){
-          startNewGame(player, Integer.parseInt(rootNode.path("gameSize").textValue()));
-        }
-        else if(actionType.equals("join")){
-          Game g = joinExistingGame(player, Integer.parseInt(rootNode.path("gameID").textValue()));
-          //use multi thread here
-          if(g.isGameFull()){
-            GameThread newRun = new GameThread(g);
-            newRun.start();
-          }
-        }
-        else if(actionType.equals("rejoin")){
-          rejoinGame(player,Integer.parseInt(rootNode.path("gameID").textValue()));
-        }
+        actionHandlerMap.get(actionType).apply(player, rootNode);
       } catch (Exception e) {
         this.output.println(e.getMessage());
       }
