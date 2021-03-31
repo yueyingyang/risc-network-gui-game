@@ -22,5 +22,9 @@ public class Constant {
     public static final String GAME_OVER = "Game over ~";
     public static final String VALID_ACTION = "The action is valid.";
     public static final String INVALID_ACTION = "The action cannot be applied.";
+    public static final String GET_GAMELIST = "getGameList";
+    public static final String STARTGAME = "start";
+    public static final String JOINGAME = "join";
+    public static final String REJOINGAME = "rejoin";
 }
 
