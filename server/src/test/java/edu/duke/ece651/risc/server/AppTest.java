@@ -3,6 +3,8 @@
  */
 package edu.duke.ece651.risc.server;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.duke.ece651.risc.shared.ServerPlayer;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +28,7 @@ class AppTest {
 
   @BeforeEach
   public void init() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
     app = new App(hs, mockOut);
   }
 

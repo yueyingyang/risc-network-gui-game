@@ -8,4 +8,4 @@
  */
 
 rootProject.name = 'risc'
-include ":server", ":client", ":shared"
+include ":server", ":client", ":shared", ":web"

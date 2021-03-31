@@ -1,0 +1,119 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+<head>
+    <header th:insert="fragments/common_header.html :: headerfiles"></header>
+    <title>Game</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:insert="fragments/common_header.html :: header"></div>
+
+<div class="ui grid vertically divided">
+    <div class="two column centered row">
+        <div id="map" class="six wide column" style="width:600px; height:400px;"><div class="ui segment">
+            <div class="ui active inverted dimmer">
+                <div class="ui text loader">Loading</div>
+            </div>
+            <p></p>
+        </div></div>
+        <div class="eight wide column" style="user-select: auto;">
+            <div class="ui secondary pointing menu" id="actions">
+                <a class="active item" style="user-select: auto;">
+                    Move
+                </a>
+                <a class="item" style="user-select: auto;">
+                    Attack
+                </a>
+                <a class="item" style="user-select: auto;">
+                    Upgrade unit
+                </a>
+                <a class="item" style="user-select: auto;">
+                    Upgrade technology level
+                </a>
+            </div>
+            <div class="ui segment">
+
+                <form class="ui form" th:action="@{/}"
+                      method="post"
+                      th:object="${action}">
+                    <!--                    <div class="ui header">Please enter the placement below:</div>-->
+                    <div class="fields" style="user-select: auto;">
+
+                    </div>
+                    <button class="ui submit button" style="user-select: auto;" type="submit">Submit</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ui two column centered grid">
+    <div class="six wide column" style="user-select: auto;">
+        <div class="ui icon message">
+            <i class="inbox icon" style="user-select: auto;"></i>
+            <div class="content">
+                <div class="header" style="user-select: auto;">Room Activity</div>
+                <div style="user-select: auto;" id="msg_box">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="column" style="user-select: auto;">
+        <button class="ui submit button" style="user-select: auto;" id="refresh">Refresh</button>
+    </div>
+</div>
+
+<script th:src="@{/util.js}"></script>
+<script th:inline="javascript">
+    <!--    use Thymeleaf inline javascript to convert controller passed data into plain js variable -->
+    const colors = [[${graphData}]].map(territory => territory['color']);
+    const graphData = [[${graphData}]];
+</script>
+<!--include JS to render MAP -->
+<script th:src="@{/map_display.js}"></script>
+<script th:inline="javascript">
+
+    const full_map_formatter = params => `😉\t${params.data.owner}<br />` +
+        `💂\t${params.data.units}<br />` +
+        `💎\t${params.data.resources}<br />` +
+        `📏\t${params.data.value}`
+
+    // Display the map function
+    display_map(full_map_formatter)
+    // Set interaction of action tabs
+    $('#actions a.item').on('click', function () {
+        $(this)
+            .addClass('active')
+            .siblings()
+            .removeClass('active');
+    })
+    // Refresh map ajax call
+    const refresh_map = () => {
+        const myChart = echarts.init(document.getElementById('map'));
+        const config = {
+            "url": "/game/update_map",
+            "async": true,
+            "type": "get",
+            "success": res => {
+                let colors = res.map(territory => territory['color']);
+                option = getOption(full_map_formatter)
+                option.dataset.source = res;
+                option.series[0].color = colors;
+                myChart.clear();
+                myChart.setOption(option);
+                $('#msg_box').append('<p style="user-select: auto;"> Update map </p>');
+            },
+            "error": () => {
+                $('#msg_box').append('<p style="user-select: auto;"> Please wait... </p>');
+            }
+        }
+        $.ajax(config);
+    }
+
+    $('#refresh').click(refresh_map);
+</script>
+</body>
+
+</html>
+
