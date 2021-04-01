@@ -34,6 +34,7 @@ subprojects{
         implementation 'com.fasterxml.jackson.core:jackson-annotations:2.10.1'
         implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.10.1'
         implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:2.4.4'
+        implementation 'org.springframework.boot:spring-boot-starter-security:2.4.4'
         implementation 'org.springframework.boot:spring-boot-starter-web:2.4.4'
         runtimeOnly 'org.springframework.boot:spring-boot-devtools:2.4.4'
         testImplementation 'org.springframework.boot:spring-boot-starter-test:2.4.4'
