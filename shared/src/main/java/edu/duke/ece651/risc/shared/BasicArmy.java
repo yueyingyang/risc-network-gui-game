@@ -78,6 +78,9 @@ public class BasicArmy implements Army {
     }
 
     /**
+     * // TODO
+     * void removeSoldier(int index)
+     * do not need by interface
      * Remove the given number of soldiers to the force
      *
      * @param numSoldiers is the number of the soldiers to remove
