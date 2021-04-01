@@ -17,4 +17,11 @@ class BasicSoldierTest {
         assertEquals(2, defender.fight(attacker, myRandom));
     }
 
+    @Test
+    public void test_upgrade() {
+        Soldier soldier = new BasicSoldier();
+        soldier.upgrade("5");
+        assertTrue(soldier.hasType("5"));
+    }
+
 }
