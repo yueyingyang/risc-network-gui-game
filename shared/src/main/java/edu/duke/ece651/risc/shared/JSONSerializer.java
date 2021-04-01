@@ -24,6 +24,7 @@ public class JSONSerializer implements Serializer {
     // set the serialization as all fields
     om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
     om.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+
   }
 
   /**
@@ -45,7 +46,7 @@ public class JSONSerializer implements Serializer {
   }
 
   /**
-   * Deserialize JSON String into object
+   * Deserialze JSON String into object
    *
    * @param JSONString to be deserialized
    * @param c          is the type of the object
@@ -61,12 +62,4 @@ public class JSONSerializer implements Serializer {
     return null;
   }
 
-  /**
-   * @param o is the object to be cloned
-   * @param c is the class of object
-   * @return a deep clone object
-   */
-  public Object clone(Object o, Class<?> c) {
-    return deserialize(serialize(o), c);
-  }
 }

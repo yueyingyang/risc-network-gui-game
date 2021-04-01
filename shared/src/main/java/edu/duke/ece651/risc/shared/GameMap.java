@@ -81,7 +81,7 @@ public class GameMap {
     }
 
     /**
-     *
+     * 
      * @return all territories in the map
      */
     public ArrayList<Territory> getAllTerritories(){
@@ -95,7 +95,7 @@ public class GameMap {
 
     /**
      * check if two territory has a path between them within the same player's territory
-     *
+     * 
      * @param start from territory
      * @param end   to territory
      * @return      turn if there is a such path otherwise return false
@@ -108,11 +108,11 @@ public class GameMap {
     }
     /**
      * input the current territory and destination territory with a set
-     *
+     * 
      * @param curr      the current territory in search
      * @param end       the destination territory
      * @param visited   the set record all visited territory
-     * @param ownerName the name of the from and two territories' owner
+     * @param ownerName the name of the from and two territories' owner 
      * @return          true if there is a path from curr to end otherwise return false
      */
     private boolean dfs(Territory curr, Territory end,Set<Territory> visited, String ownerName){
@@ -129,19 +129,5 @@ public class GameMap {
             }
         }
         return false;
-    }
-
-    /**
-     * Check if the given object is equal to this
-     * @param o is the given object
-     * @return true if the object is equal to this map
-     */
-    @Override
-    public boolean equals(Object o) {
-      if (o.getClass().equals(getClass())) {
-        GameMap m = (GameMap) o;
-        return territoryFinder.equals(m.territoryFinder);
-      }
-      return false;
     }
 }

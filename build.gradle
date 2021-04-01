@@ -6,26 +6,14 @@
  */
 plugins {
     id 'com.bmuschko.clover' version '2.2.3'
-    id "io.spring.dependency-management" version "1.0.8.RELEASE"
 }
 subprojects{
-
     apply plugin: "java"
     apply plugin: "com.bmuschko.clover"
-    apply plugin: 'io.spring.dependency-management'
     apply plugin: "java-library"
-
-
     repositories {
         jcenter()
         mavenCentral()
-    }
-
-    configurations {
-        developmentOnly
-        runtimeClasspath {
-            extendsFrom developmentOnly
-        }
     }
 
     dependencies {
@@ -33,21 +21,13 @@ subprojects{
         implementation 'com.fasterxml.jackson.core:jackson-core:2.10.1'
         implementation 'com.fasterxml.jackson.core:jackson-annotations:2.10.1'
         implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.10.1'
-        implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:2.4.4'
-        implementation 'org.springframework.boot:spring-boot-starter-web:2.4.4'
-        runtimeOnly 'org.springframework.boot:spring-boot-devtools:2.4.4'
-        testImplementation 'org.springframework.boot:spring-boot-starter-test:2.4.4'
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.1'
         testImplementation 'org.hamcrest:hamcrest:2.2'
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.1'
         clover 'org.openclover:clover:4.3.1'
         testCompile "org.mockito:mockito-core:2.+"
-        testCompile 'junit:junit:4.12'
-        compile 'junit:junit:4.12'
+
     }
-
-
-
     clover{
         compiler{
             additionalArgs = "-g:lines,source,vars"
@@ -90,25 +70,6 @@ project (':client'){
         implementation project(':shared')
     } 
 }
-project (':web'){
-
-    version = '0.0.1-SNAPSHOT'
-
-    configurations {
-        developmentOnly
-        runtimeClasspath {
-            extendsFrom developmentOnly
-        }
-    }
-
-    dependencies {
-//        implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-//        implementation 'org.springframework.boot:spring-boot-starter-web'
-        implementation project(':shared')
-//        runtimeOnly 'org.springframework.boot:spring-boot-devtools'
-//        testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    }
-}
 
 clover {
     report {
@@ -127,10 +88,4 @@ tasks.register("run-client") {
     dependsOn project('client').getTasksByName('run',false)
     group = 'Run Client/Server'
     description = 'Run the Client'
-}
-
-tasks.register("run-web") {
-    dependsOn project('web').getTasksByName('run',false)
-    group = 'Run Client/Server'
-    description = 'Run the Web'
 }

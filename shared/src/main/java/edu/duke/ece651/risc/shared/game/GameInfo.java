@@ -16,19 +16,4 @@ public class GameInfo {
     this.id = id;
     this.players = players;
   }
-
-  /**
-   * An equals method for test
-   *
-   * @param o is the object to be compared with
-   * @return true if the type and fields are equal
-   */
-  @Override
-  public boolean equals(Object o) {
-    if (o.getClass().equals(getClass())) {
-      GameInfo info = (GameInfo) o;
-      return id.equals(info.id) && players.equals(info.players);
-    }
-    return false;
-  }
 }

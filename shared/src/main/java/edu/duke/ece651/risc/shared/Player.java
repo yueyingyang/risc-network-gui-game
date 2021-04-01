@@ -1,14 +1,11 @@
 package edu.duke.ece651.risc.shared;
 
-
 import java.io.*;
-import java.util.logging.Logger;
 
 /**
  * This is the abstract player: support recv and send message
  */
 public abstract class Player {
-  private static final Logger LOGGER = Logger.getLogger(Player.class.getName());
   // IO stream with game server
   protected BufferedReader in;
   protected PrintWriter out;
@@ -49,7 +46,6 @@ public abstract class Player {
    * @param msg is the msg to write
    */
   public void sendMessage(String msg) {
-    LOGGER.info(msg);
     out.println(msg);
   }
 
@@ -60,9 +56,7 @@ public abstract class Player {
    * @throws IOException if readline throws exception
    */
   public String recvMessage() throws IOException {
-    String rev = in.readLine();
-    LOGGER.info(rev);
-    return rev;
+    return in.readLine();
   }
 
   /**
@@ -86,13 +80,14 @@ public abstract class Player {
   }
 
   /**
-   * @param in  is inputstream of the player
+   * 
+   * @param in is inputstream of the player
    * @param out is the outputstream of the player
    */
-  public void setInOut(BufferedReader in, PrintWriter out) {
+  public void setInOut(BufferedReader in, PrintWriter out){
     this.in = in;
     this.out = out;
   }
-
+  
 }
 
