@@ -2,6 +2,9 @@ package edu.duke.ece651.risc.shared;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,6 +21,30 @@ class BasicArmyTest {
 
     @Test
     public void test_add_remove() {
+        // Creating object of ArrayList<Integer>
+        ArrayList<Integer>
+                arrlist1 = new ArrayList<Integer>();
+
+        // Populating arrlist1
+        arrlist1.add(1);
+        arrlist1.add(2);
+        arrlist1.add(1);
+        arrlist1.add(1);
+        arrlist1.add(3);
+
+        // print arrlist1
+        System.out.println("ArrayList before "
+                + "removeAll() operation : "
+                + arrlist1);
+
+        // Creating another object of  ArrayList<Integer>
+        ArrayList<Integer>
+                arrlist2 = new ArrayList<Integer>();
+        arrlist2.add(1);
+        // List<Integer> arr1 = Arrays.asList(1, 1, 2, 3, 1, 2, 4);
+        // List<Integer> arr2 = Arrays.asList(1);
+        arrlist1.removeAll(arrlist2);
+        System.out.println(arrlist1);
 
     }
 
