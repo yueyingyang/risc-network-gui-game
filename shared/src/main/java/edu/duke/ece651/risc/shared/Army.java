@@ -35,9 +35,10 @@ public interface Army {
     /**
      * Remove the given number of soldiers to the force
      *
-     * @param numSoldiers is the number of the soldiers to remove
+     * @param numSoldiers is the number of the soldiers
+     * @param type is the type of the soldier
      */
-    public void removeSoldiers(int numSoldiers);
+    public void removeSoldiers(int numSoldiers, String type);
 
     /**
      * Fight with the attacker

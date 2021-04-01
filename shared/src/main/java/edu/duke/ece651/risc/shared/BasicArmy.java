@@ -78,18 +78,15 @@ public class BasicArmy implements Army {
     }
 
     /**
-     * // TODO
-     * void removeSoldier(int index)
-     * do not need by interface
      * Remove the given number of soldiers to the force
      *
-     * @param numSoldiers is the number of the soldiers to remove
+     * @param numSoldiers is the number of the soldiers
+     * @param type is the type of the soldier
      */
     @Override
-    public void removeSoldiers(int numSoldiers) {
-        for (int i = 0; i < numSoldiers; i++) {
-            force.remove(force.size() - 1);
-        }
+    public void removeSoldiers(int numSoldiers, String type) {
+        List<Soldier> toRemove = new ArrayList<>(Collections.nCopies(numSoldiers, new BasicSoldier(type)));
+        force.removeAll(toRemove);
     }
 
     /**
@@ -121,9 +118,9 @@ public class BasicArmy implements Army {
         Soldier enemySoldier = enemyForce.get(enemyForce.size() - 1);
         int res = mySoldier.fight(enemySoldier, myRandom);
         if (res >= 0) {
-            attacker.removeSoldiers(1);
+            attacker.removeSoldiers(1, "0");
         } else {
-            removeSoldiers(1);
+            removeSoldiers(1, "0");
         }
     }
 
@@ -138,4 +135,7 @@ public class BasicArmy implements Army {
             getForce().addAll(myArmy.getForce());
         }
     }
+
+
+
 }

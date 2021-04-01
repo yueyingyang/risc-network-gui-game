@@ -107,7 +107,7 @@ public class Territory {
      */
     @Override
     public int hashCode() {
-        return getName().hashCode();
+        return name.hashCode();
     }
 
     /**
@@ -144,7 +144,7 @@ public class Territory {
      * @param numSoldiers is the number of soldiers to add
      */
     public void removeSoldiersFromArmy(int numSoldiers) {
-        myArmy.removeSoldiers(numSoldiers);
+        myArmy.removeSoldiers(numSoldiers, "0");
     }
 
     /**
