@@ -1,5 +1,8 @@
 package edu.duke.ece651.risc.shared;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * The messages send between the server and player at the beginning
  */
@@ -26,5 +29,81 @@ public class Constant {
     public static final String STARTGAME = "start";
     public static final String JOINGAME = "join";
     public static final String REJOINGAME = "rejoin";
+
+    /**
+     * The bonus of each level of soldier
+     */
+    public static final Map<Integer, Integer> bonus = new HashMap<>();
+
+    static {
+        bonus.put(0, 0);
+        bonus.put(1, 1);
+        bonus.put(2, 3);
+        bonus.put(3, 5);
+        bonus.put(4, 8);
+        bonus.put(5, 11);
+        bonus.put(6, 15);
+    }
+
+    /**
+     * The cost to upgrade the tech level by one from current level
+     * The key in hte map is the current level
+     */
+    public static final Map<Integer, Integer> techCost = new HashMap<>();
+
+    static {
+        techCost.put(1, 50);
+        techCost.put(2, 75);
+        techCost.put(3, 125);
+        techCost.put(4, 200);
+        techCost.put(5, 300);
+    }
+
+    /**
+     * The total cost to upgrade soldier from level 0 to the target level
+     * The key is the target level
+     */
+    public static final Map<Integer, Integer> soldierCost = new HashMap<>();
+
+    static {
+        soldierCost.put(1, 3);
+        soldierCost.put(2, 11);
+        soldierCost.put(3, 30);
+        soldierCost.put(4, 55);
+        soldierCost.put(5, 90);
+        soldierCost.put(6, 140);
+    }
+
+    /**
+     * Get the bonus of the soldier at the indicated level
+     *
+     * @param level is the indicated level
+     * @return the bonus
+     */
+    public static int getBonusAtLevel(int level) {
+        return bonus.get(level);
+    }
+
+    /**
+     * Get the cost to upgrade tech level by one from current level
+     *
+     * @param currLevel is the current technology level
+     * @return the cost to upgrade the technology
+     */
+    public static int getTechCost(int currLevel) {
+        return techCost.get(currLevel);
+    }
+
+    /**
+     * Get the cost to upgrade soldiers
+     *
+     * @param fromLevel   is the current level of the soldiers
+     * @param toLevel     is the level of the soldiers after upgrade
+     * @param numSoldiers is the number of soldiers
+     * @return the cost to upgrade soldiers
+     */
+    public static int getSoldierCost(int fromLevel, int toLevel, int numSoldiers) {
+        return numSoldiers * (soldierCost.get(toLevel) - soldierCost.get(fromLevel));
+    }
 }
 
