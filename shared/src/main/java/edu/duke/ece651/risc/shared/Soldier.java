@@ -34,4 +34,6 @@ public interface Soldier {
      * @return true if the soldier is has the indicated type else false
      */
     public boolean hasType(String myType);
+
+
 }

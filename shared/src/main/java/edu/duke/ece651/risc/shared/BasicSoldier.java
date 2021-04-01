@@ -47,6 +47,7 @@ public class BasicSoldier implements Soldier {
      *
      * @param toType is the indicated type
      */
+    @Override
     public void upgrade(String toType) {
         type = toType;
     }
@@ -57,8 +58,36 @@ public class BasicSoldier implements Soldier {
      * @param myType is the indicated type
      * @return true if the soldier is has the indicated type else false
      */
+    @Override
     public boolean hasType(String myType) {
         return type.equals(myType);
+    }
+
+    /**
+     * Check if the given object is equal to this
+     *
+     * @param myObject is the given object
+     * @return true if the object is equal to this, i.e. is a BasicSoldier
+     * and have the same type, else false
+     */
+
+    @Override
+    public boolean equals(Object myObject) {
+        if (myObject.getClass().equals(getClass())) {
+            BasicSoldier s = (BasicSoldier) myObject;
+            return s.hasType(type);
+        }
+        return false;
+    }
+
+    /**
+     * get the hash code of the soldier
+     *
+     * @return the hash code of the soldier
+     */
+    @Override
+    public int hashCode() {
+        return type.hashCode();
     }
 
 }
