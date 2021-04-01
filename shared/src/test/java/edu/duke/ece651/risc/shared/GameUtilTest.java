@@ -10,7 +10,7 @@ class GameUtilTest {
     public void test_getBonusAtLevel() {
         int[] expect = {0, 1, 3, 5, 8, 11, 15};
         for (int i = 0; i < 7; i++) {
-            assertEquals(expect[i], GameUtil.getBonusAtLevel(i));
+            assertEquals(expect[i], GameUtil.getBonusAtLevel(String.valueOf(i)));
         }
     }
 
@@ -24,9 +24,9 @@ class GameUtilTest {
 
     @Test
     public void test_getSoldierCost() {
-        assertEquals(237 , GameUtil.getSoldierCost(2, 5, 3));
-        assertEquals(170, GameUtil.getSoldierCost(4, 6, 2));
-        assertEquals(108, GameUtil.getSoldierCost(1, 3, 4));
+        assertEquals(237 , GameUtil.getSoldierCost("2", "5", 3));
+        assertEquals(170, GameUtil.getSoldierCost("4", "6", 2));
+        assertEquals(108, GameUtil.getSoldierCost("1", "3", 4));
     }
 
 }

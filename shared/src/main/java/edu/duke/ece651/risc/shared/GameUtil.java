@@ -5,13 +5,13 @@ package edu.duke.ece651.risc.shared;
  */
 public class GameUtil {
     /**
-     * Get the bonus of the soldier at the indicated level
+     * Get the bonus of the soldier at the indicated type
      *
-     * @param level is the indicated level
+     * @param type is the indicated type
      * @return the bonus
      */
-    public static int getBonusAtLevel(int level) {
-        return Constant.bonus.get(level);
+    public static int getBonusAtLevel(String type) {
+        return Constant.bonus.get(type);
     }
 
     /**
@@ -27,13 +27,13 @@ public class GameUtil {
     /**
      * Get the cost to upgrade soldiers
      *
-     * @param fromLevel   is the current level of the soldiers
-     * @param toLevel     is the level of the soldiers after upgrade
+     * @param fromType   is the current type of the soldiers
+     * @param toType     is the type of the soldiers after upgrade
      * @param numSoldiers is the number of soldiers
      * @return the cost to upgrade soldiers
      */
-    public static int getSoldierCost(int fromLevel, int toLevel, int numSoldiers) {
-        return numSoldiers * (Constant.soldierCost.get(toLevel)
-                - Constant.soldierCost.get(fromLevel));
+    public static int getSoldierCost(String fromType, String toType, int numSoldiers) {
+        return numSoldiers * (Constant.soldierCost.get(toType)
+                - Constant.soldierCost.get(fromType));
     }
 }
