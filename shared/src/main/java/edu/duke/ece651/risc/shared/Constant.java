@@ -31,18 +31,18 @@ public class Constant {
     public static final String REJOINGAME = "rejoin";
 
     /**
-     * The bonus of each level of soldier
+     * The bonus of each type of soldier
      */
-    public static final Map<Integer, Integer> bonus = new HashMap<>();
+    public static final Map<String, Integer> bonus = new HashMap<>();
 
     static {
-        bonus.put(0, 0);
-        bonus.put(1, 1);
-        bonus.put(2, 3);
-        bonus.put(3, 5);
-        bonus.put(4, 8);
-        bonus.put(5, 11);
-        bonus.put(6, 15);
+        bonus.put("0", 0);
+        bonus.put("1", 1);
+        bonus.put("2", 3);
+        bonus.put("3", 5);
+        bonus.put("4", 8);
+        bonus.put("5", 11);
+        bonus.put("6", 15);
     }
 
     /**
@@ -60,18 +60,18 @@ public class Constant {
     }
 
     /**
-     * The total cost to upgrade soldier from level 0 to the target level
-     * The key is the target level
+     * The total cost to upgrade soldier from type 0 to the target type
+     * The key is the target type
      */
-    public static final Map<Integer, Integer> soldierCost = new HashMap<>();
+    public static final Map<String, Integer> soldierCost = new HashMap<>();
 
     static {
-        soldierCost.put(1, 3);
-        soldierCost.put(2, 11);
-        soldierCost.put(3, 30);
-        soldierCost.put(4, 55);
-        soldierCost.put(5, 90);
-        soldierCost.put(6, 140);
+        soldierCost.put("1", 3);
+        soldierCost.put("2", 11);
+        soldierCost.put("3", 30);
+        soldierCost.put("4", 55);
+        soldierCost.put("5", 90);
+        soldierCost.put("6", 140);
     }
 }
 
