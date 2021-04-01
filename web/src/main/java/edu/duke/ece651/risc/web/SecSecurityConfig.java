@@ -7,6 +7,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -41,12 +43,15 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter{
       .anyRequest().authenticated()
       .and()
       // ...
-      .formLogin()
-      .loginPage("/login.html")
-      .loginProcessingUrl("/perform_login")
-      .defaultSuccessUrl("/lobby.html", true)
-      .failureUrl("/login.html?error=true")
-      .failureHandler(authenticationFailureHandler());
+      .formLogin(form -> form
+              .loginPage("/login")
+              .defaultSuccessUrl("/lobby?name=test", true)
+              .failureUrl("/login?error=true"));
+//      .loginPage("/login.html")
+////      .loginProcessingUrl("/perform_login")
+//      .defaultSuccessUrl("/lobby?name=test", true)
+//      .failureUrl("/login.html?error=true")
+//      .failureHandler(authenticationFailureHandler());
       /*.and()
       .logout()
       .logoutUrl("/perform_logout")
