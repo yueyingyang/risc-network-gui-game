@@ -1,6 +1,7 @@
 package edu.duke.ece651.risc.shared;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -68,5 +69,16 @@ public class JSONSerializer implements Serializer {
    */
   public Object clone(Object o, Class<?> c) {
     return deserialize(serialize(o), c);
+  }
+
+  public String serializeList(List<?> list, Class<?> c) throws JsonProcessingException {
+    return om.writerFor(om.getTypeFactory().constructCollectionType(List.class, c))
+            .writeValueAsString(list);
+  }
+
+  public List<Object> deserializeList(String str, Class<?> c) throws JsonProcessingException {
+    List<Object> data = om.readValue(str,
+            om.getTypeFactory().constructCollectionType(List.class, c));
+    return data;
   }
 }
