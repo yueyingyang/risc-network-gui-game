@@ -85,8 +85,10 @@ public class BasicArmy implements Army {
      */
     @Override
     public void removeSoldiers(int numSoldiers, String type) {
-        List<Soldier> toRemove = new ArrayList<>(Collections.nCopies(numSoldiers, new BasicSoldier(type)));
-        force.removeAll(toRemove);
+        Soldier s = new BasicSoldier(type);
+        for (int i = 0; i < numSoldiers; i++) {
+            force.remove(s);
+        }
     }
 
     /**
