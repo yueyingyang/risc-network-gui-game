@@ -215,7 +215,7 @@ public class Territory {
      * @param numSoldiers is the number of soldiers
      * @param type        is the type of the soldier
      */
-    public void removeSoldierFromArmy(int numSoldiers, String type) {
+    public void removeSoldiersFromArmy(int numSoldiers, String type) {
         myArmy.removeSoldiers(numSoldiers, type);
     }
 

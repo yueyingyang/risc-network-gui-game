@@ -153,4 +153,22 @@ class TerritoryTest {
         assertEquals(70, myInfo.getFoodResource());
     }
 
+    @Test
+    public void test_add_remove_with_type() {
+        Territory terr = new Territory("NANJING");
+        Army army = new BasicArmy("LiLei", 5);
+        terr.setMyArmy(army);
+        assertEquals(5, terr.getNumSoldiersInArmy("0"));
+
+        terr.addSoldiersToArmy(3, "1" );
+        assertEquals(3, terr.getNumSoldiersInArmy("1"));
+        terr.addSoldiersToArmy(6, "4");
+        assertEquals(6, terr.getNumSoldiersInArmy("4"));
+
+        terr.removeSoldiersFromArmy(2, "4");
+        assertEquals(4, terr.getNumSoldiersInArmy("4"));
+        terr.removeSoldiersFromArmy(2, "1");
+        assertEquals(1, terr.getNumSoldiersInArmy("1"));
+    }
+
 }
