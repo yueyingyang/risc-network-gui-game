@@ -1,7 +1,5 @@
 package edu.duke.ece651.risc.shared;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.beans.ConstructorProperties;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,6 +53,17 @@ public class BasicArmy implements Army {
     @Override
     public List<Soldier> getForce() {
         return force;
+    }
+
+    /**
+     * Get the number of soldiers of the given type in the force
+     *
+     * @param type is the type of the soldier
+     * @return the number of soldiers with the given type in the force
+     */
+    @Override
+    public int getNumSoldiers(String type) {
+        return Collections.frequency(force, new BasicSoldier(type));
     }
 
     /**
@@ -147,6 +156,19 @@ public class BasicArmy implements Army {
     @Override
     public String toString() {
         return force.toString();
+    }
+
+    /**
+     * Upgrade the force
+     *
+     * @param fromType    is the current type of the soldier
+     * @param toType      is the type of the soldier after upgrade
+     * @param numSoldiers is the number of soldiers
+     */
+    @Override
+    public void upgradeForce(String fromType, String toType, int numSoldiers) {
+        removeSoldiers(numSoldiers, fromType);
+        addSoldiers(numSoldiers, toType);
     }
 
 

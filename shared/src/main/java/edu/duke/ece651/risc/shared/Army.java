@@ -26,6 +26,14 @@ public interface Army {
     public int getNumSoldiers();
 
     /**
+     * Get the number of soldiers in the force
+     *
+     * @param type is the type of the soldier
+     * @return the number of soldiers with the given type in the force
+     */
+    public int getNumSoldiers(String type);
+
+    /**
      * Add soldiers to the force
      *
      * @param numSoldiers is the number of the soldiers to add
@@ -63,4 +71,13 @@ public interface Army {
      * @param myArmy is the army from the same owner
      */
     public void mergeForce(Army myArmy);
+
+    /**
+     * Upgrade the force
+     *
+     * @param fromType    is the current type of the soldier
+     * @param toType      is the type of the soldier after upgrade
+     * @param numSoldiers is the number of soldiers
+     */
+    public void upgradeForce(String fromType, String toType, int numSoldiers);
 }
