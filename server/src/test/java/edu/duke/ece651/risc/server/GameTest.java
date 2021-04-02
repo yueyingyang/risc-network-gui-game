@@ -1,6 +1,7 @@
 package edu.duke.ece651.risc.server;
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import java.awt.*;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -14,6 +15,7 @@ import edu.duke.ece651.risc.shared.entry.PlaceEntry;
 import org.mockito.*;
 import java.io.*;
 import java.net.Socket;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -338,6 +340,8 @@ public class GameTest {
     }).writeValueAsString(placements2)).thenReturn(Constant.ORDER_COMMIT).thenReturn(Constant.DISCONNECT_GAME);  
     Mockito.when(player1.getName()).thenReturn("Red");
     Mockito.when(player2.getName()).thenReturn("Blue");
+    Mockito.when(player1.getColor()).thenReturn(Color.RED);
+    Mockito.when(player2.getColor()).thenReturn(Color.RED);
     Game g = new Game(2,0,1);                                                                                    
     g.addPlayer(player1);
     g.addPlayer(player2); 

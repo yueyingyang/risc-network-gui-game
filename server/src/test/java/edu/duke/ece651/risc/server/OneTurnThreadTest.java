@@ -3,13 +3,13 @@ package edu.duke.ece651.risc.server;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
 import java.util.Map;
 
@@ -58,8 +58,11 @@ class OneTurnThreadTest {
     Socket s = new Socket();
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     BufferedReader in = new BufferedReader(new StringReader(sa+"\n"+Constant.ORDER_COMMIT+"\n"));
-    Player p = new ServerPlayer(in, new PrintWriter(bytes, true),s);
-    OneTurnThread t = new OneTurnThread(map,p);
+    ServerPlayer p = new ServerPlayer(in, new PrintWriter(bytes, true),s);
+//    work should be done during adding player
+    p.setName("Blue");
+    p.setColor(Color.red);
+    OneTurnThread t = new OneTurnThread(map,p, new ArrayList<>(Collections.singletonList(p)));
     t.start();
     assertDoesNotThrow(()->{t.join();});
     assertEquals("Blue",t1.getOwnerName());
@@ -94,8 +97,11 @@ class OneTurnThreadTest {
     Socket s = new Socket();
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     BufferedReader in = new BufferedReader(new StringReader(sa+"\n"+Constant.ORDER_COMMIT+"\n"));
-    Player p = new ServerPlayer(in, new PrintWriter(bytes, true),s);
-    OneTurnThread t = new OneTurnThread(map,p);
+    ServerPlayer p = new ServerPlayer(in, new PrintWriter(bytes, true),s);
+    //    work should be done during adding player
+    p.setName("Blue");
+    p.setColor(Color.RED);
+    OneTurnThread t = new OneTurnThread(map,p,new ArrayList<>(Collections.singletonList(p)));
     t.start();
     assertDoesNotThrow(()->{t.join();});
     assertEquals("Blue",t1.getOwnerName());

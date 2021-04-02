@@ -1,7 +1,6 @@
 package edu.duke.ece651.risc.shared;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import edu.duke.ece651.risc.shared.entry.ActionEntry;
 import edu.duke.ece651.risc.shared.entry.AttackEntry;
 import edu.duke.ece651.risc.shared.entry.MoveEntry;
@@ -12,8 +11,8 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -77,16 +76,15 @@ class JSONSerializerTest {
     p.add(new AttackEntry("0", "3", 1, "player1"));
     p.add(new MoveEntry("0", "1", 1, "player1"));
     // test serializer
-    String listJSON = s.getOm().writerFor(new TypeReference<List<ActionEntry>>() {
-    }).writeValueAsString(p);
+    String listJSON = s.serializeList(p, ActionEntry.class);
     V1MapFactory v1f = new V1MapFactory();
     GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 2);
-    Collection<ActionEntry> pd = s.getOm().readValue(listJSON, new TypeReference<>() {
-    });
+    List<ActionEntry> pd = s.deserializeList(listJSON, ActionEntry.class).stream().map(x -> (ActionEntry) x).collect(Collectors.toList());
     for (ActionEntry a : pd) {
       a.apply(map, null);
     }
-    assertDoesNotThrow(() -> new MapView(map).display());
+    assertEquals(0, map.getTerritory("0").getNumSoldiersInArmy());
+    assertEquals(3, map.getTerritory("1").getNumSoldiersInArmy());
   }
 
   @Test
