@@ -191,12 +191,32 @@ public class Territory {
     }
 
     /**
+     * Add the given number of soldiers with the indicated type to myArmy
+     *
+     * @param numSoldiers is the number of soldiers
+     * @param type        is the type of the soldier
+     */
+    public void addSoldiersToArmy(int numSoldiers, String type) {
+        myArmy.addSoldiers(numSoldiers, type);
+    }
+
+    /**
      * Remove the given number of soldiers to myArmy
      *
      * @param numSoldiers is the number of soldiers to add
      */
     public void removeSoldiersFromArmy(int numSoldiers) {
         myArmy.removeSoldiers(numSoldiers, "0");
+    }
+
+    /**
+     * Remove the given number of soldiers with the indicated type to myArmy
+     *
+     * @param numSoldiers is the number of soldiers
+     * @param type        is the type of the soldier
+     */
+    public void removeSoldierFromArmy(int numSoldiers, String type) {
+        myArmy.removeSoldiers(numSoldiers, type);
     }
 
     /**
