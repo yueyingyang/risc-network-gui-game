@@ -1,6 +1,5 @@
 package edu.duke.ece651.risc.web;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -17,30 +16,25 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/game")
 public class GameController {
   private final PlayerSocketMap playerMapping;
+  private final UtilService util;
 
   // todo: change after user login
   private String currentUserName;
-  // need update after switch rooms
-  private List<String> players;
 
   // utils
-  private final ObjectMapper mapper;
   private final JSONSerializer jsonSerializer;
-  private final List<String> colorPalette;
+
   Logger logger = LoggerFactory.getLogger(GameController.class);
 
-  public GameController(PlayerSocketMap playerMapping) {
+  public GameController(PlayerSocketMap playerMapping, UtilService util) {
+    this.util = util;
     this.jsonSerializer = new JSONSerializer();
     this.currentUserName = "test";
-    this.mapper = new ObjectMapper();
-    this.colorPalette = Arrays.asList("#97B8A3", "#EDC3C7", "#FDF06F", "#A6CFE2", "#9C9CDD");
-    this.players = Arrays.asList("p2", "test");
     this.playerMapping = playerMapping;
   }
 
@@ -57,13 +51,13 @@ public class GameController {
     GameMap map = (GameMap) jsonSerializer.deserialize(cs.recvMessage(), GameMap.class);
     int totalUnits = Integer.parseInt(cs.recvMessage());
     String mapViewString = cs.recvMessage();
-    List<ObjectNode> graphData = deNodeList(mapViewString);
+    List<ObjectNode> graphData = util.deNodeList(mapViewString);
 //    Below 2 lines are for local test
-//    GameMap map = createMap();
+//    GameMap map = util.createMap();
 //    int totalUnits = 6;
-//    List<ObjectNode> graphData = getObjectNodes(map, players);
+//    List<ObjectNode> graphData = util.mockObjectNodes();
     model.addAttribute("graphData", graphData);
-    model.addAttribute("wrapper", createTerrUnitList(map, currentUserName));
+    model.addAttribute("wrapper", util.createTerrUnitList(map, currentUserName));
     model.addAttribute("units", totalUnits);
     model.addAttribute("message", null);
     return "placement";
@@ -95,9 +89,6 @@ public class GameController {
    */
   @GetMapping(value = "/play")
   public String playOneTurn(Model model) {
-    // todo: should refactor createMap() to retrieve stored game map
-    List<ObjectNode> graphData = getObjectNodes(createMap(), players);
-    model.addAttribute("graphData", null);
     model.addAttribute("action", new AttackEntry("", "", 0, currentUserName));
     return "game";
   }
@@ -113,100 +104,14 @@ public class GameController {
   public @ResponseBody
   ResponseEntity<?> tryUpdateMap() throws IOException {
 //    Below 2 lines are for local test
-//    return ResponseEntity.status(HttpStatus.ACCEPTED).body(getObjectNodes(createMap(), players));
+//    return ResponseEntity.status(HttpStatus.ACCEPTED).body(mockObjectNodes());
 //    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     ClientSocket cs = playerMapping.getSocket(currentUserName);
     if (cs.hasNewMsg()) {
       String mapViewString = cs.recvMessage();
-      List<ObjectNode> graphData = deNodeList(mapViewString);
+      List<ObjectNode> graphData = util.deNodeList(mapViewString);
       return ResponseEntity.status(HttpStatus.ACCEPTED).body(graphData);
     }
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-  }
-
-
-  // Below are helper functions
-
-  /**
-   * Convert GameMap to the JSON NODE to display map
-   *
-   * @param map     is map to be converted
-   * @param players is the player list to do the color mapping
-   * @return the MAP display info in JSON
-   */
-  protected List<ObjectNode> getObjectNodes(GameMap map, List<String> players) {
-    Map<String, String> colorMapping = new HashMap<>();
-    for (int i = 0; i < players.size(); i++) {
-      colorMapping.put(players.get(i), colorPalette.get(i));
-    }
-    List<ObjectNode> graphData = new ArrayList<>();
-    for (Territory t : map.getAllTerritories()) {
-      ObjectNode o = mapper.createObjectNode();
-      o.put("name", t.getName());
-      o.put("owner", t.getOwnerName());
-      o.put("resources", 10); // hardcoded, need to change to t.food resources
-      o.put("value", 2); // hardcoded, need to change to t.size()
-      o.put("color", colorMapping.get(t.getOwnerName()));
-      o.put("units", t.getNumSoldiersInArmy());
-      graphData.add(o);
-    }
-    return graphData;
-  }
-
-  /**
-   * Wrap terrUnit for placement phase
-   *
-   * @param map      is the map to be placed on
-   * @param userName is the current user name, for extracting it's territory
-   * @return the TerrUnitList for MVC
-   */
-  protected TerrUnitList createTerrUnitList(GameMap map, String userName) {
-    List<TerrUnit> ans = new ArrayList<>();
-    for (Territory t : map.getPlayerTerritories(userName)) {
-      ans.add(new TerrUnit(t.getName(), 0));
-    }
-    return new TerrUnitList(ans);
-  }
-
-
-  /**
-   * There are many places need a map to test...
-   *
-   * @return a GameMap object
-   */
-  protected GameMap createMap() {
-    V1MapFactory v1f = new V1MapFactory();
-//    Collections.shuffle(players);
-    GameMap map = v1f.createMap(players, 2);
-    List<ActionEntry> pl = Arrays.asList(new PlaceEntry("0", 2, "p2"),
-            new PlaceEntry("1", 2, "p2"),
-            new PlaceEntry("2", 2, "test"),
-            new PlaceEntry("3", 2, "test"));
-    for (ActionEntry ae : pl) {
-      ae.apply(map);
-    }
-    return map;
-  }
-
-  /**
-   * For update player list after switching game room
-   *
-   * @param players is the updated player list
-   */
-  public void setPlayers(List<String> players) {
-    this.players = players;
-  }
-
-  /**
-   * Deserialize List<ObjectNode> from JSON string
-   *
-   * @param mapViewString is JSON str
-   * @return List<ObjectNode> could be used in js code
-   * @throws JsonProcessingException
-   */
-  private List<ObjectNode> deNodeList(String mapViewString) throws JsonProcessingException {
-    return jsonSerializer.deserializeList(mapViewString, ObjectNode.class)
-            .stream().map(x -> (ObjectNode) x)
-            .collect(Collectors.toList());
   }
 }

@@ -64,15 +64,11 @@
 </div>
 
 <script th:src="@{/util.js}"></script>
-<script th:inline="javascript">
-    <!--    use Thymeleaf inline javascript to convert controller passed data into plain js variable -->
-    let graphData = [[${graphData}]];
-</script>
 <!--include JS to render MAP -->
 <script th:src="@{/map_display.js}"></script>
 <script th:inline="javascript">
 
-
+    let graphData = null
     const full_map_formatter = params => `😉\t${params.data.owner}<br />` +
         `💂\t${params.data.units}<br />` +
         `💎\t${params.data.resources}<br />` +
