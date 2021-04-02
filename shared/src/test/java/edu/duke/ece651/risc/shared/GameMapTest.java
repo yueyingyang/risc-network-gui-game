@@ -159,17 +159,17 @@ public class GameMapTest {
     t4.setOwnerName("Red");
 
     List<String> connection1=new ArrayList<>();
-    connection1.add("A");
-    connection1.add("B");
+    connection1.add("1");
+    connection1.add("2");
     List<String> connection2=new ArrayList<>();
-    connection2.add("B");
-    connection2.add("C");
+    connection2.add("2");
+    connection2.add("3");
     List<String> connection3=new ArrayList<>();
-    connection3.add("C");
-    connection3.add("D");
+    connection3.add("3");
+    connection3.add("4");
     List<String> connection4=new ArrayList<>();
-    connection4.add("E");
-    connection4.add("F");
+    connection4.add("4");
+    connection4.add("1");
     connections.add(connection1);
     connections.add(connection2);
     connections.add(connection3);
