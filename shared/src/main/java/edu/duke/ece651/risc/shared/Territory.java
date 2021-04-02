@@ -7,7 +7,7 @@ import java.util.*;
 
 /**
  * An class represents a territory
- * <p>
+ *
  * Annotation JsonIdentityInfo is added for bidirectional serialization
  */
 @JsonIdentityInfo(
