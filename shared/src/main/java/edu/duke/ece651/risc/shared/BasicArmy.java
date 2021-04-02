@@ -34,7 +34,18 @@ public class BasicArmy implements Army {
      */
     @ConstructorProperties({"ownerName", "numSoldiers"})
     public BasicArmy(String ownerName, int numSoldiers) {
-        this(ownerName, new ArrayList<>(Collections.nCopies(numSoldiers, new BasicSoldier())));
+        this(ownerName, numSoldiers, "0");
+    }
+
+    /**
+     * Construct a BasicArmy object
+     *
+     * @param ownerName   is the name of the owner of the army
+     * @param numSoldiers is the number of soldiers in the force
+     * @param type        is the type of the soldier
+     */
+    public BasicArmy(String ownerName, int numSoldiers, String type) {
+        this(ownerName, new ArrayList<>(Collections.nCopies(numSoldiers, new BasicSoldier(type))));
     }
 
     /**
