@@ -42,4 +42,12 @@ class BasicSoldierTest {
         assertNotEquals(s0.hashCode(), s1.hashCode());
     }
 
+    @Test
+    public void test_fight_with_bonus() {
+        Random myRandom = new Random(0);  // 0, 8, 9, 7, 15, 13
+        Soldier defender = new BasicSoldier("5");
+        Soldier attacker = new BasicSoldier("3");
+        assertEquals(-2, defender.fight(attacker, myRandom));
+    }
+
 }

@@ -1,6 +1,7 @@
 package edu.duke.ece651.risc.shared;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import edu.duke.ece651.risc.shared.game.GameUtil;
 
 import java.util.Random;
 
@@ -37,9 +38,19 @@ public class BasicSoldier implements Soldier {
     @Override
     public int fight(Soldier attacker, Random myRandom) {
         int length = 20;
-        int defenderRoll = myRandom.nextInt(length);
-        int attackerRoll = myRandom.nextInt(length);
+        int defenderRoll = myRandom.nextInt(length) + GameUtil.getBonus(type);
+        int attackerRoll = myRandom.nextInt(length) + GameUtil.getBonus(attacker.getType());
         return defenderRoll - attackerRoll;
+    }
+
+    /**
+     * Get the type of the soldier
+     *
+     * @return the type
+     */
+    @Override
+    public String getType() {
+        return type;
     }
 
     /**

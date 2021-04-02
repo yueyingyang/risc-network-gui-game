@@ -12,7 +12,7 @@ public class GameUtil {
      * @param type is the indicated type
      * @return the bonus
      */
-    public static int getBonusAtLevel(String type) {
+    public static int getBonus(String type) {
         return Constant.bonus.get(type);
     }
 

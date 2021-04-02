@@ -19,4 +19,11 @@ public interface Soldier {
      * else return negative number
      */
     public int fight(Soldier attacker, Random myRandom);
+
+    /**
+     * Get the type of the soldier
+     *
+     * @return the type
+     */
+    public String getType();
 }
