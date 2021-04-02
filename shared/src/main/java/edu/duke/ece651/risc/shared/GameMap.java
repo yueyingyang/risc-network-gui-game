@@ -7,7 +7,6 @@ import java.util.*;
 
 public class GameMap {
     private Map<String, Territory> territoryFinder;
-    private Map<String[], Integer> costGraph;
 
     /**
      * Added for jackson deserialization
@@ -33,20 +32,6 @@ public class GameMap {
             start.addNeighbour(end);
             end.addNeighbour(start);
 
-            //put it here or a separate method?
-            if(start.getName().compareTo(end.getName())<0){
-                String[] key=new String[2];
-                key[0]=start.getName();
-                key[1]=end.getName();
-                costGraph.put(key,key[0].getSize()+key[1].getSize());
-            }else if(start.getName().compareTo(end.getName())>0){
-                String[] key=new String[2];
-                key[0]=end.getName();
-                key[1]=start.getName();
-                if(!costGraph.containsKey(key)){
-                    costGraph.put(key,key[0].getSize()+key[1].getSize());
-                }
-            }
         }
     }
 
@@ -158,13 +143,45 @@ public class GameMap {
     }
 
     public int computeCost(Territory start, Territory end, int unit){
-        Set<String> visited=new HashSet<>();
+        Set<Territory> visited=new HashSet<>();
         
-
-        for(String t:territoryFinder.keySet()){
-            
+        int len=territoryFinder.size();
+        Map<Territory,Integer> distance=new HashMap<>();
+        Map<Territory,Integer> prev=new HashMap<>();
+        Set<Territory> buffer=new HashSet<>();
+        for(String name:territoryFinder.keySet()){
+            distance.put(territoryFinder.get(name),-1);
+            prev.put(territoryFinder.get(name),-1);
+            buffer.add(territoryFinder.get(name));
         }
-        return -1;
+        distance.put(start,0);
+        while(!buffer.isEmpty()){
+            int min_distance=Integer.MAX_VALUE;
+            Territory toRemove=null;
+            for(Territory t:buffer){
+                if(buffer>=0 && min_distance>distance.get(t)){
+                    min_distance=distance.get(t);
+                    toRemove=t;
+                }
+            }
+            buffer.remove(toRemove);
+            for(String neighbourName:toRemove.getNeighbours()){
+                Territory neighbour=territoryFinder.get(neighbourName);
+                String key;
+                if(toRemove.getName().compareTo(neighbour.getName())){
+                    key=toRemove.getName()+"_"+neighbour.getName();
+                }else{
+                    key=neighbour.getName()+"_"+toRemove.getName();
+                }
+                int new_dist=distance.get(toRemove)+toRemove.getSize()+nrighbour.getSize();
+                if(new_dist<distance.get(neighbour)){
+                    distance.put(neighbour,new_dist);
+                }
+            }
+
+        }
+        
+        return (distance.get(end)+start.getSize()+end.getSize())/2;
     }
     
 }
