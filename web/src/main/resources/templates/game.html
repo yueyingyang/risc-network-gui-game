@@ -18,29 +18,33 @@
                 <div class="column" style="user-select: auto;">
                     <div class="ui raised segment" style="user-select: auto;">
                         <a class="ui red ribbon label" style="user-select: auto;">Attack</a>
-                        <div class="ui form">
+                        <form class="ui form" id="attack">
                             <div class="fields" style="user-select: auto;">
                                 <div class="field" style="user-select: auto;">
                                     <label style="user-select: auto;">From territory</label>
-                                    <input type="text" placeholder="From territory" style="user-select: auto;">
+                                    <input type="text" placeholder="From territory" style="user-select: auto;"
+                                           name="fromName">
                                 </div>
                                 <div class="field" style="user-select: auto;">
                                     <label style="user-select: auto;">To territory</label>
-                                    <input type="text" placeholder="To territory" style="user-select: auto;">
+                                    <input type="text" placeholder="To territory" style="user-select: auto;"
+                                           name="toName">
                                 </div>
                                 <div class="field" style="user-select: auto;">
                                     <label style="user-select: auto;">Soldier Type</label>
-                                    <input type="text" placeholder="Soldier Type" style="user-select: auto;">
+                                    <input type="text" placeholder="Soldier Type" style="user-select: auto;"
+                                           name="soldierType">
                                 </div>
                                 <div class="field" style="user-select: auto;">
                                     <label style="user-select: auto;">Number of soldiers</label>
-                                    <input type="text" placeholder="Number of soldiers" style="user-select: auto;">
+                                    <input type="text" placeholder="Number of soldiers" style="user-select: auto;"
+                                           name="soldierNum">
                                 </div>
                             </div>
-                            <button class="ui submit button tiny red basic" style="user-select: auto;" id="attack">
+                            <button class="ui submit button tiny red basic" style="user-select: auto;">
                                 Submit
                             </button>
-                        </div>
+                        </form>
                         <p></p>
                         <a class="ui blue ribbon label" style="user-select: auto;">Move</a>
                         <div class="ui form">
@@ -143,11 +147,45 @@
     }
 
     $('#refresh').click(refresh_map);
-    $("#commit").click(function(){
-        $("#commit").toggleClass("active");
-        $("div.field").toggleClass("disabled");
-        $(".submit.button.basic").toggleClass("disabled");
-    });
+
+
+    const attack_btn = $('form#attack .submit');
+    const attack_form = $('form#attack');
+
+    setupForm(attack_form, attack_btn, '/attack');
+
+    function setupForm(form, submit_btn, url) {
+        form.submit(function (event) {
+            event.preventDefault();
+            submit_btn.toggleClass("disabled");
+            const data = new FormData(event.target);
+            const form_data = Object.fromEntries(data.entries());
+            submit_action(url, form_data);
+            // ugly and rude way to clear the form
+            $(':input')
+                .not(':button, :submit, :reset, :hidden')
+                .val('')
+                .removeAttr('checked')
+                .removeAttr('selected');
+        })
+    }
+
+    const submit_action = (url, form) => {
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: url,
+            data: JSON.stringify(form),
+            dataType: 'json',
+            success: function (resBody) {
+                $('#msg_box').append('<p style="user-select: auto;"> ' + resBody['validRes'] + '</p>');
+                graphData = resBody['graphData'];
+                // display map
+                display_map(full_map_formatter)
+                attack_btn.toggleClass("disabled");
+            }
+        });
+    }
 </script>
 </body>
 

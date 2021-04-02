@@ -9,3 +9,9 @@ $('#actions a.item').on('click', function () {
         .siblings()
         .removeClass('active');
 })
+
+$("#commit").click(function(){
+    $("#commit").toggleClass("active");
+    $("div.field").toggleClass("disabled");
+    $(".submit.button.basic").toggleClass("disabled");
+});

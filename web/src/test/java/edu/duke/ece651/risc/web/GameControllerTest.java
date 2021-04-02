@@ -68,8 +68,8 @@ class GameControllerTest {
     UtilService real = new UtilService();
     TerrUnitList tul = real.createTerrUnitList(map, "test");
     List<ObjectNode> lon = real.deNodeList(emptyView);
-    given(util.deNodeList(emptyView)).willReturn(lon);
-    given(util.createTerrUnitList(map, "test")).willReturn(tul);
+    given(util.deNodeList(any())).willReturn(lon);
+    given(util.createTerrUnitList(any(), any())).willReturn(tul);
     mvc.perform(MockMvcRequestBuilders
             .get("/game/place"))
             .andExpect(model().attribute("graphData", is(lon)))
