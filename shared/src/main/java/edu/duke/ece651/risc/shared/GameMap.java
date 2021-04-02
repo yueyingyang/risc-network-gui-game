@@ -186,8 +186,8 @@ public class GameMap {
             }
 
         }
-        
-        return (distance.get(end)+start.getSize()+end.getSize())/2*unit;
+
+        return (distance.get(end)+start.getSize()+end.getSize())*unit/2;
     }
     
 }
