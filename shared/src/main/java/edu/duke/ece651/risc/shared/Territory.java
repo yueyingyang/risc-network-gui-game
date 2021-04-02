@@ -161,6 +161,21 @@ public class Territory {
     }
 
     /**
+     * Get the number of soldiers of the given type in myArmy
+     *
+     * @param type is the type of soldier
+     * @return the number of soldiers with the given type
+     * -1 if myArmy has not been setup
+     */
+    public int getNumSoldiersInArmy(String type) {
+        if (myArmy == null) {
+            return -1;
+        }
+        return myArmy.getNumSoldiers(type);
+
+    }
+
+    /**
      * Add attackers to attacker buffer
      *
      * @param attacker is the army that attack the territory
@@ -239,4 +254,17 @@ public class Territory {
     public boolean belongToSameOwner(Territory terr) {
         return ownerName.equals(terr.getOwnerName());
     }
+
+    /**
+     * Upgrade my army
+     *
+     * @param fromType    is the current type of the soldier
+     * @param toType      is the type of the soldier after upgrading
+     * @param numSoldiers is the number of soldiers
+     * @param myInfo      is the player info
+     */
+    public void upgradeArmy(String fromType, String toType, int numSoldiers, PlayerInfo myInfo) {
+        myArmy.upgradeForce(fromType, toType, numSoldiers, myInfo);
+    }
+
 }
