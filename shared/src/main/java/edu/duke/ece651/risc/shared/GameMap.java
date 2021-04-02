@@ -159,21 +159,14 @@ public class GameMap {
             int min_distance=Integer.MAX_VALUE;
             Territory toRemove=null;
             for(Territory t:buffer){
-                if(buffer>=0 && min_distance>distance.get(t)){
+                if(distance.get(t)>=0 && min_distance>distance.get(t)){
                     min_distance=distance.get(t);
                     toRemove=t;
                 }
             }
             buffer.remove(toRemove);
-            for(String neighbourName:toRemove.getNeighbours()){
-                Territory neighbour=territoryFinder.get(neighbourName);
-                String key;
-                if(toRemove.getName().compareTo(neighbour.getName())){
-                    key=toRemove.getName()+"_"+neighbour.getName();
-                }else{
-                    key=neighbour.getName()+"_"+toRemove.getName();
-                }
-                int new_dist=distance.get(toRemove)+toRemove.getSize()+nrighbour.getSize();
+            for(Territory neighbour:toRemove.getNeighbours()){
+                int new_dist=distance.get(toRemove)+toRemove.getSize()+neighbour.getSize();
                 if(new_dist<distance.get(neighbour)){
                     distance.put(neighbour,new_dist);
                 }
