@@ -148,7 +148,7 @@ public class ClientPlayer extends Player {
         continue;
       }
       try {
-        ae.apply(m);
+        ae.apply(m, null);
         display("Updated game map:\n" + new MapView(m).display());
       } catch (IllegalArgumentException e) {
         // actually should not happen

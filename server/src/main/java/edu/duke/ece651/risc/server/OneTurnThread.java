@@ -32,7 +32,7 @@ public class OneTurnThread extends Thread {
     private void applyMovement(ActionEntry a) {
         synchronized (gameMap) {
             try {
-                a.apply(gameMap);
+                a.apply(gameMap, null);
                 player.sendMessage(Constant.VALID_ACTION);
             } catch (Exception e) {
                 player.sendMessage(e.getMessage());

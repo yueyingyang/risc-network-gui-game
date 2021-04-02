@@ -166,7 +166,7 @@ public class Game {
             });
             for (ActionEntry placement : placements) {
                 try {
-                    placement.apply(gameMap);
+                    placement.apply(gameMap, null);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());//should never reach here
                 }

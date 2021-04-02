@@ -26,10 +26,11 @@ public class AttackEntry extends BasicEntry {
     /**
      * Send attackers
      *
-     * @param myMap is the map of the game
+     * @param myMap  is the map of the game
+     * @param myInfo is the player info
      */
     @Override
-    public void apply(GameMap myMap) {
+    public void apply(GameMap myMap, PlayerInfo myInfo) {
         Checker myChecker = new ClientChecker(new AttackRuleChecker(null));
         myChecker.checkAction(this, myMap);
         Territory fromTerr = myMap.getTerritory(fromName);

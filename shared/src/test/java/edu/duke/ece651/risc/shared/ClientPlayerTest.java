@@ -171,7 +171,7 @@ class ClientPlayerTest {
             new PlaceEntry("2", 2, "player2"),
             new PlaceEntry("3", 2, "player2"));
     for (ActionEntry ae : pl) {
-      ae.apply(map);
+      ae.apply(map, null);
     }
     return map;
   }

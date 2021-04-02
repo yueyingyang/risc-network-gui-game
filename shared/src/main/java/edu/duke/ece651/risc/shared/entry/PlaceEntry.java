@@ -1,9 +1,6 @@
 package edu.duke.ece651.risc.shared.entry;
 
-import edu.duke.ece651.risc.shared.Army;
-import edu.duke.ece651.risc.shared.BasicArmy;
-import edu.duke.ece651.risc.shared.GameMap;
-import edu.duke.ece651.risc.shared.Territory;
+import edu.duke.ece651.risc.shared.*;
 import edu.duke.ece651.risc.shared.entry.BasicEntry;
 
 import java.beans.ConstructorProperties;
@@ -32,7 +29,7 @@ public class PlaceEntry extends BasicEntry {
      * @param myMap is the map of the game
      */
     @Override
-    public void apply(GameMap myMap) {
+    public void apply(GameMap myMap, PlayerInfo myInfo) {
         Territory terr = myMap.getTerritory(toName);
         Army myArmy = new BasicArmy(terr.getOwnerName(), numSoldiers);
         terr.setMyArmy(myArmy);

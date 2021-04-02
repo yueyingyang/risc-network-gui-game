@@ -3,10 +3,11 @@ package edu.duke.ece651.risc.shared.entry;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import edu.duke.ece651.risc.shared.GameMap;
+import edu.duke.ece651.risc.shared.PlayerInfo;
 
 /**
  * An interface represent an action entry
- *
+ * <p>
  * Annotation added for jackson subtype deserialization: https://www.baeldung.com/jackson-inheritance
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
@@ -20,9 +21,10 @@ public interface ActionEntry {
     /**
      * Apply the action on the action entry
      *
-     * @param myMap     is the map of the game
+     * @param myMap  is the map of the game
+     * @param myInfo is the player info
      */
-    public void apply(GameMap myMap);
+    public void apply(GameMap myMap, PlayerInfo myInfo);
 
     /**
      * Get the name of the from-territory
