@@ -28,8 +28,6 @@ public class FancyAttackEntry extends BasicEntry {
      */
     @Override
     public void apply(GameMap myMap, PlayerInfo myInfo) {
-        Checker myChecker = new ClientChecker(new AttackRuleChecker(null));
-        myChecker.checkAction(this, myMap);
         Territory fromTerr = myMap.getTerritory(fromName);
         Territory toTerr = myMap.getTerritory(toName);
         fromTerr.removeSoldiersFromArmy(numSoldiers, fromType);
