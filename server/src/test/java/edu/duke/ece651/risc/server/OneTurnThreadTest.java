@@ -59,10 +59,11 @@ class OneTurnThreadTest {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     BufferedReader in = new BufferedReader(new StringReader(sa+"\n"+Constant.ORDER_COMMIT+"\n"));
     ServerPlayer p = new ServerPlayer(in, new PrintWriter(bytes, true),s);
+//    work should be done during adding player
     p.setName("Blue");
+    p.setColor(Color.red);
     OneTurnThread t = new OneTurnThread(map,p, new ArrayList<>(Collections.singletonList(p)));
     t.start();
-    Mockito.when(p.getColor()).thenReturn(Color.RED);
     assertDoesNotThrow(()->{t.join();});
     assertEquals("Blue",t1.getOwnerName());
     assertEquals(1, t1.getNumSoldiersInArmy());
@@ -97,9 +98,10 @@ class OneTurnThreadTest {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     BufferedReader in = new BufferedReader(new StringReader(sa+"\n"+Constant.ORDER_COMMIT+"\n"));
     ServerPlayer p = new ServerPlayer(in, new PrintWriter(bytes, true),s);
+    //    work should be done during adding player
     p.setName("Blue");
+    p.setColor(Color.RED);
     OneTurnThread t = new OneTurnThread(map,p,new ArrayList<>(Collections.singletonList(p)));
-    Mockito.when(p.getColor()).thenReturn(Color.RED);
     t.start();
     assertDoesNotThrow(()->{t.join();});
     assertEquals("Blue",t1.getOwnerName());
