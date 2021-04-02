@@ -176,6 +176,6 @@ public class GameMapTest {
     connections.add(connection4);
     GameMap map=new GameMap(connections,territoryFinder);
     int cost=map.computeCost(t1,t3,2);
-    assertEquals(cost,9);
+    assertEquals(cost,18);
   }
 }

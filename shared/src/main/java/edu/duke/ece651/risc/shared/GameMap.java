@@ -9,7 +9,6 @@ import java.util.*;
 @JsonIgnoreProperties(value = { "costGraph" })
 public class GameMap {
     private Map<String, Territory> territoryFinder;
-    private Map<String[], Integer> costGraph;
 
     /**
      * Added for jackson deserialization
@@ -189,8 +188,8 @@ public class GameMap {
             }
 
         }
-        
-        return (distance.get(end)+start.getSize()+end.getSize())/2*unit;
+
+        return (distance.get(end)+start.getSize()+end.getSize())*unit/2;
     }
     
 }
