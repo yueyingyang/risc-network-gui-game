@@ -12,6 +12,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Helper functions collections
+ * abstract for using in different controllers and also testing...
+ */
 @Service
 public class UtilService {
   private final JSONSerializer jsonSerializer;
@@ -33,20 +37,6 @@ public class UtilService {
             .collect(Collectors.toList());
   }
 
-
-  // Below are helper functions
-
-  /**
-   * Convert GameMap to the JSON NODE to display map
-   *
-   * @return the MAP display info in JSON
-   */
-  public List<ObjectNode> mockObjectNodes() throws JsonProcessingException {
-    String emptyView = "[{\"name\":\"0\",\"owner\":\"p2\",\"value\":2,\"color\":\"#97B8A3\"},{\"name\":\"1\",\"owner\":\"p2\",\"value\":2,\"color\":\"#97B8A3\"},{\"name\":\"2\",\"owner\":\"test\",\"value\":2,\"color\":\"#EDC3C7\"},{\"name\":\"3\",\"owner\":\"test\",\"value\":2,\"color\":\"#EDC3C7\"}]";
-    String fullView = "[{\"name\":\"0\",\"owner\":\"p2\",\"value\":2,\"color\":\"#97B8A3\",\"units\":1,\"foodProd\":0,\"techProd\":0},{\"name\":\"1\",\"owner\":\"p2\",\"value\":2,\"color\":\"#97B8A3\",\"units\":2,\"foodProd\":0,\"techProd\":0},{\"name\":\"2\",\"owner\":\"test\",\"value\":2,\"color\":\"#EDC3C7\",\"units\":2,\"foodProd\":0,\"techProd\":0},{\"name\":\"3\",\"owner\":\"test\",\"value\":2,\"color\":\"#EDC3C7\",\"units\":3,\"foodProd\":0,\"techProd\":0}]";
-    return deNodeList(fullView);
-  }
-
   /**
    * Wrap terrUnit for placement phase
    *
@@ -61,6 +51,8 @@ public class UtilService {
     }
     return new TerrUnitList(ans);
   }
+
+  // Below are some mocks for local test...
 
   /**
    * There are many places need a map to test...
@@ -81,4 +73,14 @@ public class UtilService {
     return map;
   }
 
+  /**
+   * Convert GameMap to the JSON NODE to display map
+   *
+   * @return the MAP display info in JSON
+   */
+  public List<ObjectNode> mockObjectNodes() throws JsonProcessingException {
+    String emptyView = "[{\"name\":\"0\",\"owner\":\"p2\",\"value\":2,\"color\":\"#97B8A3\"},{\"name\":\"1\",\"owner\":\"p2\",\"value\":2,\"color\":\"#97B8A3\"},{\"name\":\"2\",\"owner\":\"test\",\"value\":2,\"color\":\"#EDC3C7\"},{\"name\":\"3\",\"owner\":\"test\",\"value\":2,\"color\":\"#EDC3C7\"}]";
+    String fullView = "[{\"name\":\"0\",\"owner\":\"p2\",\"value\":2,\"color\":\"#97B8A3\",\"units\":1,\"foodProd\":0,\"techProd\":0},{\"name\":\"1\",\"owner\":\"p2\",\"value\":2,\"color\":\"#97B8A3\",\"units\":2,\"foodProd\":0,\"techProd\":0},{\"name\":\"2\",\"owner\":\"test\",\"value\":2,\"color\":\"#EDC3C7\",\"units\":2,\"foodProd\":0,\"techProd\":0},{\"name\":\"3\",\"owner\":\"test\",\"value\":2,\"color\":\"#EDC3C7\",\"units\":3,\"foodProd\":0,\"techProd\":0}]";
+    return deNodeList(fullView);
+  }
 }

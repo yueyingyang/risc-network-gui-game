@@ -50,7 +50,10 @@ public class V2MapView {
   /**
    * Serialize object node to json string
    *
-   * @return string
+   * @param fullInfo is false if display the empty map (only owner and size...)
+   *                 is true if display the full map
+   *
+   * @return string is JSON string
    */
   public String toString(boolean fullInfo) {
     try {

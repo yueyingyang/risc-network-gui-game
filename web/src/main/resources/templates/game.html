@@ -71,19 +71,13 @@
     let graphData = null
     const full_map_formatter = params => `😉\t${params.data.owner}<br />` +
         `💂\t${params.data.units}<br />` +
-        `💎\t${params.data.resources}<br />` +
+        // resources is not territory attribute...
+        // `💎\t${params.data.resources}<br />` +
         `📏\t${params.data.value}`
+
     // default is loading box
     $('#map_box').empty().append(load_html);
-    // Display the map function
-    // display_map(full_map_formatter)
-    // Set interaction of action tabs
-    $('#actions a.item').on('click', function () {
-        $(this)
-            .addClass('active')
-            .siblings()
-            .removeClass('active');
-    })
+
     // Refresh map ajax call
     const refresh_map = () => {
         const config = {
@@ -92,11 +86,13 @@
             "type": "get",
             "success": res => {
                 graphData = res;
+                // display map
                 display_map(full_map_formatter)
                 $('#msg_box').append('<p style="user-select: auto;"> Update map </p>');
             },
             "error": () => {
                 $('#msg_box').append('<p style="user-select: auto;"> Please wait... </p>');
+                // make sure showing the loading in the map location
                 $('#map_box').empty().append(load_html);
             }
         }
