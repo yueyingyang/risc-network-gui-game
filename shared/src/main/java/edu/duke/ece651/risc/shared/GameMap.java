@@ -143,6 +143,14 @@ public class GameMap {
       return false;
     }
 
+    /**
+     * compute the minimum cost from territory start to territory end
+     *
+     * @param start the starting territory
+     * @param end   the end territory
+     * @param unit  how many unit of army to be moved
+     * @return      the minimum cost of move
+     */
     public int computeCost(Territory start, Territory end, int unit){
         Set<Territory> visited=new HashSet<>();
         
@@ -153,7 +161,7 @@ public class GameMap {
         for(String name:territoryFinder.keySet()){
             if(territoryFinder.get(name).getOwnerName().equals(start.getOwnerName())) {
                 distance.put(territoryFinder.get(name), -1);
-                prev.put(territoryFinder.get(name), -1);
+                //prev.put(territoryFinder.get(name), -1);
                 buffer.add(territoryFinder.get(name));
             }
         }
@@ -168,10 +176,11 @@ public class GameMap {
                 }
             }
             buffer.remove(toRemove);
+            //System.out.println(toRemove.getName());
             for(Territory neighbour:toRemove.getNeighbours()){
                 if(neighbour.getOwnerName().equals(start.getOwnerName())) {
                     int new_dist = distance.get(toRemove) + toRemove.getSize() + neighbour.getSize();
-                    if (new_dist < distance.get(neighbour)) {
+                    if (distance.get(neighbour)==-1|| new_dist < distance.get(neighbour)) {
                         distance.put(neighbour, new_dist);
                     }
                 }
@@ -179,7 +188,7 @@ public class GameMap {
 
         }
         
-        return (distance.get(end)+start.getSize()+end.getSize())/2;
+        return (distance.get(end)+start.getSize()+end.getSize())/2*unit;
     }
     
 }
