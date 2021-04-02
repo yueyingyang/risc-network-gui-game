@@ -1,4 +1,6 @@
-package edu.duke.ece651.risc.shared;
+package edu.duke.ece651.risc.shared.game;
+
+import edu.duke.ece651.risc.shared.Constant;
 
 /**
  * A class to get info from constant

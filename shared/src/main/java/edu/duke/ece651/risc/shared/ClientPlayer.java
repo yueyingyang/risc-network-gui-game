@@ -1,6 +1,10 @@
 package edu.duke.ece651.risc.shared;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import edu.duke.ece651.risc.shared.entry.ActionEntry;
+import edu.duke.ece651.risc.shared.entry.AttackEntry;
+import edu.duke.ece651.risc.shared.entry.MoveEntry;
+import edu.duke.ece651.risc.shared.entry.PlaceEntry;
 
 import java.io.*;
 import java.util.*;

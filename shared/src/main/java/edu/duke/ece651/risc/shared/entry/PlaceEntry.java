@@ -1,4 +1,10 @@
-package edu.duke.ece651.risc.shared;
+package edu.duke.ece651.risc.shared.entry;
+
+import edu.duke.ece651.risc.shared.Army;
+import edu.duke.ece651.risc.shared.BasicArmy;
+import edu.duke.ece651.risc.shared.GameMap;
+import edu.duke.ece651.risc.shared.Territory;
+import edu.duke.ece651.risc.shared.entry.BasicEntry;
 
 import java.beans.ConstructorProperties;
 

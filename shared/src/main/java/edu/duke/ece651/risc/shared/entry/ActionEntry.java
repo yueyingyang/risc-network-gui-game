@@ -1,7 +1,8 @@
-package edu.duke.ece651.risc.shared;
+package edu.duke.ece651.risc.shared.entry;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import edu.duke.ece651.risc.shared.GameMap;
 
 /**
  * An interface represent an action entry

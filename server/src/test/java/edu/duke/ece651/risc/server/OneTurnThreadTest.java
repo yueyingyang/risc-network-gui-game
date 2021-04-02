@@ -15,12 +15,12 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import edu.duke.ece651.risc.shared.ActionEntry;
+import edu.duke.ece651.risc.shared.entry.ActionEntry;
 import edu.duke.ece651.risc.shared.BasicArmy;
 import edu.duke.ece651.risc.shared.Constant;
 import edu.duke.ece651.risc.shared.GameMap;
 import edu.duke.ece651.risc.shared.JSONSerializer;
-import edu.duke.ece651.risc.shared.MoveEntry;
+import edu.duke.ece651.risc.shared.entry.MoveEntry;
 import edu.duke.ece651.risc.shared.Player;
 import edu.duke.ece651.risc.shared.ServerPlayer;
 import edu.duke.ece651.risc.shared.Territory;

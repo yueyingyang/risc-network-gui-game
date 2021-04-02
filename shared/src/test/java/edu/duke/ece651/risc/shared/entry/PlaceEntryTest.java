@@ -1,5 +1,9 @@
-package edu.duke.ece651.risc.shared;
+package edu.duke.ece651.risc.shared.entry;
 
+import edu.duke.ece651.risc.shared.AbstractMapFactory;
+import edu.duke.ece651.risc.shared.GameMap;
+import edu.duke.ece651.risc.shared.Territory;
+import edu.duke.ece651.risc.shared.V1MapFactory;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
