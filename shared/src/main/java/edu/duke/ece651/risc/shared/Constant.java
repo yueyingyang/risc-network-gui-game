@@ -26,5 +26,6 @@ public class Constant {
     public static final String STARTGAME = "start";
     public static final String JOINGAME = "join";
     public static final String REJOINGAME = "rejoin";
+    public static final String[] COLORS = {"#97B8A3", "#EDC3C7", "#FDF06F", "#A6CFE2", "#9C9CDD"};
 }
 

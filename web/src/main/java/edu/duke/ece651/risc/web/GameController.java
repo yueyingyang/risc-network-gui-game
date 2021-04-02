@@ -8,7 +8,6 @@ import edu.duke.ece651.risc.shared.game.TerrUnit;
 import edu.duke.ece651.risc.shared.game.TerrUnitList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -139,8 +138,8 @@ public class GameController {
       ObjectNode o = mapper.createObjectNode();
       o.put("name", t.getName());
       o.put("owner", t.getOwnerName());
-      o.put("resources", 10);
-      o.put("value", 2);
+      o.put("resources", 10); // hardcoded, need to change to t.food resources
+      o.put("value", 2); // hardcoded, need to change to t.size()
       o.put("color", colorMapping.get(t.getOwnerName()));
       o.put("units", t.getNumSoldiersInArmy());
       graphData.add(o);

@@ -1,5 +1,6 @@
 package edu.duke.ece651.risc.shared;
 
+import java.awt.*;
 import java.net.Socket;
 
 import java.io.BufferedReader;
@@ -14,6 +15,16 @@ import java.io.PrintWriter;
 public class ServerPlayer extends Player {
   private Socket clientSocket;
   private Integer currentGameID;
+
+  public Color getColor() {
+    return color;
+  }
+
+  public void setColor(Color color) {
+    this.color = color;
+  }
+
+  private Color color;
 
   public ServerPlayer(BufferedReader in, PrintWriter out, Socket cs) {
     super(in, out);

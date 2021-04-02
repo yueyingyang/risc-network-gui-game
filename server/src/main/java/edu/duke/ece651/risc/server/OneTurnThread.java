@@ -1,15 +1,21 @@
 package edu.duke.ece651.risc.server;
 
 import edu.duke.ece651.risc.shared.*;
+import edu.duke.ece651.risc.shared.game.V2MapView;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This is the class for multi thread used in handling incoming actions from players
  */
 public class OneTurnThread extends Thread {
+    private GameMap mapLocal;
     private GameMap gameMap;
     private Player player;
+    // for playerInfo field
+    private final List<ServerPlayer> playerList;
 
     /**
      * constructor
@@ -17,9 +23,13 @@ public class OneTurnThread extends Thread {
      * @param g the gameMap of the game
      * @param p the player
      */
-    public OneTurnThread(GameMap g, Player p) {
+    public OneTurnThread(GameMap g, Player p, List<ServerPlayer> playerList) {
         this.gameMap = g;
         this.player = p;
+        // Each player keep a local copy of game map, to update during one turn
+        this.mapLocal = (GameMap) new JSONSerializer().clone(g, GameMap.class);
+        // need to generate player info table later
+        this.playerList = playerList;
     }
 
     /**
@@ -32,11 +42,15 @@ public class OneTurnThread extends Thread {
         synchronized (gameMap) {
             try {
                 a.apply(gameMap);
+                // also apply on local copy
+                a.apply(mapLocal);
                 player.sendMessage(Constant.VALID_ACTION);
             } catch (Exception e) {
                 player.sendMessage(e.getMessage());
             }
         }
+        // send the updated map view
+        player.sendMessage(new V2MapView(mapLocal, playerList).toString());
     }
 
     /**

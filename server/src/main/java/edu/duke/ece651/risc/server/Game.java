@@ -1,14 +1,19 @@
 
 package edu.duke.ece651.risc.server;
-import java.util.*;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import java.io.*;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import edu.duke.ece651.risc.shared.*;
+import edu.duke.ece651.risc.shared.game.V2MapView;
 
+import java.awt.*;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Random;
+
+import static edu.duke.ece651.risc.shared.Constant.COLORS;
+
 
 /**
  * Game class is responsible for the one game's play
@@ -62,6 +67,8 @@ public class Game {
             return "This game is full, please select another game from the available list.";
         }
         this.players.add(player);
+        // assign a color to player based on the idx of the player in the list
+        player.setColor(Color.decode(COLORS[players.size() - 1]));
         return null;
     }
 
@@ -184,7 +191,7 @@ public class Game {
         for (ServerPlayer player : stillInPlayers) {
             //if the player is still active in this game
             if(player.getCurrentGame().equals(gameID)){
-                OneTurnThread thread = new OneTurnThread(gameMap, player);
+                OneTurnThread thread = new OneTurnThread(gameMap, player, players);
                 threads.add(thread);
                 thread.start();
             }
@@ -327,6 +334,7 @@ public class Game {
         stillWatchPlayers = new ArrayList<>(players);
         makeMap(TerritoryPerPlayer);
         sendObjectToAll(this.gameMap, players);
+        sendStringToAll(new V2MapView(this.gameMap, players).toString(false), players);
         sendStringToAll(String.valueOf(totalSoldiers), players);
         placementPhase();
         while (true) {
