@@ -141,19 +141,6 @@ class TerritoryTest {
     }
 
     @Test
-    public void test_upgradeArmy() {
-        Territory terr0 = new Territory("0");
-        Army army = new BasicArmy("HanMeiMei", 5);
-        terr0.setOwnerName("HanMeiMei");
-        terr0.setMyArmy(army);
-        PlayerInfo myInfo = new PlayerInfo("HanMeiMei", 6, 180, 120);
-        terr0.upgradeArmy("0", "4", 2, myInfo);
-        assertEquals(3, terr0.getNumSoldiersInArmy("0"));
-        assertEquals(2, terr0.getNumSoldiersInArmy("4"));
-        assertEquals(70, myInfo.getFoodResource());
-    }
-
-    @Test
     public void test_add_remove_with_type() {
         Territory terr = new Territory("NANJING");
         Army army = new BasicArmy("LiLei", 5);

@@ -345,16 +345,5 @@ public class Territory {
         return ownerName.equals(terr.getOwnerName());
     }
 
-    /**
-     * Upgrade my army
-     *
-     * @param fromType    is the current type of the soldier
-     * @param toType      is the type of the soldier after upgrading
-     * @param numSoldiers is the number of soldiers
-     * @param myInfo      is the player info
-     */
-    public void upgradeArmy(String fromType, String toType, int numSoldiers, PlayerInfo myInfo) {
-        myArmy.upgradeForce(fromType, toType, numSoldiers, myInfo);
-    }
 
 }

@@ -72,20 +72,4 @@ class BasicArmyTest {
         assertEquals(11, army0.getNumSoldiers());
     }
 
-    @Test
-    public void test_upgradeForce() {
-        PlayerInfo myInfo = new PlayerInfo("HanMeiMei", 6, 300, 200);
-        Army army0 = new BasicArmy("HanMeiMei", 5);
-
-        army0.upgradeForce("0", "2", 3, myInfo);
-        assertEquals(267, myInfo.getFoodResource());
-        assertEquals(2, army0.getNumSoldiers("0"));
-        assertEquals(3, army0.getNumSoldiers("2"));
-
-        army0.upgradeForce("2", "5", 2, myInfo);
-        assertEquals(109, myInfo.getFoodResource());
-        assertEquals( 2, army0.getNumSoldiers("0"));
-        assertEquals(1, army0.getNumSoldiers("2"));
-        assertEquals(2, army0.getNumSoldiers("5"));
-    }
 }

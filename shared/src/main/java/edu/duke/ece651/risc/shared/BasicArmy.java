@@ -161,20 +161,6 @@ public class BasicArmy implements Army {
         }
     }
 
-    /**
-     * Upgrade the force
-     *
-     * @param fromType    is the current type of the soldier
-     * @param toType      is the type of the soldier after upgrade
-     * @param numSoldiers is the number of soldiers
-     */
-    @Override
-    public void upgradeForce(String fromType, String toType, int numSoldiers, PlayerInfo myInfo) {
-        removeSoldiers(numSoldiers, fromType);
-        addSoldiers(numSoldiers, toType);
-        int cost = GameUtil.getSoldierCost(fromType, toType, numSoldiers);
-        myInfo.consumeFood(cost);
-    }
 
 
 }
