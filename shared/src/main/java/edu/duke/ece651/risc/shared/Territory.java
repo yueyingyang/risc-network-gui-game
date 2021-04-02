@@ -318,6 +318,24 @@ public class Territory {
     }
 
     /**
+     * Get the number of soldier in the attacker with the given type
+     *
+     * @param name is the name of the attacker owner
+     * @param type is the type of the soldier
+     * @return the number of soldiers in the attacker
+     * or -1 if the attacker does not exist
+     */
+    public int getNumSoldiersInAttacker(String name, String type) {
+        Army attacker = attackerBuffer.get(name);
+        if (attacker == null) {
+            return -1;
+        }
+        return attacker.getNumSoldiers(type);
+
+    }
+
+
+    /**
      * Check if the two territories belong to the same owner
      *
      * @param terr is a territory
