@@ -334,8 +334,8 @@ public class Game {
         stillWatchPlayers = new ArrayList<>(players);
         makeMap(TerritoryPerPlayer);
         sendObjectToAll(this.gameMap, players);
-        sendStringToAll(new V2MapView(this.gameMap, players).toString(false), players);
         sendStringToAll(String.valueOf(totalSoldiers), players);
+        sendStringToAll(new V2MapView(this.gameMap, players).toString(false), players);
         placementPhase();
         while (true) {
             //multi thread in this function to handle simultaneous input

@@ -1,5 +1,6 @@
 package edu.duke.ece651.risc.web;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/game")
@@ -51,12 +53,15 @@ public class GameController {
    */
   @GetMapping("/place")
   public String place(Model model) throws IOException {
-    GameMap map = (GameMap) jsonSerializer.deserialize(playerMapping.getSocket(currentUserName).recvMessage(), GameMap.class);
-    int totalUnits = Integer.parseInt(playerMapping.getSocket(currentUserName).recvMessage());
+    ClientSocket cs = playerMapping.getSocket(currentUserName);
+    GameMap map = (GameMap) jsonSerializer.deserialize(cs.recvMessage(), GameMap.class);
+    int totalUnits = Integer.parseInt(cs.recvMessage());
+    String mapViewString = cs.recvMessage();
+    List<ObjectNode> graphData = deNodeList(mapViewString);
 //    Below 2 lines are for local test
 //    GameMap map = createMap();
 //    int totalUnits = 6;
-    List<ObjectNode> graphData = getObjectNodes(map, players);
+//    List<ObjectNode> graphData = getObjectNodes(map, players);
     model.addAttribute("graphData", graphData);
     model.addAttribute("wrapper", createTerrUnitList(map, currentUserName));
     model.addAttribute("units", totalUnits);
@@ -92,7 +97,7 @@ public class GameController {
   public String playOneTurn(Model model) {
     // todo: should refactor createMap() to retrieve stored game map
     List<ObjectNode> graphData = getObjectNodes(createMap(), players);
-    model.addAttribute("graphData", graphData);
+    model.addAttribute("graphData", null);
     model.addAttribute("action", new AttackEntry("", "", 0, currentUserName));
     return "game";
   }
@@ -112,8 +117,9 @@ public class GameController {
 //    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     ClientSocket cs = playerMapping.getSocket(currentUserName);
     if (cs.hasNewMsg()) {
-      GameMap map = (GameMap) jsonSerializer.deserialize(cs.recvMessage(), GameMap.class);
-      return ResponseEntity.status(HttpStatus.ACCEPTED).body(getObjectNodes(map, players));
+      String mapViewString = cs.recvMessage();
+      List<ObjectNode> graphData = deNodeList(mapViewString);
+      return ResponseEntity.status(HttpStatus.ACCEPTED).body(graphData);
     }
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
   }
@@ -189,5 +195,18 @@ public class GameController {
    */
   public void setPlayers(List<String> players) {
     this.players = players;
+  }
+
+  /**
+   * Deserialize List<ObjectNode> from JSON string
+   *
+   * @param mapViewString is JSON str
+   * @return List<ObjectNode> could be used in js code
+   * @throws JsonProcessingException
+   */
+  private List<ObjectNode> deNodeList(String mapViewString) throws JsonProcessingException {
+    return jsonSerializer.deserializeList(mapViewString, ObjectNode.class)
+            .stream().map(x -> (ObjectNode) x)
+            .collect(Collectors.toList());
   }
 }
