@@ -2,6 +2,8 @@ package edu.duke.ece651.risc.shared;
 
 import edu.duke.ece651.risc.shared.game.GameUtil;
 
+import java.util.function.Function;
+
 /**
  * A class represent player info
  */
@@ -97,4 +99,16 @@ public class PlayerInfo {
     public String getName() {
         return name;
     }
+
+    /**
+     * Add resource
+     * @param myTerrs is the territories of the player
+     */
+    public void addResource(Iterable<Territory> myTerrs) {
+        for (Territory t : myTerrs) {
+            foodResource += t.getFoodProd();
+            techResource += t.getTechProd();
+        }
+    }
+
 }

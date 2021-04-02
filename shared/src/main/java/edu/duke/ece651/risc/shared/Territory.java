@@ -101,6 +101,24 @@ public class Territory {
     }
 
     /**
+     * Get the food production of the territory
+     *
+     * @return the food production of the territory
+     */
+    public int getFoodProd() {
+        return foodProd;
+    }
+
+    /**
+     * Get the technology production of the territory
+     *
+     * @return the technology production of the territory
+     */
+    public int getTechProd() {
+        return techProd;
+    }
+
+    /**
      * Set the owner of the territory
      *
      * @param ownerName is the name of the owner
