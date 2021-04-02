@@ -71,17 +71,18 @@ public class BasicArmy implements Army {
      * Add soldiers to the force
      *
      * @param numSoldiers is the number of the soldiers to add
+     * @param type        is the type of the soldier
      */
     @Override
-    public void addSoldiers(int numSoldiers) {
-        force.addAll(Collections.nCopies(numSoldiers, new BasicSoldier()));
+    public void addSoldiers(int numSoldiers, String type) {
+        force.addAll(Collections.nCopies(numSoldiers, new BasicSoldier(type)));
     }
 
     /**
      * Remove the given number of soldiers to the force
      *
      * @param numSoldiers is the number of the soldiers
-     * @param type is the type of the soldier
+     * @param type        is the type of the soldier
      */
     @Override
     public void removeSoldiers(int numSoldiers, String type) {
@@ -137,7 +138,6 @@ public class BasicArmy implements Army {
             getForce().addAll(myArmy.getForce());
         }
     }
-
 
 
 }

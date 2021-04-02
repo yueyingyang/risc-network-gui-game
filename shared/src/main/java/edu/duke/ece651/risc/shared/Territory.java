@@ -135,7 +135,7 @@ public class Territory {
      * @param numSoldiers is the number of soldiers to add
      */
     public void addSoldiersToArmy(int numSoldiers) {
-        myArmy.addSoldiers(numSoldiers);
+        myArmy.addSoldiers(numSoldiers, "0");
     }
 
     /**
