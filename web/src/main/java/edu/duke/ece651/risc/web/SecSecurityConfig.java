@@ -35,18 +35,24 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http
-      .csrf().disable()
-      .authorizeRequests()
-      .antMatchers("/admin/**").hasRole("ADMIN")
-      .antMatchers("/anonymous*").anonymous()
-      .antMatchers("/login*").permitAll()
-      .anyRequest().authenticated()
-      .and()
-      // ...
-      .formLogin(form -> form
-              .loginPage("/login")
-              .defaultSuccessUrl("/lobby?name=test", true)
-              .failureUrl("/login?error=true"));
+        .csrf().disable()
+        .authorizeRequests()
+        .antMatchers("/admin/**").hasRole("ADMIN")
+        .antMatchers("/anonymous*").anonymous()
+        .antMatchers("/login*").permitAll()
+        .anyRequest().authenticated()
+        .and()
+        // ...
+        .formLogin()
+        .loginPage("/login")
+        .defaultSuccessUrl("/lobby?name=test", true)
+        .failureUrl("/login?error=true")
+        .and()
+        .logout()
+        .logoutUrl("/logout")
+        .logoutSuccessUrl("/");
+        
+      
 //      .loginPage("/login.html")
 ////      .loginProcessingUrl("/perform_login")
 //      .defaultSuccessUrl("/lobby?name=test", true)
