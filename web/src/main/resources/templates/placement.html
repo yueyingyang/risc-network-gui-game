@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+<head>
+    <header th:insert="fragments/common_header.html :: headerfiles"></header>
+    <title>Game</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:insert="fragments/common_header.html :: header"></div>
+<br>
+
+<div class="ui grid">
+    <div class="two column centered row">
+        <div id="map" class="six wide column" style="width:600px; height:400px;"></div>
+        <div class="eight wide column" style="user-select: auto;">
+            <div class="ui">
+                <form th:if="${wrapper.terrUnitList.size()} != 0" class="ui form" th:action="@{/game/submit_place}"
+                      method="post"
+                      th:object="${wrapper}">
+                    <div class="ui header">Please enter the placement below:</div>
+                    <div class="fields" style="user-select: auto;">
+                        <!-- Render territory -->
+                        <div class="field" th:each="terrUnit, stat: ${wrapper.terrUnitList}" style="user-select: auto;">
+                            <label th:text="'Territory ' + ${terrUnit.getTerrName()}"></label>
+                            <input th:field="*{terrUnitList[__${stat.index}__].terrName}"
+                                   th:value="${terrUnit.getTerrName()}" hidden>
+                            <select th:field="*{terrUnitList[__${stat.index}__].unit}"
+                                    class="ui fluid search dropdown">
+                                <!-- Render option -->
+                                <option th:each="i: ${#numbers.sequence(0, units)}" th:text="${i}" th:value="${i}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="ui submit button" style="user-select: auto;" type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/util.js}"></script>
+<script th:inline="javascript">
+    <!--    use Thymeleaf inline javascript to convert controller passed data into plain js variable -->
+    const colors = [[${graphData}]].map(territory => territory['color']);
+    const graphData = [[${graphData}]];
+</script>
+<!--include JS to render MAP -->
+<script th:src="@{/map_display.js}"></script>
+<script th:inline="javascript">
+    // only display player name
+    const empty_map_formatter = params => `😉\t${params.data.owner}<br />`;
+    // Display the map function
+    display_map(empty_map_formatter)
+</script>
+</body>
+
+</html>
+
