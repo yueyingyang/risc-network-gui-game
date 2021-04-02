@@ -79,5 +79,5 @@ public interface Army {
      * @param toType      is the type of the soldier after upgrade
      * @param numSoldiers is the number of soldiers
      */
-    public void upgradeForce(String fromType, String toType, int numSoldiers);
+    public void upgradeForce(String fromType, String toType, int numSoldiers, PlayerInfo myInfo);
 }

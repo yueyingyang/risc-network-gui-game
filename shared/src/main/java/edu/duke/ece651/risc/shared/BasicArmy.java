@@ -1,5 +1,7 @@
 package edu.duke.ece651.risc.shared;
 
+import edu.duke.ece651.risc.shared.game.GameUtil;
+
 import java.beans.ConstructorProperties;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -156,9 +158,11 @@ public class BasicArmy implements Army {
      * @param numSoldiers is the number of soldiers
      */
     @Override
-    public void upgradeForce(String fromType, String toType, int numSoldiers) {
+    public void upgradeForce(String fromType, String toType, int numSoldiers, PlayerInfo myInfo) {
         removeSoldiers(numSoldiers, fromType);
         addSoldiers(numSoldiers, toType);
+        int cost = GameUtil.getSoldierCost(fromType, toType, numSoldiers);
+        myInfo.consumeFood(cost);
     }
 
 
