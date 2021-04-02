@@ -74,7 +74,7 @@ class BasicArmyTest {
 
     @Test
     public void test_upgradeForce() {
-        PlayerInfo myInfo = new PlayerInfo(6, 300, 200);
+        PlayerInfo myInfo = new PlayerInfo("HanMeiMei", 6, 300, 200);
         Army army0 = new BasicArmy("HanMeiMei", 5);
 
         army0.upgradeForce("0", "2", 3, myInfo);
