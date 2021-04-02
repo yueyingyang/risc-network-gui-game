@@ -79,14 +79,4 @@ public class BasicSoldier implements Soldier {
         return type.hashCode();
     }
 
-    /**
-     * Get the string representation of a soldier
-     *
-     * @return the string representation of a soldier
-     */
-    @Override
-    public String toString() {
-        return type;
-    }
-
 }

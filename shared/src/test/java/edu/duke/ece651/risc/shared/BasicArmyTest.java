@@ -25,9 +25,11 @@ class BasicArmyTest {
         Army myArmy = new BasicArmy("HanMeiMei", numSoldiers);
         myArmy.addSoldiers(3, "2");
         myArmy.addSoldiers(2,"5");
-        assertEquals("[0, 2, 2, 2, 5, 5]", myArmy.toString());
+        assertEquals(1, myArmy.getNumSoldiers("0"));
+        assertEquals(3, myArmy.getNumSoldiers("2"));
+        assertEquals(2, myArmy.getNumSoldiers("5"));
         myArmy.removeSoldiers(2, "2");
-        assertEquals("[0, 2, 5, 5]", myArmy.toString());
+        assertEquals(1, myArmy.getNumSoldiers("2"));
     }
 
     @Test
