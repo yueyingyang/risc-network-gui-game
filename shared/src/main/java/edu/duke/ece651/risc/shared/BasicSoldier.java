@@ -43,23 +43,12 @@ public class BasicSoldier implements Soldier {
     }
 
     /**
-     * Upgrade a soldier to the indicated type
-     *
-     * @param toType is the indicated type
-     */
-    @Override
-    public void upgrade(String toType) {
-        type = toType;
-    }
-
-    /**
      * Check whether a soldier has the indicated type
      *
      * @param myType is the indicated type
      * @return true if the soldier is has the indicated type else false
      */
-    @Override
-    public boolean hasType(String myType) {
+    protected boolean hasType(String myType) {
         return type.equals(myType);
     }
 
