@@ -6,10 +6,7 @@ import edu.duke.ece651.risc.shared.entry.AttackEntry;
 import edu.duke.ece651.risc.shared.entry.MoveEntry;
 import edu.duke.ece651.risc.shared.entry.PlaceEntry;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.*;
 import java.util.function.Function;
 
