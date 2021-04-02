@@ -66,6 +66,7 @@ public class Constant {
     public static final Map<String, Integer> soldierCost = new HashMap<>();
 
     static {
+        soldierCost.put("0", 0);
         soldierCost.put("1", 3);
         soldierCost.put("2", 11);
         soldierCost.put("3", 30);
