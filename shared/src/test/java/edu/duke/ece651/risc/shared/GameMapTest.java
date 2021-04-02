@@ -140,4 +140,9 @@ public class GameMapTest {
     assertTrue(allTerritories.contains(t4));
   }
 
+
+  @Test
+  public void test_computeCost(){
+    
+  }
 }
