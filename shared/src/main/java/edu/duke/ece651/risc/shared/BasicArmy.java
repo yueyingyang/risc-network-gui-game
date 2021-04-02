@@ -1,6 +1,6 @@
 package edu.duke.ece651.risc.shared;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import edu.duke.ece651.risc.shared.game.GameUtil;
 
 import java.beans.ConstructorProperties;
 import java.util.ArrayList;
@@ -18,13 +18,23 @@ public class BasicArmy implements Army {
     /**
      * Construct a BasicArmy object
      *
+     * @param ownerName is the name of the owner of the army
+     * @param force     is the force in the army
+     */
+    public BasicArmy(String ownerName, List<Soldier> force) {
+        this.ownerName = ownerName;
+        this.force = force;
+    }
+
+    /**
+     * Construct a BasicArmy object
+     *
      * @param ownerName   is the name of the owner of the army
      * @param numSoldiers is the number of soldiers in the force
      */
     @ConstructorProperties({"ownerName", "numSoldiers"})
     public BasicArmy(String ownerName, int numSoldiers) {
-        this.ownerName = ownerName;
-        this.force = new ArrayList<>(Collections.nCopies(numSoldiers, new BasicSoldier()));
+        this(ownerName, new ArrayList<>(Collections.nCopies(numSoldiers, new BasicSoldier())));
     }
 
     /**
@@ -48,6 +58,17 @@ public class BasicArmy implements Army {
     }
 
     /**
+     * Get the number of soldiers of the given type in the force
+     *
+     * @param type is the type of the soldier
+     * @return the number of soldiers with the given type in the force
+     */
+    @Override
+    public int getNumSoldiers(String type) {
+        return Collections.frequency(force, new BasicSoldier(type));
+    }
+
+    /**
      * Get the number of soldiers in the force
      *
      * @return the number of soldiers in the force
@@ -61,21 +82,24 @@ public class BasicArmy implements Army {
      * Add soldiers to the force
      *
      * @param numSoldiers is the number of the soldiers to add
+     * @param type        is the type of the soldier
      */
     @Override
-    public void addSoldiers(int numSoldiers) {
-        force.addAll(Collections.nCopies(numSoldiers, new BasicSoldier()));
+    public void addSoldiers(int numSoldiers, String type) {
+        force.addAll(Collections.nCopies(numSoldiers, new BasicSoldier(type)));
     }
 
     /**
      * Remove the given number of soldiers to the force
      *
-     * @param numSoldiers is the number of the soldiers to remove
+     * @param numSoldiers is the number of the soldiers
+     * @param type        is the type of the soldier
      */
     @Override
-    public void removeSoldiers(int numSoldiers) {
+    public void removeSoldiers(int numSoldiers, String type) {
+        Soldier s = new BasicSoldier(type);
         for (int i = 0; i < numSoldiers; i++) {
-            force.remove(force.size() - 1);
+            force.remove(s);
         }
     }
 
@@ -108,9 +132,9 @@ public class BasicArmy implements Army {
         Soldier enemySoldier = enemyForce.get(enemyForce.size() - 1);
         int res = mySoldier.fight(enemySoldier, myRandom);
         if (res >= 0) {
-            attacker.removeSoldiers(1);
+            attacker.removeSoldiers(1, "0");
         } else {
-            removeSoldiers(1);
+            removeSoldiers(1, "0");
         }
     }
 
@@ -125,4 +149,21 @@ public class BasicArmy implements Army {
             getForce().addAll(myArmy.getForce());
         }
     }
+
+    /**
+     * Upgrade the force
+     *
+     * @param fromType    is the current type of the soldier
+     * @param toType      is the type of the soldier after upgrade
+     * @param numSoldiers is the number of soldiers
+     */
+    @Override
+    public void upgradeForce(String fromType, String toType, int numSoldiers, PlayerInfo myInfo) {
+        removeSoldiers(numSoldiers, fromType);
+        addSoldiers(numSoldiers, toType);
+        int cost = GameUtil.getSoldierCost(fromType, toType, numSoldiers);
+        myInfo.consumeFood(cost);
+    }
+
+
 }

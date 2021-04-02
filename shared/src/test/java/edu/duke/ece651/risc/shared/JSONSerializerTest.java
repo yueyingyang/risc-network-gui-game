@@ -1,19 +1,17 @@
 package edu.duke.ece651.risc.shared;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Disabled;
+import edu.duke.ece651.risc.shared.entry.ActionEntry;
+import edu.duke.ece651.risc.shared.entry.AttackEntry;
+import edu.duke.ece651.risc.shared.entry.MoveEntry;
+import edu.duke.ece651.risc.shared.entry.PlaceEntry;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.Collection;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -42,7 +40,7 @@ class JSONSerializerTest {
     placement.add(new PlaceEntry("2", 1, "player1"));
     placement.add(new PlaceEntry("3", 1, "player1"));
     for (ActionEntry pe : placement) {
-      pe.apply(map);
+      pe.apply(map, null);
     }
     return map;
   }
@@ -63,10 +61,10 @@ class JSONSerializerTest {
     assertThat(deAttack, instanceOf(AttackEntry.class));
     assertThat(deMove, instanceOf(MoveEntry.class));
 
-    dePlace.apply(map);
-    place1Entry.apply(map);
-    deAttack.apply(map);
-    deMove.apply(map);
+    dePlace.apply(map, null);
+    place1Entry.apply(map, null);
+    deAttack.apply(map, null);
+    deMove.apply(map, null);
     assertDoesNotThrow(() -> new MapView(map).display());
   }
 
@@ -83,7 +81,7 @@ class JSONSerializerTest {
     GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 2);
     List<ActionEntry> pd = s.deserializeList(listJSON, ActionEntry.class).stream().map(x -> (ActionEntry) x).collect(Collectors.toList());
     for (ActionEntry a : pd) {
-      a.apply(map);
+      a.apply(map, null);
     }
     assertEquals(0, map.getTerritory("0").getNumSoldiersInArmy());
     assertEquals(3, map.getTerritory("1").getNumSoldiersInArmy());

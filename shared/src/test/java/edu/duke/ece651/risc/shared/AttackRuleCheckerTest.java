@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
+import edu.duke.ece651.risc.shared.entry.ActionEntry;
+import edu.duke.ece651.risc.shared.entry.AttackEntry;
 import org.junit.jupiter.api.Test;
 
 public class AttackRuleCheckerTest {

@@ -2,6 +2,7 @@ package edu.duke.ece651.risc.server;
 
 import edu.duke.ece651.risc.shared.*;
 import edu.duke.ece651.risc.shared.game.V2MapView;
+import edu.duke.ece651.risc.shared.entry.ActionEntry;
 
 import java.io.IOException;
 import java.util.List;
@@ -41,9 +42,9 @@ public class OneTurnThread extends Thread {
     private void applyMovement(ActionEntry a) {
         synchronized (gameMap) {
             try {
-                a.apply(gameMap);
-                // also apply on local copy
-                a.apply(mapLocal);
+                a.apply(gameMap, null);
+//                also apply on the local copy
+                a.apply(mapLocal, null);
                 player.sendMessage(Constant.VALID_ACTION);
             } catch (Exception e) {
                 player.sendMessage(e.getMessage());

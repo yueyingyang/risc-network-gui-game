@@ -1,4 +1,5 @@
-package edu.duke.ece651.risc.shared;
+package edu.duke.ece651.risc.shared.entry;
+
 
 /**
  * An class represents a basic entry
@@ -8,6 +9,8 @@ public abstract class BasicEntry implements ActionEntry {
     protected String toName;
     protected int numSoldiers;
     protected String playerName;
+    protected String fromType;
+    protected String toType;
 
     /**
      * Construct a basic entry
@@ -16,12 +19,18 @@ public abstract class BasicEntry implements ActionEntry {
      * @param toName      is the name of the to-territory
      * @param numSoldiers is the number of soldiers
      * @param playerName  is the name of the player
+     * @param fromType    is the current type of the soldier
+     * @param toType      is the type of the soldier after update
      */
-    public BasicEntry(String fromName, String toName, int numSoldiers, String playerName) {
+    public BasicEntry(String fromName, String toName, int numSoldiers, String playerName,
+                      String fromType, String toType) {
         this.fromName = fromName;
         this.toName = toName;
         this.numSoldiers = numSoldiers;
         this.playerName = playerName;
+        this.fromType = fromType;
+        this.toType = toType;
+
     }
 
     /**
@@ -62,5 +71,13 @@ public abstract class BasicEntry implements ActionEntry {
     @Override
     public String getPlayerName() {
         return playerName;
+    }
+
+    public String getFromType() {
+        return fromType;
+    }
+
+    public String getToType() {
+        return toType;
     }
 }

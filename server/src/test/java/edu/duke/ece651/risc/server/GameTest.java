@@ -1,23 +1,22 @@
 package edu.duke.ece651.risc.server;
-import com.ctc.wstx.shaded.msv_core.verifier.jarv.Const;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.awt.*;
 import java.util.*;
 
-import javax.swing.Action;
-
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import edu.duke.ece651.risc.shared.entry.ActionEntry;
+import edu.duke.ece651.risc.shared.entry.AttackEntry;
+import edu.duke.ece651.risc.shared.entry.PlaceEntry;
 import org.mockito.*;
 import java.io.*;
-import java.util.*;
 import java.net.Socket;
 import java.util.List;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import edu.duke.ece651.risc.shared.*;
@@ -266,12 +265,12 @@ public class GameTest {
     t.start();
     // wait for "acceptPlayers" finishing
     Thread.sleep(1000);  
-    pe1.apply(g.getMap());
-    pe2.apply(g.getMap());
+    pe1.apply(g.getMap(), null);
+    pe2.apply(g.getMap(), null);
     assertEquals(2,g.getMap().getTerritory("0").getNumSoldiersInArmy());
     assertEquals(0,g.getMap().getTerritory("1").getNumSoldiersInArmy());
     AttackEntry a = new AttackEntry("0", "1", 2, "Red");
-    a.apply(g.getMap());
+    a.apply(g.getMap(), null);
     g.doAttacks();
     assertEquals("Red", g.getMap().getTerritory("1").getOwnerName());   
     assertEquals(true,g.checkLost(p2));  
@@ -313,11 +312,11 @@ public class GameTest {
     t.start();
     // wait for "acceptPlayers" finishing
     Thread.sleep(1000);  
-    pe1.apply(g.getMap());
-    pe2.apply(g.getMap());
-    pe3.apply(g.getMap());
-    a1.apply(g.getMap());
-    a2.apply(g.getMap());
+    pe1.apply(g.getMap(), null);
+    pe2.apply(g.getMap(), null);
+    pe3.apply(g.getMap(), null);
+    a1.apply(g.getMap(), null);
+    a2.apply(g.getMap(), null);
     g.doAttacks();
     assertEquals(true, g.checkLost(p2));
     assertThrows(Exception.class, ()->{g.updatePlayerLists();});

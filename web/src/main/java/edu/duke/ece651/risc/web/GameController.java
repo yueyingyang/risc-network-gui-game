@@ -1,21 +1,27 @@
 package edu.duke.ece651.risc.web;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import edu.duke.ece651.risc.shared.*;
+import edu.duke.ece651.risc.shared.ClientSocket;
+import edu.duke.ece651.risc.shared.GameMap;
+import edu.duke.ece651.risc.shared.JSONSerializer;
+import edu.duke.ece651.risc.shared.entry.ActionEntry;
+import edu.duke.ece651.risc.shared.entry.AttackEntry;
+import edu.duke.ece651.risc.shared.entry.PlaceEntry;
 import edu.duke.ece651.risc.shared.game.TerrUnit;
 import edu.duke.ece651.risc.shared.game.TerrUnitList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/game")

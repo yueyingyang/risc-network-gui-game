@@ -1,8 +1,10 @@
 
 package edu.duke.ece651.risc.server;
 
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import edu.duke.ece651.risc.shared.*;
+import edu.duke.ece651.risc.shared.entry.ActionEntry;
 import edu.duke.ece651.risc.shared.game.V2MapView;
 
 import java.awt.*;
@@ -175,7 +177,7 @@ public class Game {
             });
             for (ActionEntry placement : placements) {
                 try {
-                    placement.apply(gameMap);
+                    placement.apply(gameMap, null);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());//should never reach here
                 }

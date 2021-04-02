@@ -1,5 +1,9 @@
-package edu.duke.ece651.risc.shared;
+package edu.duke.ece651.risc.shared.entry;
 
+import edu.duke.ece651.risc.shared.AbstractMapFactory;
+import edu.duke.ece651.risc.shared.GameMap;
+import edu.duke.ece651.risc.shared.Territory;
+import edu.duke.ece651.risc.shared.V1MapFactory;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -23,7 +27,7 @@ class PlaceEntryTest {
         List<String> names = Arrays.asList("LiLei", "HanMeiMei");
         GameMap myMap = f.createMap(names, 2);
         ActionEntry entry = new PlaceEntry("2", 5, "HanMeiMei");
-        entry.apply(myMap);
+        entry.apply(myMap, null);
         Territory terr = myMap.getTerritory("2");
         assertEquals(5, terr.getNumSoldiersInArmy());
     }

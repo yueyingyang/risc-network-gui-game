@@ -1,5 +1,7 @@
 package edu.duke.ece651.risc.shared;
 
+import edu.duke.ece651.risc.shared.entry.ActionEntry;
+
 public class MoveRuleChecker extends Checker {
     public MoveRuleChecker(Checker next) {
         super(next);

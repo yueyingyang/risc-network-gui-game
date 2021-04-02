@@ -2,6 +2,9 @@ package edu.duke.ece651.risc.shared;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,11 +21,15 @@ class BasicArmyTest {
 
     @Test
     public void test_add_remove() {
-        Army myArmy = new BasicArmy("HanMeiMei", 5);
-        myArmy.addSoldiers(3);
-        assertEquals(8, myArmy.getNumSoldiers());
-        myArmy.removeSoldiers(6);
-        assertEquals(2, myArmy.getNumSoldiers());
+        int numSoldiers = 1;
+        Army myArmy = new BasicArmy("HanMeiMei", numSoldiers);
+        myArmy.addSoldiers(3, "2");
+        myArmy.addSoldiers(2,"5");
+        assertEquals(1, myArmy.getNumSoldiers("0"));
+        assertEquals(3, myArmy.getNumSoldiers("2"));
+        assertEquals(2, myArmy.getNumSoldiers("5"));
+        myArmy.removeSoldiers(2, "2");
+        assertEquals(1, myArmy.getNumSoldiers("2"));
     }
 
     @Test
@@ -63,5 +70,22 @@ class BasicArmyTest {
         assertEquals(5, army0.getNumSoldiers());
         army0.mergeForce(army2);
         assertEquals(11, army0.getNumSoldiers());
+    }
+
+    @Test
+    public void test_upgradeForce() {
+        PlayerInfo myInfo = new PlayerInfo("HanMeiMei", 6, 300, 200);
+        Army army0 = new BasicArmy("HanMeiMei", 5);
+
+        army0.upgradeForce("0", "2", 3, myInfo);
+        assertEquals(267, myInfo.getFoodResource());
+        assertEquals(2, army0.getNumSoldiers("0"));
+        assertEquals(3, army0.getNumSoldiers("2"));
+
+        army0.upgradeForce("2", "5", 2, myInfo);
+        assertEquals(109, myInfo.getFoodResource());
+        assertEquals( 2, army0.getNumSoldiers("0"));
+        assertEquals(1, army0.getNumSoldiers("2"));
+        assertEquals(2, army0.getNumSoldiers("5"));
     }
 }

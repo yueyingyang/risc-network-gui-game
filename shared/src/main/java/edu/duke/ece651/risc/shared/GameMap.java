@@ -85,11 +85,7 @@ public class GameMap {
      * @return all territories in the map
      */
     public ArrayList<Territory> getAllTerritories(){
-        ArrayList<Territory> territories = new ArrayList<Territory>();
-        for(Map.Entry<String, Territory> entry : this.territoryFinder.entrySet()){
-            territories.add(entry.getValue());
-        }
-        return territories;
+        return new ArrayList<>(territoryFinder.values());
     }
 
 
