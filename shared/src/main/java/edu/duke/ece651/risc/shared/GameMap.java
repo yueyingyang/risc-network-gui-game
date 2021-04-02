@@ -2,9 +2,11 @@ package edu.duke.ece651.risc.shared;
 
 //import java.util.ArrayList;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.*;
 
-
+@JsonIgnoreProperties(value = { "costGraph" })
 public class GameMap {
     private Map<String, Territory> territoryFinder;
     private Map<String[], Integer> costGraph;
