@@ -168,9 +168,11 @@ public class GameMap {
             }
             buffer.remove(toRemove);
             for(Territory neighbour:toRemove.getNeighbours()){
-                int new_dist=distance.get(toRemove)+toRemove.getSize()+neighbour.getSize();
-                if(new_dist<distance.get(neighbour)){
-                    distance.put(neighbour,new_dist);
+                if(neighbour.getOwnerName().equals(start.getOwnerName())) {
+                    int new_dist = distance.get(toRemove) + toRemove.getSize() + neighbour.getSize();
+                    if (new_dist < distance.get(neighbour)) {
+                        distance.put(neighbour, new_dist);
+                    }
                 }
             }
 
