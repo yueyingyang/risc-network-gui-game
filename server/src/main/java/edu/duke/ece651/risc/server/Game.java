@@ -1,12 +1,11 @@
 
 package edu.duke.ece651.risc.server;
 import java.util.*;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.*;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import edu.duke.ece651.risc.shared.*;
+import edu.duke.ece651.risc.shared.entry.ActionEntry;
 
 import java.util.Collection;
 

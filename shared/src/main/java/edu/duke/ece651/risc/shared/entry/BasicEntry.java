@@ -1,4 +1,6 @@
-package edu.duke.ece651.risc.shared;
+package edu.duke.ece651.risc.shared.entry;
+
+import edu.duke.ece651.risc.shared.entry.ActionEntry;
 
 /**
  * An class represents a basic entry

@@ -1,5 +1,6 @@
 package edu.duke.ece651.risc.shared;
 
+import edu.duke.ece651.risc.shared.game.GameUtil;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
