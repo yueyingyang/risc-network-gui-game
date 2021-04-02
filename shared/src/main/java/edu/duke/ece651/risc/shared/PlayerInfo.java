@@ -2,8 +2,6 @@ package edu.duke.ece651.risc.shared;
 
 import edu.duke.ece651.risc.shared.game.GameUtil;
 
-import java.util.function.Function;
-
 /**
  * A class represent player info
  */
