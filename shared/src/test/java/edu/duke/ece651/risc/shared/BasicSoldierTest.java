@@ -50,4 +50,5 @@ class BasicSoldierTest {
         assertEquals(-2, defender.fight(attacker, myRandom));
     }
 
+
 }

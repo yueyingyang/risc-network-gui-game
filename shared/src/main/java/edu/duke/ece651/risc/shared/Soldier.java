@@ -8,7 +8,7 @@ import java.util.Random;
  * An interface represents a soldier
  */
 @JsonDeserialize(as = BasicSoldier.class)
-public interface Soldier {
+public interface Soldier extends Comparable<Soldier>{
 
     /**
      * Fight with the attacker

@@ -161,6 +161,15 @@ public class BasicArmy implements Army {
         }
     }
 
+    /**
+     * Get the string representation of the army
+     *
+     * @return the string representation of the army
+     */
+    @Override
+    public String toString() {
+        return force.toString();
+    }
 
 
 }

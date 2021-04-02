@@ -2,10 +2,7 @@ package edu.duke.ece651.risc.shared;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -70,6 +67,18 @@ class BasicArmyTest {
         assertEquals(5, army0.getNumSoldiers());
         army0.mergeForce(army2);
         assertEquals(11, army0.getNumSoldiers());
+    }
+
+    @Test
+    public void test_sort() {
+        Army army0 = new BasicArmy("HanMeiMei", 1);
+        army0.addSoldiers(1, "3");
+        army0.addSoldiers(1, "2");
+        army0.addSoldiers(1, "5");
+        army0.addSoldiers(1, "4");
+        army0.addSoldiers(1, "2");
+        Collections.sort(army0.getForce());
+        assertEquals("[5, 4, 3, 2, 2, 0]", army0.toString());
     }
 
 }

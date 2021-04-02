@@ -90,4 +90,25 @@ public class BasicSoldier implements Soldier {
         return type.hashCode();
     }
 
+    /**
+     * Set the natural ordering of the two soldiers based on the bonus
+     * to sort in descending order
+     *
+     * @param s is the soldier to compare to
+     * @return positive number if the bonus is smaller
+     */
+    @Override
+    public int compareTo(Soldier s) {
+        return GameUtil.getBonus(s.getType()) - GameUtil.getBonus(type);
+    }
+
+    /**
+     * Get the string representation of the soldier
+     *
+     * @return the string representation of the soldier
+     */
+    @Override
+    public String toString() {
+        return type;
+    }
 }
