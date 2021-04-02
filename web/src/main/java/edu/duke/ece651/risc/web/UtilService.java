@@ -3,6 +3,8 @@ package edu.duke.ece651.risc.web;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import edu.duke.ece651.risc.shared.*;
+import edu.duke.ece651.risc.shared.entry.ActionEntry;
+import edu.duke.ece651.risc.shared.entry.PlaceEntry;
 import edu.duke.ece651.risc.shared.game.TerrUnit;
 import edu.duke.ece651.risc.shared.game.TerrUnitList;
 import org.springframework.stereotype.Service;
@@ -68,7 +70,7 @@ public class UtilService {
             new PlaceEntry("2", 2, "test"),
             new PlaceEntry("3", 2, "test"));
     for (ActionEntry ae : pl) {
-      ae.apply(map);
+      ae.apply(map, null);
     }
     return map;
   }
