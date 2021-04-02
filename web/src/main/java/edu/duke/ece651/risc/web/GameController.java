@@ -180,7 +180,7 @@ public class GameController {
             new PlaceEntry("2", 2, "test"),
             new PlaceEntry("3", 2, "test"));
     for (ActionEntry ae : pl) {
-      ae.apply(map);
+      ae.apply(map, null);
     }
     return map;
   }
