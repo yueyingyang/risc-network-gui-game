@@ -6,7 +6,7 @@ import java.beans.ConstructorProperties;
 
 public class FancyAttackEntry extends BasicEntry {
     /**
-     * Create an attack entry object
+     * Create a FancyAttackEntry object
      *
      * @param fromName    is the name of the from-territory
      * @param toName      is the name of the to-territory
@@ -35,6 +35,7 @@ public class FancyAttackEntry extends BasicEntry {
         fromTerr.removeSoldiersFromArmy(numSoldiers, fromType);
         Army attacker = new BasicArmy(fromTerr.getOwnerName(), numSoldiers, fromType);
         toTerr.bufferAttacker(attacker);
+        myInfo.consumeFood(numSoldiers);
     }
 
 }
