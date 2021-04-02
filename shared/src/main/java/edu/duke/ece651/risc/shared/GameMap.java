@@ -33,23 +33,6 @@ public class GameMap {
             start.addNeighbour(end);
             end.addNeighbour(start);
 
-<<<<<<< HEAD
-=======
-            //put it here or a separate method?
-            if(start.getName().compareTo(end.getName())<0){
-                String[] key=new String[2];
-                key[0]=start.getName();
-                key[1]=end.getName();
-                costGraph.put(key,key[0].getSize()+key[1].getSize());
-            }else if(start.getName().compareTo(end.getName())>0){
-                String[] key=new String[2];
-                key[0]=end.getName();
-                key[1]=start.getName();
-                if(!costGraph.containsKey(key)){
-                    costGraph.put(key,key[0].getSize()+key[1].getSize());
-                }
-            }
->>>>>>> d672e4dd38908acee02461a1bdee3481b6aebd01
         }
     }
 
@@ -177,21 +160,14 @@ public class GameMap {
             int min_distance=Integer.MAX_VALUE;
             Territory toRemove=null;
             for(Territory t:buffer){
-                if(buffer>=0 && min_distance>distance.get(t)){
+                if(distance.get(t)>=0 && min_distance>distance.get(t)){
                     min_distance=distance.get(t);
                     toRemove=t;
                 }
             }
             buffer.remove(toRemove);
-            for(String neighbourName:toRemove.getNeighbours()){
-                Territory neighbour=territoryFinder.get(neighbourName);
-                String key;
-                if(toRemove.getName().compareTo(neighbour.getName())){
-                    key=toRemove.getName()+"_"+neighbour.getName();
-                }else{
-                    key=neighbour.getName()+"_"+toRemove.getName();
-                }
-                int new_dist=distance.get(toRemove)+toRemove.getSize()+nrighbour.getSize();
+            for(Territory neighbour:toRemove.getNeighbours()){
+                int new_dist=distance.get(toRemove)+toRemove.getSize()+neighbour.getSize();
                 if(new_dist<distance.get(neighbour)){
                     distance.put(neighbour,new_dist);
                 }
