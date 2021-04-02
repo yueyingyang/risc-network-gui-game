@@ -92,26 +92,4 @@ public class GameController {
     model.addAttribute("action", new AttackEntry("", "", 0, currentUserName));
     return "game";
   }
-
-  /**
-   * todo: need to be moved to AjaxController after refactoring with V2MapView
-   * Ajax GET API for update map after placement
-   *
-   * @return Response with status error or success, if success then body is updated GAMEMAP
-   * @throws IOException
-   */
-  @GetMapping(value = "/update_map")
-  public @ResponseBody
-  ResponseEntity<?> tryUpdateMap() throws IOException {
-//    Below 2 lines are for local test
-//    return ResponseEntity.status(HttpStatus.ACCEPTED).body(mockObjectNodes());
-//    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-    ClientSocket cs = playerMapping.getSocket(currentUserName);
-    if (cs.hasNewMsg()) {
-      String mapViewString = cs.recvMessage();
-      List<ObjectNode> graphData = util.deNodeList(mapViewString);
-      return ResponseEntity.status(HttpStatus.ACCEPTED).body(graphData);
-    }
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-  }
 }
