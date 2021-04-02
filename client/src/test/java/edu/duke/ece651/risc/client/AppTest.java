@@ -2,6 +2,8 @@
 package edu.duke.ece651.risc.client;
 
 import edu.duke.ece651.risc.shared.*;
+import edu.duke.ece651.risc.shared.entry.ActionEntry;
+import edu.duke.ece651.risc.shared.entry.PlaceEntry;
 import org.checkerframework.checker.nullness.qual.AssertNonNullIfNonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -127,7 +129,7 @@ class AppTest {
             new PlaceEntry("2", 2, "player2"),
             new PlaceEntry("3", 2, "player2"));
     for (ActionEntry ae : pl) {
-      ae.apply(map);
+      ae.apply(map, null);
     }
     return map;
   }
@@ -138,7 +140,7 @@ class AppTest {
     List<ActionEntry> pl = Arrays.asList(new PlaceEntry("0", 1, "player1"),
             new PlaceEntry("1", 0, "player2"));
     for (ActionEntry ae : pl) {
-      ae.apply(map);
+      ae.apply(map, null);
     }
     return map;
   }

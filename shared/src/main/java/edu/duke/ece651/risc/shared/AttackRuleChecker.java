@@ -1,6 +1,8 @@
 package edu.duke.ece651.risc.shared;
 
 
+import edu.duke.ece651.risc.shared.entry.ActionEntry;
+
 public class AttackRuleChecker extends Checker {
     public AttackRuleChecker(Checker next) {
         super(next);

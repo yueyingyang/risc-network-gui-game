@@ -1,5 +1,7 @@
 package edu.duke.ece651.risc.shared;
 
+import edu.duke.ece651.risc.shared.entry.ActionEntry;
+import edu.duke.ece651.risc.shared.entry.PlaceEntry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -97,7 +99,7 @@ class ClientPlayerTest {
             userOut);
     p.setName("player1");
     p.placementPhase();
-    String expect = "[{\"type\":\"place\",\"toName\":\"0\",\"numSoldiers\":1,\"playerName\":\"player1\",\"fromName\":null},{\"type\":\"place\",\"toName\":\"1\",\"numSoldiers\":2,\"playerName\":\"player1\",\"fromName\":null}]\n";
+    String expect = "[{\"type\":\"place\",\"toName\":\"0\",\"numSoldiers\":1,\"playerName\":\"player1\",\"fromName\":null,\"fromType\":null,\"toType\":null},{\"type\":\"place\",\"toName\":\"1\",\"numSoldiers\":2,\"playerName\":\"player1\",\"fromName\":null,\"fromType\":null,\"toType\":null}]\n";
     assertEquals(expect, serverOut.toString());
   }
 
@@ -169,7 +171,7 @@ class ClientPlayerTest {
             new PlaceEntry("2", 2, "player2"),
             new PlaceEntry("3", 2, "player2"));
     for (ActionEntry ae : pl) {
-      ae.apply(map);
+      ae.apply(map, null);
     }
     return map;
   }

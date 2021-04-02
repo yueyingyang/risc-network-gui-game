@@ -9,9 +9,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class TerritoryTest {
 
     @Test
-    public void test_getName() {
+    public void test_Constructor() {
         Territory terr = new Territory("NANJING");
         assertEquals("NANJING", terr.getName());
+
+        Territory terr1 = new Territory("NANJING", 10, 180, 200);
+        assertEquals(10, terr1.getSize());
     }
 
     @Test
@@ -135,6 +138,19 @@ class TerritoryTest {
         terr2.setOwnerName("LiLei");
         assertTrue(terr0.belongToSameOwner(terr2));
         assertFalse(terr1.belongToSameOwner(terr0));
+    }
+
+    @Test
+    public void test_upgradeArmy() {
+        Territory terr0 = new Territory("0");
+        Army army = new BasicArmy("HanMeiMei", 5);
+        terr0.setOwnerName("HanMeiMei");
+        terr0.setMyArmy(army);
+        PlayerInfo myInfo = new PlayerInfo("HanMeiMei", 6, 180, 120);
+        terr0.upgradeArmy("0", "4", 2, myInfo);
+        assertEquals(3, terr0.getNumSoldiersInArmy("0"));
+        assertEquals(2, terr0.getNumSoldiersInArmy("4"));
+        assertEquals(70, myInfo.getFoodResource());
     }
 
 }

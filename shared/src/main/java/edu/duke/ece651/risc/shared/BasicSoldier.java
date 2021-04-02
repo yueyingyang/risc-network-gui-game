@@ -4,8 +4,27 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Random;
 
+/**
+ * A class represents a basic soldier
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BasicSoldier implements Soldier {
+
+    private String type;
+
+    /**
+     * Construct a Basic Soldier Object
+     */
+    public BasicSoldier(String type) {
+        this.type = type;
+    }
+
+    /**
+     * Construct a Basic Soldier Object
+     */
+    public BasicSoldier() {
+        this("0");
+    }
 
     /**
      * Fight with the attacker
@@ -22,4 +41,42 @@ public class BasicSoldier implements Soldier {
         int attackerRoll = myRandom.nextInt(length);
         return defenderRoll - attackerRoll;
     }
+
+    /**
+     * Check whether a soldier has the indicated type
+     *
+     * @param myType is the indicated type
+     * @return true if the soldier is has the indicated type else false
+     */
+    protected boolean hasType(String myType) {
+        return type.equals(myType);
+    }
+
+    /**
+     * Check if the given object is equal to this
+     *
+     * @param myObject is the given object
+     * @return true if the object is equal to this, i.e. is a BasicSoldier
+     * and have the same type, else false
+     */
+
+    @Override
+    public boolean equals(Object myObject) {
+        if (myObject.getClass().equals(getClass())) {
+            BasicSoldier s = (BasicSoldier) myObject;
+            return s.hasType(type);
+        }
+        return false;
+    }
+
+    /**
+     * get the hash code of the soldier
+     *
+     * @return the hash code of the soldier
+     */
+    @Override
+    public int hashCode() {
+        return type.hashCode();
+    }
+
 }
