@@ -26,11 +26,12 @@ public interface Army {
     public int getNumSoldiers();
 
     /**
-     * Add the given number of soldiers to the force
+     * Add soldiers to the force
      *
      * @param numSoldiers is the number of the soldiers to add
+     * @param type        is the type of the soldier
      */
-    public void addSoldiers(int numSoldiers);
+    public void addSoldiers(int numSoldiers, String type);
 
     /**
      * Remove the given number of soldiers to the force
