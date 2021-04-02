@@ -21,31 +21,13 @@ class BasicArmyTest {
 
     @Test
     public void test_add_remove() {
-        // Creating object of ArrayList<Integer>
-        ArrayList<Integer>
-                arrlist1 = new ArrayList<Integer>();
-
-        // Populating arrlist1
-        arrlist1.add(1);
-        arrlist1.add(2);
-        arrlist1.add(1);
-        arrlist1.add(1);
-        arrlist1.add(3);
-
-        // print arrlist1
-        System.out.println("ArrayList before "
-                + "removeAll() operation : "
-                + arrlist1);
-
-        // Creating another object of  ArrayList<Integer>
-        ArrayList<Integer>
-                arrlist2 = new ArrayList<Integer>();
-        arrlist2.add(1);
-        // List<Integer> arr1 = Arrays.asList(1, 1, 2, 3, 1, 2, 4);
-        // List<Integer> arr2 = Arrays.asList(1);
-        arrlist1.removeAll(arrlist2);
-        System.out.println(arrlist1);
-
+        int numSoldiers = 1;
+        Army myArmy = new BasicArmy("HanMeiMei", numSoldiers);
+        myArmy.addSoldiers(3, "2");
+        myArmy.addSoldiers(2,"5");
+        assertEquals("[0, 2, 2, 2, 5, 5]", myArmy.toString());
+        myArmy.removeSoldiers(2, "2");
+        assertEquals("[0, 2, 5, 5]", myArmy.toString());
     }
 
     @Test
