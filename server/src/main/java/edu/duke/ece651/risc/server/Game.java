@@ -25,6 +25,7 @@ public class Game {
     private ArrayList<ServerPlayer> stillInPlayers;//players still didn't lose
     private ArrayList<ServerPlayer> stillWatchPlayers;//players stillIn with those who want to watch after losing
     private GameMap gameMap;
+    private V2MapView view;
     private Random myRandom;
     private int randomSeed;
 
@@ -147,7 +148,7 @@ public class Game {
      */
     public void sendObjectToAll(Object o, ArrayList<ServerPlayer> p) {
         for (Player player : p) {
-            try{player.sendObject(o);}catch(Exception e){}        
+            try{player.sendObject(o);}catch(Exception e){}
         }
     }
 
@@ -159,7 +160,7 @@ public class Game {
      */
     public void sendStringToAll(String s, ArrayList<ServerPlayer> p) {
         for (Player player : p) {
-            try{player.sendMessage(s);}catch(Exception e){} 
+            try{player.sendMessage(s);}catch(Exception e){}
         }
     }
 
@@ -236,7 +237,7 @@ public class Game {
     public void playOneTurn() throws IOException {
         //send map to players in the stillWatch list
         for (Player p : stillWatchPlayers) {
-            try{p.sendObject(gameMap);}catch(Exception e){}
+            try{p.sendMessage(view.toString(true));}catch(Exception e){}
         }
         //create a thread for each player to type their actions until receive commit
         //for inactive players, do nothing, just like they drectly type in Commit
@@ -259,14 +260,14 @@ public class Game {
             //if lost the game, the player can only watch or disconnect
             if (checkLost(player)) {
                 //we will only send lose game info to who has just lost the game
-                try{player.sendMessage(Constant.LOSE_GAME);}catch(Exception e){}               
+                try{player.sendMessage(Constant.LOSE_GAME);}catch(Exception e){}
                 //remove the lost player from stillIn
                 stillInPlayers.remove(player);
                 losers.add(player);
             }
             //for those who didn't lose, tell them to continue
             else {
-                try{player.sendMessage(Constant.CONTINUE_PLAYING);}catch(Exception e){}               
+                try{player.sendMessage(Constant.CONTINUE_PLAYING);}catch(Exception e){}
             }
         }
 
@@ -333,9 +334,10 @@ public class Game {
         stillInPlayers = new ArrayList<>(players);
         stillWatchPlayers = new ArrayList<>(players);
         makeMap(TerritoryPerPlayer);
+        view = new V2MapView(this.gameMap, players);
         sendObjectToAll(this.gameMap, players);
         sendStringToAll(String.valueOf(totalSoldiers), players);
-        sendStringToAll(new V2MapView(this.gameMap, players).toString(false), players);
+        sendStringToAll(view.toString(false), players);
         placementPhase();
         while (true) {
             //multi thread in this function to handle simultaneous input
