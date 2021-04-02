@@ -7,6 +7,7 @@ import java.util.*;
 
 public class GameMap {
     private Map<String, Territory> territoryFinder;
+    private Map<String[], Integer> costGraph;
 
     /**
      * Added for jackson deserialization
@@ -32,6 +33,23 @@ public class GameMap {
             start.addNeighbour(end);
             end.addNeighbour(start);
 
+<<<<<<< HEAD
+=======
+            //put it here or a separate method?
+            if(start.getName().compareTo(end.getName())<0){
+                String[] key=new String[2];
+                key[0]=start.getName();
+                key[1]=end.getName();
+                costGraph.put(key,key[0].getSize()+key[1].getSize());
+            }else if(start.getName().compareTo(end.getName())>0){
+                String[] key=new String[2];
+                key[0]=end.getName();
+                key[1]=start.getName();
+                if(!costGraph.containsKey(key)){
+                    costGraph.put(key,key[0].getSize()+key[1].getSize());
+                }
+            }
+>>>>>>> d672e4dd38908acee02461a1bdee3481b6aebd01
         }
     }
 

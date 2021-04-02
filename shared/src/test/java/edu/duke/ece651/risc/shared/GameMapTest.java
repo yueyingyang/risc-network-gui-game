@@ -143,6 +143,7 @@ public class GameMapTest {
 
   @Test
   public void test_computeCost(){
+    Territory t1=new Territory("1",3,0,0);
     
   }
 }
