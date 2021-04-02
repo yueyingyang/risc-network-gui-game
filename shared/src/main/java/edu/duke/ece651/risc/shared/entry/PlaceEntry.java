@@ -1,7 +1,6 @@
 package edu.duke.ece651.risc.shared.entry;
 
 import edu.duke.ece651.risc.shared.*;
-import edu.duke.ece651.risc.shared.entry.BasicEntry;
 
 import java.beans.ConstructorProperties;
 
@@ -20,7 +19,7 @@ public class PlaceEntry extends BasicEntry {
      */
     @ConstructorProperties({"toName", "numSoldiers", "playerName"})
     public PlaceEntry(String toName, int numSoldiers, String playerName) {
-        super(null, toName, numSoldiers, playerName);
+        super(null, toName, numSoldiers, playerName, null, null);
     }
 
     /**

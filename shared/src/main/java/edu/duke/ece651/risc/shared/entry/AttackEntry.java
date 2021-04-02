@@ -20,7 +20,7 @@ public class AttackEntry extends BasicEntry {
      */
     @ConstructorProperties({"fromName", "toName", "numSoldiers", "playerName"})
     public AttackEntry(String fromName, String toName, int numSoldiers, String playerName) {
-        super(fromName, toName, numSoldiers, playerName);
+        super(fromName, toName, numSoldiers, playerName, null, null);
     }
 
     /**
