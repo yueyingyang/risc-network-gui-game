@@ -7,7 +7,7 @@ import java.util.*;
 
 /**
  * An class represents a territory
- *
+ * <p>
  * Annotation JsonIdentityInfo is added for bidirectional serialization
  */
 @JsonIdentityInfo(
@@ -19,6 +19,9 @@ public class Territory {
     private Army myArmy;
     private Set<Territory> neighbours;
     private Map<String, Army> attackerBuffer;
+    private int size;
+    private int foodProd;
+    private int techProd;
 
     /**
      * Add for Jackson deserialization
@@ -37,6 +40,28 @@ public class Territory {
         this.myArmy = null;
         this.neighbours = new HashSet<>();
         this.attackerBuffer = new HashMap<>();
+        this.size = 0;
+        this.foodProd = 0;
+        this.techProd = 0;
+    }
+
+    /**
+     * Create a territory object
+     *
+     * @param name     is the name of the territory
+     * @param size     is the size of the territory
+     * @param foodProd is the food production of the territory
+     * @param techProd is the tech production of the territory
+     */
+    public Territory(String name, int size, int foodProd, int techProd) {
+        this.name = name;
+        this.ownerName = null;
+        this.myArmy = null;
+        this.neighbours = new HashSet<>();
+        this.attackerBuffer = new HashMap<>();
+        this.size = size;
+        this.foodProd = foodProd;
+        this.techProd = techProd;
     }
 
     /**
@@ -64,6 +89,15 @@ public class Territory {
      */
     public Set<Territory> getNeighbours() {
         return neighbours;
+    }
+
+    /**
+     * Get the size of the territory
+     *
+     * @return the size of the territory
+     */
+    public int getSize() {
+        return size;
     }
 
     /**

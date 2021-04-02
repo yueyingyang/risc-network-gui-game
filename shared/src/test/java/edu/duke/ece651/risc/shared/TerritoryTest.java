@@ -9,9 +9,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class TerritoryTest {
 
     @Test
-    public void test_getName() {
+    public void test_Constructor() {
         Territory terr = new Territory("NANJING");
         assertEquals("NANJING", terr.getName());
+
+        Territory terr1 = new Territory("NANJING", 10, 180, 200);
+        assertEquals(10, terr1.getSize());
     }
 
     @Test
