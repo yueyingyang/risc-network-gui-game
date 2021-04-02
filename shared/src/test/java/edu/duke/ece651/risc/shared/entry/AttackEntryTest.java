@@ -33,7 +33,7 @@ class AttackEntryTest {
 
         ActionEntry[] entries = {entry0, entry1, entry2};
         for (ActionEntry entry : entries) {
-            entry.apply(myMap);
+            entry.apply(myMap, null);
         }
 
         Territory terr0 = myMap.getTerritory("0");

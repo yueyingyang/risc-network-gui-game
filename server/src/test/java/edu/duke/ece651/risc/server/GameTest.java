@@ -263,12 +263,12 @@ public class GameTest {
     t.start();
     // wait for "acceptPlayers" finishing
     Thread.sleep(1000);  
-    pe1.apply(g.getMap());
-    pe2.apply(g.getMap());
+    pe1.apply(g.getMap(), null);
+    pe2.apply(g.getMap(), null);
     assertEquals(2,g.getMap().getTerritory("0").getNumSoldiersInArmy());
     assertEquals(0,g.getMap().getTerritory("1").getNumSoldiersInArmy());
     AttackEntry a = new AttackEntry("0", "1", 2, "Red");
-    a.apply(g.getMap());
+    a.apply(g.getMap(), null);
     g.doAttacks();
     assertEquals("Red", g.getMap().getTerritory("1").getOwnerName());   
     assertEquals(true,g.checkLost(p2));  
@@ -310,11 +310,11 @@ public class GameTest {
     t.start();
     // wait for "acceptPlayers" finishing
     Thread.sleep(1000);  
-    pe1.apply(g.getMap());
-    pe2.apply(g.getMap());
-    pe3.apply(g.getMap());
-    a1.apply(g.getMap());
-    a2.apply(g.getMap());
+    pe1.apply(g.getMap(), null);
+    pe2.apply(g.getMap(), null);
+    pe3.apply(g.getMap(), null);
+    a1.apply(g.getMap(), null);
+    a2.apply(g.getMap(), null);
     g.doAttacks();
     assertEquals(true, g.checkLost(p2));
     assertThrows(Exception.class, ()->{g.updatePlayerLists();});

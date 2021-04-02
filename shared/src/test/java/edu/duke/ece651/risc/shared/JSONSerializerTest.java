@@ -41,7 +41,7 @@ class JSONSerializerTest {
     placement.add(new PlaceEntry("2", 1, "player1"));
     placement.add(new PlaceEntry("3", 1, "player1"));
     for (ActionEntry pe : placement) {
-      pe.apply(map);
+      pe.apply(map, null);
     }
     return map;
   }
@@ -62,10 +62,10 @@ class JSONSerializerTest {
     assertThat(deAttack, instanceOf(AttackEntry.class));
     assertThat(deMove, instanceOf(MoveEntry.class));
 
-    dePlace.apply(map);
-    place1Entry.apply(map);
-    deAttack.apply(map);
-    deMove.apply(map);
+    dePlace.apply(map, null);
+    place1Entry.apply(map, null);
+    deAttack.apply(map, null);
+    deMove.apply(map, null);
     assertDoesNotThrow(() -> new MapView(map).display());
   }
 
@@ -84,7 +84,7 @@ class JSONSerializerTest {
     Collection<ActionEntry> pd = s.getOm().readValue(listJSON, new TypeReference<>() {
     });
     for (ActionEntry a : pd) {
-      a.apply(map);
+      a.apply(map, null);
     }
     assertDoesNotThrow(() -> new MapView(map).display());
   }
