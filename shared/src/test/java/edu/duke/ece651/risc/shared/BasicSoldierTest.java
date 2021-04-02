@@ -19,8 +19,7 @@ class BasicSoldierTest {
 
     @Test
     public void test_upgrade() {
-        Soldier soldier = new BasicSoldier();
-        soldier.upgrade("5");
+        BasicSoldier soldier = new BasicSoldier("5");
         assertTrue(soldier.hasType("5"));
     }
 
