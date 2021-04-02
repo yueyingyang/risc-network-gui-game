@@ -12,7 +12,7 @@ class FancyAttackEntryTest {
     @Test
     public void test_getters() {
         ActionEntry entry = new FancyAttackEntry("0", "1", 5,
-                "LiLei", "0");
+                 "0", "LiLei");
         assertEquals("0", entry.getFromName());
         assertEquals("1", entry.getToName());
         assertEquals(5, entry.getNumSoldiers());
@@ -32,9 +32,9 @@ class FancyAttackEntryTest {
         ActionEntry entry2 = new SoldierEntry("0", "0", "2", 4, "LiLei");
         ActionEntry entry3 = new SoldierEntry("0", "0", "3", 3, "LiLei");
         ActionEntry entry4 = new FancyAttackEntry("0", "3", 3,
-                "LiLei", "2");
+                "2", "LiLei");
         ActionEntry entry5 = new FancyAttackEntry("0", "3", 2,
-                "LiLei", "3");
+                 "3", "LiLei");
 
         ActionEntry[] entries = {entry0, entry1, entry2, entry3, entry4, entry5};
         int[] foodResources = {320, 320, 276, 186, 183, 181};

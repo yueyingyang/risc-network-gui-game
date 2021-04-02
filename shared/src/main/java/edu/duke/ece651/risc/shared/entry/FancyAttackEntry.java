@@ -11,12 +11,12 @@ public class FancyAttackEntry extends BasicEntry {
      * @param fromName    is the name of the from-territory
      * @param toName      is the name of the to-territory
      * @param numSoldiers is the number of soldiers
-     * @param playerName  is the name of the player
      * @param fromType    is the type of the soldier participating in the attack
+     * @param playerName  is the name of the player
      * @annotation ConstructorProperties is for JSON deserialization
      */
-    @ConstructorProperties({"fromName", "toName", "numSoldiers", "playerName", "fromType"})
-    public FancyAttackEntry(String fromName, String toName, int numSoldiers, String playerName, String fromType) {
+    @ConstructorProperties({"fromName", "toName", "numSoldiers", "fromType", "playerName"})
+    public FancyAttackEntry(String fromName, String toName, int numSoldiers, String fromType, String playerName) {
         super(fromName, toName, numSoldiers, playerName, fromType, null);
     }
 
