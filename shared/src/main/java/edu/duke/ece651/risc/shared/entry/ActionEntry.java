@@ -54,5 +54,19 @@ public interface ActionEntry {
      */
     public String getPlayerName();
 
+    /**
+     * Get the current type of the soldier
+     *
+     * @return the current type of the soldier or null if the field does not exist
+     */
+    public String getFromType();
+
+    /**
+     * Get the type of the soldier after upgrade
+     *
+     * @return the type of the soldier after upgrade or null if the field does not exist
+     */
+    public String getToType();
+
 
 }
