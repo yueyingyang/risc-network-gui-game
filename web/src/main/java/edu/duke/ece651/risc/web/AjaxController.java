@@ -64,6 +64,7 @@ public class AjaxController {
 //    Below 2 lines are for local test
 //    return ResponseEntity.status(HttpStatus.ACCEPTED).body(util.mockObjectNodes());
 //    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+
     ClientSocket cs = playerMapping.getSocket(userName);
     if (cs.hasNewMsg()) {
       String mapViewString = cs.recvMessage();
@@ -105,7 +106,7 @@ public class AjaxController {
   public ResponseEntity<?> commit() throws IOException {
 //    local test
 //    return ResponseEntity.ok(null);
-////    Wrap a commit request
+//    Wrap a commit request
     ClientSocket cs = playerMapping.getSocket(userName);
     cs.sendMessage(Constant.ORDER_COMMIT);
     return ResponseEntity.ok(null);

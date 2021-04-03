@@ -114,7 +114,15 @@
 <!--include JS to render MAP -->
 <script th:src="@{/map_display.js}"></script>
 <script th:inline="javascript">
-    toggleActionBox();
+    <!--    the start state is disabled commit and fields -->
+    $(document).ready(function () {
+            $("#commit").toggleClass("disabled");
+            $("div.field").toggleClass("disabled");
+            $(".submit.button.basic").toggleClass("disabled");
+        }
+    )
+
+
     let graphData = null
     const full_map_formatter = params => `😉\t${params.data.owner}<br />` +
         `💂\t${params.data.units}<br />` +
@@ -138,8 +146,8 @@
                 $('#msg_box').append('<p style="user-select: auto;"> Update map </p>');
                 $("#refresh").unbind();
                 // change click event to resolve combat and also disable refresh
-                $('#refresh').click(resolve_combat).toggleClass('disabled');
-                toggleActionBox();
+                $('#refresh').click(resolve_combat);
+                toggleActionAndRefresh();
             },
             "error": () => {
                 $('#msg_box').append('<p style="user-select: auto;"> Please wait... </p>');
@@ -160,7 +168,7 @@
                 $('#msg_box').append('<p style="user-select: auto;"> Commit this turn successfully. Please wait for resolving combat... </p>');
                 // make sure showing the loading in the map location
                 $('#map_box').empty().append(resolve_html);
-                $('#refresh').toggleClass('disabled');
+                toggleActionAndRefresh();
             },
         });
     }
@@ -177,7 +185,7 @@
                     graphData = resBody['graphData'];
                     // display map
                     display_map(full_map_formatter)
-                    toggleActionBox();
+                    toggleActionAndRefresh();
                 } else {
                     if (resBody['win']) {
                         location.href = '/game/win';

@@ -10,11 +10,9 @@ $('#actions a.item').on('click', function () {
         .removeClass('active');
 })
 
-$("#commit").click(function () {
-    toggleActionBox();
-});
 
-function toggleActionBox() {
+function toggleActionAndRefresh() {
+    $('#refresh').toggleClass('disabled');
     $("#commit").toggleClass("active").toggleClass("disabled");
     $("div.field").toggleClass("disabled");
     $(".submit.button.basic").toggleClass("disabled");
