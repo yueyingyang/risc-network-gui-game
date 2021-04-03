@@ -10,6 +10,8 @@ public class PlayerInfo {
     private int techLevel;
     private int foodResource;
     private int techResource;
+    private boolean upgraded;
+
 
     /**
      * Construct a PlayerInfo object
@@ -24,6 +26,7 @@ public class PlayerInfo {
         this.techLevel = techLevel;
         this.foodResource = foodResource;
         this.techResource = techResource;
+        this.upgraded = false;
     }
 
     /**
@@ -42,7 +45,16 @@ public class PlayerInfo {
         int cost = GameUtil.getTechCost(techLevel);
         consumeTech(cost);
         techLevel += 1;
+        upgraded = true;
     }
+
+    /**
+     * Reset the technology upgrade status
+     */
+    public void resetUpgraded() {
+        upgraded = false;
+    }
+
 
     /**
      * Consume technology resource
@@ -99,7 +111,17 @@ public class PlayerInfo {
     }
 
     /**
+     * Get whether the player can upgrade the technology level
+     *
+     * @return true if the player can upgrade the technology level else false
+     */
+    public boolean canUpgradeTech() {
+        return !upgraded;
+    }
+
+    /**
      * Add resource
+     *
      * @param myTerrs is the territories of the player
      */
     public void addResource(Iterable<Territory> myTerrs) {
