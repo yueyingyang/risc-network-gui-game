@@ -1,5 +1,8 @@
 package edu.duke.ece651.risc.shared;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * The messages send between the server and player at the beginning
  */
@@ -26,5 +29,53 @@ public class Constant {
     public static final String STARTGAME = "start";
     public static final String JOINGAME = "join";
     public static final String REJOINGAME = "rejoin";
+    public static final String[] COLORS = {"#97B8A3", "#EDC3C7", "#FDF06F", "#A6CFE2", "#9C9CDD"};
+
+
+    /**
+     * The bonus of each type of soldier
+     */
+    public static final Map<String, Integer> bonus = new HashMap<>();
+
+    static {
+        bonus.put("0", 0);
+        bonus.put("1", 1);
+        bonus.put("2", 3);
+        bonus.put("3", 5);
+        bonus.put("4", 8);
+        bonus.put("5", 11);
+        bonus.put("6", 15);
+    }
+
+    /**
+     * The cost to upgrade the tech level by one from current level
+     * The key in hte map is the current level
+     */
+    public static final Map<Integer, Integer> techCost = new HashMap<>();
+
+    static {
+        techCost.put(1, 50);
+        techCost.put(2, 75);
+        techCost.put(3, 125);
+        techCost.put(4, 200);
+        techCost.put(5, 300);
+    }
+
+    /**
+     * The total cost to upgrade soldier from type 0 to the target type
+     * The key is the target type
+     */
+    public static final Map<String, Integer> soldierCost = new HashMap<>();
+
+    static {
+        soldierCost.put("0", 0);
+        soldierCost.put("1", 3);
+        soldierCost.put("2", 11);
+        soldierCost.put("3", 30);
+        soldierCost.put("4", 55);
+        soldierCost.put("5", 90);
+        soldierCost.put("6", 140);
+    }
+
 }
 

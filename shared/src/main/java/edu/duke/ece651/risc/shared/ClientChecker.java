@@ -1,5 +1,7 @@
 package edu.duke.ece651.risc.shared;
 
+import edu.duke.ece651.risc.shared.entry.ActionEntry;
+
 public class ClientChecker extends Checker {
     public ClientChecker(Checker next) {
         super(next);

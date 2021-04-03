@@ -10,39 +10,18 @@
 
 <div class="ui grid vertically divided">
     <div class="two column centered row">
-        <div id="map" class="six wide column" style="width:600px; height:400px;"><div class="ui segment">
-            <div class="ui active inverted dimmer">
-                <div class="ui text loader">Loading</div>
-            </div>
-            <p></p>
-        </div></div>
-        <div class="eight wide column" style="user-select: auto;">
-            <div class="ui secondary pointing menu" id="actions">
-                <a class="active item" style="user-select: auto;">
-                    Move
-                </a>
-                <a class="item" style="user-select: auto;">
-                    Attack
-                </a>
-                <a class="item" style="user-select: auto;">
-                    Upgrade unit
-                </a>
-                <a class="item" style="user-select: auto;">
-                    Upgrade technology level
-                </a>
-            </div>
-            <div class="ui segment">
-
-                <form class="ui form" th:action="@{/}"
-                      method="post"
-                      th:object="${action}">
-                    <!--                    <div class="ui header">Please enter the placement below:</div>-->
-                    <div class="fields" style="user-select: auto;">
-
-                    </div>
-                    <button class="ui submit button" style="user-select: auto;" type="submit">Submit</button>
-                </form>
-
+        <div class="six wide column" id="map_box" style="width:600px; height:400px;">
+        </div>
+        <div class="eight wide column" id="action_box" style="user-select: auto;">
+            <br>
+            <div class="ui two column grid">
+                <div th:insert="fragments/action_form.html :: action_form"></div>
+                <div class="ui vertical labeled icon buttons">
+                    <button class="ui button toggle" id="commit" style="user-select: auto;">
+                        <i class="play icon" style="user-select: auto;"></i>
+                        Commit for ending this turn's order issue
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -65,55 +44,32 @@
 </div>
 
 <script th:src="@{/util.js}"></script>
-<script th:inline="javascript">
-    <!--    use Thymeleaf inline javascript to convert controller passed data into plain js variable -->
-    const colors = [[${graphData}]].map(territory => territory['color']);
-    const graphData = [[${graphData}]];
-</script>
-<!--include JS to render MAP -->
+<!-- Map display utils -->
 <script th:src="@{/map_display.js}"></script>
 <script th:inline="javascript">
+    <!--    the start state is disabled commit and fields -->
+    $(document).ready(function () {
+            $("#commit").toggleClass("disabled");
+            $("div.field").toggleClass("disabled");
+            $(".submit.button.basic").toggleClass("disabled");
+        }
+    )
 
+    let graphData = null
     const full_map_formatter = params => `😉\t${params.data.owner}<br />` +
         `💂\t${params.data.units}<br />` +
-        `💎\t${params.data.resources}<br />` +
+        `🍽\t${params.data.foodProd}<br />` +
+        `💎\t${params.data.techProd}<br />` +
         `📏\t${params.data.value}`
 
-    // Display the map function
-    display_map(full_map_formatter)
-    // Set interaction of action tabs
-    $('#actions a.item').on('click', function () {
-        $(this)
-            .addClass('active')
-            .siblings()
-            .removeClass('active');
-    })
-    // Refresh map ajax call
-    const refresh_map = () => {
-        const myChart = echarts.init(document.getElementById('map'));
-        const config = {
-            "url": "/game/update_map",
-            "async": true,
-            "type": "get",
-            "success": res => {
-                let colors = res.map(territory => territory['color']);
-                option = getOption(full_map_formatter)
-                option.dataset.source = res;
-                option.series[0].color = colors;
-                myChart.clear();
-                myChart.setOption(option);
-                $('#msg_box').append('<p style="user-select: auto;"> Update map </p>');
-            },
-            "error": () => {
-                $('#msg_box').append('<p style="user-select: auto;"> Please wait... </p>');
-            }
-        }
-        $.ajax(config);
-    }
+    // default is loading box
+    $('#map_box').empty().append(load_html);
 
-    $('#refresh').click(refresh_map);
 </script>
+<!-- Refresh ajax set up -->
+<script th:src="@{/refresh.js}"></script>
+<!-- Action ajax set up -->
+<script th:src="@{/actions.js}"></script>
 </body>
-
 </html>
 

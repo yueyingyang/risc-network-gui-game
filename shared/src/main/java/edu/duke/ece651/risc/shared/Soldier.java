@@ -8,7 +8,7 @@ import java.util.Random;
  * An interface represents a soldier
  */
 @JsonDeserialize(as = BasicSoldier.class)
-public interface Soldier {
+public interface Soldier extends Comparable<Soldier>{
 
     /**
      * Fight with the attacker
@@ -19,4 +19,11 @@ public interface Soldier {
      * else return negative number
      */
     public int fight(Soldier attacker, Random myRandom);
+
+    /**
+     * Get the type of the soldier
+     *
+     * @return the type
+     */
+    public String getType();
 }

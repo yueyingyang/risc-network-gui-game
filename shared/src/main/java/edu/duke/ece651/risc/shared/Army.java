@@ -26,18 +26,28 @@ public interface Army {
     public int getNumSoldiers();
 
     /**
-     * Add the given number of soldiers to the force
+     * Get the number of soldiers in the force
+     *
+     * @param type is the type of the soldier
+     * @return the number of soldiers with the given type in the force
+     */
+    public int getNumSoldiers(String type);
+
+    /**
+     * Add soldiers to the force
      *
      * @param numSoldiers is the number of the soldiers to add
+     * @param type        is the type of the soldier
      */
-    public void addSoldiers(int numSoldiers);
+    public void addSoldiers(int numSoldiers, String type);
 
     /**
      * Remove the given number of soldiers to the force
      *
-     * @param numSoldiers is the number of the soldiers to remove
+     * @param numSoldiers is the number of the soldiers
+     * @param type is the type of the soldier
      */
-    public void removeSoldiers(int numSoldiers);
+    public void removeSoldiers(int numSoldiers, String type);
 
     /**
      * Fight with the attacker
@@ -61,4 +71,5 @@ public interface Army {
      * @param myArmy is the army from the same owner
      */
     public void mergeForce(Army myArmy);
+
 }

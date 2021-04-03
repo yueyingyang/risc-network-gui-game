@@ -19,6 +19,9 @@ public class Territory {
     private Army myArmy;
     private Set<Territory> neighbours;
     private Map<String, Army> attackerBuffer;
+    private int size;
+    private int foodProd;
+    private int techProd;
 
     /**
      * Add for Jackson deserialization
@@ -37,6 +40,28 @@ public class Territory {
         this.myArmy = null;
         this.neighbours = new HashSet<>();
         this.attackerBuffer = new HashMap<>();
+        this.size = 0;
+        this.foodProd = 0;
+        this.techProd = 0;
+    }
+
+    /**
+     * Create a territory object
+     *
+     * @param name     is the name of the territory
+     * @param size     is the size of the territory
+     * @param foodProd is the food production of the territory
+     * @param techProd is the tech production of the territory
+     */
+    public Territory(String name, int size, int foodProd, int techProd) {
+        this.name = name;
+        this.ownerName = null;
+        this.myArmy = null;
+        this.neighbours = new HashSet<>();
+        this.attackerBuffer = new HashMap<>();
+        this.size = size;
+        this.foodProd = foodProd;
+        this.techProd = techProd;
     }
 
     /**
@@ -64,6 +89,33 @@ public class Territory {
      */
     public Set<Territory> getNeighbours() {
         return neighbours;
+    }
+
+    /**
+     * Get the size of the territory
+     *
+     * @return the size of the territory
+     */
+    public int getSize() {
+        return size;
+    }
+
+    /**
+     * Get the food production of the territory
+     *
+     * @return the food production of the territory
+     */
+    public int getFoodProd() {
+        return foodProd;
+    }
+
+    /**
+     * Get the technology production of the territory
+     *
+     * @return the technology production of the territory
+     */
+    public int getTechProd() {
+        return techProd;
     }
 
     /**
@@ -107,7 +159,7 @@ public class Territory {
      */
     @Override
     public int hashCode() {
-        return getName().hashCode();
+        return name.hashCode();
     }
 
     /**
@@ -130,21 +182,41 @@ public class Territory {
     }
 
     /**
-     * Add the given number of soldiers to myArmy
+     * Add the given number of basic soldiers to myArmy
      *
-     * @param numSoldiers is the number of soldiers to add
+     * @param numSoldiers is the number of soldiers
      */
     public void addSoldiersToArmy(int numSoldiers) {
-        myArmy.addSoldiers(numSoldiers);
+        myArmy.addSoldiers(numSoldiers, "0");
     }
 
     /**
-     * Remove the given number of soldiers to myArmy
+     * Add the given number of soldiers with the indicated type to myArmy
      *
-     * @param numSoldiers is the number of soldiers to add
+     * @param numSoldiers is the number of soldiers
+     * @param type        is the type of the soldier
+     */
+    public void addSoldiersToArmy(int numSoldiers, String type) {
+        myArmy.addSoldiers(numSoldiers, type);
+    }
+
+    /**
+     * Remove the given number of basic soldiers from myArmy
+     *
+     * @param numSoldiers is the number of soldiers
      */
     public void removeSoldiersFromArmy(int numSoldiers) {
-        myArmy.removeSoldiers(numSoldiers);
+        myArmy.removeSoldiers(numSoldiers, "0");
+    }
+
+    /**
+     * Remove the given number of soldiers with the indicated type from myArmy
+     *
+     * @param numSoldiers is the number of soldiers
+     * @param type        is the type of the soldier
+     */
+    public void removeSoldiersFromArmy(int numSoldiers, String type) {
+        myArmy.removeSoldiers(numSoldiers, type);
     }
 
     /**
@@ -158,6 +230,21 @@ public class Territory {
             return -1;
         }
         return myArmy.getNumSoldiers();
+    }
+
+    /**
+     * Get the number of soldiers of the given type in myArmy
+     *
+     * @param type is the type of soldier
+     * @return the number of soldiers with the given type
+     * -1 if myArmy has not been setup
+     */
+    public int getNumSoldiersInArmy(String type) {
+        if (myArmy == null) {
+            return -1;
+        }
+        return myArmy.getNumSoldiers(type);
+
     }
 
     /**
@@ -209,10 +296,10 @@ public class Territory {
      * @param temp     is the string builder
      */
     protected void displayCombatInfo(Army defender, Army attacker, StringBuilder temp) {
-        temp.append(defender.getOwnerName()).append(" player")
-                .append("(").append(defender.getNumSoldiers()).append(" soldiers) ")
-                .append("defends ").append(attacker.getOwnerName()).append(" player")
-                .append("(").append(attacker.getNumSoldiers()).append(" soldiers). ");
+        temp.append("Defender: ").append(defender.getOwnerName()).append(" player(")
+                .append(defender.toString()).append(")\n")
+                .append("Attacker: ").append(attacker.getOwnerName()).append(" player(")
+                .append(attacker.toString()).append(")\n");
     }
 
     /**
@@ -231,6 +318,24 @@ public class Territory {
     }
 
     /**
+     * Get the number of soldier in the attacker with the given type
+     *
+     * @param name is the name of the attacker owner
+     * @param type is the type of the soldier
+     * @return the number of soldiers in the attacker
+     * or -1 if the attacker does not exist
+     */
+    public int getNumSoldiersInAttacker(String name, String type) {
+        Army attacker = attackerBuffer.get(name);
+        if (attacker == null) {
+            return -1;
+        }
+        return attacker.getNumSoldiers(type);
+
+    }
+
+
+    /**
      * Check if the two territories belong to the same owner
      *
      * @param terr is a territory
@@ -239,4 +344,6 @@ public class Territory {
     public boolean belongToSameOwner(Territory terr) {
         return ownerName.equals(terr.getOwnerName());
     }
+
+
 }

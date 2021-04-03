@@ -140,4 +140,42 @@ public class GameMapTest {
     assertTrue(allTerritories.contains(t4));
   }
 
+
+  @Test
+  public void test_computeCost(){
+    Territory t1=new Territory("1",3,0,0);
+    Territory t2=new Territory("2",3,0,0);
+    Territory t3=new Territory("3",3,0,0);
+    Territory t4=new Territory("4",1,0,0);
+    List<List<String>> connections=new ArrayList<>();
+    Map<String,Territory> territoryFinder=new HashMap<>();
+    territoryFinder.put("1",t1);
+    territoryFinder.put("2",t2);
+    territoryFinder.put("3",t3);
+    territoryFinder.put("4",t4);
+    t1.setOwnerName("Blue");
+    t2.setOwnerName("Blue");
+    t3.setOwnerName("Blue");
+    t4.setOwnerName("Red");
+
+    List<String> connection1=new ArrayList<>();
+    connection1.add("1");
+    connection1.add("2");
+    List<String> connection2=new ArrayList<>();
+    connection2.add("2");
+    connection2.add("3");
+    List<String> connection3=new ArrayList<>();
+    connection3.add("3");
+    connection3.add("4");
+    List<String> connection4=new ArrayList<>();
+    connection4.add("4");
+    connection4.add("1");
+    connections.add(connection1);
+    connections.add(connection2);
+    connections.add(connection3);
+    connections.add(connection4);
+    GameMap map=new GameMap(connections,territoryFinder);
+    int cost=map.computeCost(t1,t3,2);
+    assertEquals(cost,18);
+  }
 }

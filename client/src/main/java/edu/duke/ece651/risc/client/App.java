@@ -3,10 +3,8 @@
  */
 package edu.duke.ece651.risc.client;
 
-import edu.duke.ece651.risc.shared.ActionEntry;
 import edu.duke.ece651.risc.shared.ClientPlayer;
 import edu.duke.ece651.risc.shared.Constant;
-import edu.duke.ece651.risc.shared.GameMap;
 
 import java.io.*;
 import java.net.Socket;

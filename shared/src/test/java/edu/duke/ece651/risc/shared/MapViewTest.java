@@ -9,17 +9,7 @@ import org.junit.jupiter.api.Test;
 public class MapViewTest {
     @Test
     public void test_display() {
-        V1MapFactory f1 = new V1MapFactory();
-        List<String> playerNames = new ArrayList<>();
-        playerNames.add("John");
-        playerNames.add("Tom");
-        GameMap map = f1.createMap(playerNames, 3);
-
-        for (String playerName : map.getAllPlayerTerritories().keySet()) {
-            for (Territory t : map.getPlayerTerritories(playerName)) {
-                t.setMyArmy(new BasicArmy(playerName, 1));
-            }
-        }
+        GameMap map = getGameMap(3, Arrays.asList("John", "Tom"));
 
         MapView view = new MapView(map);
 
@@ -53,19 +43,21 @@ public class MapViewTest {
         assertEquals(expectedEmptyMap,view.displayMapShape());
     }
 
-    @Test
-    void display_valid_neigh(){
+    public static GameMap getGameMap(int i, List<String> playerNames) {
         V1MapFactory f1 = new V1MapFactory();
-        List<String> playerNames = new ArrayList<>();
-        playerNames.add("John");
-        playerNames.add("Tom");
-        GameMap map = f1.createMap(playerNames, 1);
+        GameMap map = f1.createMap(playerNames, i);
 
         for (String playerName : map.getAllPlayerTerritories().keySet()) {
             for (Territory t : map.getPlayerTerritories(playerName)) {
                 t.setMyArmy(new BasicArmy(playerName, 1));
             }
         }
+        return map;
+    }
+
+    @Test
+    void display_valid_neigh(){
+        GameMap map = getGameMap(1, Arrays.asList("John", "Tom"));
         assertEquals("Tom player:\n" +
                 "-------------\n" +
                 "1 units in 1 (next to: 0)\n" +

@@ -1,4 +1,5 @@
 function getOption(tooltip_formatter_fn) {
+    let colors = graphData.map(territory => territory['color']);
     return {
         tooltip: {
             trigger: 'item',
@@ -34,7 +35,19 @@ function getOption(tooltip_formatter_fn) {
     };
 }
 
+const map_html = '<div id="map" style="width:600px; height:400px;"></div>';
+const load_html = '            <div class="ui active inverted dimmer">\n' +
+    '                <div class="ui text loader">Hey - other players are still placing their 💂. <br>' +
+    'Please wait and click refresh to get update!\n' +
+    '                </div>\n' +
+    '            </div>';
+const resolve_html = '            <div class="ui active inverted dimmer">\n' +
+    '                <div class="ui text loader">Great job! Please wait for resolving combat!<br>' +
+    'Please wait and click refresh to get update!\n' +
+    '                </div>\n' +
+    '            </div>';
 const display_map = (tooltip_formatter_fn) => {
+    $('#map_box').empty().append(map_html);
     const myChart = echarts.init(document.getElementById('map'));
     let option;
     option = getOption(tooltip_formatter_fn);

@@ -1,14 +1,21 @@
 
 package edu.duke.ece651.risc.server;
-import java.util.*;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import java.io.*;
+
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import edu.duke.ece651.risc.shared.*;
+import edu.duke.ece651.risc.shared.entry.ActionEntry;
+import edu.duke.ece651.risc.shared.game.V2MapView;
 
+import java.awt.*;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Random;
+
+import static edu.duke.ece651.risc.shared.Constant.COLORS;
+
 
 /**
  * Game class is responsible for the one game's play
@@ -20,6 +27,7 @@ public class Game {
     private ArrayList<ServerPlayer> stillInPlayers;//players still didn't lose
     private ArrayList<ServerPlayer> stillWatchPlayers;//players stillIn with those who want to watch after losing
     private GameMap gameMap;
+    private V2MapView view;
     private Random myRandom;
     private int randomSeed;
 
@@ -62,6 +70,8 @@ public class Game {
             return "This game is full, please select another game from the available list.";
         }
         this.players.add(player);
+        // assign a color to player based on the idx of the player in the list
+        player.setColor(Color.decode(COLORS[players.size() - 1]));
         return null;
     }
 
@@ -140,7 +150,7 @@ public class Game {
      */
     public void sendObjectToAll(Object o, ArrayList<ServerPlayer> p) {
         for (Player player : p) {
-            try{player.sendObject(o);}catch(Exception e){}        
+            try{player.sendObject(o);}catch(Exception e){}
         }
     }
 
@@ -152,7 +162,7 @@ public class Game {
      */
     public void sendStringToAll(String s, ArrayList<ServerPlayer> p) {
         for (Player player : p) {
-            try{player.sendMessage(s);}catch(Exception e){} 
+            try{player.sendMessage(s);}catch(Exception e){}
         }
     }
 
@@ -167,7 +177,7 @@ public class Game {
             });
             for (ActionEntry placement : placements) {
                 try {
-                    placement.apply(gameMap);
+                    placement.apply(gameMap, null);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());//should never reach here
                 }
@@ -184,7 +194,7 @@ public class Game {
         for (ServerPlayer player : stillInPlayers) {
             //if the player is still active in this game
             if(player.getCurrentGame().equals(gameID)){
-                OneTurnThread thread = new OneTurnThread(gameMap, player);
+                OneTurnThread thread = new OneTurnThread(gameMap, player, players);
                 threads.add(thread);
                 thread.start();
             }
@@ -229,7 +239,7 @@ public class Game {
     public void playOneTurn() throws IOException {
         //send map to players in the stillWatch list
         for (Player p : stillWatchPlayers) {
-            try{p.sendObject(gameMap);}catch(Exception e){}
+            try{p.sendMessage(view.toString(true));}catch(Exception e){}
         }
         //create a thread for each player to type their actions until receive commit
         //for inactive players, do nothing, just like they drectly type in Commit
@@ -252,14 +262,14 @@ public class Game {
             //if lost the game, the player can only watch or disconnect
             if (checkLost(player)) {
                 //we will only send lose game info to who has just lost the game
-                try{player.sendMessage(Constant.LOSE_GAME);}catch(Exception e){}               
+                try{player.sendMessage(Constant.LOSE_GAME);}catch(Exception e){}
                 //remove the lost player from stillIn
                 stillInPlayers.remove(player);
                 losers.add(player);
             }
             //for those who didn't lose, tell them to continue
             else {
-                try{player.sendMessage(Constant.CONTINUE_PLAYING);}catch(Exception e){}               
+                try{player.sendMessage(Constant.CONTINUE_PLAYING);}catch(Exception e){}
             }
         }
 
@@ -326,8 +336,10 @@ public class Game {
         stillInPlayers = new ArrayList<>(players);
         stillWatchPlayers = new ArrayList<>(players);
         makeMap(TerritoryPerPlayer);
+        view = new V2MapView(this.gameMap, players);
         sendObjectToAll(this.gameMap, players);
         sendStringToAll(String.valueOf(totalSoldiers), players);
+        sendStringToAll(view.toString(false), players);
         placementPhase();
         while (true) {
             //multi thread in this function to handle simultaneous input
