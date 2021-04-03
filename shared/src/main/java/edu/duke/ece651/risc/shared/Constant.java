@@ -77,5 +77,19 @@ public class Constant {
         soldierCost.put("6", 140);
     }
 
+    /**
+     * Represents the required technology level to update the soldier to the target type
+     */
+    public static final Map<String, Integer> requiredTech = new HashMap<>();
+    static {
+        requiredTech.put("1", 1);
+        requiredTech.put("2", 2);
+        requiredTech.put("3", 3);
+        requiredTech.put("4", 4);
+        requiredTech.put("5", 5);
+        requiredTech.put("6", 6);
+    }
+
+
 }
 
