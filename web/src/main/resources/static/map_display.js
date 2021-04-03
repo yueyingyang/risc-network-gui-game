@@ -34,10 +34,16 @@ function getOption(tooltip_formatter_fn) {
         }
     };
 }
+
 const map_html = '<div id="map" style="width:600px; height:400px;"></div>';
 const load_html = '            <div class="ui active inverted dimmer">\n' +
-    '                <div class="ui text loader">Hey - other players are placing their soldiers. Please wait and click\n' +
-    '                    refresh to check!\n' +
+    '                <div class="ui text loader">Hey - other players are still placing their 💂. <br>' +
+    'Please wait and click refresh to get update!\n' +
+    '                </div>\n' +
+    '            </div>';
+const resolve_html = '            <div class="ui active inverted dimmer">\n' +
+    '                <div class="ui text loader">Great job! Please wait for resolving combat!<br>' +
+    'Please wait and click refresh to get update!\n' +
     '                </div>\n' +
     '            </div>';
 const display_map = (tooltip_formatter_fn) => {
