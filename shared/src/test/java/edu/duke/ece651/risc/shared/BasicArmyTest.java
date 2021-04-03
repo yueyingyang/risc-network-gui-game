@@ -78,8 +78,8 @@ class BasicArmyTest {
     private void test_fightOneRound(BasicArmy defender, BasicArmy attacker, Random myRandom,
                                     int round, String expDefender, String expAttacker) {
         defender.fightOneRound(attacker, myRandom, round);
-        assertEquals(defender.toString(), expDefender);
-        assertEquals(attacker.toString(), expAttacker);
+        assertEquals(defender.getForce().toString(), expDefender);
+        assertEquals(attacker.getForce().toString(), expAttacker);
     }
 
     @Test
@@ -102,7 +102,15 @@ class BasicArmyTest {
         army0.addSoldiers(1, "4");
         army0.addSoldiers(1, "2");
         Collections.sort(army0.getForce());
-        assertEquals("[5, 4, 3, 2, 2, 0]", army0.toString());
+        assertEquals("[5, 4, 3, 2, 2, 0]", army0.getForce().toString());
+    }
+
+    @Test
+    public void test_toString() {
+        Army army1 = new BasicArmy("Green", 3, "4");
+        army1.addSoldiers(3, "2");
+        String expt = "3 type-2 soldiers, 3 type-4 soldiers";
+        assertEquals(expt, army1.toString());
     }
 
 }

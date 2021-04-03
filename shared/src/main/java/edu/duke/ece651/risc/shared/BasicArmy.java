@@ -1,10 +1,7 @@
 package edu.duke.ece651.risc.shared;
 
 import java.beans.ConstructorProperties;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * A class represents a basic army
@@ -176,8 +173,17 @@ public class BasicArmy implements Army {
      */
     @Override
     public String toString() {
-        return force.toString();
+        StringBuilder ans = new StringBuilder();
+        Set<Soldier> keys = new HashSet<>(force);
+        for (Soldier k : keys) {
+            ans.append(Collections.frequency(force, k))
+                    .append(" type-").append(k.getType()).append(" soldiers, ");
+        }
+        ans.delete(ans.length() - 2, ans.length());
+        return ans.toString();
     }
+
+
 
 
 }
