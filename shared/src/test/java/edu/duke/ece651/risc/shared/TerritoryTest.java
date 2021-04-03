@@ -86,42 +86,6 @@ class TerritoryTest {
         assertEquals(12, terr.getNumSoldiersInAttacker("HanMeiMei"));
     }
 
-    @Test
-    public void test_resolveCombat() {
-        Territory terr = new Territory("1");
-        terr.setOwnerName("Purple");
-        Army myArmy = new BasicArmy("Purple", 5);
-        terr.setMyArmy(myArmy);
-
-        // no combat on territory 1
-        String ans2 = terr.resolveCombat(new Random(0));
-        assertEquals("", ans2);
-        assertEquals("Purple", terr.getOwnerName());
-
-        // first combat on territory 1
-        Army attacker0 = new BasicArmy("Blue", 4);
-        Army attacker1 = new BasicArmy("Green", 6);
-        Army attacker2 = new BasicArmy("Blue", 8);
-        addAttackers(terr, attacker0, attacker1, attacker2);
-
-        String ans = terr.resolveCombat(new Random(0));
-        String expect = "On territory 1:\n" +
-                "Purple player(5 soldiers) defends Blue player(12 soldiers). Blue player wins.\n" +
-                "Blue player(10 soldiers) defends Green player(6 soldiers). Blue player wins.\n";
-        assertEquals(expect, ans);
-        assertEquals(-1, terr.getNumSoldiersInAttacker("Green"));
-
-        // second combat on territory 1
-        Army attacker3 = new BasicArmy("Yellow", 4);
-        Army attacker4 = new BasicArmy("Orange", 10);
-        addAttackers(terr, attacker3, attacker4);
-        String ans1 = terr.resolveCombat(new Random(0));
-        String expect1 = "On territory 1:\n" +
-                "Blue player(2 soldiers) defends Yellow player(4 soldiers). Yellow player wins.\n" +
-                "Yellow player(4 soldiers) defends Orange player(10 soldiers). Orange player wins.\n";
-        assertEquals(expect1, ans1);
-    }
-
     private void addAttackers(Territory terr, Army... attackers) {
         for (Army attacker : attackers) {
             terr.bufferAttacker(attacker);
@@ -147,7 +111,7 @@ class TerritoryTest {
         terr.setMyArmy(army);
         assertEquals(5, terr.getNumSoldiersInArmy("0"));
 
-        terr.addSoldiersToArmy(3, "1" );
+        terr.addSoldiersToArmy(3, "1");
         assertEquals(3, terr.getNumSoldiersInArmy("1"));
         terr.addSoldiersToArmy(6, "4");
         assertEquals(6, terr.getNumSoldiersInArmy("4"));
@@ -156,6 +120,47 @@ class TerritoryTest {
         assertEquals(4, terr.getNumSoldiersInArmy("4"));
         terr.removeSoldiersFromArmy(2, "1");
         assertEquals(1, terr.getNumSoldiersInArmy("1"));
+    }
+
+    @Test
+    public void test_resolveCombat() {
+        Territory terr0 = new Territory("1");
+        terr0.setOwnerName("Purple");
+        Army army0 = new BasicArmy("Purple", 1);
+        army0.addSoldiers(2, "3");
+        army0.addSoldiers(3, "2");
+        terr0.setMyArmy(army0);
+
+        Army army1 = new BasicArmy("Green", 2, "4");
+        army1.addSoldiers(3, "2");
+        Army army2 = new BasicArmy("Green", 1, "3");
+        army2.addSoldiers(1, "4");
+        terr0.bufferAttacker(army1);
+        terr0.bufferAttacker(army2);
+
+        Random myRandom = new Random(0);
+        String ans0 = terr0.resolveCombat(myRandom);
+        String expt0 = "On territory 1:\n" +
+                "Defender: Purple player(1 type-0 soldiers, 3 type-2 soldiers, 2 type-3 soldiers)\n" +
+                "Attacker: Green player(3 type-2 soldiers, 1 type-3 soldiers, 3 type-4 soldiers)\n" +
+                "Green player wins.\n";
+        assertEquals(expt0, ans0);
+
+        // second combat on territory0
+        Army army3 = new BasicArmy("Blue", 2, "5");
+        army3.addSoldiers(1, "3");
+        Army army4 = new BasicArmy("Orange", 4, "2");
+        terr0.bufferAttacker(army3);
+        terr0.bufferAttacker(army4);
+        String ans1 = terr0.resolveCombat(myRandom);
+        String expt1 = "On territory 1:\n" +
+                "Defender: Green player(1 type-4 soldiers)\n" +
+                "Attacker: Orange player(4 type-2 soldiers)\n" +
+                "Orange player wins.\n" +
+                "Defender: Orange player(3 type-2 soldiers)\n" +
+                "Attacker: Blue player(1 type-3 soldiers, 2 type-5 soldiers)\n" +
+                "Blue player wins.\n";
+        assertEquals(expt1, ans1);
     }
 
 }

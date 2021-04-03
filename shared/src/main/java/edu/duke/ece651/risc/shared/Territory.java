@@ -296,10 +296,10 @@ public class Territory {
      * @param temp     is the string builder
      */
     protected void displayCombatInfo(Army defender, Army attacker, StringBuilder temp) {
-        temp.append(defender.getOwnerName()).append(" player")
-                .append("(").append(defender.getNumSoldiers()).append(" soldiers) ")
-                .append("defends ").append(attacker.getOwnerName()).append(" player")
-                .append("(").append(attacker.getNumSoldiers()).append(" soldiers). ");
+        temp.append("Defender: ").append(defender.getOwnerName()).append(" player(")
+                .append(defender.toString()).append(")\n")
+                .append("Attacker: ").append(attacker.getOwnerName()).append(" player(")
+                .append(attacker.toString()).append(")\n");
     }
 
     /**
