@@ -29,14 +29,14 @@ class PlayerInfoTest {
     @Test
     public void test_upgradeTech() {
         PlayerInfo myInfo = new PlayerInfo("LiLei", 3, 200, 400);
-        assertTrue(myInfo.canUpgrade());
+        assertFalse(myInfo.isRequested());
         myInfo.takeTech();
-        assertFalse(myInfo.canUpgrade());
+        assertTrue(myInfo.isRequested());
         assertEquals(3, myInfo.getTechLevel());
         assertEquals(275, myInfo.getTechResource());
         myInfo.effectTech();
         assertEquals(4, myInfo.getTechLevel());
-        assertTrue(myInfo.canUpgrade());
+        assertFalse(myInfo.isRequested());
     }
 
 }
