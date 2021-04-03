@@ -2,9 +2,11 @@ package edu.duke.ece651.risc.shared;
 
 //import java.util.ArrayList;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.*;
 
-
+@JsonIgnoreProperties(value = { "costGraph" })
 public class GameMap {
     private Map<String, Territory> territoryFinder;
 
@@ -31,6 +33,7 @@ public class GameMap {
 
             start.addNeighbour(end);
             end.addNeighbour(start);
+
         }
     }
 
@@ -140,4 +143,51 @@ public class GameMap {
       }
       return false;
     }
+
+    /**
+     * compute the minimum cost from territory start to territory end
+     *
+     * @param start the starting territory
+     * @param end   the end territory
+     * @param unit  how many unit of army to be moved
+     * @return      the minimum cost of move
+     */
+    public int computeCost(Territory start, Territory end, int unit){
+        Set<Territory> visited=new HashSet<>();
+        
+        int len=territoryFinder.size();
+        Map<Territory,Integer> distance=new HashMap<>();
+        Map<Territory,Integer> prev=new HashMap<>();
+        Set<Territory> buffer=new HashSet<>();
+        for(String name:territoryFinder.keySet()){
+            if(territoryFinder.get(name).getOwnerName().equals(start.getOwnerName())) {
+                distance.put(territoryFinder.get(name), -1);
+                //prev.put(territoryFinder.get(name), -1);
+                buffer.add(territoryFinder.get(name));
+            }
+        }
+        distance.put(start,0);
+        while(!buffer.isEmpty()){
+            int min_distance=Integer.MAX_VALUE;
+            Territory toRemove=null;
+            for(Territory t:buffer){
+                if(distance.get(t)>=0 && min_distance>distance.get(t)){
+                    min_distance=distance.get(t);
+                    toRemove=t;
+                }
+            }
+            buffer.remove(toRemove);
+            //System.out.println(toRemove.getName());
+            for(Territory neighbour:toRemove.getNeighbours()){
+                if(neighbour.getOwnerName().equals(start.getOwnerName())) {
+                    int new_dist = distance.get(toRemove) + toRemove.getSize() + neighbour.getSize();
+                    if (distance.get(neighbour)==-1|| new_dist < distance.get(neighbour)) {
+                        distance.put(neighbour, new_dist);
+                    }
+                }
+            }
+        }
+        return (distance.get(end)+start.getSize()+end.getSize())*unit/2;
+    }
+    
 }
