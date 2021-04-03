@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * A class used as response body in action submission ajax call
- *
+ * <p>
  * valRes is the validation result.
  * graphData is the List<ObjectNode> to display map.
  */
@@ -30,6 +30,16 @@ public class ActionAjaxResBody {
   }
 
   List<ObjectNode> graphData;
+
+  public boolean isWin() {
+    return win;
+  }
+
+  public void setWin(boolean win) {
+    this.win = win;
+  }
+
+  boolean win;
 
   public ActionAjaxResBody() {
   }

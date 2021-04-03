@@ -2,6 +2,7 @@ package edu.duke.ece651.risc.web;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import edu.duke.ece651.risc.shared.ClientSocket;
+import edu.duke.ece651.risc.shared.Constant;
 import edu.duke.ece651.risc.shared.JSONSerializer;
 import edu.duke.ece651.risc.shared.entry.ActionEntry;
 import edu.duke.ece651.risc.shared.entry.AttackEntry;
@@ -53,7 +54,6 @@ public class AjaxController {
   }
 
   /**
-   * todo: need to be moved to AjaxController after refactoring with V2MapView
    * Ajax GET API for update map after placement
    *
    * @return Response with status error or success, if success then body is updated GAMEMAP
@@ -99,5 +99,61 @@ public class AjaxController {
     resBody.setGraphData(graphData);
     resBody.setValRes(validRes);
     return ResponseEntity.ok(resBody);
+  }
+
+  @PostMapping(value = "/commit")
+  public ResponseEntity<?> commit() throws IOException {
+//    local test
+//    return ResponseEntity.ok(null);
+////    Wrap a commit request
+    ClientSocket cs = playerMapping.getSocket(userName);
+    cs.sendMessage(Constant.ORDER_COMMIT);
+    return ResponseEntity.ok(null);
+  }
+
+  /**
+   * todo: need to be moved to AjaxController after refactoring with V2MapView
+   * Ajax GET API for update map after placement
+   *
+   * @return Response with status error or success, if success then body is updated GAMEMAP
+   * @throws IOException
+   */
+  @GetMapping(value = "/resolve_combat")
+  public ResponseEntity<?> tryResolveCombat() throws IOException {
+    ActionAjaxResBody resBody = new ActionAjaxResBody();
+//    for local test
+//    resBody.setValRes("test resolve combat result");
+//    resBody.setGraphData(util.mockObjectNodes());
+//    return ResponseEntity.status(HttpStatus.ACCEPTED).body(resBody);
+
+    ClientSocket cs = playerMapping.getSocket(userName);
+    if (cs.hasNewMsg()) {
+//  1. recv combat result
+      String combatRes = cs.recvMessage();
+//  2. recv LOSE / CONTINUE
+      String playerStatus = cs.recvMessage();
+//      2.1 CONTINUE
+      if (playerStatus.equals(Constant.CONTINUE_PLAYING)) {
+        String gameStatus = cs.recvMessage(); // GAME_OVER or next turn's map
+        if (!gameStatus.equals(Constant.GAME_OVER)) {
+          //          2.1.2 Next turn starts!
+          resBody.setGraphData(util.deNodeList(gameStatus));
+        } else {
+//          2.1.1 You are the last player! You're the winner!
+//          todo: redirect to winner's page
+          resBody.setGraphData(null);
+          resBody.setWin(true);
+        }
+      } else {
+//        2.2 LOSE
+//        todo: redirect to loser's page
+        resBody.setGraphData(null);
+        resBody.setWin(false);
+      }
+      resBody.setValRes(combatRes);
+      return ResponseEntity.status(HttpStatus.ACCEPTED).body(resBody);
+    }
+//    Continue to wait for combating result
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
   }
 }

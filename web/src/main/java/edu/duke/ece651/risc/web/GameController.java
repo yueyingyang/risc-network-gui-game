@@ -100,5 +100,13 @@ public class GameController {
     return "game";
   }
 
+  @GetMapping(value = "/win")
+  public String displayWin() {
+    return "display_win";
+  }
 
+  @GetMapping(value = "/lose")
+  public String displayLose() {
+    return "display_lose";
+  }
 }
