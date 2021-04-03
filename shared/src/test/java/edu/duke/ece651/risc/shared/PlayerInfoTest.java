@@ -26,4 +26,13 @@ class PlayerInfoTest {
         assertEquals(40, myInfo.getTechResource());
     }
 
+    @Test
+    public void test_upgradeTech() {
+        PlayerInfo myInfo = new PlayerInfo("LiLei", 3, 200, 400);
+        assertTrue(myInfo.canUpgradeTech());
+        myInfo.upgradeTech();
+        assertEquals(275, myInfo.getTechResource());
+        assertFalse(myInfo.canUpgradeTech());
+    }
+
 }
