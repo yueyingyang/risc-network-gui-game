@@ -2,16 +2,14 @@ package edu.duke.ece651.risc.web;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 
 
@@ -22,7 +20,7 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter{
         super();
      }
 
-    @Override
+    /*@Override
     protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
         .withUser("user1").password(passwordEncoder().encode("user1Pass")).roles("USER")
@@ -30,7 +28,7 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter{
         .withUser("user2").password(passwordEncoder().encode("user2Pass")).roles("USER")
         .and()
         .withUser("admin").password(passwordEncoder().encode("adminPass")).roles("ADMIN");
-    }
+    }*/
 
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
@@ -45,35 +43,29 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter{
         // ...
         .formLogin()
         .loginPage("/login")
-        .defaultSuccessUrl("/lobby?name=test", true)
+        .successHandler(myAuthenticationSuccessHandler())
+        //.defaultSuccessUrl("/lobby?name=test", true)
         .failureUrl("/login?error=true")
         .and()
         .logout()
         .logoutUrl("/logout")
         .logoutSuccessUrl("/");
-        
-      
-//      .loginPage("/login.html")
-////      .loginProcessingUrl("/perform_login")
-//      .defaultSuccessUrl("/lobby?name=test", true)
-//      .failureUrl("/login.html?error=true")
-//      .failureHandler(authenticationFailureHandler());
-      /*.and()
-      .logout()
-      .logoutUrl("/perform_logout")
-      .deleteCookies("JSESSIONID")
-      .logoutSuccessHandler(logoutSuccessHandler());*/
     }
 
 
-    @Bean 
+    /*@Bean 
     public PasswordEncoder passwordEncoder() { 
         return new BCryptPasswordEncoder(); 
-    }
+    }*/
 
     @Bean
     public AuthenticationFailureHandler authenticationFailureHandler() {
         return new CustomAuthenticationFailureHandler();
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler myAuthenticationSuccessHandler(){
+        return new MySimpleUrlAuthenticationSuccessHandler();
     }
 
 
