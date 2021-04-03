@@ -32,12 +32,15 @@ class BasicArmyTest {
 
     @Test
     public void test_fight() {
-        Army army0 = new BasicArmy("HanMeiMei", 5);
-        Army army1 = new BasicArmy("LiLei", 8);
-        test_fight(army0, army1, "HanMeiMei");
+        Army army0 = new BasicArmy("HanMeiMei", 1, "2");
+        army0.addSoldiers(1, "5");
+        army0.addSoldiers(1, "3");
 
-        Army army3 = new BasicArmy("Kitty", 12);
-        test_fight(army0, army3,"Kitty");
+        Army army1 = new BasicArmy("LiLei", 1);
+        army1.addSoldiers(1, "6");
+        army1.addSoldiers(1, "2");
+
+        test_fight(army0, army1, "HanMeiMei");
     }
 
     private void test_fight(Army army0, Army army1, String expectWinner) {
