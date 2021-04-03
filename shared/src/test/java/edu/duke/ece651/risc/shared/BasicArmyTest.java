@@ -111,6 +111,10 @@ class BasicArmyTest {
         army1.addSoldiers(3, "2");
         String expt = "3 type-2 soldiers, 3 type-4 soldiers";
         assertEquals(expt, army1.toString());
+
+        Army army2 = new BasicArmy("Orange", 0);
+        String expt2 = "0 soldiers";
+        assertEquals(expt2, army2.toString());
     }
 
 }

@@ -173,6 +173,9 @@ public class BasicArmy implements Army {
      */
     @Override
     public String toString() {
+        if (getNumSoldiers() == 0) {
+            return "0 soldiers";
+        }
         StringBuilder ans = new StringBuilder();
         Set<Soldier> keys = new HashSet<>(force);
         for (Soldier k : keys) {
