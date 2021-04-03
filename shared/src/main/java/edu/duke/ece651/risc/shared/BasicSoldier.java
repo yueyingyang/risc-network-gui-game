@@ -1,6 +1,7 @@
 package edu.duke.ece651.risc.shared;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import edu.duke.ece651.risc.shared.game.GameUtil;
 
 import java.util.Random;
 
@@ -37,9 +38,19 @@ public class BasicSoldier implements Soldier {
     @Override
     public int fight(Soldier attacker, Random myRandom) {
         int length = 20;
-        int defenderRoll = myRandom.nextInt(length);
-        int attackerRoll = myRandom.nextInt(length);
+        int defenderRoll = myRandom.nextInt(length) + GameUtil.getBonus(type);
+        int attackerRoll = myRandom.nextInt(length) + GameUtil.getBonus(attacker.getType());
         return defenderRoll - attackerRoll;
+    }
+
+    /**
+     * Get the type of the soldier
+     *
+     * @return the type
+     */
+    @Override
+    public String getType() {
+        return type;
     }
 
     /**
@@ -79,4 +90,25 @@ public class BasicSoldier implements Soldier {
         return type.hashCode();
     }
 
+    /**
+     * Set the natural ordering of the two soldiers based on the bonus
+     * to sort in descending order
+     *
+     * @param s is the soldier to compare to
+     * @return positive number if the bonus is smaller
+     */
+    @Override
+    public int compareTo(Soldier s) {
+        return GameUtil.getBonus(s.getType()) - GameUtil.getBonus(type);
+    }
+
+    /**
+     * Get the string representation of the soldier
+     *
+     * @return the string representation of the soldier
+     */
+    @Override
+    public String toString() {
+        return type;
+    }
 }

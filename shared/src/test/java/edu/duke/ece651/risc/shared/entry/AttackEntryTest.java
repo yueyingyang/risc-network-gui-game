@@ -42,5 +42,4 @@ class AttackEntryTest {
         assertEquals(4, terr2.getNumSoldiersInArmy());
         assertEquals(3, terr2.getNumSoldiersInAttacker("LiLei"));
     }
-
 }

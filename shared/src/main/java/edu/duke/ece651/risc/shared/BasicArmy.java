@@ -1,12 +1,7 @@
 package edu.duke.ece651.risc.shared;
 
-import edu.duke.ece651.risc.shared.game.GameUtil;
-
 import java.beans.ConstructorProperties;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * A class represents a basic army
@@ -34,7 +29,18 @@ public class BasicArmy implements Army {
      */
     @ConstructorProperties({"ownerName", "numSoldiers"})
     public BasicArmy(String ownerName, int numSoldiers) {
-        this(ownerName, new ArrayList<>(Collections.nCopies(numSoldiers, new BasicSoldier())));
+        this(ownerName, numSoldiers, "0");
+    }
+
+    /**
+     * Construct a BasicArmy object
+     *
+     * @param ownerName   is the name of the owner of the army
+     * @param numSoldiers is the number of soldiers in the force
+     * @param type        is the type of the soldier
+     */
+    public BasicArmy(String ownerName, int numSoldiers, String type) {
+        this(ownerName, new ArrayList<>(Collections.nCopies(numSoldiers, new BasicSoldier(type))));
     }
 
     /**
@@ -112,8 +118,12 @@ public class BasicArmy implements Army {
      */
     @Override
     public Army fight(Army attacker, Random myRandom) {
+        Collections.sort(force);
+        Collections.sort(attacker.getForce());
+        int round = 1;
         while (getNumSoldiers() > 0 && attacker.getNumSoldiers() > 0) {
-            fightOneRound(attacker, myRandom);
+            fightOneRound(attacker, myRandom, round);
+            round += 1;
         }
         if (getNumSoldiers() > 0) {
             return this;
@@ -126,15 +136,21 @@ public class BasicArmy implements Army {
      *
      * @param attacker is the army that attack the territory
      */
-    protected void fightOneRound(Army attacker, Random myRandom) {
+    protected void fightOneRound(Army attacker, Random myRandom, int round) {
         List<Soldier> enemyForce = attacker.getForce();
-        Soldier mySoldier = force.get(force.size() - 1);
-        Soldier enemySoldier = enemyForce.get(enemyForce.size() - 1);
+        Soldier mySoldier, enemySoldier;
+        if (round % 2 == 0) {
+            mySoldier = force.get(0);
+            enemySoldier = enemyForce.get(enemyForce.size() - 1);
+        } else {
+            mySoldier = force.get(force.size() - 1);
+            enemySoldier = enemyForce.get(0);
+        }
         int res = mySoldier.fight(enemySoldier, myRandom);
         if (res >= 0) {
-            attacker.removeSoldiers(1, "0");
+            attacker.removeSoldiers(1, enemySoldier.getType());
         } else {
-            removeSoldiers(1, "0");
+            removeSoldiers(1, mySoldier.getType());
         }
     }
 
@@ -151,19 +167,26 @@ public class BasicArmy implements Army {
     }
 
     /**
-     * Upgrade the force
+     * Get the string representation of the army
      *
-     * @param fromType    is the current type of the soldier
-     * @param toType      is the type of the soldier after upgrade
-     * @param numSoldiers is the number of soldiers
+     * @return the string representation of the army
      */
     @Override
-    public void upgradeForce(String fromType, String toType, int numSoldiers, PlayerInfo myInfo) {
-        removeSoldiers(numSoldiers, fromType);
-        addSoldiers(numSoldiers, toType);
-        int cost = GameUtil.getSoldierCost(fromType, toType, numSoldiers);
-        myInfo.consumeFood(cost);
+    public String toString() {
+        if (getNumSoldiers() == 0) {
+            return "0 soldiers";
+        }
+        StringBuilder ans = new StringBuilder();
+        Set<Soldier> keys = new HashSet<>(force);
+        for (Soldier k : keys) {
+            ans.append(Collections.frequency(force, k))
+                    .append(" type-").append(k.getType()).append(" soldiers, ");
+        }
+        ans.delete(ans.length() - 2, ans.length());
+        return ans.toString();
     }
+
+
 
 
 }

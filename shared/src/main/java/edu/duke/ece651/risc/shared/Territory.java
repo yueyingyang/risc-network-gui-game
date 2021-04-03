@@ -182,21 +182,41 @@ public class Territory {
     }
 
     /**
-     * Add the given number of soldiers to myArmy
+     * Add the given number of basic soldiers to myArmy
      *
-     * @param numSoldiers is the number of soldiers to add
+     * @param numSoldiers is the number of soldiers
      */
     public void addSoldiersToArmy(int numSoldiers) {
         myArmy.addSoldiers(numSoldiers, "0");
     }
 
     /**
-     * Remove the given number of soldiers to myArmy
+     * Add the given number of soldiers with the indicated type to myArmy
      *
-     * @param numSoldiers is the number of soldiers to add
+     * @param numSoldiers is the number of soldiers
+     * @param type        is the type of the soldier
+     */
+    public void addSoldiersToArmy(int numSoldiers, String type) {
+        myArmy.addSoldiers(numSoldiers, type);
+    }
+
+    /**
+     * Remove the given number of basic soldiers from myArmy
+     *
+     * @param numSoldiers is the number of soldiers
      */
     public void removeSoldiersFromArmy(int numSoldiers) {
         myArmy.removeSoldiers(numSoldiers, "0");
+    }
+
+    /**
+     * Remove the given number of soldiers with the indicated type from myArmy
+     *
+     * @param numSoldiers is the number of soldiers
+     * @param type        is the type of the soldier
+     */
+    public void removeSoldiersFromArmy(int numSoldiers, String type) {
+        myArmy.removeSoldiers(numSoldiers, type);
     }
 
     /**
@@ -276,10 +296,10 @@ public class Territory {
      * @param temp     is the string builder
      */
     protected void displayCombatInfo(Army defender, Army attacker, StringBuilder temp) {
-        temp.append(defender.getOwnerName()).append(" player")
-                .append("(").append(defender.getNumSoldiers()).append(" soldiers) ")
-                .append("defends ").append(attacker.getOwnerName()).append(" player")
-                .append("(").append(attacker.getNumSoldiers()).append(" soldiers). ");
+        temp.append("Defender: ").append(defender.getOwnerName()).append(" player(")
+                .append(defender.toString()).append(")\n")
+                .append("Attacker: ").append(attacker.getOwnerName()).append(" player(")
+                .append(attacker.toString()).append(")\n");
     }
 
     /**
@@ -298,6 +318,24 @@ public class Territory {
     }
 
     /**
+     * Get the number of soldier in the attacker with the given type
+     *
+     * @param name is the name of the attacker owner
+     * @param type is the type of the soldier
+     * @return the number of soldiers in the attacker
+     * or -1 if the attacker does not exist
+     */
+    public int getNumSoldiersInAttacker(String name, String type) {
+        Army attacker = attackerBuffer.get(name);
+        if (attacker == null) {
+            return -1;
+        }
+        return attacker.getNumSoldiers(type);
+
+    }
+
+
+    /**
      * Check if the two territories belong to the same owner
      *
      * @param terr is a territory
@@ -307,16 +345,5 @@ public class Territory {
         return ownerName.equals(terr.getOwnerName());
     }
 
-    /**
-     * Upgrade my army
-     *
-     * @param fromType    is the current type of the soldier
-     * @param toType      is the type of the soldier after upgrading
-     * @param numSoldiers is the number of soldiers
-     * @param myInfo      is the player info
-     */
-    public void upgradeArmy(String fromType, String toType, int numSoldiers, PlayerInfo myInfo) {
-        myArmy.upgradeForce(fromType, toType, numSoldiers, myInfo);
-    }
 
 }

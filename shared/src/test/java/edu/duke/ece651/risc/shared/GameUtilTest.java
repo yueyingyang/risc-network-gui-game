@@ -11,7 +11,7 @@ class GameUtilTest {
     public void test_getBonusAtLevel() {
         int[] expect = {0, 1, 3, 5, 8, 11, 15};
         for (int i = 0; i < 7; i++) {
-            assertEquals(expect[i], GameUtil.getBonusAtLevel(String.valueOf(i)));
+            assertEquals(expect[i], GameUtil.getBonus(String.valueOf(i)));
         }
     }
 

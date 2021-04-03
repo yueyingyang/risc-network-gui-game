@@ -1,11 +1,9 @@
 package edu.duke.ece651.risc.shared;
 
+import edu.duke.ece651.risc.shared.entry.BasicEntry;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,12 +32,15 @@ class BasicArmyTest {
 
     @Test
     public void test_fight() {
-        Army army0 = new BasicArmy("HanMeiMei", 5);
-        Army army1 = new BasicArmy("LiLei", 8);
-        test_fight(army0, army1, "HanMeiMei");
+        Army army0 = new BasicArmy("HanMeiMei", 1, "2");
+        army0.addSoldiers(1, "5");
+        army0.addSoldiers(1, "3");
 
-        Army army3 = new BasicArmy("Kitty", 12);
-        test_fight(army0, army3,"Kitty");
+        Army army1 = new BasicArmy("LiLei", 1);
+        army1.addSoldiers(1, "6");
+        army1.addSoldiers(1, "2");
+
+        test_fight(army0, army1, "HanMeiMei");
     }
 
     private void test_fight(Army army0, Army army1, String expectWinner) {
@@ -50,15 +51,35 @@ class BasicArmyTest {
 
     @Test
     public void test_fightOneRound() {
-        BasicArmy army0 = new BasicArmy("HanMeiMei", 5);
-        BasicArmy army1 = new BasicArmy("LiLei", 8);
+        BasicArmy army0 = new BasicArmy("HanMeiMei", 1, "1");
+        army0.addSoldiers(2, "4");
+        army0.addSoldiers(1, "2");
+
+        BasicArmy army1 = new BasicArmy("LiLei", 1);
+        army1.addSoldiers(1, "1");
+        army1.addSoldiers(1, "6");
+        army1.addSoldiers(1, "4");
+
+        Collections.sort(army0.getForce());
+        Collections.sort(army1.getForce());
+
         Random myRandom = new Random(0);
-        army0.fightOneRound(army1, myRandom);
-        assertEquals(4, army0.getNumSoldiers());
-        assertEquals(8, army1.getNumSoldiers());
-        army0.fightOneRound(army1, myRandom);
-        assertEquals(4, army0.getNumSoldiers());
-        assertEquals(7, army1.getNumSoldiers());
+        test_fightOneRound(army0, army1, myRandom, 1,
+                "[4, 4, 2]", "[6, 4, 1, 0]");
+        test_fightOneRound(army0, army1, myRandom, 2,
+                "[4, 4, 2]", "[6, 4, 1]");
+        test_fightOneRound(army0, army1, myRandom, 3,
+                "[4, 4]", "[6, 4, 1]");
+        test_fightOneRound(army0, army1, myRandom, 4,
+                "[4, 4]", "[6, 4]");
+
+    }
+
+    private void test_fightOneRound(BasicArmy defender, BasicArmy attacker, Random myRandom,
+                                    int round, String expDefender, String expAttacker) {
+        defender.fightOneRound(attacker, myRandom, round);
+        assertEquals(defender.getForce().toString(), expDefender);
+        assertEquals(attacker.getForce().toString(), expAttacker);
     }
 
     @Test
@@ -73,19 +94,27 @@ class BasicArmyTest {
     }
 
     @Test
-    public void test_upgradeForce() {
-        PlayerInfo myInfo = new PlayerInfo("HanMeiMei", 6, 300, 200);
-        Army army0 = new BasicArmy("HanMeiMei", 5);
-
-        army0.upgradeForce("0", "2", 3, myInfo);
-        assertEquals(267, myInfo.getFoodResource());
-        assertEquals(2, army0.getNumSoldiers("0"));
-        assertEquals(3, army0.getNumSoldiers("2"));
-
-        army0.upgradeForce("2", "5", 2, myInfo);
-        assertEquals(109, myInfo.getFoodResource());
-        assertEquals( 2, army0.getNumSoldiers("0"));
-        assertEquals(1, army0.getNumSoldiers("2"));
-        assertEquals(2, army0.getNumSoldiers("5"));
+    public void test_sort() {
+        Army army0 = new BasicArmy("HanMeiMei", 1);
+        army0.addSoldiers(1, "3");
+        army0.addSoldiers(1, "2");
+        army0.addSoldiers(1, "5");
+        army0.addSoldiers(1, "4");
+        army0.addSoldiers(1, "2");
+        Collections.sort(army0.getForce());
+        assertEquals("[5, 4, 3, 2, 2, 0]", army0.getForce().toString());
     }
+
+    @Test
+    public void test_toString() {
+        Army army1 = new BasicArmy("Green", 3, "4");
+        army1.addSoldiers(3, "2");
+        String expt = "3 type-2 soldiers, 3 type-4 soldiers";
+        assertEquals(expt, army1.toString());
+
+        Army army2 = new BasicArmy("Orange", 0);
+        String expt2 = "0 soldiers";
+        assertEquals(expt2, army2.toString());
+    }
+
 }
