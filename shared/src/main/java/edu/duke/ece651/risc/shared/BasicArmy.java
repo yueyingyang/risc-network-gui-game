@@ -123,14 +123,10 @@ public class BasicArmy implements Army {
     public Army fight(Army attacker, Random myRandom) {
         Collections.sort(force);
         Collections.sort(attacker.getForce());
-        System.out.println(force);
-        System.out.println(attacker.getForce());
         int round = 1;
         while (getNumSoldiers() > 0 && attacker.getNumSoldiers() > 0) {
             fightOneRound(attacker, myRandom, round);
             round += 1;
-            System.out.println(force);
-            System.out.println(attacker.getForce());
         }
         if (getNumSoldiers() > 0) {
             return this;
@@ -153,8 +149,6 @@ public class BasicArmy implements Army {
             mySoldier = force.get(force.size() - 1);
             enemySoldier = enemyForce.get(0);
         }
-        System.out.println("defender: " + mySoldier);
-        System.out.println("attacker: " + enemySoldier);
         int res = mySoldier.fight(enemySoldier, myRandom);
         if (res >= 0) {
             attacker.removeSoldiers(1, enemySoldier.getType());
