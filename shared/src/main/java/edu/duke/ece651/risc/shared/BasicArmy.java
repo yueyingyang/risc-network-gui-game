@@ -123,8 +123,12 @@ public class BasicArmy implements Army {
      */
     @Override
     public Army fight(Army attacker, Random myRandom) {
+        Collections.sort(force);
+        Collections.sort(attacker.getForce());
+        int round = 0;
         while (getNumSoldiers() > 0 && attacker.getNumSoldiers() > 0) {
-            fightOneRound(attacker, myRandom);
+            fightOneRound(attacker, myRandom, round);
+            round += 1;
         }
         if (getNumSoldiers() > 0) {
             return this;
@@ -137,15 +141,21 @@ public class BasicArmy implements Army {
      *
      * @param attacker is the army that attack the territory
      */
-    protected void fightOneRound(Army attacker, Random myRandom) {
+    protected void fightOneRound(Army attacker, Random myRandom, int round) {
         List<Soldier> enemyForce = attacker.getForce();
-        Soldier mySoldier = force.get(force.size() - 1);
-        Soldier enemySoldier = enemyForce.get(enemyForce.size() - 1);
+        Soldier mySoldier, enemySoldier;
+        if (round % 2 == 0) {
+            mySoldier = force.get(0);
+            enemySoldier = enemyForce.get(enemyForce.size() - 1);
+        } else {
+            mySoldier = force.get(force.size() - 1);
+            enemySoldier = enemyForce.get(0);
+        }
         int res = mySoldier.fight(enemySoldier, myRandom);
         if (res >= 0) {
-            attacker.removeSoldiers(1, "0");
+            attacker.removeSoldiers(1, enemySoldier.getType());
         } else {
-            removeSoldiers(1, "0");
+            removeSoldiers(1, mySoldier.getType());
         }
     }
 

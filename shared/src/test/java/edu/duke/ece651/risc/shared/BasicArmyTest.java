@@ -1,5 +1,6 @@
 package edu.duke.ece651.risc.shared;
 
+import edu.duke.ece651.risc.shared.entry.BasicEntry;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -47,15 +48,35 @@ class BasicArmyTest {
 
     @Test
     public void test_fightOneRound() {
-        BasicArmy army0 = new BasicArmy("HanMeiMei", 5);
-        BasicArmy army1 = new BasicArmy("LiLei", 8);
+        BasicArmy army0 = new BasicArmy("HanMeiMei", 1, "1");
+        army0.addSoldiers(2, "4");
+        army0.addSoldiers(1, "2");
+
+        BasicArmy army1 = new BasicArmy("LiLei", 1);
+        army1.addSoldiers(1, "1");
+        army1.addSoldiers(1, "6");
+        army1.addSoldiers(1, "4");
+
+        Collections.sort(army0.getForce());
+        Collections.sort(army1.getForce());
+
         Random myRandom = new Random(0);
-        army0.fightOneRound(army1, myRandom);
-        assertEquals(4, army0.getNumSoldiers());
-        assertEquals(8, army1.getNumSoldiers());
-        army0.fightOneRound(army1, myRandom);
-        assertEquals(4, army0.getNumSoldiers());
-        assertEquals(7, army1.getNumSoldiers());
+        test_fightOneRound(army0, army1, myRandom, 1,
+                "[4, 4, 2]", "[6, 4, 1, 0]");
+        test_fightOneRound(army0, army1, myRandom, 2,
+                "[4, 4, 2]", "[6, 4, 1]");
+        test_fightOneRound(army0, army1, myRandom, 3,
+                "[4, 4]", "[6, 4, 1]");
+        test_fightOneRound(army0, army1, myRandom, 4,
+                "[4, 4]", "[6, 4]");
+
+    }
+
+    private void test_fightOneRound(BasicArmy defender, BasicArmy attacker, Random myRandom,
+                                    int round, String expDefender, String expAttacker) {
+        defender.fightOneRound(attacker, myRandom, round);
+        assertEquals(defender.toString(), expDefender);
+        assertEquals(attacker.toString(), expAttacker);
     }
 
     @Test
