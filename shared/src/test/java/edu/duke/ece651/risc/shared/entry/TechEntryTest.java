@@ -30,8 +30,13 @@ class TechEntryTest {
     private void test_apply(GameMap myMap, PlayerInfo myInfo, int expLevel, int expTech) {
         ActionEntry entry = new TechEntry("LiLei");
         entry.apply(myMap, myInfo);
-        assertEquals(expLevel, myInfo.getTechLevel());
+        assertFalse(myInfo.canUpgrade());
+        assertEquals(expLevel - 1, myInfo.getTechLevel());
         assertEquals(expTech, myInfo.getTechResource());
+
+        myInfo.effectTech();
+        assertTrue(myInfo.canUpgrade());
+        assertEquals(expLevel, myInfo.getTechLevel());
     }
 
 }

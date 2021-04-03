@@ -39,22 +39,32 @@ public class PlayerInfo {
     }
 
     /**
-     * Upgrade technology by one level
+     * Take player's update technology request
      */
-    public void upgradeTech() {
+    public void takeTech() {
         int cost = GameUtil.getTechCost(techLevel);
         consumeTech(cost);
-        techLevel += 1;
         upgraded = true;
     }
 
     /**
-     * Reset the technology upgrade status
+     * Make player's technology update in effect
      */
-    public void resetUpgraded() {
-        upgraded = false;
+    public void effectTech() {
+        if (upgraded) {
+            techLevel += 1;
+            upgraded = false;
+        }
     }
 
+    /**
+     * Get whether the player can upgrade the technology level
+     *
+     * @return true if the player can upgrade the technology level else false
+     */
+    public boolean canUpgrade() {
+        return !upgraded;
+    }
 
     /**
      * Consume technology resource
@@ -108,15 +118,6 @@ public class PlayerInfo {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * Get whether the player can upgrade the technology level
-     *
-     * @return true if the player can upgrade the technology level else false
-     */
-    public boolean canUpgradeTech() {
-        return !upgraded;
     }
 
     /**
