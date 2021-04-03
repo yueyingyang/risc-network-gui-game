@@ -1,36 +1,38 @@
 package edu.duke.ece651.risc.web;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import edu.duke.ece651.risc.shared.ClientSocket;
-import edu.duke.ece651.risc.shared.Constant;
-import edu.duke.ece651.risc.shared.JSONSerializer;
-import edu.duke.ece651.risc.shared.game.GameInfo;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
+import edu.duke.ece651.risc.shared.ClientSocket;
+import edu.duke.ece651.risc.shared.Constant;
+import edu.duke.ece651.risc.shared.JSONSerializer;
+import edu.duke.ece651.risc.shared.game.GameInfo;
 
 @Controller
 public class LobbyController {
   private final PlayerSocketMap playerMapping;
 
   // todo: change after user login
-  private String currentUserName;
+  //private String currentUserName;
   private final ObjectMapper mapper;
   private final JSONSerializer jsonSerializer;
 
   public LobbyController(PlayerSocketMap playerMapping) {
     this.jsonSerializer = new JSONSerializer();
-    this.currentUserName = "test";
+    //this.currentUserName = "test";
     this.mapper = new ObjectMapper();
     this.playerMapping = playerMapping;
   }
@@ -73,6 +75,7 @@ public class LobbyController {
    */
   @PostMapping(value = "/start")
   public String start(@RequestParam(name = "size") String size) throws IOException {
+    String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
     ClientSocket c = playerMapping.getSocket(currentUserName);
     ObjectNode startReq = JsonNodeFactory.instance.objectNode();
     startReq.put("type", "start");
@@ -91,6 +94,7 @@ public class LobbyController {
    */
   @GetMapping(value = "/join")
   public String join(@RequestParam(value = "id") String gameID) throws IOException {
+    String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
     ClientSocket c = playerMapping.getSocket(currentUserName);
     ObjectNode startReq = JsonNodeFactory.instance.objectNode();
     startReq.put("type", "join");
@@ -116,6 +120,7 @@ public class LobbyController {
 
   @GetMapping(value = "/rejoin")
   public String rejoin(@RequestParam(name = "gameID") String gameID) throws IOException {
+    String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
     ClientSocket c = playerMapping.getSocket(currentUserName);
     ObjectNode startReq = JsonNodeFactory.instance.objectNode();
     startReq.put("type", "rejoin");
@@ -125,3 +130,8 @@ public class LobbyController {
     return "redirect:/game/play";
   }
 }
+
+
+
+
+

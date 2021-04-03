@@ -25,6 +25,8 @@ public class MyUserDetailsService implements UserDetailsService {
     @PostConstruct
     public void init() {
         roles.put("user1", new User("user1", passwordEncoder().encode("user1Pass"), getAuthority("ROLE_USER")));
+        roles.put("user2", new User("user2", passwordEncoder().encode("user2Pass"), getAuthority("ROLE_USER")));
+        roles.put("user3", new User("user3", passwordEncoder().encode("user3Pass"), getAuthority("ROLE_USER")));
         //roles.put("user2", new User("user2", "{noop}user2Pass", getAuthority("ROLE_USER")));
         //roles.put("user3", new User("user3", "{noop}user3Pass", getAuthority("ROLE_USER")));
     }

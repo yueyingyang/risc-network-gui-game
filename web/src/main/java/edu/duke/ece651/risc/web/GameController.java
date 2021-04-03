@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.IOException;
 import java.util.*;
@@ -24,7 +25,7 @@ public class GameController {
   private final PlayerSocketMap playerMapping;
 
   // todo: change after user login
-  private String currentUserName;
+  //private String currentUserName;
   // need update after switch rooms
   private List<String> players;
 
@@ -36,7 +37,7 @@ public class GameController {
 
   public GameController(PlayerSocketMap playerMapping) {
     this.jsonSerializer = new JSONSerializer();
-    this.currentUserName = "test";
+    //this.currentUserName = "test";
     this.mapper = new ObjectMapper();
     this.colorPalette = Arrays.asList("#97B8A3", "#EDC3C7", "#FDF06F", "#A6CFE2", "#9C9CDD");
     this.players = Arrays.asList("p2", "test");
@@ -52,6 +53,7 @@ public class GameController {
    */
   @GetMapping("/place")
   public String place(Model model) throws IOException {
+    String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
     GameMap map = (GameMap) jsonSerializer.deserialize(playerMapping.getSocket(currentUserName).recvMessage(), GameMap.class);
     int totalUnits = Integer.parseInt(playerMapping.getSocket(currentUserName).recvMessage());
 //    Below 2 lines are for local test
@@ -74,6 +76,7 @@ public class GameController {
    */
   @PostMapping(value = "/submit_place")
   public String place(@ModelAttribute(value = "wrapper") TerrUnitList list) throws IOException {
+    String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
     List<ActionEntry> placementList = new ArrayList<>();
     for (TerrUnit tu : list.getTerrUnitList()) {
       placementList.add(new PlaceEntry(tu.getTerrName(), tu.getUnit(), currentUserName));
@@ -92,6 +95,7 @@ public class GameController {
   @GetMapping(value = "/play")
   public String playOneTurn(Model model) {
     // todo: should refactor createMap() to retrieve stored game map
+    String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
     List<ObjectNode> graphData = getObjectNodes(createMap(), players);
     model.addAttribute("graphData", graphData);
     model.addAttribute("action", new AttackEntry("", "", 0, currentUserName));
@@ -111,6 +115,7 @@ public class GameController {
 //    Below 2 lines are for local test
 //    return ResponseEntity.status(HttpStatus.ACCEPTED).body(getObjectNodes(createMap(), players));
 //    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
     ClientSocket cs = playerMapping.getSocket(currentUserName);
     if (cs.hasNewMsg()) {
       GameMap map = (GameMap) jsonSerializer.deserialize(cs.recvMessage(), GameMap.class);

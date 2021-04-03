@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.IOException;
 
@@ -15,11 +16,11 @@ public class AjaxController {
   private final PlayerSocketMap playerMapping;
 
   // todo: change after user login
-  private String currentUserName;
+  //private String currentUserName;
 
 
   public AjaxController(PlayerSocketMap playerMapping) {
-    this.currentUserName = "test";
+    //this.currentUserName = "test";
     this.playerMapping = playerMapping;
   }
 
@@ -33,6 +34,7 @@ public class AjaxController {
   public ResponseEntity<?> checkRoomStatus() throws IOException {
 //    Below 1 lines are for local test
 //    return ResponseEntity.status(HttpStatus.ACCEPTED).body(false);
+    String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
     ClientSocket cs = playerMapping.getSocket(currentUserName);
     if (cs.hasNewMsg()) {
       // means the game is ready (the new msg will be the empty' game map)
