@@ -10,7 +10,7 @@ public class PlayerInfo {
     private int techLevel;
     private int foodResource;
     private int techResource;
-    private boolean upgraded;
+    private boolean requested;
 
 
     /**
@@ -26,7 +26,7 @@ public class PlayerInfo {
         this.techLevel = techLevel;
         this.foodResource = foodResource;
         this.techResource = techResource;
-        this.upgraded = false;
+        this.requested = false;
     }
 
     /**
@@ -44,26 +44,26 @@ public class PlayerInfo {
     public void takeTech() {
         int cost = GameUtil.getTechCost(techLevel);
         consumeTech(cost);
-        upgraded = true;
+        requested = true;
     }
 
     /**
      * Make player's technology update in effect
      */
     public void effectTech() {
-        if (upgraded) {
+        if (requested) {
             techLevel += 1;
-            upgraded = false;
+            requested = false;
         }
     }
 
     /**
-     * Get whether the player can upgrade the technology level
+     * Get whether the player has requested technology update in the turn
      *
-     * @return true if the player can upgrade the technology level else false
+     * @return true if the player has requested technology update in the turn else false
      */
-    public boolean canUpgrade() {
-        return !upgraded;
+    public boolean isRequested() {
+        return requested;
     }
 
     /**
