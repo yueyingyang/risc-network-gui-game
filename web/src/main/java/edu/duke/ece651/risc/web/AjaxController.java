@@ -8,7 +8,7 @@ import edu.duke.ece651.risc.shared.entry.ActionEntry;
 import edu.duke.ece651.risc.shared.entry.AttackEntry;
 import edu.duke.ece651.risc.shared.entry.MoveEntry;
 import edu.duke.ece651.risc.web.model.ActionAjaxResBody;
-import edu.duke.ece651.risc.web.model.MoveInput;
+import edu.duke.ece651.risc.web.model.UserActionInput;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ public class AjaxController {
 
   private final PlayerSocketMap playerMapping;
   private final UtilService util;
-  private final JSONSerializer serialier;
+  private final JSONSerializer serializer;
 
   // todo: change after user login
   private String userName;
@@ -32,7 +32,7 @@ public class AjaxController {
     this.util = util;
     this.userName = "test";
     this.playerMapping = playerMapping;
-    this.serialier = new JSONSerializer();
+    this.serializer = new JSONSerializer();
   }
 
   /**
@@ -76,30 +76,25 @@ public class AjaxController {
 
 
   @PostMapping(value = "/attack", consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<ActionAjaxResBody> attack(@RequestBody MoveInput input) throws IOException {
+  public ResponseEntity<ActionAjaxResBody> attack(@RequestBody UserActionInput input) throws IOException {
 //    Wrap a Attack entry
     AttackEntry attackEntry = new AttackEntry(input.getFromName(),
             input.getToName(),
-            Integer.parseInt(input.getSoldierNum()),
+            input.getSoldierNum(),
             userName);
-    System.out.println(serialier.serialize(attackEntry));
-//    Send to server
-    ClientSocket cs = playerMapping.getSocket(userName);
-    cs.sendMessage(serialier.serialize(attackEntry));
-//    Receive validation res if valid then append msg to msg box,
-    String validRes = cs.recvMessage();
-//    if not append error info to msg box
-//    Receive new map view
-    List<ObjectNode> graphData = util.deNodeList(cs.recvMessage());
+    System.out.println(serializer.serialize(attackEntry));
+    return getActionAjaxResBodyResponseEntity(attackEntry);
+  }
 
-//    Below 2 lines for mock recv() for local test
-//    List<ObjectNode> graphData = util.mockObjectNodes();
-//    String validRes = "test validRes";
-
-    ActionAjaxResBody resBody = new ActionAjaxResBody();
-    resBody.setGraphData(graphData);
-    resBody.setValRes(validRes);
-    return ResponseEntity.ok(resBody);
+  @PostMapping(value = "/move", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<ActionAjaxResBody> move(@RequestBody UserActionInput input) throws IOException {
+//    Wrap a Move entry
+    MoveEntry moveEntry = new MoveEntry(input.getFromName(),
+            input.getToName(),
+            input.getSoldierNum(),
+            userName);
+    System.out.println(serializer.serialize(moveEntry));
+    return getActionAjaxResBodyResponseEntity(moveEntry);
   }
 
   @PostMapping(value = "/commit")
@@ -113,7 +108,6 @@ public class AjaxController {
   }
 
   /**
-   * todo: need to be moved to AjaxController after refactoring with V2MapView
    * Ajax GET API for update map after placement
    *
    * @return Response with status error or success, if success then body is updated GAMEMAP
@@ -126,7 +120,6 @@ public class AjaxController {
 //    resBody.setValRes("test resolve combat result");
 //    resBody.setGraphData(util.mockObjectNodes());
 //    return ResponseEntity.status(HttpStatus.ACCEPTED).body(resBody);
-
     ClientSocket cs = playerMapping.getSocket(userName);
     if (cs.hasNewMsg()) {
 //  1. recv combat result
@@ -156,5 +149,32 @@ public class AjaxController {
     }
 //    Continue to wait for combating result
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+  }
+
+
+  /**
+   * Helper function for validating action with socket server
+   * @param ae is the action entry
+   * @return a response entity whose body is ActionAjaxResBody
+   * @throws IOException
+   */
+  private ResponseEntity<ActionAjaxResBody> getActionAjaxResBodyResponseEntity(ActionEntry ae) throws IOException {
+    //    Send to server
+    ClientSocket cs = playerMapping.getSocket(userName);
+    cs.sendMessage(serializer.serialize(ae));
+//    Receive validation res if valid then append msg to msg box,
+    String validRes = cs.recvMessage();
+//    if not append error info to msg box
+//    Receive new map view
+    List<ObjectNode> graphData = util.deNodeList(cs.recvMessage());
+
+//    Below 2 lines for mock recv() for local test
+//    List<ObjectNode> graphData = util.mockObjectNodes();
+//    String validRes = "test validRes";
+
+    ActionAjaxResBody resBody = new ActionAjaxResBody();
+    resBody.setGraphData(graphData);
+    resBody.setValRes(validRes);
+    return ResponseEntity.ok(resBody);
   }
 }

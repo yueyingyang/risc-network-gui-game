@@ -95,8 +95,6 @@ public class GameController {
    */
   @GetMapping(value = "/play")
   public String playOneTurn(Model model) {
-    model.addAttribute("attack",
-            new AttackEntry("", "", 0, currentUserName));
     return "game";
   }
 

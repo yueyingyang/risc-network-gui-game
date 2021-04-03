@@ -3,9 +3,11 @@ package edu.duke.ece651.risc.web.model;
 /**
  * A class for wrapping user input
  */
-public class MoveInput {
+public class UserActionInput {
   String toName;
   String fromName;
+  int soldierNum;
+  String soldierType;
 
   public void setToName(String toName) {
     this.toName = toName;
@@ -16,14 +18,13 @@ public class MoveInput {
   }
 
   public void setSoldierNum(String soldierNum) {
-    this.soldierNum = soldierNum;
+    this.soldierNum = Integer.parseInt(soldierNum);
   }
 
   public void setSoldierType(String soldierType) {
     this.soldierType = soldierType;
   }
 
-  String soldierNum;
 
   public String getToName() {
     return toName;
@@ -33,7 +34,7 @@ public class MoveInput {
     return fromName;
   }
 
-  public String getSoldierNum() {
+  public int getSoldierNum() {
     return soldierNum;
   }
 
@@ -41,5 +42,4 @@ public class MoveInput {
     return soldierType;
   }
 
-  String soldierType;
 }
