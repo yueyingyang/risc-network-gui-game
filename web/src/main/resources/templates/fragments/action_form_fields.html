@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>Action Form Fragment</title>
+</head>
+<body>
+<div th:fragment="action_form_fields">
+    <div class="fields" style="user-select: auto;">
+        <div class="field" style="user-select: auto;">
+            <label style="user-select: auto;">From territory</label>
+            <input type="text" placeholder="From territory" style="user-select: auto;"
+                   name="fromName">
+        </div>
+        <div class="field" style="user-select: auto;">
+            <label style="user-select: auto;">To territory</label>
+            <input type="text" placeholder="To territory" style="user-select: auto;"
+                   name="toName">
+        </div>
+        <div class="field" style="user-select: auto;">
+            <label style="user-select: auto;">Soldier Type</label>
+            <input type="text" placeholder="Soldier Type" style="user-select: auto;"
+                   name="soldierType">
+        </div>
+        <div class="field" style="user-select: auto;">
+            <label style="user-select: auto;">Number of soldiers</label>
+            <input type="text" placeholder="Number of soldiers" style="user-select: auto;"
+                   name="soldierNum">
+        </div>
+    </div>
+</div>
+</body>
+</html>

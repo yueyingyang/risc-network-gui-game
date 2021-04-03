@@ -74,7 +74,13 @@ public class AjaxController {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
   }
 
-
+  /**
+   * Attack action validation
+   *
+   * @param input is serialized form
+   * @return a response entity whose body is ActionAjaxResBody
+   * @throws IOException
+   */
   @PostMapping(value = "/attack", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ActionAjaxResBody> attack(@RequestBody UserActionInput input) throws IOException {
 //    Wrap a Attack entry
@@ -86,6 +92,13 @@ public class AjaxController {
     return getActionAjaxResBodyResponseEntity(attackEntry);
   }
 
+  /**
+   * Move action validation
+   *
+   * @param input is serialized form
+   * @return a response entity whose body is ActionAjaxResBody
+   * @throws IOException
+   */
   @PostMapping(value = "/move", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ActionAjaxResBody> move(@RequestBody UserActionInput input) throws IOException {
 //    Wrap a Move entry
@@ -97,6 +110,12 @@ public class AjaxController {
     return getActionAjaxResBodyResponseEntity(moveEntry);
   }
 
+  /**
+   * Commit button will send COMMIT to server
+   *
+   * @return nothing but ok status
+   * @throws IOException
+   */
   @PostMapping(value = "/commit")
   public ResponseEntity<?> commit() throws IOException {
 //    local test
@@ -154,6 +173,7 @@ public class AjaxController {
 
   /**
    * Helper function for validating action with socket server
+   *
    * @param ae is the action entry
    * @return a response entity whose body is ActionAjaxResBody
    * @throws IOException
