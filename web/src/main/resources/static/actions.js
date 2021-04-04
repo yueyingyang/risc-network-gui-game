@@ -2,9 +2,12 @@ const attack_btn = $('form#attack .submit');
 const attack_form = $('form#attack');
 const move_form = $('form#move');
 const move_btn = $('form#move .submit');
+const soldier_form = $('form#soldier');
+const soldier_btn = $('form#soldier .submit');
 
 setupForm(attack_form, attack_btn, '/attack');
 setupForm(move_form, move_btn, '/move');
+setupForm(soldier_form, soldier_btn, '/soldier');
 
 function setupForm(form, submit_btn, url) {
     form.submit(function (event) {

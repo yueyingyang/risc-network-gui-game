@@ -7,6 +7,7 @@ import edu.duke.ece651.risc.shared.JSONSerializer;
 import edu.duke.ece651.risc.shared.entry.ActionEntry;
 import edu.duke.ece651.risc.shared.entry.AttackEntry;
 import edu.duke.ece651.risc.shared.entry.MoveEntry;
+import edu.duke.ece651.risc.shared.entry.SoldierEntry;
 import edu.duke.ece651.risc.web.model.ActionAjaxResBody;
 import edu.duke.ece651.risc.web.model.UserActionInput;
 import org.springframework.http.HttpStatus;
@@ -56,7 +57,7 @@ public class AjaxController {
   /**
    * Ajax GET API for update map after placement
    *
-   * @return Response with status error or success, if success then body is updated GAMEMAP
+   * @return Response with sta tus error or success, if success then body is updated GAMEMAP
    * @throws IOException
    */
   @GetMapping(value = "/update_map")
@@ -110,6 +111,26 @@ public class AjaxController {
             userName);
     System.out.println(serializer.serialize(moveEntry));
     return getActionAjaxResBodyResponseEntity(moveEntry);
+  }
+
+  /**
+   * Solider action validation
+   *
+   * @param input is serialized form
+   * @return a response entity whose body is ActionAjaxResBody
+   * @throws IOException
+   */
+  @PostMapping(value = "/soldier", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<ActionAjaxResBody> soldier(@RequestBody UserActionInput input) throws IOException {
+//    Wrap a Soldier entry
+    SoldierEntry soldierEntry = new SoldierEntry(
+            input.getToName(),
+            input.getFromType(),
+            input.getToType(),
+            input.getSoldierNum(),
+            userName);
+    System.out.println(serializer.serialize(soldierEntry));
+    return getActionAjaxResBodyResponseEntity(soldierEntry);
   }
 
   /**
