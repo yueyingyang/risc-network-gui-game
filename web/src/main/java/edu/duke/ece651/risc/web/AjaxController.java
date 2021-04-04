@@ -60,10 +60,9 @@ public class AjaxController {
   @GetMapping(value = "/update_map")
   public ResponseEntity<?> tryUpdateMap() throws IOException {
 //    Below 2 lines are for local test
-      return ResponseEntity.status(HttpStatus.ACCEPTED).body(util.mockObjectNodes());
+   //   return ResponseEntity.status(HttpStatus.ACCEPTED).body(util.mockObjectNodes());
 //    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 
-    /*
     ClientSocket cs = playerMapping.getSocket(userName);
     if (cs.hasNewMsg()) {
       String mapViewString = cs.recvMessage();
@@ -71,7 +70,6 @@ public class AjaxController {
       return ResponseEntity.status(HttpStatus.ACCEPTED).body(graphData);
     }
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-     */
   }
 
   /**
