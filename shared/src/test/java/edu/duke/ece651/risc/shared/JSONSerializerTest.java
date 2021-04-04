@@ -1,10 +1,7 @@
 package edu.duke.ece651.risc.shared;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import edu.duke.ece651.risc.shared.entry.ActionEntry;
-import edu.duke.ece651.risc.shared.entry.AttackEntry;
-import edu.duke.ece651.risc.shared.entry.MoveEntry;
-import edu.duke.ece651.risc.shared.entry.PlaceEntry;
+import edu.duke.ece651.risc.shared.entry.*;
 import org.junit.jupiter.api.Test;
 
 import java.io.OutputStream;
@@ -51,20 +48,37 @@ class JSONSerializerTest {
     ActionEntry place1Entry = new PlaceEntry("1", 2, "player1");
     ActionEntry attackEntry = new AttackEntry("0", "3", 1, "player1");
     ActionEntry moveEntry = new MoveEntry("0", "1", 1, "player1");
+    ActionEntry fancyMove = new FancyMoveEntry("0", "1", 3, "0", "player1");
+    ActionEntry fancyAttack = new FancyAttackEntry("0", "3", 2, "0", "player1");
+    ActionEntry soldier = new SoldierEntry("0", "1", "2", 1, "player1");
+    ActionEntry tech = new TechEntry("player1");
     // test serializer
     ActionEntry dePlace = (ActionEntry) s.deserialize(s.serialize(placeEntry), ActionEntry.class);
     ActionEntry deAttack = (ActionEntry) s.deserialize(s.serialize(attackEntry), ActionEntry.class);
     ActionEntry deMove = (ActionEntry) s.deserialize(s.serialize(moveEntry), ActionEntry.class);
+    ActionEntry deFancyMove = (ActionEntry) s.deserialize(s.serialize(fancyMove), ActionEntry.class);
+    ActionEntry deFancyAttack = (ActionEntry) s.deserialize(s.serialize(fancyAttack), ActionEntry.class);
+    ActionEntry deSoldier = (ActionEntry) s.deserialize(s.serialize(soldier), ActionEntry.class);
+    ActionEntry deTech = (ActionEntry) s.deserialize(s.serialize(tech), ActionEntry.class);
     V1MapFactory v1f = new V1MapFactory();
     GameMap map = v1f.createMap(Arrays.asList("player1", "player2"), 2);
+    PlayerInfo myInfo = new PlayerInfo("player1", 4, 280, 300);
     assertThat(dePlace, instanceOf(PlaceEntry.class));
     assertThat(deAttack, instanceOf(AttackEntry.class));
     assertThat(deMove, instanceOf(MoveEntry.class));
+    assertThat(deFancyMove, instanceOf(FancyMoveEntry.class));
+    assertThat(deFancyAttack, instanceOf(FancyAttackEntry.class));
+    assertThat(deSoldier, instanceOf(SoldierEntry.class));
+    assertThat(deTech, instanceOf(TechEntry.class));
 
     dePlace.apply(map, null);
     place1Entry.apply(map, null);
     deAttack.apply(map, null);
     deMove.apply(map, null);
+    deFancyMove.apply(map, myInfo);
+    deFancyAttack.apply(map, myInfo);
+    deSoldier.apply(map, myInfo);
+    deTech.apply(map, myInfo);
     assertDoesNotThrow(() -> new MapView(map).display());
   }
 
