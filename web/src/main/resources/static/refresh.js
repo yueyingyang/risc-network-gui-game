@@ -5,19 +5,19 @@ const refresh_map = () => {
         "async": true,
         "type": "get",
         "success": res => {
-            graphData = res;
-            // display map
-            display_map(full_map_formatter)
-            $('#msg_box').append('<p style="user-select: auto;"> Update map </p>');
-            $("#refresh").unbind();
-            // change click event to resolve combat and also disable refresh
-            $('#refresh').click(resolve_combat);
-            toggleActionAndRefresh();
-        },
-        "error": () => {
-            $('#msg_box').append('<p style="user-select: auto;"> Please wait... </p>');
-            // make sure showing the loading in the map location
-            $('#map_box').empty().append(load_html);
+            if (!res) {
+                // make sure showing the loading in the map location
+                $('#map_box').empty().append(load_html);
+            } else {
+                graphData = res;
+                // display map
+                display_map(full_map_formatter)
+                $("#refresh").unbind();
+                // change click event to resolve combat and also disable refresh
+                $('#refresh').click(resolve_combat);
+                toggleActionAndRefresh();
+                clearInterval(map_refresh_timer);
+            }
         }
     }
     $.ajax(config);
@@ -34,6 +34,7 @@ const submit_commit = () => {
             // make sure showing the loading in the map location
             $('#map_box').empty().append(resolve_html);
             toggleActionAndRefresh();
+            combat_resolve_timer = setInterval(resolve_combat, 1000);
         },
     });
 }
@@ -58,6 +59,7 @@ const resolve_combat = () => {
                     location.href = '/game/lose';
                 }
             }
+            clearInterval(combat_resolve_timer);
         }
     });
 }

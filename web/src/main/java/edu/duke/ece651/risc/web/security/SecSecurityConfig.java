@@ -1,13 +1,10 @@
-package edu.duke.ece651.risc.web;
+package edu.duke.ece651.risc.web.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -38,6 +35,7 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter{
         .antMatchers("/admin/**").hasRole("ADMIN")
         .antMatchers("/anonymous*").anonymous()
         .antMatchers("/login*").permitAll()
+        .antMatchers("/resources/**").permitAll()
         .anyRequest().authenticated()
         .and()
         // ...
@@ -51,12 +49,6 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter{
         .logoutUrl("/logout")
         .logoutSuccessUrl("/");
     }
-
-
-    /*@Bean 
-    public PasswordEncoder passwordEncoder() { 
-        return new BCryptPasswordEncoder(); 
-    }*/
 
     @Bean
     public AuthenticationFailureHandler authenticationFailureHandler() {

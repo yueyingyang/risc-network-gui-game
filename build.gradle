@@ -36,6 +36,7 @@ subprojects{
         implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:2.4.4'
         implementation 'org.springframework.boot:spring-boot-starter-security:2.4.4'
         implementation 'org.springframework.boot:spring-boot-starter-web:2.4.4'
+        implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity4:3.0.4.RELEASE'
         runtimeOnly 'org.springframework.boot:spring-boot-devtools:2.4.4'
         testImplementation 'org.springframework.boot:spring-boot-starter-test:2.4.4'
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.1'
@@ -103,11 +104,7 @@ project (':web'){
     }
 
     dependencies {
-//        implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-//        implementation 'org.springframework.boot:spring-boot-starter-web'
         implementation project(':shared')
-//        runtimeOnly 'org.springframework.boot:spring-boot-devtools'
-//        testImplementation 'org.springframework.boot:spring-boot-starter-test'
     }
 }
 

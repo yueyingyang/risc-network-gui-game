@@ -43,15 +43,18 @@
     </div>
 </div>
 
-<script th:src="@{/util.js}"></script>
+<script th:src="@{/util.js}" type="text/javascript"></script>
 <!-- Map display utils -->
 <script th:src="@{/map_display.js}"></script>
 <script th:inline="javascript">
     <!--    the start state is disabled commit and fields -->
+    let map_refresh_timer;
+    let combat_resolve_timer;
     $(document).ready(function () {
             $("#commit").toggleClass("disabled");
             $("div.field").toggleClass("disabled");
             $(".submit.button.basic").toggleClass("disabled");
+            map_refresh_timer = setInterval(refresh_map, 1000);
         }
     )
 

@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <!--Reference: https://www.baeldung.com/spring-thymeleaf-fragments-->
-<html xmlns:th="http://www.thymeleaf.org" lang="">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:fragment="headerfiles">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"
           integrity="sha512-8bHTC73gkZ7rZ7vpqUQThUDhqcNFyYi2xgDgPDHc+GXVGHXq+xPjynxIopALmOPqzo9JZj0k6OqqewdGO3EsrQ=="
@@ -22,6 +22,7 @@
             Back to lobby
         </a>
         <a class="right item" style="user-select: auto;">
+            <span sec:authentication="name"></span>
             <div class="ui button" style="user-select: auto;">Log-out</div>
         </a>
     </div>

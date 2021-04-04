@@ -24,9 +24,6 @@ import edu.duke.ece651.risc.shared.game.GameInfo;
 @Controller
 public class LobbyController {
   private final PlayerSocketMap playerMapping;
-
-  // todo: change after user login
-  //private String currentUserName;
   private final ObjectMapper mapper;
   private final JSONSerializer jsonSerializer;
 
@@ -40,13 +37,13 @@ public class LobbyController {
   /**
    * Lobby page: request game lists from server
    *
-   * @param userName is the current userName, should be removed after user login
    * @param model    is object be sent to html template
    * @return lobby.html
    * @throws IOException if recv/send exception
    */
   @GetMapping("/lobby")
-  public String enterLobby(@RequestParam(value = "name") String userName, Model model) throws IOException {
+  public String enterLobby(Model model) throws IOException {
+    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
     // send getGameList request: wrap a JSON request as defined in doc
     ClientSocket c = playerMapping.getOneTimeSocket();
     ObjectNode gameListReq = JsonNodeFactory.instance.objectNode();

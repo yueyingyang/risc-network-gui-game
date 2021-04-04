@@ -1,4 +1,4 @@
-package edu.duke.ece651.risc.web;
+package edu.duke.ece651.risc.web.security;
 
 import java.io.IOException;
 
@@ -49,7 +49,7 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
     protected String determineTargetUrl(final Authentication authentication) {
         String currentPrincipalName = authentication.getName();
 
-        return "/lobby?name="+currentPrincipalName;
+        return "/lobby";
     }
 
     protected void clearAuthenticationAttributes(HttpServletRequest request) {

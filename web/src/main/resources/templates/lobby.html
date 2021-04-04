@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="">
+<html xmlns:th="http://www.thymeleaf.org" lang="" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments/common_header.html :: headerfiles">
     <title>Lobby</title>
 </head>
@@ -9,6 +9,7 @@
         Lobby
     </a>
     <!-- <a href="/logout">Logout</a> -->
+    <span sec:authentication="name"></span>
     <a class="right item" style="user-select: auto;">
         <a class="ui button" style="user-select: auto;" th:href="@{/logout}">Log-out</a>
     </a>

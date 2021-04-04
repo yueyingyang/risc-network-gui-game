@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
+@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class AjaxController {
 
   private final PlayerSocketMap playerMapping;
@@ -76,7 +77,7 @@ public class AjaxController {
       List<ObjectNode> graphData = util.deNodeList(mapViewString);
       return ResponseEntity.status(HttpStatus.ACCEPTED).body(graphData);
     }
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    return ResponseEntity.status(HttpStatus.ACCEPTED).body(null);
   }
 
   /**

@@ -1,4 +1,4 @@
-package edu.duke.ece651.risc.web;
+package edu.duke.ece651.risc.web.security;
 
 import java.util.Collections;
 import java.util.HashMap;
