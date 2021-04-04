@@ -4,10 +4,12 @@ package edu.duke.ece651.risc.web.model;
  * A class for wrapping user input
  */
 public class UserActionInput {
-  String toName;
   String fromName;
+  String toName;
   int soldierNum;
-  String soldierType;
+  String fromType;
+  String toType;
+  
 
   public void setToName(String toName) {
     this.toName = toName;
@@ -21,10 +23,13 @@ public class UserActionInput {
     this.soldierNum = Integer.parseInt(soldierNum);
   }
 
-  public void setSoldierType(String soldierType) {
-    this.soldierType = soldierType;
+  public void setFromType(String fromType) {
+    this.fromType = fromType;
   }
 
+  public void setToType(String toType) {
+    this.toType = toType;
+  }
 
   public String getToName() {
     return toName;
@@ -38,8 +43,11 @@ public class UserActionInput {
     return soldierNum;
   }
 
-  public String getSoldierType() {
-    return soldierType;
+  public String getFromType() {
+    return fromType;
   }
 
+  public String getToType() {
+    return toType;
+  }
 }

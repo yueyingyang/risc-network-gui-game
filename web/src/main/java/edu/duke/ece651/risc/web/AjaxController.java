@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import edu.duke.ece651.risc.shared.ClientSocket;
 import edu.duke.ece651.risc.shared.Constant;
 import edu.duke.ece651.risc.shared.JSONSerializer;
-import edu.duke.ece651.risc.shared.entry.ActionEntry;
-import edu.duke.ece651.risc.shared.entry.AttackEntry;
-import edu.duke.ece651.risc.shared.entry.MoveEntry;
+import edu.duke.ece651.risc.shared.entry.*;
 import edu.duke.ece651.risc.web.model.ActionAjaxResBody;
 import edu.duke.ece651.risc.web.model.UserActionInput;
 import org.springframework.http.HttpStatus;
@@ -56,13 +54,13 @@ public class AjaxController {
   /**
    * Ajax GET API for update map after placement
    *
-   * @return Response with status error or success, if success then body is updated GAMEMAP
+   * @return Response with sta tus error or success, if success then body is updated GAMEMAP
    * @throws IOException
    */
   @GetMapping(value = "/update_map")
   public ResponseEntity<?> tryUpdateMap() throws IOException {
 //    Below 2 lines are for local test
-//    return ResponseEntity.status(HttpStatus.ACCEPTED).body(util.mockObjectNodes());
+   //   return ResponseEntity.status(HttpStatus.ACCEPTED).body(util.mockObjectNodes());
 //    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 
     ClientSocket cs = playerMapping.getSocket(userName);
@@ -84,9 +82,10 @@ public class AjaxController {
   @PostMapping(value = "/attack", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ActionAjaxResBody> attack(@RequestBody UserActionInput input) throws IOException {
 //    Wrap a Attack entry
-    AttackEntry attackEntry = new AttackEntry(input.getFromName(),
+    FancyAttackEntry attackEntry = new FancyAttackEntry(input.getFromName(),
             input.getToName(),
             input.getSoldierNum(),
+            input.getFromType(),
             userName);
     System.out.println(serializer.serialize(attackEntry));
     return getActionAjaxResBodyResponseEntity(attackEntry);
@@ -102,12 +101,49 @@ public class AjaxController {
   @PostMapping(value = "/move", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ActionAjaxResBody> move(@RequestBody UserActionInput input) throws IOException {
 //    Wrap a Move entry
-    MoveEntry moveEntry = new MoveEntry(input.getFromName(),
+    FancyMoveEntry moveEntry = new FancyMoveEntry(input.getFromName(),
             input.getToName(),
             input.getSoldierNum(),
+            input.getFromType(),
             userName);
     System.out.println(serializer.serialize(moveEntry));
     return getActionAjaxResBodyResponseEntity(moveEntry);
+  }
+
+  /**
+   * Update soldier action validation
+   *
+   * @param input is serialized form
+   * @return a response entity whose body is ActionAjaxResBody
+   * @throws IOException
+   */
+  @PostMapping(value = "/soldier", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<ActionAjaxResBody> soldier(@RequestBody UserActionInput input) throws IOException {
+//    Wrap a Soldier entry
+    SoldierEntry soldierEntry = new SoldierEntry(
+            input.getToName(),
+            input.getFromType(),
+            input.getToType(),
+            input.getSoldierNum(),
+            userName);
+    System.out.println(serializer.serialize(soldierEntry));
+    return getActionAjaxResBodyResponseEntity(soldierEntry);
+  }
+
+  /**
+   * Update technology action validation
+   *
+   * @param input is serialized form
+   * @return a response entity whose body is ActionAjaxResBody
+   * @throws IOException
+   */
+  @PostMapping(value = "/tech", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<ActionAjaxResBody> tech(@RequestBody UserActionInput input) throws IOException {
+//    Wrap a Tech entry
+    TechEntry techEntry = new TechEntry(
+            userName);
+    System.out.println(serializer.serialize(techEntry));
+    return getActionAjaxResBodyResponseEntity(techEntry);
   }
 
   /**
