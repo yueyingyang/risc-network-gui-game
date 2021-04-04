@@ -1,10 +1,13 @@
-package edu.duke.ece651.risc.shared;
+package edu.duke.ece651.risc.shared.checker;
 
 
+import edu.duke.ece651.risc.shared.GameMap;
+import edu.duke.ece651.risc.shared.PlayerInfo;
+import edu.duke.ece651.risc.shared.Territory;
 import edu.duke.ece651.risc.shared.entry.ActionEntry;
 
-public class AttackRuleChecker extends Checker {
-    public AttackRuleChecker(Checker next) {
+public class FancyAttackRuleChecker extends Checker {
+    public FancyAttackRuleChecker(Checker next) {
         super(next);
     }
 
@@ -13,7 +16,7 @@ public class AttackRuleChecker extends Checker {
      * 1. the "from territory" should be adjacent to the "to territory"
      * 2. the "from territory" and "to territory" should belong to different owners.
      */
-    public void checkMyRule(ActionEntry action, GameMap map) {
+    public void checkMyRule(ActionEntry action, GameMap map, PlayerInfo myinfo) {
         Territory start = map.getTerritory(action.getFromName());
         Territory end = map.getTerritory(action.getToName());
         if (!start.isAdjacent(end)) {
@@ -21,6 +24,9 @@ public class AttackRuleChecker extends Checker {
         }
         if (start.belongToSameOwner(end)) {
             throw new IllegalArgumentException("The attacked territory should be owned by other players!");
+        }
+        if(action.getNumSoldiers()>myinfo.getFoodResource()){
+            throw new IllegalArgumentException("The food resource is not enough!");
         }
     }
 }
