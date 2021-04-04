@@ -10,7 +10,7 @@
     <div class="ui raised segment" style="user-select: auto;">
         <a class="ui red ribbon label" style="user-select: auto;">Attack</a>
         <form class="ui form" id="attack">
-            <div th:insert="fragments/action_form_fields.html :: action_form_fields"></div>
+            <div th:insert="fragments/action_form_fields.html :: move_attack_fields"></div>
             <button class="ui submit button tiny red basic" style="user-select: auto;">
                 Submit
             </button>
@@ -18,7 +18,7 @@
         <p></p>
         <a class="ui blue ribbon label" style="user-select: auto;">Move</a>
         <form class="ui form" id="move">
-            <div th:insert="fragments/action_form_fields.html :: action_form_fields"></div>
+            <div th:insert="fragments/action_form_fields.html :: move_attack_fields"></div>
             <button class="ui submit button basic blue tiny" style="user-select: auto;">
                 Submit
             </button>
@@ -29,8 +29,19 @@
 <div class="column" style="user-select: auto;">
     <div class="ui segment" style="user-select: auto;">
         <a class="ui orange right ribbon label" style="user-select: auto;">Technology Level Upgrade</a>
+        <form class="ui form" id="tech">
+            <button class="ui submit button tiny orange basic" style="user-select: auto;">
+                Submit
+            </button>
+        </form>
         <p></p>
         <a class="ui teal right ribbon label" style="user-select: auto;">Soldier Type Upgrade</a>
+        <form class="ui form" id="soldier">
+            <div th:insert="fragments/action_form_fields.html :: soldier_fields"></div>
+            <button class="ui submit button basic teal tiny" style="user-select: auto;">
+                Submit
+            </button>
+        </form>
         <p></p>
     </div>
 </div>
