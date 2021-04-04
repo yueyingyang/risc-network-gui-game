@@ -96,6 +96,8 @@ public class GameTest {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();                                                                                                   
     ServerPlayer p = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes, true),socket);
     p.setName("Red");
+    p.setColor(Color.RED);
+    p.setPlayerInfo();
     g.addPlayer(p);
     g.makeMap(3);
     ArrayList<ServerPlayer> list = new ArrayList<>();
@@ -115,6 +117,8 @@ public class GameTest {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();                                                                                                   
     ServerPlayer p = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes, true),socket);
     p.setName("Red");
+    p.setColor(Color.RED);
+    p.setPlayerInfo();
     g.addPlayer(p);
     ArrayList<ServerPlayer> list = new ArrayList<>();
     list.add(p);
@@ -136,6 +140,8 @@ public class GameTest {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();                                                                                                   
     ServerPlayer p = new ServerPlayer(new BufferedReader(new StringReader(listJSON)), new PrintWriter(bytes, true),socket);
     p.setName("Red");
+    p.setColor(Color.RED);
+    p.setPlayerInfo();
     g.addPlayer(p);
     g.makeMap(2);
     g.placementPhase();
@@ -151,6 +157,8 @@ public class GameTest {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();                                                                                                   
     ServerPlayer p = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes, true),socket);
     p.setName("Red");
+    p.setColor(Color.RED);
+    p.setPlayerInfo();
     g.addPlayer(p);
     g.makeMap(3);
     String res = g.doAttacks();
@@ -165,6 +173,8 @@ public class GameTest {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();                                                                                                   
     ServerPlayer p = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes, true),socket);
     p.setName("Red");
+    p.setColor(Color.RED);
+    p.setPlayerInfo();
     g.addPlayer(p);
     g.makeMap(3);
     for(Territory t:g.getMap().getAllTerritories()){
@@ -183,6 +193,8 @@ public class GameTest {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();                                                                                                   
     ServerPlayer p = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes, true),socket);
     p.setName("Red");
+    p.setColor(Color.RED);
+    p.setPlayerInfo();
     g.addPlayer(p);
     g.makeMap(3);
     assertEquals(true, g.checkWin());
@@ -198,8 +210,12 @@ public class GameTest {
     ByteArrayOutputStream bytes2 = new ByteArrayOutputStream();                                                                                                   
     ServerPlayer p1 = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes1, true),socket1);
     p1.setName("Red");
+    p1.setColor(Color.RED);
+    p1.setPlayerInfo();
     ServerPlayer p2 = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes2, true),socket2);
     p2.setName("Blue");
+    p2.setColor(Color.BLUE);
+    p2.setPlayerInfo();
     g.addPlayer(p1);
     g.addPlayer(p2);
     g.makeMap(3);
@@ -219,9 +235,13 @@ public class GameTest {
     ByteArrayOutputStream bytes2 = new ByteArrayOutputStream();                                                                                                   
     ServerPlayer p1 = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes1, true),socket1);
     p1.setName("Red");
+    p1.setColor(Color.RED);
+    p1.setPlayerInfo();
     p1.setCurrentGameID(0);
     ServerPlayer p2 = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes2, true),socket2);
     p2.setName("Blue");
+    p2.setColor(Color.BLUE);
+    p2.setPlayerInfo();
     p2.setCurrentGameID(0);
     g.addPlayer(p1);
     g.addPlayer(p2);
@@ -250,9 +270,13 @@ public class GameTest {
     ByteArrayOutputStream bytes2 = new ByteArrayOutputStream();                                                                                                   
     ServerPlayer p1 = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes1, true),socket1);
     p1.setName("Red");
+    p1.setColor(Color.RED);
+    p1.setPlayerInfo();
     p1.setCurrentGameID(0);
     ServerPlayer p2 = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes2, true),socket2);
     p2.setName("Blue");
+    p2.setColor(Color.BLUE);
+    p2.setPlayerInfo();
     p2.setCurrentGameID(0);
     g.addPlayer(p1);
     g.addPlayer(p2);
@@ -281,9 +305,9 @@ public class GameTest {
   public void test_updatePlayerLists_3players() throws IOException, InterruptedException{
     PlaceEntry pe1 = new PlaceEntry("0", 2, "Red");
     PlaceEntry pe2 = new PlaceEntry("1", 0, "Blue");
-    PlaceEntry pe3 = new PlaceEntry("2", 2, "Purple");
+    PlaceEntry pe3 = new PlaceEntry("2", 2, "Green");
     AttackEntry a1 = new AttackEntry("0", "1", 2, "Red");
-    AttackEntry a2 = new AttackEntry("2", "1", 2, "Purple");
+    AttackEntry a2 = new AttackEntry("2", "1", 2, "Green");
     Socket socket1 = new Socket();
     Socket socket2 = new Socket();
     Socket socket3 = new Socket();
@@ -293,12 +317,18 @@ public class GameTest {
     ByteArrayOutputStream bytes3 = new ByteArrayOutputStream();                                                                                                     
     ServerPlayer p1 = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes1, true),socket1);
     p1.setName("Red");
+    p1.setColor(Color.RED);
+    p1.setPlayerInfo();
     p1.setCurrentGameID(0);
     ServerPlayer p2 = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes2, true),socket2);
     p2.setName("Blue");
+    p2.setColor(Color.BLUE);
+    p2.setPlayerInfo();
     p2.setCurrentGameID(0);
     ServerPlayer p3 = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes3, true),socket3);
-    p3.setName("Purple");
+    p3.setName("Green");
+    p3.setColor(Color.GREEN);
+    p3.setPlayerInfo();
     p3.setCurrentGameID(0);
     g.addPlayer(p1);
     g.addPlayer(p2);
@@ -312,11 +342,11 @@ public class GameTest {
     t.start();
     // wait for "acceptPlayers" finishing
     Thread.sleep(1000);  
-    pe1.apply(g.getMap(), null);
-    pe2.apply(g.getMap(), null);
-    pe3.apply(g.getMap(), null);
-    a1.apply(g.getMap(), null);
-    a2.apply(g.getMap(), null);
+    pe1.apply(g.getMap(), p1.getPlayerInfo());
+    pe2.apply(g.getMap(), p2.getPlayerInfo());
+    pe3.apply(g.getMap(), p3.getPlayerInfo());
+    a1.apply(g.getMap(), p1.getPlayerInfo());
+    a2.apply(g.getMap(), p3.getPlayerInfo());
     g.doAttacks();
     assertEquals(true, g.checkLost(p2));
     assertThrows(Exception.class, ()->{g.updatePlayerLists();});
@@ -326,6 +356,8 @@ public class GameTest {
   public void test_runGameEnd() throws IOException, InterruptedException{
     ServerPlayer player1 = Mockito.mock(ServerPlayer.class);
     ServerPlayer player2 = Mockito.mock(ServerPlayer.class);
+    PlayerInfo pi1 = new PlayerInfo("Red");
+    PlayerInfo pi2 = new PlayerInfo("Blue");
     PlaceEntry pe1 = new PlaceEntry("0", 2, "Red");
     PlaceEntry pe2 = new PlaceEntry("1", 0, "Blue");
     AttackEntry a1 = new AttackEntry("0","1", 2, "Red");
@@ -341,7 +373,9 @@ public class GameTest {
     Mockito.when(player1.getName()).thenReturn("Red");
     Mockito.when(player2.getName()).thenReturn("Blue");
     Mockito.when(player1.getColor()).thenReturn(Color.RED);
-    Mockito.when(player2.getColor()).thenReturn(Color.RED);
+    Mockito.when(player2.getColor()).thenReturn(Color.BLUE);
+    Mockito.when(player1.getPlayerInfo()).thenReturn(pi1);
+    Mockito.when(player2.getPlayerInfo()).thenReturn(pi2);
     Game g = new Game(2,0,1);                                                                                    
     g.addPlayer(player1);
     g.addPlayer(player2); 
@@ -359,12 +393,15 @@ public class GameTest {
 
   @Test
   public void test_runGameNotEnd() throws IOException, InterruptedException{
+    PlayerInfo pi1 = new PlayerInfo("Red");
+    PlayerInfo pi2 = new PlayerInfo("Blue");
+    PlayerInfo pi3 = new PlayerInfo("Green");
     ServerPlayer player1 = Mockito.mock(ServerPlayer.class);
     ServerPlayer player2 = Mockito.mock(ServerPlayer.class);
     ServerPlayer player3 = Mockito.mock(ServerPlayer.class);
     PlaceEntry pe1 = new PlaceEntry("0", 2, "Red");
     PlaceEntry pe2 = new PlaceEntry("1", 0, "Blue");
-    PlaceEntry pe3 = new PlaceEntry("2", 2, "Purple");
+    PlaceEntry pe3 = new PlaceEntry("2", 2, "Green");
     AttackEntry a1 = new AttackEntry("0","1", 2, "Red");
     List<ActionEntry> placements1 = new ArrayList<>();
     placements1.add(pe1);
@@ -381,7 +418,13 @@ public class GameTest {
     }).writeValueAsString(placements3)).thenReturn(Constant.ORDER_COMMIT);  
     Mockito.when(player1.getName()).thenReturn("Red");
     Mockito.when(player2.getName()).thenReturn("Blue");
-    Mockito.when(player3.getName()).thenReturn("Purple");
+    Mockito.when(player3.getName()).thenReturn("Green");
+    Mockito.when(player1.getColor()).thenReturn(Color.RED);
+    Mockito.when(player2.getColor()).thenReturn(Color.BLUE);
+    Mockito.when(player3.getColor()).thenReturn(Color.green);
+    Mockito.when(player1.getPlayerInfo()).thenReturn(pi1);
+    Mockito.when(player2.getPlayerInfo()).thenReturn(pi2);
+    Mockito.when(player2.getPlayerInfo()).thenReturn(pi3);
     Game g = new Game(3,0,1);                                                                                    
     g.addPlayer(player1);
     g.addPlayer(player2); 
