@@ -15,26 +15,62 @@ import java.io.PrintWriter;
 public class ServerPlayer extends Player {
   private Socket clientSocket;
   private Integer currentGameID;
+  private PlayerInfo playerInfo;
+  private Color color;
 
+  /**
+   * @return the color of the player
+   */
   public Color getColor() {
     return color;
   }
 
+  /**
+   * set color of the player
+   * @param color
+   */
   public void setColor(Color color) {
     this.color = color;
   }
 
-  private Color color;
-
+  /**
+   * the constructor of the player
+   * @param in
+   * @param out
+   * @param cs
+   */
   public ServerPlayer(BufferedReader in, PrintWriter out, Socket cs) {
     super(in, out);
     this.clientSocket = cs;
   }
 
+  /**
+   * set playerInfo field of the serverPlayer
+   */
+  public void setPlayerInfo(){
+    this.playerInfo = new PlayerInfo(this.getName());
+  }
+
+  /**
+   * 
+   * @return the playerInfo of the serverPlayer
+   */
+  public PlayerInfo getPlayerInfo(){
+    return this.playerInfo;
+  }
+
+  /**
+   * set the players current gameID
+   * @param gameID
+   */
   public void setCurrentGameID(Integer gameID){
     this.currentGameID = gameID;
   }
 
+  /**
+   * 
+   * @return the player's gameID
+   */
   public Integer getCurrentGame(){
     return this.currentGameID;
   }

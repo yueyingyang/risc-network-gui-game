@@ -53,7 +53,7 @@ public class App {
 
     actionHandlerMap.put(Constant.REJOINGAME, (p, n) -> {
       try {
-        startNewGame(p, n);
+        rejoinGame(p, n);
       } catch (Exception e) {
       }
     });
@@ -188,10 +188,10 @@ public class App {
    * This function will let the player reconnect to the game
    *
    * @param player
-   * @param gameID
+   * @param n is the JSON Node recv from server
    */
-  public void rejoinGame(ServerPlayer player, Integer gameID) {
-    player.setCurrentGameID(gameID);
+  public void rejoinGame(ServerPlayer player, JsonNode n) {
+    player.setCurrentGameID(Integer.parseInt(n.path("gameID").textValue()));
   }
 
 
@@ -212,6 +212,7 @@ public class App {
       player = new ServerPlayer(in, out, clientSocket);
       players.put(playerName, player);
       player.setName(playerName);
+      player.setPlayerInfo();
     } else {
       player = players.get(playerName);
       //update the player's inputstream and outputstream

@@ -62,6 +62,7 @@ class OneTurnThreadTest {
 //    work should be done during adding player
     p.setName("Blue");
     p.setColor(Color.red);
+    p.setPlayerInfo();
     OneTurnThread t = new OneTurnThread(map,p, new ArrayList<>(Collections.singletonList(p)));
     t.start();
     assertDoesNotThrow(()->{t.join();});
@@ -101,6 +102,7 @@ class OneTurnThreadTest {
     //    work should be done during adding player
     p.setName("Blue");
     p.setColor(Color.RED);
+    p.setPlayerInfo();
     OneTurnThread t = new OneTurnThread(map,p,new ArrayList<>(Collections.singletonList(p)));
     t.start();
     assertDoesNotThrow(()->{t.join();});

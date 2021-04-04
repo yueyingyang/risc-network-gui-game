@@ -102,11 +102,13 @@ class AppTest {
     ServerPlayer sp = new ServerPlayer(new BufferedReader(new StringReader("")),new PrintWriter(bytes, true),s);
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree("{\"type\":\"start\",\"name\":\"test\",\"gameSize\":\"2\"}");
+    JsonNode rejoinReq = mapper.readTree("{\"type\":\"rejoin\",\"name\":\"test\",\"gameID\":\"0\"}");
     Game g = app.startNewGame(sp, rootNode);
     Game g1 = app.startNewGame(sp, rootNode);
-    app.rejoinGame(sp, 0);
+    app.rejoinGame(sp, rejoinReq);
     assertEquals(0,sp.getCurrentGame());
   }
+
   @Test
   void test_accept_player() throws IOException, InterruptedException {
     Socket cs = Mockito.mock(Socket.class);

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="">
+<html xmlns:th="http://www.thymeleaf.org" lang="" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments/common_header.html :: headerfiles">
     <title>Lobby</title>
 </head>
@@ -8,8 +8,10 @@
     <a class="header item" style="user-select: auto;color: blueviolet">
         Lobby
     </a>
+    <!-- <a href="/logout">Logout</a> -->
+    <span sec:authentication="name"></span>
     <a class="right item" style="user-select: auto;">
-        <div class="ui button" style="user-select: auto;">Log-out</div>
+        <a class="ui button" style="user-select: auto;" th:href="@{/logout}">Log-out</a>
     </a>
 </div>
 <div class="ui grid centered" style="user-select: auto;">
@@ -117,5 +119,6 @@
 <script>
     $('select.dropdown')
         .dropdown();
+    let refresh_lobby_timer = setInterval(() => location.reload(), 10000);
 </script>
 </html>

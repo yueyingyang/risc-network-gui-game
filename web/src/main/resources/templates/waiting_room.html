@@ -28,8 +28,12 @@
 </div>
 <script th:src="@{/util.js}"></script>
 <script>
-// <!--    Had a message including last update time in the msg box,
-//     each time refresh will call this method to update -->
+    // <!--    Had a message including last update time in the msg box,
+    //     each time refresh will call this method to update -->
+    let timer;
+    $(document).ready(function () {
+        timer = setInterval(check_room_status, 1000)
+    })
     const changeUpdateTime = function () {
         $('#last_update').text('[Last update: ' + new Date().toLocaleTimeString() + '] The room is not ready yet.');
     }

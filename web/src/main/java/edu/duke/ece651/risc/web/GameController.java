@@ -6,12 +6,12 @@ import edu.duke.ece651.risc.shared.ClientSocket;
 import edu.duke.ece651.risc.shared.GameMap;
 import edu.duke.ece651.risc.shared.JSONSerializer;
 import edu.duke.ece651.risc.shared.entry.ActionEntry;
-import edu.duke.ece651.risc.shared.entry.AttackEntry;
 import edu.duke.ece651.risc.shared.entry.PlaceEntry;
 import edu.duke.ece651.risc.shared.game.TerrUnit;
 import edu.duke.ece651.risc.shared.game.TerrUnitList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,9 +29,6 @@ public class GameController {
   private final PlayerSocketMap playerMapping;
   private final UtilService util;
 
-  // todo: change after user login
-  private String currentUserName;
-
   // utils
   private final JSONSerializer jsonSerializer;
 
@@ -40,7 +37,6 @@ public class GameController {
   public GameController(PlayerSocketMap playerMapping, UtilService util) {
     this.util = util;
     this.jsonSerializer = new JSONSerializer();
-    this.currentUserName = "test";
     this.playerMapping = playerMapping;
   }
 
@@ -53,17 +49,20 @@ public class GameController {
    */
   @GetMapping("/place")
   public String place(Model model) throws IOException {
-    ClientSocket cs = playerMapping.getSocket(currentUserName);
+
+    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+    ClientSocket cs = playerMapping.getSocket(userName);
     GameMap map = (GameMap) jsonSerializer.deserialize(cs.recvMessage(), GameMap.class);
     int totalUnits = Integer.parseInt(cs.recvMessage());
     String mapViewString = cs.recvMessage();
     List<ObjectNode> graphData = util.deNodeList(mapViewString);
+
 //    Below 2 lines are for local test
 //    GameMap map = util.createMap();
 //    int totalUnits = 6;
 //    List<ObjectNode> graphData = util.mockObjectNodes();
     model.addAttribute("graphData", graphData);
-    model.addAttribute("wrapper", util.createTerrUnitList(map, currentUserName));
+    model.addAttribute("wrapper", util.createTerrUnitList(map, userName));
     model.addAttribute("units", totalUnits);
     model.addAttribute("message", null);
     return "placement";
@@ -78,13 +77,14 @@ public class GameController {
    */
   @PostMapping(value = "/submit_place")
   public String place(@ModelAttribute(value = "wrapper") TerrUnitList list) throws IOException {
+    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
     List<ActionEntry> placementList = new ArrayList<>();
     for (TerrUnit tu : list.getTerrUnitList()) {
-      placementList.add(new PlaceEntry(tu.getTerrName(), tu.getUnit(), currentUserName));
+      placementList.add(new PlaceEntry(tu.getTerrName(), tu.getUnit(), userName));
     }
     String json = jsonSerializer.getOm().writerFor(new TypeReference<List<ActionEntry>>() {
     }).writeValueAsString(placementList);
-    playerMapping.getSocket(currentUserName).sendMessage(json);
+    playerMapping.getSocket(userName).sendMessage(json);
     return "redirect:play";
   }
 
@@ -94,9 +94,10 @@ public class GameController {
    * @return game
    */
   @GetMapping(value = "/play")
-  public String playOneTurn(Model model) {
+  public String playOneTurn() {
     return "game";
   }
+
 
   @GetMapping(value = "/win")
   public String displayWin() {
@@ -106,5 +107,12 @@ public class GameController {
   @GetMapping(value = "/lose")
   public String displayLose() {
     return "display_lose";
+  }
+
+  @GetMapping(value = "/back_lobby")
+  public String backToLobby() {
+    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+    playerMapping.removeUser(userName);
+    return "redirect:lobby";
   }
 }

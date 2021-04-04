@@ -45,4 +45,13 @@ public class PlayerSocketMap {
     return new ClientSocket(s);
   }
 
+  /**
+   * Remove socket from socket map
+   *
+   * @param userName is the name of user to be removed
+   */
+  public void removeUser(String userName) {
+    players.remove(userName);
+  }
+
 }
