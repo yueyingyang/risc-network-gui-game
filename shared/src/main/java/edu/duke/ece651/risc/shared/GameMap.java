@@ -177,6 +177,9 @@ public class GameMap {
                 }
             }
             buffer.remove(toRemove);
+            if(toRemove==end){
+                return (distance.get(end)+start.getSize()+end.getSize())*unit/2;
+            }
             //System.out.println(toRemove.getName());
             for(Territory neighbour:toRemove.getNeighbours()){
                 if(neighbour.getOwnerName().equals(start.getOwnerName())) {
