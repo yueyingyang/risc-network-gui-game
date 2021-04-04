@@ -26,6 +26,6 @@ public class TechEntry extends BasicEntry {
      */
     @Override
     public void apply(GameMap myMap, PlayerInfo myInfo) {
-        myInfo.upgradeTech();
+        myInfo.takeTech();
     }
 }

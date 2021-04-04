@@ -10,6 +10,8 @@ public class PlayerInfo {
     private int techLevel;
     private int foodResource;
     private int techResource;
+    private boolean requested;
+
 
     /**
      * Construct a PlayerInfo object
@@ -24,6 +26,7 @@ public class PlayerInfo {
         this.techLevel = techLevel;
         this.foodResource = foodResource;
         this.techResource = techResource;
+        this.requested = false;
     }
 
     /**
@@ -36,12 +39,31 @@ public class PlayerInfo {
     }
 
     /**
-     * Upgrade technology by one level
+     * Take player's update technology request
      */
-    public void upgradeTech() {
+    public void takeTech() {
         int cost = GameUtil.getTechCost(techLevel);
         consumeTech(cost);
-        techLevel += 1;
+        requested = true;
+    }
+
+    /**
+     * Make player's technology update in effect
+     */
+    public void effectTech() {
+        if (requested) {
+            techLevel += 1;
+            requested = false;
+        }
+    }
+
+    /**
+     * Get whether the player has requested technology update in the turn
+     *
+     * @return true if the player has requested technology update in the turn else false
+     */
+    public boolean isRequested() {
+        return requested;
     }
 
     /**
@@ -100,6 +122,7 @@ public class PlayerInfo {
 
     /**
      * Add resource
+     *
      * @param myTerrs is the territories of the player
      */
     public void addResource(Iterable<Territory> myTerrs) {
