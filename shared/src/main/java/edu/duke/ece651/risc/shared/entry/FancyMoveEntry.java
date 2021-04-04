@@ -6,7 +6,10 @@ import edu.duke.ece651.risc.shared.Territory;
 
 import java.beans.ConstructorProperties;
 
-public class FancyMoveEntry extends BasicEntry{
+/**
+ * A class represent a FancyMoveEntry
+ */
+public class FancyMoveEntry extends BasicEntry {
 
     /**
      * Create a FancyMoveEntry object
@@ -23,6 +26,12 @@ public class FancyMoveEntry extends BasicEntry{
         super(fromName, toName, numSoldiers, playerName, fromType, null);
     }
 
+    /**
+     * Move soldiers from one territory to another
+     *
+     * @param myMap  is the map of the game
+     * @param myInfo is the player info
+     */
     @Override
     public void apply(GameMap myMap, PlayerInfo myInfo) {
         Territory fromTerr = myMap.getTerritory(fromName);

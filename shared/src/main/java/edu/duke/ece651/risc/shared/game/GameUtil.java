@@ -29,13 +29,23 @@ public class GameUtil {
     /**
      * Get the cost to upgrade soldiers
      *
-     * @param fromType   is the current type of the soldiers
-     * @param toType     is the type of the soldiers after upgrade
+     * @param fromType    is the current type of the soldiers
+     * @param toType      is the type of the soldiers after upgrade
      * @param numSoldiers is the number of soldiers
      * @return the cost to upgrade soldiers
      */
     public static int getSoldierCost(String fromType, String toType, int numSoldiers) {
         return numSoldiers * (Constant.soldierCost.get(toType)
                 - Constant.soldierCost.get(fromType));
+    }
+
+    /**
+     * Get the technology level required to update the soldier to the target type
+     *
+     * @param type is the target type
+     * @return the technology level required to update the soldier to the target type
+     */
+    public static int getTechRequire(String type) {
+        return Constant.requiredTech.get(type);
     }
 }

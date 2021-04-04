@@ -4,6 +4,9 @@ import edu.duke.ece651.risc.shared.*;
 
 import java.beans.ConstructorProperties;
 
+/**
+ * A class represents a fancy attack entry
+ */
 public class FancyAttackEntry extends BasicEntry {
     /**
      * Create a FancyAttackEntry object

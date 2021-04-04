@@ -30,4 +30,14 @@ class GameUtilTest {
         assertEquals(108, GameUtil.getSoldierCost("1", "3", 4));
     }
 
+    @Test
+    public void test_getTechRequire() {
+        assertEquals(1, GameUtil.getTechRequire("1"));
+        assertEquals(2, GameUtil.getTechRequire("2"));
+        assertEquals(3, GameUtil.getTechRequire("3"));
+        assertEquals(4, GameUtil.getTechRequire("4"));
+        assertEquals(5, GameUtil.getTechRequire("5"));
+        assertEquals(6, GameUtil.getTechRequire("6"));
+    }
+
 }
