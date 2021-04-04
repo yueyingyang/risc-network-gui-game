@@ -4,10 +4,13 @@ const move_form = $('form#move');
 const move_btn = $('form#move .submit');
 const soldier_form = $('form#soldier');
 const soldier_btn = $('form#soldier .submit');
+const tech_form = $('form#tech');
+const tech_bin = $('form#tech .submit');
 
 setupForm(attack_form, attack_btn, '/attack');
 setupForm(move_form, move_btn, '/move');
 setupForm(soldier_form, soldier_btn, '/soldier');
+setupForm(tech_form, tech_bin, '/tech');
 
 function setupForm(form, submit_btn, url) {
     form.submit(function (event) {

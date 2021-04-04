@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import edu.duke.ece651.risc.shared.ClientSocket;
 import edu.duke.ece651.risc.shared.Constant;
 import edu.duke.ece651.risc.shared.JSONSerializer;
-import edu.duke.ece651.risc.shared.entry.ActionEntry;
-import edu.duke.ece651.risc.shared.entry.AttackEntry;
-import edu.duke.ece651.risc.shared.entry.MoveEntry;
-import edu.duke.ece651.risc.shared.entry.SoldierEntry;
+import edu.duke.ece651.risc.shared.entry.*;
 import edu.duke.ece651.risc.web.model.ActionAjaxResBody;
 import edu.duke.ece651.risc.web.model.UserActionInput;
 import org.springframework.http.HttpStatus;
@@ -114,7 +111,7 @@ public class AjaxController {
   }
 
   /**
-   * Solider action validation
+   * Update soldier action validation
    *
    * @param input is serialized form
    * @return a response entity whose body is ActionAjaxResBody
@@ -131,6 +128,22 @@ public class AjaxController {
             userName);
     System.out.println(serializer.serialize(soldierEntry));
     return getActionAjaxResBodyResponseEntity(soldierEntry);
+  }
+
+  /**
+   * Update technology action validation
+   *
+   * @param input is serialized form
+   * @return a response entity whose body is ActionAjaxResBody
+   * @throws IOException
+   */
+  @PostMapping(value = "/tech", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<ActionAjaxResBody> tech(@RequestBody UserActionInput input) throws IOException {
+//    Wrap a Tech entry
+    TechEntry techEntry = new TechEntry(
+            userName);
+    System.out.println(serializer.serialize(techEntry));
+    return getActionAjaxResBodyResponseEntity(techEntry);
   }
 
   /**
