@@ -127,6 +127,7 @@ public class AjaxController {
    */
   @PostMapping(value = "/soldier", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ActionAjaxResBody> soldier(@RequestBody UserActionInput input) throws IOException {
+    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
 //    Wrap a Soldier entry
     SoldierEntry soldierEntry = new SoldierEntry(
             input.getToName(),
@@ -147,6 +148,7 @@ public class AjaxController {
    */
   @PostMapping(value = "/tech", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ActionAjaxResBody> tech(@RequestBody UserActionInput input) throws IOException {
+    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
 //    Wrap a Tech entry
     TechEntry techEntry = new TechEntry(
             userName);
