@@ -84,9 +84,10 @@ public class AjaxController {
   @PostMapping(value = "/attack", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ActionAjaxResBody> attack(@RequestBody UserActionInput input) throws IOException {
 //    Wrap a Attack entry
-    AttackEntry attackEntry = new AttackEntry(input.getFromName(),
+    FancyAttackEntry attackEntry = new FancyAttackEntry(input.getFromName(),
             input.getToName(),
             input.getSoldierNum(),
+            input.getFromType(),
             userName);
     System.out.println(serializer.serialize(attackEntry));
     return getActionAjaxResBodyResponseEntity(attackEntry);
@@ -102,9 +103,10 @@ public class AjaxController {
   @PostMapping(value = "/move", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ActionAjaxResBody> move(@RequestBody UserActionInput input) throws IOException {
 //    Wrap a Move entry
-    MoveEntry moveEntry = new MoveEntry(input.getFromName(),
+    FancyMoveEntry moveEntry = new FancyMoveEntry(input.getFromName(),
             input.getToName(),
             input.getSoldierNum(),
+            input.getFromType(),
             userName);
     System.out.println(serializer.serialize(moveEntry));
     return getActionAjaxResBodyResponseEntity(moveEntry);
