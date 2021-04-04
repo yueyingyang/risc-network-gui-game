@@ -1,9 +1,12 @@
-package edu.duke.ece651.risc.shared;
+package edu.duke.ece651.risc.shared.checker;
 
+import edu.duke.ece651.risc.shared.GameMap;
+import edu.duke.ece651.risc.shared.PlayerInfo;
+import edu.duke.ece651.risc.shared.Territory;
 import edu.duke.ece651.risc.shared.entry.ActionEntry;
 
-public class MoveRuleChecker extends Checker {
-    public MoveRuleChecker(Checker next) {
+public class FancyMoveRuleChecker extends Checker {
+    public FancyMoveRuleChecker(Checker next) {
         super(next);
     }
 
@@ -13,7 +16,7 @@ public class MoveRuleChecker extends Checker {
      * 2. the "from territory" and "to territory" should belong to the same owners.
      * 3. there should be a path from "from territory" to "to territory" within one player's territory
      */
-    public void checkMyRule(ActionEntry action, GameMap map) {
+    public void checkMyRule(ActionEntry action, GameMap map, PlayerInfo myInfo) {
         Territory start = map.getTerritory(action.getFromName());
         Territory end = map.getTerritory(action.getToName());
         if (start == end) {
@@ -26,6 +29,10 @@ public class MoveRuleChecker extends Checker {
 
         if (!map.isConnected(start, end)) {
             throw new IllegalArgumentException("The destination of move action is unreachable!");
+        }
+
+        if(map.computeCost(start,end,action.getNumSoldiers())>myInfo.getFoodResource()){
+            throw new IllegalArgumentException("The food resource is not enough!");
         }
     }
 
