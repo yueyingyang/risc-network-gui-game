@@ -2,6 +2,7 @@ package edu.duke.ece651.risc.shared;
 
 import org.junit.jupiter.api.Test;
 
+import java.awt.*;
 import java.io.*;
 import java.net.Socket;
 import static org.junit.jupiter.api.Assertions.*;
@@ -62,5 +63,61 @@ class ServerPlayerTest {
         ServerPlayer p = new ServerPlayer(in, new PrintWriter(bytes, true),s);
         p.sendObject("Hi");
         assertEquals("\"Hi\"\n",bytes.toString());
+    }
+
+    @Test
+    public void test_setGetPlayerInfo() {
+        Socket s = new Socket();
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        BufferedReader in = new BufferedReader(new StringReader(""));
+        ServerPlayer p = new ServerPlayer(in, new PrintWriter(bytes, true),s);
+        p.setName("Red");
+        p.setPlayerInfo();
+        assertEquals("Red", p.getPlayerInfo().getName());
+        assertEquals(1, p.getPlayerInfo().getTechLevel());
+    }
+
+    @Test
+    public void test_setGetCurrentGameID(){
+        Socket s = new Socket();
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        BufferedReader in = new BufferedReader(new StringReader(""));
+        ServerPlayer p = new ServerPlayer(in, new PrintWriter(bytes, true),s);
+        p.setCurrentGameID(0);
+        assertEquals(0, p.getCurrentGame());
+    }
+
+    @Test
+    public void test_setGetColor(){
+        Socket s = new Socket();
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        BufferedReader in = new BufferedReader(new StringReader(""));
+        ServerPlayer p = new ServerPlayer(in, new PrintWriter(bytes, true),s);
+        Color c = new Color(1,1,1);
+        p.setColor(c);
+        assertEquals(c, p.getColor());
+    }
+
+    @Test
+    public void test_setInOut() throws IOException{
+        Socket s = new Socket();
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        BufferedReader in = new BufferedReader(new StringReader(""));
+        ServerPlayer p = new ServerPlayer(in, new PrintWriter(bytes, true),s);
+        ByteArrayOutputStream bytes1 = new ByteArrayOutputStream();
+        BufferedReader in1 = new BufferedReader(new StringReader("123"));
+        p.setInOut(in1,  new PrintWriter(bytes1, true));
+        assertEquals("123", p.recvMessage());
+    }
+
+    @Test
+    public void test_setSocket(){
+        Socket s = new Socket();
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        BufferedReader in = new BufferedReader(new StringReader(""));
+        ServerPlayer p = new ServerPlayer(in, new PrintWriter(bytes, true),s);
+        Socket s1 = new Socket();
+        p.setSocket(s1);
+        assertDoesNotThrow(()->{p.closeSocket();});
     }
 }

@@ -47,10 +47,18 @@ public class Game {
         this.myRandom = new Random(randomSeed);
     }
 
+    /**
+     * get the current gameID
+     * @return the current gameID
+     */
     public Integer getGameID(){
         return this.gameID;
     }
 
+    /**
+     * get all players' name in game
+     * @return the list of playerName
+     */
     public List<String> getAllPlayers(){
         ArrayList<String> res = new ArrayList<String>();
         for(Player p:players){
@@ -232,6 +240,15 @@ public class Game {
     }
 
     /**
+     * upgrade the tech level if requested
+     */
+    public void effectTechForStillIn(){
+        for(ServerPlayer p:stillInPlayers){
+            p.getPlayerInfo().effectTech();
+        }
+    }
+
+    /**
      * all players play one turn
      *
      * @throws IOException
@@ -246,6 +263,7 @@ public class Game {
         receiveAndApplyMoves();
         //resolve all combats and send combat results to players still watch the game
         String combatResult = doAttacks();
+        effectTechForStillIn();
         sendObjectToAll(combatResult, stillWatchPlayers);
     }
 
@@ -327,6 +345,16 @@ public class Game {
     }
 
     /**
+     * add resources to all territories
+     */
+    public void addResourcesToStillIn(){
+        for(ServerPlayer p:stillInPlayers){
+            Iterable<Territory> myTerrs = gameMap.getPlayerTerritories(p.getName());
+            p.getPlayerInfo().addResource(myTerrs);
+        }
+    }
+
+    /**
      * after the game room's required number of people is reached, run the game
      *
      * @throws IOException
@@ -340,6 +368,7 @@ public class Game {
         sendObjectToAll(this.gameMap, players);
         sendStringToAll(String.valueOf(totalSoldiers), players);
         sendStringToAll(view.toString(false), players);
+        addResourcesToStillIn();
         placementPhase();
         while (true) {
             //multi thread in this function to handle simultaneous input
@@ -348,6 +377,8 @@ public class Game {
             updatePlayerLists();
             //add 1 soldier to all territories at the end of one turn;
             addSoldiersToAll();
+            //add resources for all players
+            addResourcesToStillIn();
             //check if the game is over
             if (checkWin() == true) {
                 String winner = this.gameMap.getAllPlayerTerritories().keySet().iterator().next();

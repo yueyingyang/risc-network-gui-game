@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class OneTurnThread extends Thread {
     private GameMap mapLocal;
     private GameMap gameMap;
-    private Player player;
+    private ServerPlayer player;
     // for playerInfo field
     private final List<ServerPlayer> playerList;
 
@@ -24,7 +24,7 @@ public class OneTurnThread extends Thread {
      * @param g the gameMap of the game
      * @param p the player
      */
-    public OneTurnThread(GameMap g, Player p, List<ServerPlayer> playerList) {
+    public OneTurnThread(GameMap g, ServerPlayer p, List<ServerPlayer> playerList) {
         this.gameMap = g;
         this.player = p;
         // Each player keep a local copy of game map, to update during one turn
@@ -42,9 +42,9 @@ public class OneTurnThread extends Thread {
     private void applyMovement(ActionEntry a) {
         synchronized (gameMap) {
             try {
-                a.apply(gameMap, null);
+                a.apply(gameMap, player.getPlayerInfo());
 //                also apply on the local copy
-                a.apply(mapLocal, null);
+                a.apply(mapLocal, player.getPlayerInfo());
                 player.sendMessage(Constant.VALID_ACTION);
             } catch (Exception e) {
                 player.sendMessage(e.getMessage());
