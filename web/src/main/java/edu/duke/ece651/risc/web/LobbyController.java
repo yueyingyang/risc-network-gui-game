@@ -116,13 +116,13 @@ public class LobbyController {
 
 
   @GetMapping(value = "/rejoin")
-  public String rejoin(@RequestParam(name = "gameID") String gameID) throws IOException {
-    String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
-    ClientSocket c = playerMapping.getSocket(currentUserName);
+  public String rejoin(@RequestParam(name = "gameId") String gameId) throws IOException {
+    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+    ClientSocket c = playerMapping.getSocket(userName);
     ObjectNode startReq = JsonNodeFactory.instance.objectNode();
     startReq.put("type", "rejoin");
-    startReq.put("name", currentUserName);
-    startReq.put("gameID", gameID);
+    startReq.put("name", userName);
+    startReq.put("gameID", gameId);
     c.sendMessage(new ObjectMapper().writeValueAsString(startReq));
     return "redirect:/game/play";
   }

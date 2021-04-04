@@ -108,4 +108,11 @@ public class GameController {
   public String displayLose() {
     return "display_lose";
   }
+
+  @GetMapping(value = "/back_lobby")
+  public String backToLobby() {
+    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+    playerMapping.removeUser(userName);
+    return "redirect:lobby";
+  }
 }

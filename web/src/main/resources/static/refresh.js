@@ -52,14 +52,14 @@ const resolve_combat = () => {
                 // display map
                 display_map(full_map_formatter)
                 toggleActionAndRefresh();
+                clearInterval(combat_resolve_timer);
             } else {
                 if (resBody['win']) {
-                    location.href = '/game/win';
+                    $('#winner').modal('show');
                 } else {
-                    location.href = '/game/lose';
+                    $('#lost').modal('show');
                 }
             }
-            clearInterval(combat_resolve_timer);
         }
     });
 }

@@ -163,15 +163,21 @@ public class AjaxController {
           resBody.setGraphData(util.deNodeList(gameStatus));
         } else {
 //          2.1.1 You are the last player! You're the winner!
-//          todo: redirect to winner's page
           resBody.setGraphData(null);
           resBody.setWin(true);
         }
       } else {
 //        2.2 LOSE
-//        todo: redirect to loser's page
+        String gameStatus = cs.recvMessage(); // GAME_OVER or next turn's map
         resBody.setGraphData(null);
         resBody.setWin(false);
+//        if (!gameStatus.equals(Constant.GAME_OVER)) {
+//          //          2.1.2 Next turn starts!
+//          cs.recvMessage()
+//        } else {
+////          2.1.1 You are the last player! You're the winner!
+//          cs.sendMessage(Constant.WATCH_GAME);
+//        }
       }
       resBody.setValRes(combatRes);
       return ResponseEntity.status(HttpStatus.ACCEPTED).body(resBody);
