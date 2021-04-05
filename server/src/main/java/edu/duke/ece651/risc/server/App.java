@@ -75,7 +75,7 @@ public class App {
   private List<Game> getAvailableGames(String playerName) {
     List<Game> res = new ArrayList<>();
     for (Game g : this.games) {
-      if (!g.isGameFull() && g.IsPlayerExist(playerName).equals(false)) {
+      if (!g.isGameFull() && g.IsPlayerExist(playerName).equals(false) && g.isComplete==false) {
         res.add(g);
       }
     }
@@ -117,7 +117,9 @@ public class App {
     }
     List<GameInfo> allJoined = new ArrayList<>();
     for (Game g : this.getPlayerGame(playerName)) {
-      allJoined.add(new GameInfo(g.getGameID(), g.getAllPlayers()));
+        if(g.isComplete==false){
+          allJoined.add(new GameInfo(g.getGameID(), g.getAllPlayers()));
+        }   
     }
     String res = null;
     try {

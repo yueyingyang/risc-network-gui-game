@@ -30,6 +30,7 @@ public class Game {
     private V2MapView view;
     private Random myRandom;
     private int randomSeed;
+    public Boolean isComplete;
 
 
     /**
@@ -45,6 +46,7 @@ public class Game {
         this.stillWatchPlayers = new ArrayList<>();
         this.randomSeed = r;
         this.myRandom = new Random(randomSeed);
+        this.isComplete = false;
     }
 
     /**
@@ -281,7 +283,7 @@ public class Game {
      *
      * @throws IOException
      */
-    public void updatePlayerLists(ArrayList<ServerPlayer> connectedPlayers) throws IOException {
+    public void updatePlayerLists() throws IOException {
         //update the stillWatch players list and the stillIn players list
         ArrayList<ServerPlayer> temp = new ArrayList<ServerPlayer>(stillInPlayers);
         ArrayList<ServerPlayer> losers = new ArrayList<>();
@@ -403,13 +405,14 @@ public class Game {
             //multi thread in this function to handle simultaneous input
             playOneTurn(connectedPlayers);
             //update stillIn and stillWatch players list
-            updatePlayerLists(connectedPlayers);
+            updatePlayerLists();
             //add 1 soldier to all territories at the end of one turn;
             addSoldiersToAll();
             //add resources for all players
             addResourcesToStillIn();
             //check if the game is over
             if (checkWin() == true) {
+                this.isComplete = true;
                 String winner = this.gameMap.getAllPlayerTerritories().keySet().iterator().next();
                 sendStringToAll(Constant.GAME_OVER, stillWatchPlayers);
                 sendStringToAll("The winner is " + winner, stillWatchPlayers);
