@@ -7,9 +7,11 @@ import java.util.logging.Logger;
 public class ClientSocket {
   protected BufferedReader in;
   protected PrintWriter out;
+  protected Socket s;
   private static final Logger LOGGER = Logger.getLogger(ClientSocket.class.getName());
 
   public ClientSocket(Socket s) throws IOException {
+    this.s = s;
     this.in = new BufferedReader(new InputStreamReader(s.getInputStream()));
     this.out = new PrintWriter(s.getOutputStream(), true);
   }
@@ -44,5 +46,9 @@ public class ClientSocket {
    */
   public boolean hasNewMsg() throws IOException {
     return in.ready();
+  }
+
+  public void close() throws IOException {
+    s.close();
   }
 }

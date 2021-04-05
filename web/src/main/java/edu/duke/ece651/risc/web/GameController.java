@@ -3,6 +3,7 @@ package edu.duke.ece651.risc.web;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import edu.duke.ece651.risc.shared.ClientSocket;
+import edu.duke.ece651.risc.shared.Constant;
 import edu.duke.ece651.risc.shared.GameMap;
 import edu.duke.ece651.risc.shared.JSONSerializer;
 import edu.duke.ece651.risc.shared.entry.ActionEntry;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/game")
@@ -79,12 +81,17 @@ public class GameController {
   public String place(@ModelAttribute(value = "wrapper") TerrUnitList list) throws IOException {
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
     List<ActionEntry> placementList = new ArrayList<>();
+    ClientSocket cs = playerMapping.getSocket(userName);
     for (TerrUnit tu : list.getTerrUnitList()) {
       placementList.add(new PlaceEntry(tu.getTerrName(), tu.getUnit(), userName));
     }
     String json = jsonSerializer.getOm().writerFor(new TypeReference<List<ActionEntry>>() {
     }).writeValueAsString(placementList);
-    playerMapping.getSocket(userName).sendMessage(json);
+    cs.sendMessage(json);
+    String valRes = cs.recvMessage();
+    if (valRes.equals("invalid")) {
+      return "redirect:place";
+    }
     return "redirect:play";
   }
 
@@ -94,25 +101,9 @@ public class GameController {
    * @return game
    */
   @GetMapping(value = "/play")
-  public String playOneTurn() {
+  public String playOneTurn(Model model) {
+    model.addAttribute("soldierType", Constant.soldierCost.keySet().stream().sorted().collect(Collectors.toList()));
     return "game";
   }
 
-
-  @GetMapping(value = "/win")
-  public String displayWin() {
-    return "display_win";
-  }
-
-  @GetMapping(value = "/lose")
-  public String displayLose() {
-    return "display_lose";
-  }
-
-  @GetMapping(value = "/back_lobby")
-  public String backToLobby() {
-    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-    playerMapping.removeUser(userName);
-    return "redirect:lobby";
-  }
 }

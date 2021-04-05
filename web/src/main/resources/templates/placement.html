@@ -6,9 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
-<div th:insert="fragments/common_header.html :: header"></div>
 <br>
-
 <div class="ui grid">
     <div class="two column centered row">
         <div id="map" class="six wide column" style="width:600px; height:400px;"></div>
@@ -18,6 +16,7 @@
                       method="post"
                       th:object="${wrapper}">
                     <div class="ui header">Please enter the placement below:</div>
+                    <div>Each player has <strong>[[${units}]]</strong> soldiers in total.</div>
                     <div class="fields" style="user-select: auto;">
                         <!-- Render territory -->
                         <div class="field" th:each="terrUnit, stat: ${wrapper.terrUnitList}" style="user-select: auto;">

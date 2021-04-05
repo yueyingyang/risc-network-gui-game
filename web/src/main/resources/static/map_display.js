@@ -37,7 +37,7 @@ function getOption(tooltip_formatter_fn) {
 
 const map_html = '<div id="map" style="width:600px; height:400px;"></div>';
 const load_html = '            <div class="ui active inverted dimmer">\n' +
-    '                <div class="ui text loader">Hey - other players are still placing their 💂. <br>' +
+    '                <div class="ui text loader">Hey👋 - other players are still doing actions. <br>' +
     'Please wait and click refresh to get update!\n' +
     '                </div>\n' +
     '            </div>';

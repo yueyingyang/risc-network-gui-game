@@ -11,15 +11,15 @@ import java.util.List;
  * graphData is the List<ObjectNode> to display map.
  */
 public class ActionAjaxResBody {
-  public void setValRes(String valRes) {
-    this.valRes = valRes;
-  }
-
-  public void setGraphData(List<ObjectNode> graphData) {
-    this.graphData = graphData;
-  }
 
   String valRes;
+  String winnerInfo;
+  List<ObjectNode> graphData;
+  boolean win;
+
+  public boolean isWin() {
+    return win;
+  }
 
   public String getValRes() {
     return valRes;
@@ -29,17 +29,25 @@ public class ActionAjaxResBody {
     return graphData;
   }
 
-  List<ObjectNode> graphData;
+  public void setValRes(String valRes) {
+    this.valRes = valRes;
+  }
 
-  public boolean isWin() {
-    return win;
+  public void setGraphData(List<ObjectNode> graphData) {
+    this.graphData = graphData;
   }
 
   public void setWin(boolean win) {
     this.win = win;
   }
 
-  boolean win;
+  public String getWinnerInfo() {
+    return winnerInfo;
+  }
+
+  public void setWinnerInfo(String winnerInfo) {
+    this.winnerInfo = winnerInfo;
+  }
 
   public ActionAjaxResBody() {
   }

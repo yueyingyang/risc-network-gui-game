@@ -50,8 +50,10 @@ public class PlayerSocketMap {
    *
    * @param userName is the name of user to be removed
    */
-  public void removeUser(String userName) {
+  public void removeUser(String userName) throws IOException {
+    players.get(userName).close();
     players.remove(userName);
+    logger.info("Remove and close [" + userName + "]'s socket");
   }
 
 }

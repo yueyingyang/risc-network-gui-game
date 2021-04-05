@@ -5,8 +5,8 @@
     <title>Action Form Fragment</title>
 </head>
 <body>
-<div th:fragment="move_attack_fields">
-    <div class="fields" style="user-select: auto;">
+<div th:fragment="move_attack_fields(soldierType)">
+    <div class="four fields" style="user-select: auto;">
         <div class="field" style="user-select: auto;">
             <label style="user-select: auto;">From Territory</label>
             <input type="text" placeholder="From Territory" style="user-select: auto;"
@@ -19,8 +19,10 @@
         </div>
         <div class="field" style="user-select: auto;">
             <label style="user-select: auto;">Soldier Type</label>
-            <input type="text" placeholder="Soldier Type" style="user-select: auto;"
-                   name="fromType">
+            <select th:name="fromType"
+                    class="ui fluid search dropdown">
+                <option th:each="t : ${soldierType}" th:text="${t}" th:value="${t}"></option>
+            </select>
         </div>
         <div class="field" style="user-select: auto;">
             <label style="user-select: auto;">Number of Soldiers</label>
@@ -29,8 +31,8 @@
         </div>
     </div>
 </div>
-<div th:fragment="soldier_fields">
-    <div class="fields" style="user-select: auto;">
+<div th:fragment="soldier_fields(soldierType)">
+    <div class="four fields" style="user-select: auto;">
         <div class="field" style="user-select: auto;">
             <label style="user-select: auto;">Territory</label>
             <input type="text" placeholder="Territory" style="user-select: auto;"
@@ -43,8 +45,10 @@
         </div>
         <div class="field" style="user-select: auto;">
             <label style="user-select: auto;">Target Soldier Type</label>
-            <input type="text" placeholder="Target Soldier Type" style="user-select: auto;"
-                   name="toType">
+            <select th:name="fromType"
+                    class="ui fluid search dropdown">
+                <option th:each="t : ${soldierType}" th:text="${t}" th:value="${t}"></option>
+            </select>
         </div>
         <div class="field" style="user-select: auto;">
             <label style="user-select: auto;">Number of Soldiers</label>
