@@ -28,9 +28,9 @@ public class TechRuleCheckerTest {
         assertThrows(IllegalArgumentException.class, () -> checker.checkAction(upgrade1,gamemap,player1));
         TechEntry upgrade2=new TechEntry("2");
         PlayerInfo player2=new PlayerInfo("2",1,50,250);
-        assertDoesNotThrow(() -> checker.checkAction(upgrade2,gamemap,player2));
         // check correct case
-        upgrade2.apply(gamemap,player2);
+        assertDoesNotThrow(() -> checker.checkAction(upgrade2,gamemap,player2));
+        player2.takeTech();
         // check upgrade twice in one turn case
         assertThrows(IllegalArgumentException.class, () -> checker.checkAction(upgrade2,gamemap,player2));
     }
