@@ -35,12 +35,17 @@ public class V2MapView {
       ObjectNode o = jsonSerializer.getOm().createObjectNode();
       o.put("name", t.getName());
       o.put("owner", t.getOwnerName());
-      o.put("value", 2); // hardcoded, need to change to t.size()
+      o.put("value", t.getSize()); // hardcoded, need to change to t.size()
       o.put("color", playerColorMap.get(t.getOwnerName()));
       if (full) {
-        o.put("units", t.getNumSoldiersInArmy());
+        //o.put("units", t.getNumSoldiersInArmy());
         o.put("foodProd", 0);
         o.put("techProd", 0);
+        
+        for(int i=0;i<=6;i++){
+          o.put("unit"+i,t.getNumSoldiersInArmy(""+i));
+        }
+        
       }
       graphData.add(o);
     }

@@ -81,7 +81,7 @@
 <!-- Map display utils -->
 <script th:src="@{/map_display.js}"></script>
 <script th:inline="javascript">
-    <!--    the start state is disabled commit and fields -->
+    //<!--    the start state is disabled commit and fields -->
     let map_refresh_timer;
     let combat_resolve_timer;
     $(document).ready(function () {
@@ -94,10 +94,16 @@
 
     let graphData = null
     const full_map_formatter = params => `😉\t${params.data.owner}<br />` +
-        `💂\t${params.data.units}<br />` +
         `🍽\t${params.data.foodProd}<br />` +
         `💎\t${params.data.techProd}<br />` +
-        `📏\t${params.data.value}`
+        `📏\t${params.data.value}`+
+        `💂0\t${params.data.unit0}<br />`+
+        `💂1\t${params.data.unit1}<br />`+
+        `💂2\t${params.data.unit2}<br />`+
+        `💂3\t${params.data.unit3}<br />`+
+        `💂4\t${params.data.unit4}<br />`+
+        `💂5\t${params.data.unit5}<br />`
+
 
     // default is loading box
     $('#map_box').empty().append(load_html);
