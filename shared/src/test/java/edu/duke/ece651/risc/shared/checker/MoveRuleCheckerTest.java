@@ -1,4 +1,4 @@
-package edu.duke.ece651.risc.shared;
+package edu.duke.ece651.risc.shared.checker;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -8,6 +8,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
+import edu.duke.ece651.risc.shared.BasicArmy;
+import edu.duke.ece651.risc.shared.GameMap;
+import edu.duke.ece651.risc.shared.PlayerInfo;
+import edu.duke.ece651.risc.shared.Territory;
+import edu.duke.ece651.risc.shared.checker.Checker;
+import edu.duke.ece651.risc.shared.checker.ClientChecker;
+import edu.duke.ece651.risc.shared.checker.MoveRuleChecker;
 import edu.duke.ece651.risc.shared.entry.ActionEntry;
 import edu.duke.ece651.risc.shared.entry.MoveEntry;
 import org.junit.jupiter.api.Test;
@@ -17,6 +24,7 @@ public class MoveRuleCheckerTest {
   public void test_checkMyRule() {
     GameMap map1=createTestMap();
     Checker checker=new MoveRuleChecker(null);
+    PlayerInfo info1=new PlayerInfo("player1");
     // check move to other player's territory
     ActionEntry move1=new MoveEntry("3","4",1, "player1");
     // check move to itself
@@ -26,16 +34,18 @@ public class MoveRuleCheckerTest {
     // normal case
     ActionEntry move4=new MoveEntry("1","3",1, "player1");
 
-    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move1,map1));
-    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move2,map1));
-    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move3,map1));
-    checker.checkAction(move4,map1);
+    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move1,map1,info1));
+    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move2,map1,info1));
+    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move3,map1,info1));
+    checker.checkAction(move4,map1,info1);
   }
 
   @Test
   public void test_combinedRule(){
     GameMap map1=createTestMap();
     Checker checker=new ClientChecker(new MoveRuleChecker(null));
+    PlayerInfo info1=new PlayerInfo("player1");
+    PlayerInfo info2=new PlayerInfo("player2");
     // check move to other player's territory
     ActionEntry move1=new MoveEntry("4", "3", 2, "player2");
     // check too many units
@@ -48,12 +58,12 @@ public class MoveRuleCheckerTest {
     ActionEntry move5=new MoveEntry("1","3",-1,"player1");
     // check move other player's unit
     ActionEntry move6=new MoveEntry("5","6",1,"player1");
-    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move1,map1));
-    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move2,map1));
-    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move3,map1));
-    checker.checkAction(move4,map1);
-    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move5,map1));
-    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move6,map1));
+    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move1,map1,info2));
+    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move2,map1,info1));
+    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move3,map1,info1));
+    checker.checkAction(move4,map1,info1);
+    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move5,map1,info1));
+    assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move6,map1,info1));
   }
 
   private GameMap createTestMap(){
@@ -90,7 +100,7 @@ public class MoveRuleCheckerTest {
       String name2=""+((i+1)%territoryFinder.size()+1);
       connections.add(Arrays.asList(name1,name2));
     }
-    
+
     for(String territoryName:territoryFinder.keySet()){
       Territory t=territoryFinder.get(territoryName);
       t.setMyArmy(new BasicArmy(t.getOwnerName(), 3));

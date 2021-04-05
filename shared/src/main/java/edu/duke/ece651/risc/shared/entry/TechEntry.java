@@ -3,6 +3,8 @@ package edu.duke.ece651.risc.shared.entry;
 
 import edu.duke.ece651.risc.shared.GameMap;
 import edu.duke.ece651.risc.shared.PlayerInfo;
+import edu.duke.ece651.risc.shared.checker.Checker;
+import edu.duke.ece651.risc.shared.checker.TechRuleChecker;
 
 import java.beans.ConstructorProperties;
 
@@ -26,6 +28,8 @@ public class TechEntry extends BasicEntry {
      */
     @Override
     public void apply(GameMap myMap, PlayerInfo myInfo) {
+        Checker myChecker = new TechRuleChecker(null);
+        myChecker.checkAction(this, myMap, myInfo);
         myInfo.takeTech();
     }
 }

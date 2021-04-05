@@ -10,22 +10,21 @@ public class V1MapFactory implements AbstractMapFactory{
    * create a connection list make sure the generated map are connected
    * it connects all territory within a certain distance
    * for example if the input distance is 2, connect the territory 0 with 1,2, N-1, N-2
-   * @param territory_list
-   * @param player_num used as distance
-   * @return
+   * @param territory_list the list of all territories in the map
+   * @return a list of connections
    */
-  private List<List<String>> createConnection(List<Territory> territory_list,int player_num){
-      List<List<String>> connections=new ArrayList<>();
-      int size=territory_list.size();
-      for(int dist=1;dist<=1;dist++){
-        for(int i=0;i<territory_list.size();i++){
-          List<String> connection=new ArrayList<>();
-          connection.add(territory_list.get(i).getName());
-          connection.add(territory_list.get((i+dist)%size).getName());
-          connections.add(connection);
-        }
+  private List<List<String>> createConnection(List<Territory> territory_list){
+    List<List<String>> connections=new ArrayList<>();
+    int size=territory_list.size();
+    for(int dist=1;dist<=1;dist++){
+      for(int i=0;i<territory_list.size();i++){
+        List<String> connection=new ArrayList<>();
+        connection.add(territory_list.get(i).getName());
+        connection.add(territory_list.get((i+dist)%size).getName());
+        connections.add(connection);
       }
-      return connections;
+    }
+    return connections;
   }
 
   /**
@@ -42,7 +41,7 @@ public class V1MapFactory implements AbstractMapFactory{
     for(String playerName: nameList){
       for(int i=0;i<num;i++){
         String territory_name=""+territory_id;
-        Territory temp=new Territory(territory_name);
+        Territory temp=new Territory(territory_name,5,20,20);
         temp.setOwnerName(playerName);
         territoryFinder.put(territory_name,temp);
         territory_list.add(temp);
@@ -51,20 +50,18 @@ public class V1MapFactory implements AbstractMapFactory{
     }
     return territory_list;
   }
-  
-   /**
-  *create a game map object for version1's game
-  @param nameList player's name list
-  @param territoriesPerPlayer how many territories each player have
-  @return a game map
+
+  /**
+   *create a game map object for version1's game
+   @param nameList player's name list
+   @param territoriesPerPlayer how many territories each player have
+   @return a game map
    */
   public GameMap createMap(List<String> nameList, int territoriesPerPlayer){
-    int numPlayer=nameList.size();
     Map<String,Territory> territoryFinder=new HashMap<>();
     List<Territory> territories=createTerrority(nameList, territoriesPerPlayer,territoryFinder);
-    List<List<String>> connections=createConnection(territories, numPlayer);
-    GameMap gamemap=new GameMap(connections,territoryFinder);
-    return gamemap;
+    List<List<String>> connections=createConnection(territories);
+    return new GameMap(connections,territoryFinder);
   }
 
 }

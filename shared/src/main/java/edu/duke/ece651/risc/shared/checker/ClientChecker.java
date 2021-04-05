@@ -1,5 +1,8 @@
-package edu.duke.ece651.risc.shared;
+package edu.duke.ece651.risc.shared.checker;
 
+import edu.duke.ece651.risc.shared.GameMap;
+import edu.duke.ece651.risc.shared.PlayerInfo;
+import edu.duke.ece651.risc.shared.Territory;
 import edu.duke.ece651.risc.shared.entry.ActionEntry;
 
 public class ClientChecker extends Checker {
@@ -7,7 +10,7 @@ public class ClientChecker extends Checker {
         super(next);
     }
 
-    public void checkMyRule(ActionEntry action, GameMap map) {
+    public void checkMyRule(ActionEntry action, GameMap map, PlayerInfo info) {
         if (map.getTerritory(action.getFromName()) == null) {
             throw new IllegalArgumentException("The start territory name is invalid!");
         }
@@ -19,7 +22,7 @@ public class ClientChecker extends Checker {
         if(!start.getOwnerName().equals(action.getPlayerName())){
             throw new IllegalArgumentException("Don't modify other player's territory!");
         }
-        
+
         if(action.getNumSoldiers()<0){
             throw new IllegalArgumentException("The input unit should not be negative!");
         }

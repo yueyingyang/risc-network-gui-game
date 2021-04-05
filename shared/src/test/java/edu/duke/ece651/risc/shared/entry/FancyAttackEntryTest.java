@@ -36,12 +36,16 @@ class FancyAttackEntryTest {
         ActionEntry entry5 = new FancyAttackEntry("0", "3", 2,
                  "3", "LiLei");
 
-        ActionEntry[] entries = {entry0, entry1, entry2, entry3, entry4, entry5};
-        int[] foodResources = {320, 320, 276, 186, 183, 181};
-        for (int i = 0; i < 6; i++) {
-            entries[i].apply(myMap, myInfo);
-            assertEquals(foodResources[i], myInfo.getFoodResource());
-        }
+        entry0.apply(myMap, myInfo);
+        entry1.apply(myMap, myInfo);
+        entry2.apply(myMap, myInfo);
+        assertEquals(236, myInfo.getTechResource());
+        entry3.apply(myMap, myInfo);
+        assertEquals(146, myInfo.getTechResource());
+        entry4.apply(myMap, myInfo);
+        assertEquals(317, myInfo.getFoodResource());
+        entry5.apply(myMap, myInfo);
+        assertEquals(315, myInfo.getFoodResource());
 
         Territory terr0 = myMap.getTerritory("0");
         Territory terr1 = myMap.getTerritory("3");

@@ -1,6 +1,9 @@
 package edu.duke.ece651.risc.shared.entry;
 
 import edu.duke.ece651.risc.shared.*;
+import edu.duke.ece651.risc.shared.checker.Checker;
+import edu.duke.ece651.risc.shared.checker.ClientChecker;
+import edu.duke.ece651.risc.shared.checker.FancyAttackRuleChecker;
 
 import java.beans.ConstructorProperties;
 
@@ -31,6 +34,8 @@ public class FancyAttackEntry extends BasicEntry {
      */
     @Override
     public void apply(GameMap myMap, PlayerInfo myInfo) {
+        Checker myChecker = new ClientChecker(new FancyAttackRuleChecker(null));
+        myChecker.checkAction(this, myMap, myInfo);
         Territory fromTerr = myMap.getTerritory(fromName);
         Territory toTerr = myMap.getTerritory(toName);
         fromTerr.removeSoldiersFromArmy(numSoldiers, fromType);
