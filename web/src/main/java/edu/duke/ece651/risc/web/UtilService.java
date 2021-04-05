@@ -82,7 +82,8 @@ public class UtilService {
    */
   public List<ObjectNode> mockObjectNodes() throws JsonProcessingException {
     String emptyView = "[{\"name\":\"0\",\"owner\":\"p2\",\"value\":2,\"color\":\"#97B8A3\"},{\"name\":\"1\",\"owner\":\"p2\",\"value\":2,\"color\":\"#97B8A3\"},{\"name\":\"2\",\"owner\":\"test\",\"value\":2,\"color\":\"#EDC3C7\"},{\"name\":\"3\",\"owner\":\"test\",\"value\":2,\"color\":\"#EDC3C7\"}]";
-    String fullView = "[{\"name\":\"0\",\"owner\":\"p2\",\"value\":2,\"color\":\"#97B8A3\",\"units\":1,\"foodProd\":0,\"techProd\":0},{\"name\":\"1\",\"owner\":\"p2\",\"value\":2,\"color\":\"#97B8A3\",\"units\":2,\"foodProd\":0,\"techProd\":0},{\"name\":\"2\",\"owner\":\"test\",\"value\":2,\"color\":\"#EDC3C7\",\"units\":2,\"foodProd\":0,\"techProd\":0},{\"name\":\"3\",\"owner\":\"test\",\"value\":2,\"color\":\"#EDC3C7\",\"units\":3,\"foodProd\":0,\"techProd\":0}]";
+    //String fullView = "[{\"name\":\"0\",\"owner\":\"p2\",\"value\":2,\"color\":\"#97B8A3\",\"units\":1,\"foodProd\":0,\"techProd\":0},{\"name\":\"1\",\"owner\":\"p2\",\"value\":2,\"color\":\"#97B8A3\",\"units\":2,\"foodProd\":0,\"techProd\":0},{\"name\":\"2\",\"owner\":\"test\",\"value\":2,\"color\":\"#EDC3C7\",\"units\":2,\"foodProd\":0,\"techProd\":0},{\"name\":\"3\",\"owner\":\"test\",\"value\":2,\"color\":\"#EDC3C7\",\"units\":3,\"foodProd\":0,\"techProd\":0}]";
+    String fullView = "[{\"name\":\"0\",\"owner\":\"John\",\"value\":5,\"color\":\"#97B8A3\",\"foodProd\":20,\"techProd\":20,\"unit0\":0,\"unit1\":0,\"unit2\":0,\"unit3\":5,\"unit4\":0,\"unit5\":0,\"unit6\":0},{\"name\":\"1\",\"owner\":\"Tom\",\"value\":5,\"color\":\"#EDC3C7\",\"foodProd\":20,\"techProd\":20,\"unit0\":1,\"unit1\":0,\"unit2\":0,\"unit3\":0,\"unit4\":0,\"unit5\":0,\"unit6\":0}]";
     return deNodeList(fullView);
   }
 }
