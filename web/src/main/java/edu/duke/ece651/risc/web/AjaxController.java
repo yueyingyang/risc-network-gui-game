@@ -7,17 +7,11 @@ import edu.duke.ece651.risc.shared.JSONSerializer;
 import edu.duke.ece651.risc.shared.entry.*;
 import edu.duke.ece651.risc.web.model.ActionAjaxResBody;
 import edu.duke.ece651.risc.web.model.UserActionInput;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.core.context.SecurityContextHolder;
-
 import org.springframework.web.bind.annotation.*;
-
 
 import java.io.IOException;
 import java.util.List;
@@ -67,7 +61,7 @@ public class AjaxController {
   @GetMapping(value = "/update_map")
   public ResponseEntity<?> tryUpdateMap() throws IOException {
 //    Below 2 lines are for local test
-   //   return ResponseEntity.status(HttpStatus.ACCEPTED).body(util.mockObjectNodes());
+    //   return ResponseEntity.status(HttpStatus.ACCEPTED).body(util.mockObjectNodes());
 //    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
     ClientSocket cs = playerMapping.getSocket(userName);
@@ -77,6 +71,11 @@ public class AjaxController {
       if (mapViewString.equals(Constant.GAME_OVER)) {
         String winnerInfo = cs.recvMessage();
         return wrapWinnerInfo(winnerInfo);
+      } else if (mapViewString.equals(Constant.LOSE_GAME)) {
+        ObjectNode o = serializer.getOm().createObjectNode();
+        o.put("lose", true);
+//        rejoin but receive game_over
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(o);
       }
       // 2. Recv MapView
       List<ObjectNode> graphData = util.deNodeList(mapViewString);
@@ -297,8 +296,9 @@ public class AjaxController {
 
   /**
    * Used in watch_game
-   * @param resBody is the body of response
-   * @param cs is the client socket to recv updates
+   *
+   * @param resBody    is the body of response
+   * @param cs         is the client socket to recv updates
    * @param gameStatus is the flag if it's GAME OVER or Combat Result
    * @throws IOException
    */

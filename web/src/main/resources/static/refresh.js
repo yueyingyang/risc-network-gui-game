@@ -1,6 +1,6 @@
 function showWinnerInfoModal(winnerInfo) {
-    $("#refresh").unbind();
     clearInterval(map_refresh_timer);
+    $("#refresh").unbind();
     // show the result
     $('#lost .content').empty().append(winnerInfo);
     // remove the choice of "continue to watch"
@@ -9,6 +9,7 @@ function showWinnerInfoModal(winnerInfo) {
 }
 
 function startOneTurn(res) {
+    clearInterval(map_refresh_timer);
     graphData = res;
     // display map
     display_map(full_map_formatter)
@@ -16,7 +17,7 @@ function startOneTurn(res) {
     // change click event to resolve combat and also disable refresh
     $('#refresh').click(resolve_combat);
     toggleActionAndRefresh();
-    clearInterval(map_refresh_timer);
+
 }
 
 // Refresh map ajax call
@@ -29,8 +30,12 @@ const refresh_map = () => {
             // 1. rejoin but game ends, show the modal with winner info
             if (res && res['winnerInfo']) {
                 showWinnerInfoModal(res['winnerInfo']);
+            } else if (res && res['lose'] === true) {
+                // 2. lose game pop up for continue to watch or back to lobby
+                clearInterval(map_refresh_timer);
+                $('#lost').modal('show');
             } else if (res) {
-                // 2. receive mapview
+                // 3. receive mapview
                 startOneTurn(res);
             } else {
                 // 3. no updates yet

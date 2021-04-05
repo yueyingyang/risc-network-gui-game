@@ -81,12 +81,17 @@ public class GameController {
   public String place(@ModelAttribute(value = "wrapper") TerrUnitList list) throws IOException {
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
     List<ActionEntry> placementList = new ArrayList<>();
+    ClientSocket cs = playerMapping.getSocket(userName);
     for (TerrUnit tu : list.getTerrUnitList()) {
       placementList.add(new PlaceEntry(tu.getTerrName(), tu.getUnit(), userName));
     }
     String json = jsonSerializer.getOm().writerFor(new TypeReference<List<ActionEntry>>() {
     }).writeValueAsString(placementList);
-    playerMapping.getSocket(userName).sendMessage(json);
+    cs.sendMessage(json);
+    String valRes = cs.recvMessage();
+    if (valRes.equals("invalid")) {
+      return "redirect:place";
+    }
     return "redirect:play";
   }
 
