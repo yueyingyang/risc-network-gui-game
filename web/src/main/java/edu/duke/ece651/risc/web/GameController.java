@@ -3,6 +3,7 @@ package edu.duke.ece651.risc.web;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import edu.duke.ece651.risc.shared.ClientSocket;
+import edu.duke.ece651.risc.shared.Constant;
 import edu.duke.ece651.risc.shared.GameMap;
 import edu.duke.ece651.risc.shared.JSONSerializer;
 import edu.duke.ece651.risc.shared.entry.ActionEntry;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/game")
@@ -94,7 +96,8 @@ public class GameController {
    * @return game
    */
   @GetMapping(value = "/play")
-  public String playOneTurn() {
+  public String playOneTurn(Model model) {
+    model.addAttribute("soldierType", Constant.soldierCost.keySet().stream().sorted().collect(Collectors.toList()));
     return "game";
   }
 

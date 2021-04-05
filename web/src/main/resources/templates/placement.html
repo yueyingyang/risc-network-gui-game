@@ -16,6 +16,7 @@
                       method="post"
                       th:object="${wrapper}">
                     <div class="ui header">Please enter the placement below:</div>
+                    <div>Each player has <strong>[[${units}]]</strong> soldiers in total.</div>
                     <div class="fields" style="user-select: auto;">
                         <!-- Render territory -->
                         <div class="field" th:each="terrUnit, stat: ${wrapper.terrUnitList}" style="user-select: auto;">

@@ -15,7 +15,7 @@
         <div class="eight wide column" id="action_box" style="user-select: auto;">
             <br>
             <div class="ui two column grid">
-                <div th:insert="fragments/action_form.html :: action_form"></div>
+                <div th:insert="fragments/action_form.html :: action_form(${soldierType})"></div>
                 <div class="ui vertical labeled icon buttons">
                     <button class="ui button toggle" id="commit" style="user-select: auto;">
                         <i class="play icon" style="user-select: auto;"></i>
