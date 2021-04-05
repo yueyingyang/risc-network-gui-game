@@ -43,6 +43,6 @@ public class SoldierEntry extends BasicEntry {
         toTerr.removeSoldiersFromArmy(numSoldiers, fromType);
         toTerr.addSoldiersToArmy(numSoldiers, toType);
         int cost = GameUtil.getSoldierCost(fromType, toType, numSoldiers);
-        myInfo.consumeFood(cost);
+        myInfo.consumeTech(cost);
     }
 }
