@@ -38,7 +38,7 @@ class SoldierEntryTest {
         Territory terr0 = myMap.getTerritory("0");
         assertEquals(3, terr0.getNumSoldiersInArmy("0"));
         assertEquals(5, terr0.getNumSoldiersInArmy("2"));
-        assertEquals(225, myInfo.getFoodResource());
+        assertEquals(65, myInfo.getTechResource());
 
     }
 }
