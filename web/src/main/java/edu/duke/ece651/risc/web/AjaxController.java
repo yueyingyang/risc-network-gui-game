@@ -7,6 +7,7 @@ import edu.duke.ece651.risc.shared.JSONSerializer;
 import edu.duke.ece651.risc.shared.entry.*;
 import edu.duke.ece651.risc.web.model.ActionAjaxResBody;
 import edu.duke.ece651.risc.web.model.UserActionInput;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -72,8 +73,33 @@ public class AjaxController {
     ClientSocket cs = playerMapping.getSocket(userName);
     if (cs.hasNewMsg()) {
       String mapViewString = cs.recvMessage();
+      // 1. REJOIN: receive game over and winner info
+      if (mapViewString.equals(Constant.GAME_OVER)) {
+        String winnerInfo = cs.recvMessage();
+        return wrapWinnerInfo(winnerInfo);
+      }
+      // 2. Recv MapView
       List<ObjectNode> graphData = util.deNodeList(mapViewString);
       return ResponseEntity.status(HttpStatus.ACCEPTED).body(graphData);
+    }
+    return ResponseEntity.status(HttpStatus.ACCEPTED).body(null);
+  }
+
+  /**
+   * Ajax GET API for receiving updates during game watching
+   *
+   * @return Response with sta tus error or success, if success then body is updated GAMEMAP
+   * @throws IOException
+   */
+  @GetMapping(value = "/watch_game")
+  public ResponseEntity<ActionAjaxResBody> tryRecvWatchUpdates() throws IOException {
+    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+    ActionAjaxResBody resBody = new ActionAjaxResBody();
+    ClientSocket cs = playerMapping.getSocket(userName);
+    if (cs.hasNewMsg()) {
+      String gameStatus = cs.recvMessage();
+      updatedCombatOrGameOver(resBody, cs, gameStatus);
+      return ResponseEntity.ok(resBody);
     }
     return ResponseEntity.status(HttpStatus.ACCEPTED).body(null);
   }
@@ -191,13 +217,14 @@ public class AjaxController {
     if (cs.hasNewMsg()) {
 //  1. recv combat result
       String combatRes = cs.recvMessage();
+      resBody.setValRes((String) serializer.deserialize(combatRes, String.class));
 //  2. recv LOSE / CONTINUE
       String playerStatus = cs.recvMessage();
 //      2.1 CONTINUE
       if (playerStatus.equals(Constant.CONTINUE_PLAYING)) {
         String gameStatus = cs.recvMessage(); // GAME_OVER or next turn's map
         if (!gameStatus.equals(Constant.GAME_OVER)) {
-          //          2.1.2 Next turn starts!
+//          2.1.2 Next turn starts!
           resBody.setGraphData(util.deNodeList(gameStatus));
         } else {
 //          2.1.1 You are the last player! You're the winner!
@@ -207,21 +234,27 @@ public class AjaxController {
       } else {
 //        2.2 LOSE
         String gameStatus = cs.recvMessage(); // GAME_OVER or next turn's map
+        if (gameStatus.equals(Constant.GAME_OVER)) {
+//          2.2.1 Game over
+          String winnerInfo = cs.recvMessage();
+          resBody.setWinnerInfo(winnerInfo);
+        }
         resBody.setGraphData(null);
         resBody.setWin(false);
-//        if (!gameStatus.equals(Constant.GAME_OVER)) {
-//          //          2.1.2 Next turn starts!
-//          cs.recvMessage()
-//        } else {
-////          2.1.1 You are the last player! You're the winner!
-//          cs.sendMessage(Constant.WATCH_GAME);
-//        }
       }
-      resBody.setValRes(combatRes);
       return ResponseEntity.status(HttpStatus.ACCEPTED).body(resBody);
     }
 //    Continue to wait for combating result
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+  }
+
+  @PostMapping(value = "/choose_watch")
+  public ResponseEntity<?> chooseToWatch() throws IOException {
+    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+    //    Send to server
+    ClientSocket cs = playerMapping.getSocket(userName);
+    cs.sendMessage(Constant.WATCH_GAME);
+    return ResponseEntity.ok(null);
   }
 
 
@@ -252,4 +285,35 @@ public class AjaxController {
     resBody.setValRes(validRes);
     return ResponseEntity.ok(resBody);
   }
+
+
+  // Wrap winner info as a JSON node
+  private ResponseEntity<?> wrapWinnerInfo(String winnerInfo) {
+    ObjectNode o = serializer.getOm().createObjectNode();
+    o.put("winnerInfo", winnerInfo);
+//        rejoin but receive game_over
+    return ResponseEntity.status(HttpStatus.ACCEPTED).body(o);
+  }
+
+  /**
+   * Used in watch_game
+   * @param resBody is the body of response
+   * @param cs is the client socket to recv updates
+   * @param gameStatus is the flag if it's GAME OVER or Combat Result
+   * @throws IOException
+   */
+  private void updatedCombatOrGameOver(ActionAjaxResBody resBody, ClientSocket cs, String gameStatus) throws IOException {
+    // 1. Game over and send back winner info
+    if (gameStatus.equals(Constant.GAME_OVER)) {
+      String winnerInfo = cs.recvMessage();
+      resBody.setWinnerInfo(winnerInfo);
+    } else {
+      // 2. Send back resolve combat and updated map
+      resBody.setValRes((String) serializer.deserialize(gameStatus, String.class));
+      String mapViewString = cs.recvMessage();
+      List<ObjectNode> graphData = util.deNodeList(mapViewString);
+      resBody.setGraphData(graphData);
+    }
+  }
+
 }

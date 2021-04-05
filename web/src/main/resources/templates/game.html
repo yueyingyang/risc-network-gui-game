@@ -31,7 +31,7 @@
     <div class="six wide column" style="user-select: auto;">
         <div class="ui icon message">
             <i class="inbox icon" style="user-select: auto;"></i>
-            <div class="content">
+            <div class="scrolling content">
                 <div class="header" style="user-select: auto;">Room Activity</div>
                 <div style="user-select: auto;" id="msg_box">
                 </div>
@@ -66,10 +66,10 @@
         <p>Sorry, you've lost all territories...</p>
     </div>
     <div class="actions">
-        <div class="ui green ok inverted button" th:href="@{/back_lobby}">
+        <a class="ui red basic cancel inverted button" th:href="@{/exit_game}">
             <i class="redo icon"></i>
             Back to Lobby
-        </div>
+        </a>
         <div class="ui green ok inverted button">
             <i class="eye icon"></i>
             Continue to watch

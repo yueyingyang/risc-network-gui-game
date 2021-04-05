@@ -98,21 +98,4 @@ public class GameController {
     return "game";
   }
 
-
-  @GetMapping(value = "/win")
-  public String displayWin() {
-    return "display_win";
-  }
-
-  @GetMapping(value = "/lose")
-  public String displayLose() {
-    return "display_lose";
-  }
-
-  @GetMapping(value = "/back_lobby")
-  public String backToLobby() {
-    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-    playerMapping.removeUser(userName);
-    return "redirect:lobby";
-  }
 }
