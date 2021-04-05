@@ -43,7 +43,7 @@ public class V2MapView {
         o.put("techProd", 0);
         
         for(int i=0;i<=6;i++){
-          o.put("unit"+i,t.getNumSoldiersInArmy(""+i));
+          o.put("unit"+i,i);//t.getNumSoldiersInArmy(""+i)
         }
         
       }
