@@ -2,7 +2,9 @@ package edu.duke.ece651.risc.shared;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -46,6 +48,9 @@ class TerritoryTest {
         assertTrue(terr0.isAdjacent(terr1));
         assertTrue(terr1.isAdjacent(terr0));
         assertFalse(terr0.isAdjacent(terr2));
+        Set<Territory> exptNeighs = new HashSet<>();
+        exptNeighs.add(terr1);
+        assertEquals(exptNeighs, terr0.getNeighbours());
     }
 
     @Test
@@ -107,6 +112,8 @@ class TerritoryTest {
     @Test
     public void test_add_remove_with_type() {
         Territory terr = new Territory("NANJING");
+        assertEquals(-1, terr.getNumSoldiersInArmy());
+        assertEquals(-1, terr.getNumSoldiersInArmy("1"));
         Army army = new BasicArmy("LiLei", 5);
         terr.setMyArmy(army);
         assertEquals(5, terr.getNumSoldiersInArmy("0"));
@@ -130,6 +137,7 @@ class TerritoryTest {
         army0.addSoldiers(2, "3");
         army0.addSoldiers(3, "2");
         terr0.setMyArmy(army0);
+        Random myRandom = new Random(0);
 
         Army army1 = new BasicArmy("Green", 2, "4");
         army1.addSoldiers(3, "2");
@@ -137,8 +145,10 @@ class TerritoryTest {
         army2.addSoldiers(1, "4");
         terr0.bufferAttacker(army1);
         terr0.bufferAttacker(army2);
+        assertEquals(3, terr0.getNumSoldiersInAttacker("Green", "4"));
+        assertEquals(3, terr0.getNumSoldiersInAttacker("Green", "2"));
+        assertEquals(1, terr0.getNumSoldiersInAttacker("Green", "3"));
 
-        Random myRandom = new Random(0);
         String ans0 = terr0.resolveCombat(myRandom);
         String expt0 = "On territory 1:\n" +
                 "Defender: Purple player(1 type-0 soldiers, 3 type-2 soldiers, 2 type-3 soldiers)\n" +
@@ -161,6 +171,20 @@ class TerritoryTest {
                 "Attacker: Blue player(1 type-3 soldiers, 2 type-5 soldiers)\n" +
                 "Blue player wins.\n";
         assertEquals(expt1, ans1);
+
+        // no combat
+        String ans2 = terr0.resolveCombat(myRandom);
+        assertEquals("", ans2);
+        assertEquals(-1, terr0.getNumSoldiersInAttacker("Purple"));
+        assertEquals(-1, terr0.getNumSoldiersInAttacker("Purple", "1"));
+    }
+
+    @Test
+    public void test_getters() {
+        Territory terr = new Territory("NANJING", 10, 15, 20);
+        assertEquals(10, terr.getSize());
+        assertEquals(15, terr.getFoodProd());
+        assertEquals(20, terr.getTechProd());
     }
 
 }
