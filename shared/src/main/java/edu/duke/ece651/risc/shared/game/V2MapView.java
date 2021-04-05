@@ -39,13 +39,13 @@ public class V2MapView {
       o.put("color", playerColorMap.get(t.getOwnerName()));
       if (full) {
         //o.put("units", t.getNumSoldiersInArmy());
-        o.put("foodProd", 0);
-        o.put("techProd", 0);
-        
-        for(int i=0;i<=6;i++){
-          o.put("unit"+i,i);//t.getNumSoldiersInArmy(""+i)
+        o.put("foodProd", t.getFoodProd());
+        o.put("techProd", t.getTechProd());
+
+        for (int i = 0; i <= 6; i++) {
+          o.put("unit" + i, t.getNumSoldiersInArmy("" + i));//t.getNumSoldiersInArmy(""+i)
         }
-        
+
       }
       graphData.add(o);
     }
@@ -57,7 +57,6 @@ public class V2MapView {
    *
    * @param fullInfo is false if display the empty map (only owner and size...)
    *                 is true if display the full map
-   *
    * @return string is JSON string
    */
   public String toString(boolean fullInfo) {
