@@ -102,7 +102,7 @@ public class LobbyController {
     if (c.recvMessage().equals(Constant.SUCCESS_NUMBER_CHOOSED)) {
       return "redirect:waiting";
     }
-    return "lobby";
+    return "redirect:back_lobby";
   }
 
   @GetMapping(value = "/rejoin")
@@ -115,10 +115,10 @@ public class LobbyController {
     startReq.put("gameID", gameId);
     cs.sendMessage(new ObjectMapper().writeValueAsString(startReq));
     String valRes = cs.recvMessage();
-    if (valRes.equals("cannot rejoin")) {
-      return "redirect:lobby";
+    if (valRes.equals("can rejoin")) {
+      return "redirect:/game/play";
     }
-    return "redirect:/game/play";
+    return "redirect:back_lobby";
   }
 
   /**

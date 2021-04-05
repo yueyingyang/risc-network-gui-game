@@ -102,7 +102,10 @@ function watch_game() {
         type: "POST",
         url: '/choose_watch',
         "async": true,
-        success: function () {
+        success: function (res) {
+            graphData = res;
+            // display map
+            display_map(full_map_formatter)
             $('#msg_box').append('<p style="user-select: auto;"> You\'ll continue to watch game! </p>');
         }
     });
@@ -119,7 +122,7 @@ function watch_game() {
                         // display map
                         display_map(full_map_formatter)
                     } else {
-                        $('#lost').modal('show');
+                        showWinnerInfoModal(resBody['winnerInfo'])
                     }
                 }
             }

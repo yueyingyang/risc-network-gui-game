@@ -68,14 +68,17 @@ public class AjaxController {
     if (cs.hasNewMsg()) {
       String mapViewString = cs.recvMessage();
       // 1. REJOIN: receive game over and winner info
-      if (mapViewString.equals(Constant.GAME_OVER)) {
-        String winnerInfo = cs.recvMessage();
-        return wrapWinnerInfo(winnerInfo);
-      } else if (mapViewString.equals(Constant.LOSE_GAME)) {
-        ObjectNode o = serializer.getOm().createObjectNode();
-        o.put("lose", true);
+      if (mapViewString.equals(Constant.LOSE_GAME)) {
+        String continueOrOver = cs.recvMessage();
+        if (continueOrOver.equals(Constant.GAME_OVER)) {
+          String winnerInfo = cs.recvMessage();
+          return wrapWinnerInfo(winnerInfo);
+        } else {
+          ObjectNode o = serializer.getOm().createObjectNode();
+          o.put("lose", true);
 //        rejoin but receive game_over
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(o);
+          return ResponseEntity.status(HttpStatus.ACCEPTED).body(o);
+        }
       }
       // 2. Recv MapView
       List<ObjectNode> graphData = util.deNodeList(mapViewString);
@@ -232,7 +235,7 @@ public class AjaxController {
         }
       } else {
 //        2.2 LOSE
-        String gameStatus = cs.recvMessage(); // GAME_OVER or next turn's map
+        String gameStatus = cs.recvMessage(); // GAME_OVER or Continue_playing
         if (gameStatus.equals(Constant.GAME_OVER)) {
 //          2.2.1 Game over
           String winnerInfo = cs.recvMessage();
@@ -253,7 +256,8 @@ public class AjaxController {
     //    Send to server
     ClientSocket cs = playerMapping.getSocket(userName);
     cs.sendMessage(Constant.WATCH_GAME);
-    return ResponseEntity.ok(null);
+    List<ObjectNode> graphData = util.deNodeList(cs.recvMessage());
+    return ResponseEntity.ok().body(graphData);
   }
 
 
@@ -304,13 +308,13 @@ public class AjaxController {
    */
   private void updatedCombatOrGameOver(ActionAjaxResBody resBody, ClientSocket cs, String gameStatus) throws IOException {
     // 1. Game over and send back winner info
-    if (gameStatus.equals(Constant.GAME_OVER)) {
+    // 2. Send back resolve combat and updated map
+    resBody.setValRes((String) serializer.deserialize(gameStatus, String.class));
+    String mapViewString = cs.recvMessage();
+    if (mapViewString.equals(Constant.GAME_OVER)) {
       String winnerInfo = cs.recvMessage();
       resBody.setWinnerInfo(winnerInfo);
     } else {
-      // 2. Send back resolve combat and updated map
-      resBody.setValRes((String) serializer.deserialize(gameStatus, String.class));
-      String mapViewString = cs.recvMessage();
       List<ObjectNode> graphData = util.deNodeList(mapViewString);
       resBody.setGraphData(graphData);
     }
