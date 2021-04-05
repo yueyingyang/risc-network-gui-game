@@ -197,9 +197,9 @@ public class Game {
      * This method will create a thread for each player to receive their actions
      * the move action and the move part in attack will be done immediately
      */
-    public void receiveAndApplyMoves() {
+    public void receiveAndApplyMoves(ArrayList<ServerPlayer> connectedPlayers) {
         ArrayList<OneTurnThread> threads = new ArrayList<>();
-        for (ServerPlayer player : stillInPlayers) {
+        for (ServerPlayer player : connectedPlayers) {
             //if the player is still active in this game
             if(player.getCurrentGame().equals(gameID)){
                 OneTurnThread thread = new OneTurnThread(gameMap, player, players);
@@ -242,10 +242,22 @@ public class Game {
     /**
      * upgrade the tech level if requested
      */
-    public void effectTechForStillIn(){
-        for(ServerPlayer p:stillInPlayers){
+    public void effectTechForStillIn(ArrayList<ServerPlayer> connectedPlayers){
+        for(ServerPlayer p:connectedPlayers){
             p.getPlayerInfo().effectTech();
         }
+    }
+
+    ArrayList<ServerPlayer> sendMap_GetConnectedPlayers(){
+         //send map to players in the stillWatch list
+         ArrayList<ServerPlayer> connectedPlayers = new ArrayList<>();
+         for (ServerPlayer p : stillWatchPlayers) {
+             if(p.getCurrentGame()==gameID){
+                p.sendMessage(view.toString(true));
+                connectedPlayers.add(p);
+             }
+        }
+        return connectedPlayers;
     }
 
     /**
@@ -253,18 +265,14 @@ public class Game {
      *
      * @throws IOException
      */
-    public void playOneTurn() throws IOException {
-        //send map to players in the stillWatch list
-        for (Player p : stillWatchPlayers) {
-            try{p.sendMessage(view.toString(true));}catch(Exception e){}
-        }
+    public void playOneTurn(ArrayList<ServerPlayer> connectedPlayers) throws IOException {      
         //create a thread for each player to type their actions until receive commit
         //for inactive players, do nothing, just like they drectly type in Commit
-        receiveAndApplyMoves();
+        receiveAndApplyMoves(connectedPlayers);
         //resolve all combats and send combat results to players still watch the game
         String combatResult = doAttacks();
-        effectTechForStillIn();
-        sendObjectToAll(combatResult, stillWatchPlayers);
+        effectTechForStillIn(connectedPlayers);
+        sendObjectToAll(combatResult, connectedPlayers);
     }
 
     /**
@@ -272,7 +280,7 @@ public class Game {
      *
      * @throws IOException
      */
-    public void updatePlayerLists() throws IOException {
+    public void updatePlayerLists(ArrayList<ServerPlayer> connectedPlayers) throws IOException {
         //update the stillWatch players list and the stillIn players list
         ArrayList<ServerPlayer> temp = new ArrayList<ServerPlayer>(stillInPlayers);
         ArrayList<ServerPlayer> losers = new ArrayList<>();
@@ -371,10 +379,11 @@ public class Game {
         addResourcesToStillIn();
         placementPhase();
         while (true) {
+            ArrayList<ServerPlayer> connectedPlayers = sendMap_GetConnectedPlayers();
             //multi thread in this function to handle simultaneous input
-            playOneTurn();
+            playOneTurn(connectedPlayers);
             //update stillIn and stillWatch players list
-            updatePlayerLists();
+            updatePlayerLists(connectedPlayers);
             //add 1 soldier to all territories at the end of one turn;
             addSoldiersToAll();
             //add resources for all players
