@@ -187,6 +187,7 @@ public class Game {
                 try {
                     placement.apply(gameMap, null);
                 } catch (Exception e) {
+
                     System.out.println(e.getMessage());//should never reach here
                 }
             }
@@ -197,9 +198,9 @@ public class Game {
      * This method will create a thread for each player to receive their actions
      * the move action and the move part in attack will be done immediately
      */
-    public void receiveAndApplyMoves(ArrayList<ServerPlayer> connectedPlayers) {
+    public void receiveAndApplyMoves(ArrayList<ServerPlayer> stillInPlayers) {
         ArrayList<OneTurnThread> threads = new ArrayList<>();
-        for (ServerPlayer player : connectedPlayers) {
+        for (ServerPlayer player : stillInPlayers) {
             //if the player is still active in this game
             if(player.getCurrentGame().equals(gameID)){
                 OneTurnThread thread = new OneTurnThread(gameMap, player, players);
@@ -268,7 +269,7 @@ public class Game {
     public void playOneTurn(ArrayList<ServerPlayer> connectedPlayers) throws IOException {      
         //create a thread for each player to type their actions until receive commit
         //for inactive players, do nothing, just like they drectly type in Commit
-        receiveAndApplyMoves(connectedPlayers);
+        receiveAndApplyMoves(stillInPlayers);
         //resolve all combats and send combat results to players still watch the game
         String combatResult = doAttacks();
         effectTechForStillIn(connectedPlayers);
@@ -288,7 +289,7 @@ public class Game {
             //if lost the game, the player can only watch or disconnect
             if (checkLost(player)) {
                 //we will only send lose game info to who has just lost the game
-                try{player.sendMessage(Constant.LOSE_GAME);}catch(Exception e){}
+                try{player.sendMessage(Constant.LOSE_GAME);}catch(Exception e){}            
                 //remove the lost player from stillIn
                 stillInPlayers.remove(player);
                 losers.add(player);
@@ -308,7 +309,8 @@ public class Game {
             if(player.getCurrentGame()==gameID){
                 player.sendMessage(Constant.CONTINUE_PLAYING);
                 //if receive disconnect, rmv from the watch game list
-                if (player.recvMessage().equals(Constant.DISCONNECT_GAME)) {
+                String msg = player.recvMessage();
+                if (msg!=null && msg.equals(Constant.DISCONNECT_GAME)) {
                   stillWatchPlayers.remove(player);
                   player.closeSocket();
                 }
@@ -362,6 +364,23 @@ public class Game {
         }
     }
 
+    public void sendAndPlace(int soldierNum, V2MapView view){
+        ArrayList<PlacementThread> threads = new ArrayList<>();
+        for(ServerPlayer p:players){
+            PlacementThread placeThread = new PlacementThread(soldierNum,this.gameMap,view,p);
+            threads.add(placeThread);
+            placeThread.start();
+        }
+        for(PlacementThread t:threads){
+            try{
+                t.join();
+            }catch(Exception e){
+                System.out.println("catch exception when join the threads");
+            }           
+        }
+    }
+
+
     /**
      * after the game room's required number of people is reached, run the game
      *
@@ -372,12 +391,13 @@ public class Game {
         stillInPlayers = new ArrayList<>(players);
         stillWatchPlayers = new ArrayList<>(players);
         makeMap(TerritoryPerPlayer);
-        view = new V2MapView(this.gameMap, players);
-        sendObjectToAll(this.gameMap, players);
+        view = new V2MapView(this.gameMap, players);   
+        sendAndPlace(totalSoldiers,view);            
+        /*sendObjectToAll(this.gameMap, players);
         sendStringToAll(String.valueOf(totalSoldiers), players);
         sendStringToAll(view.toString(false), players);
         addResourcesToStillIn();
-        placementPhase();
+        placementPhase();*/
         while (true) {
             ArrayList<ServerPlayer> connectedPlayers = sendMap_GetConnectedPlayers();
             //multi thread in this function to handle simultaneous input

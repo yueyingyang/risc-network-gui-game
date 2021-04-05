@@ -191,7 +191,19 @@ public class App {
    * @param n is the JSON Node recv from server
    */
   public void rejoinGame(ServerPlayer player, JsonNode n) {
-    player.setCurrentGameID(Integer.parseInt(n.path("gameID").textValue()));
+    Integer currentGameID = Integer.parseInt(n.path("gameID").textValue());
+    if(games.get(currentGameID).checkWin().equals(true)){
+      player.sendMessage("cannot rejoin");
+      player.sendMessage("The game is over!");
+      return;
+    }
+    if(games.get(currentGameID).checkLost(player).equals(true)){
+      player.sendMessage("cannot rejoin");
+      player.sendMessage("You have lost all your territories! Cannot rejoin!");
+      return;
+    }
+    player.sendMessage("can rejoin");
+    player.setCurrentGameID(currentGameID);
   }
 
 
