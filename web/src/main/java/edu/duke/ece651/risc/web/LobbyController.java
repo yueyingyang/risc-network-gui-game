@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,7 +38,7 @@ public class LobbyController {
   /**
    * Lobby page: request game lists from server
    *
-   * @param model    is object be sent to html template
+   * @param model is object be sent to html template
    * @return lobby.html
    * @throws IOException if recv/send exception
    */
@@ -101,7 +102,23 @@ public class LobbyController {
     if (c.recvMessage().equals(Constant.SUCCESS_NUMBER_CHOOSED)) {
       return "redirect:waiting";
     }
-    return "lobby";
+    return "redirect:back_lobby";
+  }
+
+  @GetMapping(value = "/rejoin")
+  public String rejoin(@RequestParam(name = "id") String gameId) throws IOException {
+    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+    ClientSocket cs = playerMapping.getSocket(userName);
+    ObjectNode startReq = JsonNodeFactory.instance.objectNode();
+    startReq.put("type", "rejoin");
+    startReq.put("name", userName);
+    startReq.put("gameID", gameId);
+    cs.sendMessage(new ObjectMapper().writeValueAsString(startReq));
+    String valRes = cs.recvMessage();
+    if (valRes.equals("can rejoin")) {
+      return "redirect:/game/play";
+    }
+    return "redirect:back_lobby";
   }
 
   /**
@@ -115,16 +132,20 @@ public class LobbyController {
   }
 
 
-  @GetMapping(value = "/rejoin")
-  public String rejoin(@RequestParam(name = "gameId") String gameId) throws IOException {
+  @GetMapping(value = "/exit_game")
+  public String exitGame() throws IOException {
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-    ClientSocket c = playerMapping.getSocket(userName);
-    ObjectNode startReq = JsonNodeFactory.instance.objectNode();
-    startReq.put("type", "rejoin");
-    startReq.put("name", userName);
-    startReq.put("gameID", gameId);
-    c.sendMessage(new ObjectMapper().writeValueAsString(startReq));
-    return "redirect:/game/play";
+    //    Send to server
+    ClientSocket cs = playerMapping.getSocket(userName);
+    cs.sendMessage(Constant.DISCONNECT_GAME);
+    return "redirect:back_lobby";
+  }
+
+  @GetMapping(value = "/back_lobby")
+  public String backToLobby() throws IOException {
+    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+    playerMapping.removeUser(userName);
+    return "redirect:lobby";
   }
 }
 

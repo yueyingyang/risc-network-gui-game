@@ -157,12 +157,10 @@ public class GameMap {
         
         int len=territoryFinder.size();
         Map<Territory,Integer> distance=new HashMap<>();
-        Map<Territory,Integer> prev=new HashMap<>();
         Set<Territory> buffer=new HashSet<>();
         for(String name:territoryFinder.keySet()){
             if(territoryFinder.get(name).getOwnerName().equals(start.getOwnerName())) {
                 distance.put(territoryFinder.get(name), -1);
-                //prev.put(territoryFinder.get(name), -1);
                 buffer.add(territoryFinder.get(name));
             }
         }

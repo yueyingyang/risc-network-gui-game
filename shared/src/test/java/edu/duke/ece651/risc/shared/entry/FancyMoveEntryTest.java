@@ -22,7 +22,7 @@ class FancyMoveEntryTest {
         territoryFinder.put("1", terr1);
         GameMap myMap = new GameMap(conns, territoryFinder);
 
-        PlayerInfo myInfo = new PlayerInfo("LiLei", 6, 500, 160);
+        PlayerInfo myInfo = new PlayerInfo("LiLei", 6, 500, 420);
 
         ActionEntry entry0 = new PlaceEntry("0", 10, "LiLei");
         ActionEntry entry1 = new PlaceEntry("1", 3, "LiLei");
@@ -33,12 +33,14 @@ class FancyMoveEntryTest {
         ActionEntry entry4 = new FancyMoveEntry("0", "1", 2,
                 "3", "LiLei");
 
-        ActionEntry[] entries = {entry0, entry1, entry2, entry3, entry4};
-        int[] foodResources = {500, 500, 260, 80, 50};
-        for (int i = 0; i < 5; i++) {
-            entries[i].apply(myMap, myInfo);
-            assertEquals(foodResources[i], myInfo.getFoodResource());
-        }
+        entry0.apply(myMap, myInfo);
+        entry1.apply(myMap, myInfo);
+        entry2.apply(myMap, myInfo);
+        assertEquals(180, myInfo.getTechResource());
+        entry3.apply(myMap, myInfo);
+        assertEquals(0, myInfo.getTechResource());
+        entry4.apply(myMap, myInfo);
+        assertEquals(470, myInfo.getFoodResource());
 
         assertEquals(2, terr0.getNumSoldiersInArmy("0"));
         assertEquals(3, terr0.getNumSoldiersInArmy("3"));

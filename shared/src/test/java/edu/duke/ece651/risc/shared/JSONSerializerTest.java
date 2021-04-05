@@ -44,13 +44,13 @@ class JSONSerializerTest {
 
   @Test
   void test_serialize_and_de_action() throws JsonProcessingException {
-    ActionEntry placeEntry = new PlaceEntry("0", 2, "player1");
-    ActionEntry place1Entry = new PlaceEntry("1", 2, "player1");
+    ActionEntry placeEntry = new PlaceEntry("0", 6, "player1");
+    ActionEntry place1Entry = new PlaceEntry("1", 6, "player1");
     ActionEntry attackEntry = new AttackEntry("0", "3", 1, "player1");
     ActionEntry moveEntry = new MoveEntry("0", "1", 1, "player1");
-    ActionEntry fancyMove = new FancyMoveEntry("0", "1", 3, "0", "player1");
-    ActionEntry fancyAttack = new FancyAttackEntry("0", "3", 2, "0", "player1");
-    ActionEntry soldier = new SoldierEntry("0", "1", "2", 1, "player1");
+    ActionEntry fancyMove = new FancyMoveEntry("0", "1", 1, "0", "player1");
+    ActionEntry fancyAttack = new FancyAttackEntry("0", "3", 1, "0", "player1");
+    ActionEntry soldier = new SoldierEntry("0", "0", "1", 1, "player1");
     ActionEntry tech = new TechEntry("player1");
     // test serializer
     ActionEntry dePlace = (ActionEntry) s.deserialize(s.serialize(placeEntry), ActionEntry.class);

@@ -3,6 +3,8 @@ package edu.duke.ece651.risc.shared.entry;
 import edu.duke.ece651.risc.shared.GameMap;
 import edu.duke.ece651.risc.shared.PlayerInfo;
 import edu.duke.ece651.risc.shared.Territory;
+import edu.duke.ece651.risc.shared.checker.Checker;
+import edu.duke.ece651.risc.shared.checker.SoldierRuleChecker;
 import edu.duke.ece651.risc.shared.game.GameUtil;
 
 import java.beans.ConstructorProperties;
@@ -35,10 +37,12 @@ public class SoldierEntry extends BasicEntry {
      */
     @Override
     public void apply(GameMap myMap, PlayerInfo myInfo) {
+        Checker myChecker = new SoldierRuleChecker(null);
+        myChecker.checkAction(this, myMap, myInfo);
         Territory toTerr = myMap.getTerritory(toName);
         toTerr.removeSoldiersFromArmy(numSoldiers, fromType);
         toTerr.addSoldiersToArmy(numSoldiers, toType);
         int cost = GameUtil.getSoldierCost(fromType, toType, numSoldiers);
-        myInfo.consumeFood(cost);
+        myInfo.consumeTech(cost);
     }
 }
