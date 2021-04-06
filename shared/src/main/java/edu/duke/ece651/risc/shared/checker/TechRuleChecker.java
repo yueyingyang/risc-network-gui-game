@@ -1,5 +1,6 @@
 package edu.duke.ece651.risc.shared.checker;
 
+import edu.duke.ece651.risc.shared.Constant;
 import edu.duke.ece651.risc.shared.GameMap;
 import edu.duke.ece651.risc.shared.PlayerInfo;
 import edu.duke.ece651.risc.shared.entry.ActionEntry;
@@ -12,7 +13,7 @@ public class TechRuleChecker extends Checker{
 
     @Override
     protected void checkMyRule(ActionEntry action, GameMap map, PlayerInfo myInfo) {
-        if(myInfo.getTechLevel()>=6){
+        if(myInfo.getTechLevel()>= Constant.MAX_TECH_LEVEL){
             throw new IllegalArgumentException("Your Technology level is ready the highest!");
         }
         if(myInfo.getTechResource()<GameUtil.getTechCost(myInfo.getTechLevel())){
