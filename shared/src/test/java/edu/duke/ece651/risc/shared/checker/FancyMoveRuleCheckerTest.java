@@ -64,6 +64,8 @@ public class FancyMoveRuleCheckerTest {
         ActionEntry move6=new FancyMoveEntry("5","6",1,"0","player1");
         // check not enough food resource case
         ActionEntry move7=new FancyMoveEntry("4","5",2,"0","player2");
+        // check no enough soldier in required level
+        ActionEntry move8=new FancyMoveEntry("1","3",1,"3", "player1");
         assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move1,map1,info2));
         assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move2,map1,info1));
         assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move3,map1,info1));
@@ -71,6 +73,7 @@ public class FancyMoveRuleCheckerTest {
         assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move5,map1,info1));
         assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move6,map1,info1));
         assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move7,map1,info2));
+        assertThrows(IllegalArgumentException.class, () -> checker.checkAction(move8,map1,info1));
     }
 
     private GameMap createTestMap(){

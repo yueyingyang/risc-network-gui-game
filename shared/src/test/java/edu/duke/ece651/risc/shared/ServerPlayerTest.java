@@ -66,18 +66,6 @@ class ServerPlayerTest {
     }
 
     @Test
-    public void test_setGetPlayerInfo() {
-        Socket s = new Socket();
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        BufferedReader in = new BufferedReader(new StringReader(""));
-        ServerPlayer p = new ServerPlayer(in, new PrintWriter(bytes, true),s);
-        p.setName("Red");
-        p.setPlayerInfo();
-        assertEquals("Red", p.getPlayerInfo().getName());
-        assertEquals(1, p.getPlayerInfo().getTechLevel());
-    }
-
-    @Test
     public void test_setGetCurrentGameID(){
         Socket s = new Socket();
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();

@@ -6,7 +6,6 @@ import edu.duke.ece651.risc.shared.entry.ActionEntry;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * This is the class for multi thread used in handling incoming actions from players
@@ -17,6 +16,7 @@ public class OneTurnThread extends Thread {
     private ServerPlayer player;
     // for playerInfo field
     private final List<ServerPlayer> playerList;
+    PlayerInfo playerInfo;
 
     /**
      * constructor
@@ -24,13 +24,14 @@ public class OneTurnThread extends Thread {
      * @param g the gameMap of the game
      * @param p the player
      */
-    public OneTurnThread(GameMap g, ServerPlayer p, List<ServerPlayer> playerList) {
+    public OneTurnThread(GameMap g, ServerPlayer p, List<ServerPlayer> playerList, PlayerInfo playerInfo) {
         this.gameMap = g;
         this.player = p;
         // Each player keep a local copy of game map, to update during one turn
         this.mapLocal = (GameMap) new JSONSerializer().clone(g, GameMap.class);
         // need to generate player info table later
         this.playerList = playerList;
+        this.playerInfo = playerInfo;
     }
 
     /**
@@ -42,9 +43,9 @@ public class OneTurnThread extends Thread {
     private void applyMovement(ActionEntry a) {
         synchronized (gameMap) {
             try {
-                a.apply(gameMap, player.getPlayerInfo());
+                a.apply(gameMap, playerInfo);
 //                also apply on the local copy
-                a.apply(mapLocal, player.getPlayerInfo());
+                a.apply(mapLocal, playerInfo);
                 player.sendMessage(Constant.VALID_ACTION);
             } catch (Exception e) {
                 player.sendMessage(e.getMessage());

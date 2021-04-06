@@ -226,7 +226,6 @@ public class App {
       player = new ServerPlayer(in, out, clientSocket);
       players.put(playerName, player);
       player.setName(playerName);
-      player.setPlayerInfo();
     } else {
       player = players.get(playerName);
       //update the player's inputstream and outputstream
