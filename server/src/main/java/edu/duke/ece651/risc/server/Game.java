@@ -397,7 +397,7 @@ public class Game {
      *
      * @throws IOException
      */
-    public void runGame(int TerritoryPerPlayer, int totalSoldiers) throws IOException {
+    public void runGame(int TerritoryPerPlayer, int totalSoldiers) throws IOException, InterruptedException {
         //copy players list for stillIn and stillWatch
         stillInPlayers = new ArrayList<>(players);
         stillWatchPlayers = new ArrayList<>(players);

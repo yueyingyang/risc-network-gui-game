@@ -43,9 +43,10 @@ public class OneTurnThread extends Thread {
     private void applyMovement(ActionEntry a) {
         synchronized (gameMap) {
             try {
+                PlayerInfo pi = new PlayerInfo(playerInfo.getName(),playerInfo.getTechLevel(),playerInfo.getFoodResource(),playerInfo.getTechResource());
                 a.apply(gameMap, playerInfo);
 //                also apply on the local copy
-                a.apply(mapLocal, playerInfo);
+                a.apply(mapLocal, pi);
                 player.sendMessage(Constant.VALID_ACTION);
             } catch (Exception e) {
                 player.sendMessage(e.getMessage());
