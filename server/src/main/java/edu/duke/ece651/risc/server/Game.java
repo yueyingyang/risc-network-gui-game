@@ -151,7 +151,7 @@ public class Game {
      * @return
      */
     public void makeMap(int territoriesPerPlayer) {
-        V1MapFactory factory = new V1MapFactory();
+        V2MapFactory factory = new V2MapFactory();
         ArrayList<String> nameList = new ArrayList<String>();
         for (Player player : players) {
             nameList.add(player.getName());
