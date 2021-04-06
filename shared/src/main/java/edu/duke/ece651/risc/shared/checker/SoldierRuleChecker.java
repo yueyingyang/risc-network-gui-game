@@ -1,5 +1,6 @@
 package edu.duke.ece651.risc.shared.checker;
 
+import edu.duke.ece651.risc.shared.Constant;
 import edu.duke.ece651.risc.shared.GameMap;
 import edu.duke.ece651.risc.shared.PlayerInfo;
 import edu.duke.ece651.risc.shared.Territory;
@@ -26,6 +27,15 @@ public class SoldierRuleChecker extends Checker{
         if(action.getNumSoldiers()<0){
             throw new IllegalArgumentException("The input unit should not be negative!");
         }
+
+        if(!Constant.soldierTypes.contains(action.getFromType())){
+            throw new IllegalArgumentException("The from type is illegal");
+        }
+
+        if(!Constant.soldierTypes.contains(action.getToType())){
+            throw new IllegalArgumentException("The to type is illegal");
+        }
+
         String soldierLevel=action.getFromType();
         if (start.getNumSoldiersInArmy(soldierLevel) < action.getNumSoldiers()) {
             throw new IllegalArgumentException("The army in this territory is not enough for this action!");

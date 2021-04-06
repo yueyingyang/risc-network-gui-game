@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SoldierRuleCheckerTest {
     @Test
-    public void test_combinedChecker(){
+    public void test_checkMyRule(){
         Checker checker=new SoldierRuleChecker(null);
         PlayerInfo player1 = new PlayerInfo("player1", 1, 20, 1000);
         PlayerInfo player2 = new PlayerInfo("player2", 5, 20, 100);
@@ -47,5 +47,11 @@ public class SoldierRuleCheckerTest {
         // check not enough soldier case
         SoldierEntry upgrade7 = new SoldierEntry("1","2","0",-2,"player2");
         assertThrows(IllegalArgumentException.class, () -> checker.checkAction(upgrade7, map, player1));
+        // check illegal from type
+        SoldierEntry upgrade8 = new SoldierEntry("2", "-1", "2", 4, "player2");
+        assertThrows(IllegalArgumentException.class, () -> checker.checkAction(upgrade8, map, player2));
+        // check illegal to type
+        SoldierEntry upgrade9 = new SoldierEntry("2", "0", "7", 4, "player2");
+        assertThrows(IllegalArgumentException.class, () -> checker.checkAction(upgrade9, map, player2));
     }
 }
