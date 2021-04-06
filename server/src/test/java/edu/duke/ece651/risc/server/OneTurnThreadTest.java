@@ -22,6 +22,7 @@ import edu.duke.ece651.risc.shared.GameMap;
 import edu.duke.ece651.risc.shared.JSONSerializer;
 import edu.duke.ece651.risc.shared.entry.MoveEntry;
 import edu.duke.ece651.risc.shared.Player;
+import edu.duke.ece651.risc.shared.PlayerInfo;
 import edu.duke.ece651.risc.shared.ServerPlayer;
 import edu.duke.ece651.risc.shared.Territory;
 
@@ -62,8 +63,8 @@ class OneTurnThreadTest {
 //    work should be done during adding player
     p.setName("Blue");
     p.setColor(Color.red);
-    p.setPlayerInfo();
-    OneTurnThread t = new OneTurnThread(map,p, new ArrayList<>(Collections.singletonList(p)));
+    PlayerInfo pi = new PlayerInfo("Blue");
+    OneTurnThread t = new OneTurnThread(map,p, new ArrayList<>(Collections.singletonList(p)),pi);
     t.start();
     assertDoesNotThrow(()->{t.join();});
     assertEquals("Blue",t1.getOwnerName());
@@ -101,9 +102,9 @@ class OneTurnThreadTest {
     ServerPlayer p = new ServerPlayer(in, new PrintWriter(bytes, true),s);
     //    work should be done during adding player
     p.setName("Blue");
-    p.setColor(Color.RED);
-    p.setPlayerInfo();
-    OneTurnThread t = new OneTurnThread(map,p,new ArrayList<>(Collections.singletonList(p)));
+    p.setColor(Color.BLUE);
+    PlayerInfo pi = new PlayerInfo("Blue");
+    OneTurnThread t = new OneTurnThread(map,p,new ArrayList<>(Collections.singletonList(p)),pi);
     t.start();
     assertDoesNotThrow(()->{t.join();});
     assertEquals("Blue",t1.getOwnerName());

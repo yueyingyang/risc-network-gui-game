@@ -9,6 +9,7 @@ import edu.duke.ece651.risc.shared.JSONSerializer;
 import edu.duke.ece651.risc.shared.ServerPlayer;
 import edu.duke.ece651.risc.shared.entry.ActionEntry;
 import edu.duke.ece651.risc.shared.game.V2MapView;
+import edu.duke.ece651.risc.shared.PlayerInfo;
 
 public class PlacementThread extends Thread{
     private Integer totalSoldiers;

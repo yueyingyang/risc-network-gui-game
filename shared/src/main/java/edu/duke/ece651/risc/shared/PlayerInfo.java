@@ -13,6 +13,8 @@ public class PlayerInfo {
     private boolean requested;
 
 
+    public PlayerInfo(){}
+
     /**
      * Construct a PlayerInfo object
      *
@@ -28,6 +30,7 @@ public class PlayerInfo {
         this.techResource = techResource;
         this.requested = false;
     }
+
 
     /**
      * Construct a PlayerInfo object
@@ -132,4 +135,5 @@ public class PlayerInfo {
         }
     }
 
+    
 }

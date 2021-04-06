@@ -9,7 +9,7 @@ import edu.duke.ece651.risc.shared.game.V2MapView;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
@@ -26,6 +26,7 @@ public class Game {
     private ArrayList<ServerPlayer> players;
     private ArrayList<ServerPlayer> stillInPlayers;//players still didn't lose
     private ArrayList<ServerPlayer> stillWatchPlayers;//players stillIn with those who want to watch after losing
+    private HashMap<String,PlayerInfo> allplayerInfo;
     private GameMap gameMap;
     private V2MapView view;
     private Random myRandom;
@@ -44,9 +45,14 @@ public class Game {
         this.players = new ArrayList<>();
         this.stillInPlayers = new ArrayList<>();
         this.stillWatchPlayers = new ArrayList<>();
+        this.allplayerInfo = new HashMap<>();
         this.randomSeed = r;
         this.myRandom = new Random(randomSeed);
         this.isComplete = false;
+    }
+
+    public PlayerInfo getPlayerInfoByName(String name){
+        return allplayerInfo.get(name);
     }
 
     /**
@@ -205,7 +211,7 @@ public class Game {
         for (ServerPlayer player : stillInPlayers) {
             //if the player is still active in this game
             if(player.getCurrentGame().equals(gameID)){
-                OneTurnThread thread = new OneTurnThread(gameMap, player, players);
+                OneTurnThread thread = new OneTurnThread(gameMap, player, players,allplayerInfo.get(player.getName()));
                 threads.add(thread);
                 thread.start();
             }
@@ -247,7 +253,7 @@ public class Game {
      */
     public void effectTechForStillIn(ArrayList<ServerPlayer> connectedPlayers){
         for(ServerPlayer p:connectedPlayers){
-            p.getPlayerInfo().effectTech();
+            allplayerInfo.get(p.getName()).effectTech();
         }
     }
 
@@ -298,7 +304,9 @@ public class Game {
             }
             //for those who didn't lose, tell them to continue
             else {
-                try{player.sendMessage(Constant.CONTINUE_PLAYING);}catch(Exception e){}
+                if(player.getCurrentGame().equals(this.gameID)){
+                    try{player.sendMessage(Constant.CONTINUE_PLAYING);}catch(Exception e){}
+                }
             }
         }
 
@@ -362,7 +370,7 @@ public class Game {
     public void addResourcesToStillIn(){
         for(ServerPlayer p:stillInPlayers){
             Iterable<Territory> myTerrs = gameMap.getPlayerTerritories(p.getName());
-            p.getPlayerInfo().addResource(myTerrs);
+            allplayerInfo.get(p.getName()).addResource(myTerrs);
         }
     }
 
@@ -392,15 +400,15 @@ public class Game {
         //copy players list for stillIn and stillWatch
         stillInPlayers = new ArrayList<>(players);
         stillWatchPlayers = new ArrayList<>(players);
+        for(ServerPlayer p:players){
+            PlayerInfo pi = new PlayerInfo(p.getName());
+            allplayerInfo.put(p.getName(),pi);
+        }
         makeMap(TerritoryPerPlayer);
-        view = new V2MapView(this.gameMap, players);   
-        sendAndPlace(totalSoldiers,view);            
-        /*sendObjectToAll(this.gameMap, players);
-        sendStringToAll(String.valueOf(totalSoldiers), players);
-        sendStringToAll(view.toString(false), players);
-        addResourcesToStillIn();
-        placementPhase();*/
-        while (true) {
+        view = new V2MapView(this.gameMap, players);  
+        addResourcesToStillIn(); 
+        sendAndPlace(totalSoldiers,view);                  
+        while (true) { 
             ArrayList<ServerPlayer> connectedPlayers = sendMap_GetConnectedPlayers();
             //multi thread in this function to handle simultaneous input
             playOneTurn(connectedPlayers);
