@@ -16,7 +16,7 @@ public class V2MapFactory implements AbstractMapFactory{
     private List<List<String>> createConnection(List<Territory> territory_list){
         List<List<String>> connections=new ArrayList<>();
         int size=territory_list.size();
-        for(int dist=1;dist<=2;dist++){
+        for(int dist=1;dist<=1;dist++){
             for(int i=0;i<territory_list.size();i++){
                 List<String> connection=new ArrayList<>();
                 connection.add(territory_list.get(i).getName());
@@ -24,6 +24,11 @@ public class V2MapFactory implements AbstractMapFactory{
                 connections.add(connection);
             }
         }
+        List<String> connection=new ArrayList<>();
+        connection.add(territory_list.get(0).getName());
+        connection.add(territory_list.get(territory_list.size()/2).getName());
+        connections.add(connection);
+
         return connections;
     }
 

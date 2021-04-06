@@ -23,10 +23,10 @@ public class V2MapFactoryTest {
 
         assertTrue(map.getTerritory("0").isAdjacent(map.getTerritory("1")));
         assertTrue(map.getTerritory("0").isAdjacent(map.getTerritory("8")));
-        assertTrue(map.getTerritory("0").isAdjacent(map.getTerritory("2")));
+        assertFalse(map.getTerritory("0").isAdjacent(map.getTerritory("2")));
         assertFalse(map.getTerritory("0").isAdjacent(map.getTerritory("3")));
         assertFalse(map.getTerritory("0").isAdjacent(map.getTerritory("6")));
-        assertTrue(map.getTerritory("0").isAdjacent(map.getTerritory("7")));
+        assertTrue(map.getTerritory("0").isAdjacent(map.getTerritory("4")));
     }
 
 }
