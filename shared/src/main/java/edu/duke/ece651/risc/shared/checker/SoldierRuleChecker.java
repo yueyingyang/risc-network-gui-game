@@ -34,7 +34,7 @@ public class SoldierRuleChecker extends Checker{
         if(myInfo.getTechResource()< GameUtil.getSoldierCost(action.getFromType(),action.getToType(),action.getNumSoldiers())){
             throw new IllegalArgumentException("Your Technology resource is not enough!");
         }
-        if(action.getToType().compareTo(action.getFromType())<0){
+        if(action.getToType().compareTo(action.getFromType())<=0){
             throw new IllegalArgumentException("You can only upgrade solider instead of downgrading!");
         }
         if(GameUtil.getTechRequire(action.getToType())>myInfo.getTechLevel()){
