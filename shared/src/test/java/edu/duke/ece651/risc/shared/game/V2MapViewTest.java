@@ -25,7 +25,7 @@ class V2MapViewTest {
     Army army = new BasicArmy("John", 5, "3");
     Territory t = map.getTerritory("0");
     t.setMyArmy(army);
-    V2MapView view = new V2MapView(map, playerList(playerNames));
+    V2MapView view = new V2MapView(map, playerList(playerNames), new PlayerInfo("John", 1, 20, 20));
     String fullMapView = view.toString(true);
     JSONSerializer s = new JSONSerializer();
     TypeReference<HashMap<String, List<ObjectNode>>> typeRef
@@ -34,6 +34,7 @@ class V2MapViewTest {
     Map<String, List<ObjectNode>> deView = s.getOm().readValue(fullMapView, typeRef);
     assertEquals("[{\"name\":\"0\",\"owner\":\"John\",\"value\":5,\"color\":\"#97B8A3\",\"foodProd\":20,\"techProd\":20,\"unit0\":0,\"unit1\":0,\"unit2\":0,\"unit3\":5,\"unit4\":0,\"unit5\":0,\"unit6\":0,\"x\":230,\"y\":200}, {\"name\":\"1\",\"owner\":\"Tom\",\"value\":5,\"color\":\"#EDC3C7\",\"foodProd\":20,\"techProd\":20,\"unit0\":1,\"unit1\":0,\"unit2\":0,\"unit3\":0,\"unit4\":0,\"unit5\":0,\"unit6\":0,\"x\":170,\"y\":200}]", deView.get("data").toString());
     assertEquals("[{\"source\":\"0\",\"target\":\"1\"}, {\"source\":\"1\",\"target\":\"0\"}]", deView.get("links").toString());
+    assertEquals("[{\"name\":\"John\",\"techLevel\":1,\"foodRes\":20,\"techRes\":20,\"isRequested\":false}]", deView.get("playerInfo").toString());
   }
 
   List<ServerPlayer> playerList(List<String> names) {

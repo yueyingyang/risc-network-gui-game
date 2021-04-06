@@ -52,7 +52,7 @@ public class OneTurnThread extends Thread {
             }
         }
         // send the updated map view
-        player.sendMessage(new V2MapView(mapLocal, playerList).toString(true));
+        player.sendMessage(new V2MapView(mapLocal, playerList, playerInfo).toString(true));
     }
 
     /**

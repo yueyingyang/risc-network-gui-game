@@ -1,4 +1,4 @@
- 
+
 package edu.duke.ece651.risc.server;
 
 
@@ -27,8 +27,8 @@ public class Game {
     private ArrayList<ServerPlayer> stillInPlayers;//players still didn't lose
     private ArrayList<ServerPlayer> stillWatchPlayers;//players stillIn with those who want to watch after losing
     private HashMap<String,PlayerInfo> allplayerInfo;
+    private HashMap<String, V2MapView> allMapViews;
     private GameMap gameMap;
-    private V2MapView view;
     private Random myRandom;
     private int randomSeed;
     public Boolean isComplete;
@@ -46,6 +46,7 @@ public class Game {
         this.stillInPlayers = new ArrayList<>();
         this.stillWatchPlayers = new ArrayList<>();
         this.allplayerInfo = new HashMap<>();
+        this.allMapViews = new HashMap<>();
         this.randomSeed = r;
         this.myRandom = new Random(randomSeed);
         this.isComplete = false;
@@ -262,7 +263,7 @@ public class Game {
          ArrayList<ServerPlayer> connectedPlayers = new ArrayList<>();
          for (ServerPlayer p : stillWatchPlayers) {
              if(p.getCurrentGame()==gameID){
-                p.sendMessage(view.toString(true));
+                p.sendMessage(allMapViews.get(p.getName()).toString(true));
                 connectedPlayers.add(p);
              }
         }
@@ -274,7 +275,7 @@ public class Game {
      *
      * @throws IOException
      */
-    public void playOneTurn(ArrayList<ServerPlayer> connectedPlayers) throws IOException {      
+    public void playOneTurn(ArrayList<ServerPlayer> connectedPlayers) throws IOException {
         //create a thread for each player to type their actions until receive commit
         //for inactive players, do nothing, just like they drectly type in Commit
         receiveAndApplyMoves(stillInPlayers);
@@ -297,7 +298,7 @@ public class Game {
             //if lost the game, the player can only watch or disconnect
             if (checkLost(player)) {
                 //we will only send lose game info to who has just lost the game
-                try{player.sendMessage(Constant.LOSE_GAME);}catch(Exception e){}            
+                try{player.sendMessage(Constant.LOSE_GAME);}catch(Exception e){}
                 //remove the lost player from stillIn
                 stillInPlayers.remove(player);
                 losers.add(player);
@@ -374,10 +375,10 @@ public class Game {
         }
     }
 
-    public void sendAndPlace(int soldierNum, V2MapView view){
+    public void sendAndPlace(int soldierNum){
         ArrayList<PlacementThread> threads = new ArrayList<>();
         for(ServerPlayer p:players){
-            PlacementThread placeThread = new PlacementThread(soldierNum,this.gameMap,view,p);
+            PlacementThread placeThread = new PlacementThread(soldierNum,this.gameMap,allMapViews.get(p.getName()),p);
             threads.add(placeThread);
             placeThread.start();
         }
@@ -386,7 +387,7 @@ public class Game {
                 t.join();
             }catch(Exception e){
                 System.out.println("catch exception when join the threads");
-            }           
+            }
         }
     }
 
@@ -405,10 +406,13 @@ public class Game {
             allplayerInfo.put(p.getName(),pi);
         }
         makeMap(TerritoryPerPlayer);
-        view = new V2MapView(this.gameMap, players);  
-        addResourcesToStillIn(); 
-        sendAndPlace(totalSoldiers,view);                  
-        while (true) { 
+        for(ServerPlayer p:players){
+            V2MapView view = new V2MapView(this.gameMap, players, allplayerInfo.get(p.getName()));
+            allMapViews.put(p.getName(),view);
+        }
+        addResourcesToStillIn();
+        sendAndPlace(totalSoldiers);
+        while (true) {
             ArrayList<ServerPlayer> connectedPlayers = sendMap_GetConnectedPlayers();
             //multi thread in this function to handle simultaneous input
             playOneTurn(connectedPlayers);

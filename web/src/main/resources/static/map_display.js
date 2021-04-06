@@ -63,6 +63,7 @@ const resolve_html = '            <div class="ui active inverted dimmer">\n' +
     '            </div>';
 const display_map = (tooltip_formatter_fn) => {
     $('#map_box').empty().append(map_html);
+    $('#map_box').append(graphData['playerInfo'][0]);
     const myChart = echarts.init(document.getElementById('map'));
     let option;
     option = getOption(tooltip_formatter_fn);
