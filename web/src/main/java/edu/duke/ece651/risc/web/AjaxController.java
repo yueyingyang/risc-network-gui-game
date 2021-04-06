@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import edu.duke.ece651.risc.shared.ClientSocket;
 import edu.duke.ece651.risc.shared.Constant;
 import edu.duke.ece651.risc.shared.JSONSerializer;
+import edu.duke.ece651.risc.shared.PlayerInfo;
 import edu.duke.ece651.risc.shared.entry.*;
 import edu.duke.ece651.risc.web.model.ActionAjaxResBody;
 import edu.duke.ece651.risc.web.model.UserActionInput;
@@ -279,7 +280,7 @@ public class AjaxController {
 //    if not append error info to msg box
 //    Receive new map view
     List<ObjectNode> graphData = util.deNodeList(cs.recvMessage());
-
+    PlayerInfo playerInfo = (PlayerInfo) serializer.deserialize(cs.recvMessage(), PlayerInfo.class);
 //    Below 2 lines for mock recv() for local test
 //    List<ObjectNode> graphData = util.mockObjectNodes();
 //    String validRes = "test validRes";
@@ -287,6 +288,10 @@ public class AjaxController {
     ActionAjaxResBody resBody = new ActionAjaxResBody();
     resBody.setGraphData(graphData);
     resBody.setValRes(validRes);
+    resBody.setPlayerInfo(playerInfo.getName() + " Tech level: " +
+            playerInfo.getTechLevel() + " Food: " +
+            playerInfo.getFoodResource() + " Tech: " +
+            playerInfo.getTechResource() + " Requested: " + playerInfo.isRequested());
     return ResponseEntity.ok(resBody);
   }
 

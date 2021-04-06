@@ -13,6 +13,7 @@ public class PlayerInfo {
     private boolean requested;
 
 
+    public PlayerInfo(){}
     /**
      * Construct a PlayerInfo object
      *

@@ -17,6 +17,8 @@ public class ActionAjaxResBody {
   List<ObjectNode> graphData;
   boolean win;
 
+  String playerInfo;
+
   public boolean isWin() {
     return win;
   }
@@ -47,6 +49,14 @@ public class ActionAjaxResBody {
 
   public void setWinnerInfo(String winnerInfo) {
     this.winnerInfo = winnerInfo;
+  }
+
+  public String getPlayerInfo() {
+    return playerInfo;
+  }
+
+  public void setPlayerInfo(String playerInfo) {
+    this.playerInfo = playerInfo;
   }
 
   public ActionAjaxResBody() {

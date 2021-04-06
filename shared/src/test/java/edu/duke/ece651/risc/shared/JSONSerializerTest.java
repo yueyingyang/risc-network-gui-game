@@ -120,4 +120,12 @@ class JSONSerializerTest {
     assertNotSame(cloned, map);
     assertEquals(s.serialize(map), s.serialize(cloned));
   }
+
+  @Test
+  void test_playerInfo() {
+    PlayerInfo playerInfo = new PlayerInfo("p1", 1, 1, 1);
+    String p = s.serialize(playerInfo);
+    PlayerInfo de = (PlayerInfo) s.deserialize(p, PlayerInfo.class);
+    assertEquals(1, de.getFoodResource());
+  }
 }
