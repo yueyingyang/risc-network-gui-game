@@ -27,8 +27,12 @@ public class SoldierRuleChecker extends Checker{
             throw new IllegalArgumentException("The input unit should not be negative!");
         }
 
-        if(GameUtil.getBonus(action.getgetFromType())==null){
-            throw new IllegalArgumentException("The from type ");
+        if(Constant.soldierTypes.contains(action.getFromType())){
+            throw new IllegalArgumentException("The from type is illegal");
+        }
+
+        if(Constant.soldierTypes.contains(action.getToType())){
+            throw new IllegalArgumentException("The to type is illegal");
         }
 
         String soldierLevel=action.getFromType();

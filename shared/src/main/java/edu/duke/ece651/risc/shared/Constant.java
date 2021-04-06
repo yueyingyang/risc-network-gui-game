@@ -90,6 +90,16 @@ public class Constant {
         requiredTech.put("6", 6);
     }
 
+    public static final Set<String> soldierTypes = new HashSet<>();
+    static {
+        soldierTypes.add("0");
+        soldierTypes.add("1");
+        soldierTypes.add("2");
+        soldierTypes.add("3");
+        soldierTypes.add("4");
+        soldierTypes.add("5");
+        soldierTypes.add("6");
+    }
 
 }
 
