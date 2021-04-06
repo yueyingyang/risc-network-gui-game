@@ -63,6 +63,10 @@ public class OneTurnThread extends Thread {
         while (true) {
             try {
                 String s = player.recvMessage();
+                if(s==null){
+                    player.setCurrentGameID(-1);
+                    break;
+                }
                 //check if the player has done with his orders
                 if (s.equals(Constant.ORDER_COMMIT)) {
                     break;
@@ -71,6 +75,7 @@ public class OneTurnThread extends Thread {
                 applyMovement(action);
             } catch (IOException e) {
                 System.out.println("receive message exception!\n" + e.getMessage());
+                break;
             }
         }
     }
