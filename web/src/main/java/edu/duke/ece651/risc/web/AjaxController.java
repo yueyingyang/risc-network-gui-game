@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import edu.duke.ece651.risc.shared.ClientSocket;
 import edu.duke.ece651.risc.shared.Constant;
 import edu.duke.ece651.risc.shared.JSONSerializer;
+import edu.duke.ece651.risc.shared.PlayerInfo;
 import edu.duke.ece651.risc.shared.entry.*;
 import edu.duke.ece651.risc.web.model.ActionAjaxResBody;
 import edu.duke.ece651.risc.web.model.UserActionInput;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -81,7 +83,7 @@ public class AjaxController {
         }
       }
       // 2. Recv MapView
-      List<ObjectNode> graphData = util.deNodeList(mapViewString);
+      Map<String, List<ObjectNode>> graphData = util.deNodeList(mapViewString);
       return ResponseEntity.status(HttpStatus.ACCEPTED).body(graphData);
     }
     return ResponseEntity.status(HttpStatus.ACCEPTED).body(null);
@@ -257,7 +259,7 @@ public class AjaxController {
     //    Send to server
     ClientSocket cs = playerMapping.getSocket(userName);
     cs.sendMessage(Constant.WATCH_GAME);
-    List<ObjectNode> graphData = util.deNodeList(cs.recvMessage());
+    Map<String, List<ObjectNode>> graphData = util.deNodeList(cs.recvMessage());
     return ResponseEntity.ok().body(graphData);
   }
 
@@ -278,8 +280,8 @@ public class AjaxController {
     String validRes = cs.recvMessage();
 //    if not append error info to msg box
 //    Receive new map view
-    List<ObjectNode> graphData = util.deNodeList(cs.recvMessage());
-
+    Map<String, List<ObjectNode>> graphData = util.deNodeList(cs.recvMessage());
+    PlayerInfo playerInfo = (PlayerInfo) serializer.deserialize(cs.recvMessage(), PlayerInfo.class);
 //    Below 2 lines for mock recv() for local test
 //    List<ObjectNode> graphData = util.mockObjectNodes();
 //    String validRes = "test validRes";
@@ -287,6 +289,10 @@ public class AjaxController {
     ActionAjaxResBody resBody = new ActionAjaxResBody();
     resBody.setGraphData(graphData);
     resBody.setValRes(validRes);
+    resBody.setPlayerInfo(playerInfo.getName() + " Tech level: " +
+            playerInfo.getTechLevel() + " Food: " +
+            playerInfo.getFoodResource() + " Tech: " +
+            playerInfo.getTechResource() + " Requested: " + playerInfo.isRequested());
     return ResponseEntity.ok(resBody);
   }
 
@@ -316,7 +322,7 @@ public class AjaxController {
       String winnerInfo = cs.recvMessage();
       resBody.setWinnerInfo(winnerInfo);
     } else {
-      List<ObjectNode> graphData = util.deNodeList(mapViewString);
+      Map<String, List<ObjectNode>> graphData = util.deNodeList(mapViewString);
       resBody.setGraphData(graphData);
     }
   }

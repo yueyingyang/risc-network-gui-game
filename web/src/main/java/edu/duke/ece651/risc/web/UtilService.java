@@ -1,6 +1,7 @@
 package edu.duke.ece651.risc.web;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import edu.duke.ece651.risc.shared.*;
 import edu.duke.ece651.risc.shared.entry.ActionEntry;
@@ -9,8 +10,8 @@ import edu.duke.ece651.risc.shared.game.TerrUnit;
 import edu.duke.ece651.risc.shared.game.TerrUnitList;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.awt.*;
+import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,10 +34,12 @@ public class UtilService {
    * @return List<ObjectNode> could be used in js code
    * @throws JsonProcessingException
    */
-  public List<ObjectNode> deNodeList(String mapViewString) throws JsonProcessingException {
-    return jsonSerializer.deserializeList(mapViewString, ObjectNode.class)
-            .stream().map(x -> (ObjectNode) x)
-            .collect(Collectors.toList());
+  public Map<String, List<ObjectNode>> deNodeList(String mapViewString) throws JsonProcessingException {
+    TypeReference<HashMap<String, List<ObjectNode>>> typeRef
+            = new TypeReference<>() {
+    };
+    Map<String, List<ObjectNode>> deView = jsonSerializer.getOm().readValue(mapViewString, typeRef);
+    return deView;
   }
 
   /**
@@ -80,10 +83,10 @@ public class UtilService {
    *
    * @return the MAP display info in JSON
    */
-  public List<ObjectNode> mockObjectNodes() throws JsonProcessingException {
+  public Map<String, List<ObjectNode>> mockObjectNodes() throws JsonProcessingException {
     String emptyView = "[{\"name\":\"0\",\"owner\":\"p2\",\"value\":2,\"color\":\"#97B8A3\"},{\"name\":\"1\",\"owner\":\"p2\",\"value\":2,\"color\":\"#97B8A3\"},{\"name\":\"2\",\"owner\":\"test\",\"value\":2,\"color\":\"#EDC3C7\"},{\"name\":\"3\",\"owner\":\"test\",\"value\":2,\"color\":\"#EDC3C7\"}]";
     //String fullView = "[{\"name\":\"0\",\"owner\":\"p2\",\"value\":2,\"color\":\"#97B8A3\",\"units\":1,\"foodProd\":0,\"techProd\":0},{\"name\":\"1\",\"owner\":\"p2\",\"value\":2,\"color\":\"#97B8A3\",\"units\":2,\"foodProd\":0,\"techProd\":0},{\"name\":\"2\",\"owner\":\"test\",\"value\":2,\"color\":\"#EDC3C7\",\"units\":2,\"foodProd\":0,\"techProd\":0},{\"name\":\"3\",\"owner\":\"test\",\"value\":2,\"color\":\"#EDC3C7\",\"units\":3,\"foodProd\":0,\"techProd\":0}]";
-    String fullView = "[{\"name\":\"0\",\"owner\":\"John\",\"value\":5,\"color\":\"#97B8A3\",\"foodProd\":20,\"techProd\":20,\"unit0\":0,\"unit1\":0,\"unit2\":0,\"unit3\":5,\"unit4\":0,\"unit5\":0,\"unit6\":0},{\"name\":\"1\",\"owner\":\"Tom\",\"value\":5,\"color\":\"#EDC3C7\",\"foodProd\":20,\"techProd\":20,\"unit0\":1,\"unit1\":0,\"unit2\":0,\"unit3\":0,\"unit4\":0,\"unit5\":0,\"unit6\":0}]";
+    String fullView = "{\"data\":[{\"name\":\"0\",\"owner\":\"user2\",\"value\":5,\"color\":\"#97B8A3\",\"foodProd\":20,\"techProd\":20,\"unit0\":0,\"unit1\":0,\"unit2\":0,\"unit3\":0,\"unit4\":0,\"unit5\":0,\"unit6\":0,\"x\":230,\"y\":200},{\"name\":\"1\",\"owner\":\"user2\",\"value\":5,\"color\":\"#97B8A3\",\"foodProd\":20,\"techProd\":20,\"unit0\":0,\"unit1\":0,\"unit2\":0,\"unit3\":0,\"unit4\":0,\"unit5\":0,\"unit6\":0,\"x\":200,\"y\":230},{\"name\":\"2\",\"owner\":\"user3\",\"value\":5,\"color\":\"#EDC3C7\",\"foodProd\":20,\"techProd\":20,\"unit0\":0,\"unit1\":0,\"unit2\":0,\"unit3\":0,\"unit4\":0,\"unit5\":0,\"unit6\":0,\"x\":170,\"y\":200},{\"name\":\"3\",\"owner\":\"user3\",\"value\":5,\"color\":\"#EDC3C7\",\"foodProd\":20,\"techProd\":20,\"unit0\":0,\"unit1\":0,\"unit2\":0,\"unit3\":0,\"unit4\":0,\"unit5\":0,\"unit6\":0,\"x\":200,\"y\":170}],\"links\":[{\"source\":\"0\",\"target\":\"1\"},{\"source\":\"0\",\"target\":\"3\"},{\"source\":\"1\",\"target\":\"0\"},{\"source\":\"1\",\"target\":\"2\"},{\"source\":\"2\",\"target\":\"1\"},{\"source\":\"2\",\"target\":\"3\"},{\"source\":\"3\",\"target\":\"0\"},{\"source\":\"3\",\"target\":\"2\"}]}";
     return deNodeList(fullView);
   }
 }

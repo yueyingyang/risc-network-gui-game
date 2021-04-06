@@ -26,7 +26,7 @@
         </div>
         <div class="field" style="user-select: auto;">
             <label style="user-select: auto;">Number of Soldiers</label>
-            <input type="text" placeholder="Number of Soldiers" style="user-select: auto;"
+            <input type="number" placeholder="Number of Soldiers" style="user-select: auto;"
                    name="soldierNum">
         </div>
     </div>
@@ -40,19 +40,21 @@
         </div>
         <div class="field" style="user-select: auto;">
             <label style="user-select: auto;">Current Soldier Type</label>
-            <input type="text" placeholder="Current Soldier Type" style="user-select: auto;"
-                   name="fromType">
-        </div>
-        <div class="field" style="user-select: auto;">
-            <label style="user-select: auto;">Target Soldier Type</label>
             <select th:name="fromType"
                     class="ui fluid search dropdown">
                 <option th:each="t : ${soldierType}" th:text="${t}" th:value="${t}"></option>
             </select>
         </div>
         <div class="field" style="user-select: auto;">
+            <label style="user-select: auto;">Target Soldier Type</label>
+            <select th:name="toType"
+                    class="ui fluid search dropdown">
+                <option th:each="t : ${soldierType}" th:text="${t}" th:value="${t}"></option>
+            </select>
+        </div>
+        <div class="field" style="user-select: auto;">
             <label style="user-select: auto;">Number of Soldiers</label>
-            <input type="text" placeholder="Number of Soldiers" style="user-select: auto;"
+            <input type="number" placeholder="Number of Soldiers" style="user-select: auto;"
                    name="soldierNum">
         </div>
     </div>

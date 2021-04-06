@@ -1,5 +1,24 @@
 function getOption(tooltip_formatter_fn) {
-    let colors = graphData.map(territory => territory['color']);
+    let colors = graphData['data'].map(territory => territory['color']);
+    // hide tooltips on edges
+    graphData['links'].map(link => {
+        link['tooltip'] = {show: false};
+        return link;
+    })
+    graphData['data'].map(item => {
+        item['itemStyle'] = {
+            color: item['color']
+        }
+        item['label'] = {
+            show: true,
+            position: 'inside',
+            fontSize: 20,
+            fontWeight: 'bold',
+            color: "#fff",
+            formatter: item['name'],
+        }
+        return item;
+    })
     return {
         tooltip: {
             trigger: 'item',
@@ -7,32 +26,28 @@ function getOption(tooltip_formatter_fn) {
         },
         series: [
             {
-                name: 'map',
-                type: 'pie',
-                radius: ['40%', '70%'],
+                type: "graph",
+                data: graphData['data'],
+                symbolSize: 80,
+                edgeSymbolSize: [4, 10],
+                edgeLabel: {
+                    color: "#fff"
+                },
                 avoidLabelOverlap: false,
-                itemStyle: {
-                    borderRadius: 10,
-                    borderColor: '#fff',
-                    borderWidth: 4,
-                },
                 color: colors,
-                label: {
-                    position: 'inner',
-                    fontSize: 20,
-                    fontWeight: 'bold',
-                    color: "#fff",
-                    formatter: "{@name}",
-                },
                 labelLine: {
                     show: false
                 },
+                links: graphData['links'],
+                lineStyle: {
+                    color: "#b1a7a6",
+                    width: "1",
+                    type: "solid",
+                }
             }
         ],
-        dataset: {
-            source: graphData
-        }
     };
+
 }
 
 const map_html = '<div id="map" style="width:600px; height:400px;"></div>';

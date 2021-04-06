@@ -23,6 +23,10 @@ function setupForm(form, submit_btn, url) {
     })
 }
 
+function display_playerInfo(playerInfo) {
+    $('#msg_box').append(playerInfo);
+}
+
 const submit_action = (url, form, submit_btn) => {
     $.ajax({
         type: "POST",
@@ -33,6 +37,7 @@ const submit_action = (url, form, submit_btn) => {
         success: function (resBody) {
             $('#msg_box').append('<p style="user-select: auto;"> ' + resBody['valRes'] + '</p>');
             graphData = resBody['graphData'];
+            display_playerInfo(resBody['playerInfo']);
             // display map
             display_map(full_map_formatter)
             submit_btn.toggleClass("disabled");
