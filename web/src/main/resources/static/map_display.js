@@ -53,7 +53,6 @@ const map_html = '<div id="map" style="width:600px; height:400px;"></div>';
 const load_html =
     '            <div class="ui active inverted dimmer">\n' +
     '                <div class="ui text loader">Hey👋 - other players are still doing actions. <br>' +
-    "Please wait and click refresh to get update!\n" +
     "                </div>\n" +
     "            </div>";
 const resolve_html =
@@ -62,12 +61,50 @@ const resolve_html =
     "Please wait and click refresh to get update!\n" +
     "                </div>\n" +
     "            </div>";
+const display_playerInfo = (player_info) => {
+    return '<div class="ui mini statistics" style="padding-left: 50px">\n' +
+        '        <div class="statistic">\n' +
+        '            <div class="value">\n' +
+        '                <i class="user circle outline icon"></i> \n' +
+        player_info['name'] +
+        '            </div>\n' +
+        '            <div class="label">\n' +
+        '                Player Name\n' +
+        '            </div>\n' +
+        '        </div>\n' +
+        '    </div>' +
+        '        <div class="ui mini statistics" style="padding-left: 50px">\n' +
+        '            <div class="statistic">\n' +
+        '                <div class="value">\n' +
+        player_info['techLevel'] +
+        '                </div>\n' +
+        '                <div class="label">\n' +
+        '                    Tech Level\n' +
+        '                </div>\n' +
+        '            </div>\n' +
+        '            <div class="statistic">\n' +
+        '                <div class="value">\n' +
+        player_info['foodRes'] +
+        '                </div>\n' +
+        '                <div class="label">\n' +
+        '                    Food Resources\n' +
+        '                </div>\n' +
+        '            </div>\n' +
+        '            <div class="statistic">\n' +
+        '                <div class="value">\n' +
+        player_info['techRes'] +
+        '                </div>\n' +
+        '                <div class="label">\n' +
+        '                    Tech Resources\n' +
+        '                </div>\n' +
+        '            </div>\n' +
+        '        </div>'
+}
 const display_map = (tooltip_formatter_fn) => {
     $("#map_box").empty().append(map_html);
     const myChart = echarts.init(document.getElementById("map"));
     let option;
     option = getOption(tooltip_formatter_fn);
     myChart.setOption(option);
-    console.log(graphData["playerInfo"][0]);
-    $("#player_info").empty().append(JSON.stringify(graphData["playerInfo"][0]));
+    $("#player_info").empty().append(display_playerInfo(graphData["playerInfo"][0]));
 };

@@ -17,13 +17,9 @@
                     Just one second
                 </div>
                 <p style="user-select: auto;">We're trying to get enough players to join for starting the game. </p>
-                <p>Feel free to press <b>Refresh</b> button to get updates.</p>
                 <span id="last_update"> The room is not ready yet </span>
             </div>
         </div>
-    </div>
-    <div class="column" style="user-select: auto;">
-        <button class="ui submit button" style="user-select: auto;" id="refresh" hidden>Refresh</button>
     </div>
 </div>
 <script th:src="@{/util.js}"></script>
@@ -56,7 +52,6 @@
     // check if the room is ready after entering the waiting session
     $(document).ready(check_room_status);
     // bind check_room_status on refresh button
-    $('#refresh').click(check_room_status);
 </script>
 </body>
 </html>

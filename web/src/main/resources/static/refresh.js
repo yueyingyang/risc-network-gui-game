@@ -1,6 +1,5 @@
 function showWinnerInfoModal(winnerInfo) {
     clearInterval(map_refresh_timer);
-    $("#refresh").unbind();
     // show the result
     $('#lost .content').empty().append(winnerInfo);
     // remove the choice of "continue to watch"
@@ -13,9 +12,7 @@ function startOneTurn(res) {
     graphData = res;
     // display map
     display_map(full_map_formatter)
-    $("#refresh").unbind();
     // change click event to resolve combat and also disable refresh
-    $('#refresh').click(resolve_combat);
     toggleActionAndRefresh();
 
 }
@@ -132,5 +129,4 @@ function watch_game() {
 }
 
 $('#commit').click(submit_commit);
-$('#refresh').click(refresh_map);
 $('#lost .green.button').click(watch_game);

@@ -13,31 +13,33 @@ setupForm(soldier_form, soldier_btn, "/soldier");
 setupForm(tech_form, tech_bin, "/tech");
 
 function setupForm(form, submit_btn, url) {
-  form.submit(function (event) {
-    event.preventDefault();
-    submit_btn.toggleClass("disabled");
-    const data = new FormData(event.target);
-    const form_data = Object.fromEntries(data.entries());
-    submit_action(url, form_data, submit_btn);
-    form.trigger("reset");
-  });
+    form.submit(function (event) {
+        event.preventDefault();
+        submit_btn.toggleClass("disabled");
+        const data = new FormData(event.target);
+        const form_data = Object.fromEntries(data.entries());
+        submit_action(url, form_data, submit_btn);
+        form.trigger("reset");
+        // hack to reset dropdown value
+        $('.dropdown div.text').text(0)
+    });
 }
 
 const submit_action = (url, form, submit_btn) => {
-  $.ajax({
-    type: "POST",
-    contentType: "application/json",
-    url: url,
-    data: JSON.stringify(form),
-    dataType: "json",
-    success: function (resBody) {
-      $("#msg_box")
-        .empty()
-        .append('<p style="user-select: auto;"> ' + resBody["valRes"] + "</p>");
-      graphData = resBody["graphData"];
-      // display map
-      display_map(full_map_formatter);
-      submit_btn.toggleClass("disabled");
-    },
-  });
+    $.ajax({
+        type: "POST",
+        contentType: "application/json",
+        url: url,
+        data: JSON.stringify(form),
+        dataType: "json",
+        success: function (resBody) {
+            $("#msg_box")
+                .empty()
+                .append('<p style="user-select: auto;"> ' + resBody["valRes"] + "</p>");
+            graphData = resBody["graphData"];
+            // display map
+            display_map(full_map_formatter);
+            submit_btn.toggleClass("disabled");
+        },
+    });
 };
