@@ -4,7 +4,10 @@
 package edu.duke.ece651.risc.server;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import edu.duke.ece651.risc.shared.JSONSerializer;
 import edu.duke.ece651.risc.shared.ServerPlayer;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -98,15 +101,32 @@ class AppTest {
   @Test
   public void test_rejoinGame() throws IOException{
     Socket s = new Socket();
+    Socket s1 = new Socket();
+    Socket s2 = new Socket();
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+    ByteArrayOutputStream bytes1 = new ByteArrayOutputStream();
+    ByteArrayOutputStream bytes2 = new ByteArrayOutputStream();
     ServerPlayer sp = new ServerPlayer(new BufferedReader(new StringReader("")),new PrintWriter(bytes, true),s);
+    sp.setName("A");
+    ServerPlayer sp1 = new ServerPlayer(new BufferedReader(new StringReader("")),new PrintWriter(bytes1, true),s1);
+    sp1.setName("B");
+    ServerPlayer sp2 = new ServerPlayer(new BufferedReader(new StringReader("")),new PrintWriter(bytes2, true),s2);
+    sp2.setName("C");
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree("{\"type\":\"start\",\"name\":\"test\",\"gameSize\":\"2\"}");
     JsonNode rejoinReq = mapper.readTree("{\"type\":\"rejoin\",\"name\":\"test\",\"gameID\":\"0\"}");
     Game g = app.startNewGame(sp, rootNode);
+    g.addPlayer(sp1);
+    g.makeMap(2);
     Game g1 = app.startNewGame(sp, rootNode);
-    //app.rejoinGame(sp, rejoinReq);
-    //assertEquals(0,sp.getCurrentGame());
+    g1.addPlayer(sp2);
+    g1.makeMap(2);
+    app.rejoinGame(sp, rejoinReq);
+    assertEquals(false, g.checkWin());
+    assertEquals(false, g.checkLost(sp));
+    assertEquals(false, g1.checkWin());
+    assertEquals(false, g1.checkLost(sp));
+    assertEquals(0,sp.getCurrentGame());
   }
 
   @Test
