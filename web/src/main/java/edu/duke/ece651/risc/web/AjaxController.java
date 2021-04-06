@@ -63,30 +63,30 @@ public class AjaxController {
   @GetMapping(value = "/update_map")
   public ResponseEntity<?> tryUpdateMap() throws IOException {
 //    Below 2 lines are for local test
-//    return ResponseEntity.status(HttpStatus.ACCEPTED).body(util.mockObjectNodes());
+    return ResponseEntity.status(HttpStatus.ACCEPTED).body(util.mockObjectNodes());
 //    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-    ClientSocket cs = playerMapping.getSocket(userName);
-    if (cs.hasNewMsg()) {
-      String mapViewString = cs.recvMessage();
-      // 1. REJOIN: receive game over and winner info
-      if (mapViewString.equals(Constant.LOSE_GAME)) {
-        String continueOrOver = cs.recvMessage();
-        if (continueOrOver.equals(Constant.GAME_OVER)) {
-          String winnerInfo = cs.recvMessage();
-          return wrapWinnerInfo(winnerInfo);
-        } else {
-          ObjectNode o = serializer.getOm().createObjectNode();
-          o.put("lose", true);
-//        rejoin but receive game_over
-          return ResponseEntity.status(HttpStatus.ACCEPTED).body(o);
-        }
-      }
-      // 2. Recv MapView
-      Map<String, List<ObjectNode>> graphData = util.deNodeList(mapViewString);
-      return ResponseEntity.status(HttpStatus.ACCEPTED).body(graphData);
-    }
-    return ResponseEntity.status(HttpStatus.ACCEPTED).body(null);
+//    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+//    ClientSocket cs = playerMapping.getSocket(userName);
+//    if (cs.hasNewMsg()) {
+//      String mapViewString = cs.recvMessage();
+//      // 1. REJOIN: receive game over and winner info
+//      if (mapViewString.equals(Constant.LOSE_GAME)) {
+//        String continueOrOver = cs.recvMessage();
+//        if (continueOrOver.equals(Constant.GAME_OVER)) {
+//          String winnerInfo = cs.recvMessage();
+//          return wrapWinnerInfo(winnerInfo);
+//        } else {
+//          ObjectNode o = serializer.getOm().createObjectNode();
+//          o.put("lose", true);
+////        rejoin but receive game_over
+//          return ResponseEntity.status(HttpStatus.ACCEPTED).body(o);
+//        }
+//      }
+//      // 2. Recv MapView
+//      Map<String, List<ObjectNode>> graphData = util.deNodeList(mapViewString);
+//      return ResponseEntity.status(HttpStatus.ACCEPTED).body(graphData);
+//    }
+//    return ResponseEntity.status(HttpStatus.ACCEPTED).body(null);
 
   }
 
@@ -281,7 +281,7 @@ public class AjaxController {
 //    if not append error info to msg box
 //    Receive new map view
     Map<String, List<ObjectNode>> graphData = util.deNodeList(cs.recvMessage());
-    PlayerInfo playerInfo = (PlayerInfo) serializer.deserialize(cs.recvMessage(), PlayerInfo.class);
+    // PlayerInfo playerInfo = (PlayerInfo) serializer.deserialize(cs.recvMessage(), PlayerInfo.class);
 //    Below 2 lines for mock recv() for local test
 //    List<ObjectNode> graphData = util.mockObjectNodes();
 //    String validRes = "test validRes";
@@ -289,10 +289,10 @@ public class AjaxController {
     ActionAjaxResBody resBody = new ActionAjaxResBody();
     resBody.setGraphData(graphData);
     resBody.setValRes(validRes);
-    resBody.setPlayerInfo(playerInfo.getName() + " Tech level: " +
-            playerInfo.getTechLevel() + " Food: " +
-            playerInfo.getFoodResource() + " Tech: " +
-            playerInfo.getTechResource() + " Requested: " + playerInfo.isRequested());
+    // resBody.setPlayerInfo(playerInfo.getName() + " Tech level: " +
+    //         playerInfo.getTechLevel() + " Food: " +
+    //         playerInfo.getFoodResource() + " Tech: " +
+    //         playerInfo.getTechResource() + " Requested: " + playerInfo.isRequested());
     return ResponseEntity.ok(resBody);
   }
 
