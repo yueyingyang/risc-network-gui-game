@@ -26,6 +26,11 @@ public class SoldierRuleChecker extends Checker{
         if(action.getNumSoldiers()<0){
             throw new IllegalArgumentException("The input unit should not be negative!");
         }
+
+        if(GameUtil.getBonus(action.getgetFromType())==null){
+            throw new IllegalArgumentException("The from type ");
+        }
+
         String soldierLevel=action.getFromType();
         if (start.getNumSoldiersInArmy(soldierLevel) < action.getNumSoldiers()) {
             throw new IllegalArgumentException("The army in this territory is not enough for this action!");
