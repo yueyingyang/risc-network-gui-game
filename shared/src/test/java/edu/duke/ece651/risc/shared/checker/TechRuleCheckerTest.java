@@ -22,6 +22,7 @@ public class TechRuleCheckerTest {
         List<String> namelist=new ArrayList<>();
         namelist.add("1");
         namelist.add("2");
+        namelist.add("3");
         V1MapFactory factory=new V1MapFactory();
         GameMap gamemap= factory.createMap(namelist,3);
         // check no enough tech resource case
@@ -33,5 +34,8 @@ public class TechRuleCheckerTest {
         player2.takeTech();
         // check upgrade twice in one turn case
         assertThrows(IllegalArgumentException.class, () -> checker.checkAction(upgrade2,gamemap,player2));
+        PlayerInfo player3=new PlayerInfo("3",6,50,1000);
+        TechEntry upgrade3=new TechEntry("3");
+        assertThrows(IllegalArgumentException.class, () -> checker.checkAction(upgrade3,gamemap,player3));
     }
 }

@@ -1,7 +1,9 @@
 package edu.duke.ece651.risc.shared;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The messages send between the server and player at the beginning
@@ -90,6 +92,14 @@ public class Constant {
         requiredTech.put("6", 6);
     }
 
+    /**
+     * The maximum technology level
+     */
+    public static final int MAX_TECH_LEVEL = 6;
+
+    /**
+     * Allowed soldier type in the game
+     */
     public static final Set<String> soldierTypes = new HashSet<>();
     static {
         soldierTypes.add("0");
@@ -101,5 +111,7 @@ public class Constant {
         soldierTypes.add("6");
     }
 
+
 }
+
 

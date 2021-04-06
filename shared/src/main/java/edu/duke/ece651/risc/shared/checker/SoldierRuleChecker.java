@@ -1,5 +1,6 @@
 package edu.duke.ece651.risc.shared.checker;
 
+import edu.duke.ece651.risc.shared.Constant;
 import edu.duke.ece651.risc.shared.GameMap;
 import edu.duke.ece651.risc.shared.PlayerInfo;
 import edu.duke.ece651.risc.shared.Territory;
@@ -27,11 +28,11 @@ public class SoldierRuleChecker extends Checker{
             throw new IllegalArgumentException("The input unit should not be negative!");
         }
 
-        if(Constant.soldierTypes.contains(action.getFromType())){
+        if(!Constant.soldierTypes.contains(action.getFromType())){
             throw new IllegalArgumentException("The from type is illegal");
         }
 
-        if(Constant.soldierTypes.contains(action.getToType())){
+        if(!Constant.soldierTypes.contains(action.getToType())){
             throw new IllegalArgumentException("The to type is illegal");
         }
 
