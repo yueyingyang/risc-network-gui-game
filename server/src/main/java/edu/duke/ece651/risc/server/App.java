@@ -75,7 +75,7 @@ public class App {
   private List<Game> getAvailableGames(String playerName) {
     List<Game> res = new ArrayList<>();
     for (Game g : this.games) {
-      if (!g.isGameFull() && g.IsPlayerExist(playerName).equals(false)) {
+      if (!g.isGameFull() && g.IsPlayerExist(playerName).equals(false) && g.isComplete==false) {
         res.add(g);
       }
     }
@@ -117,7 +117,9 @@ public class App {
     }
     List<GameInfo> allJoined = new ArrayList<>();
     for (Game g : this.getPlayerGame(playerName)) {
-      allJoined.add(new GameInfo(g.getGameID(), g.getAllPlayers()));
+        if(g.isComplete==false){
+          allJoined.add(new GameInfo(g.getGameID(), g.getAllPlayers()));
+        }   
     }
     String res = null;
     try {
@@ -191,7 +193,19 @@ public class App {
    * @param n is the JSON Node recv from server
    */
   public void rejoinGame(ServerPlayer player, JsonNode n) {
-    player.setCurrentGameID(Integer.parseInt(n.path("gameID").textValue()));
+    Integer currentGameID = Integer.parseInt(n.path("gameID").textValue());
+    if(games.get(currentGameID).checkWin().equals(true)){
+      player.sendMessage("cannot rejoin");
+      player.sendMessage("The game is over!");
+      return;
+    }
+    if(games.get(currentGameID).checkLost(player).equals(true)){
+      player.sendMessage("cannot rejoin");
+      player.sendMessage("You have lost all your territories! Cannot rejoin!");
+      return;
+    }
+    player.sendMessage("can rejoin");
+    player.setCurrentGameID(currentGameID);
   }
 
 
@@ -212,7 +226,6 @@ public class App {
       player = new ServerPlayer(in, out, clientSocket);
       players.put(playerName, player);
       player.setName(playerName);
-      player.setPlayerInfo();
     } else {
       player = players.get(playerName);
       //update the player's inputstream and outputstream

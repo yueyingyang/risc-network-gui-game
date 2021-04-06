@@ -15,7 +15,6 @@ import java.io.PrintWriter;
 public class ServerPlayer extends Player {
   private Socket clientSocket;
   private Integer currentGameID;
-  private PlayerInfo playerInfo;
   private Color color;
 
   /**
@@ -42,21 +41,6 @@ public class ServerPlayer extends Player {
   public ServerPlayer(BufferedReader in, PrintWriter out, Socket cs) {
     super(in, out);
     this.clientSocket = cs;
-  }
-
-  /**
-   * set playerInfo field of the serverPlayer
-   */
-  public void setPlayerInfo(){
-    this.playerInfo = new PlayerInfo(this.getName());
-  }
-
-  /**
-   * 
-   * @return the playerInfo of the serverPlayer
-   */
-  public PlayerInfo getPlayerInfo(){
-    return this.playerInfo;
   }
 
   /**
