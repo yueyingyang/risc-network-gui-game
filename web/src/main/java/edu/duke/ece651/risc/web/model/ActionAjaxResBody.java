@@ -3,6 +3,7 @@ package edu.duke.ece651.risc.web.model;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * A class used as response body in action submission ajax call
@@ -14,7 +15,7 @@ public class ActionAjaxResBody {
 
   String valRes;
   String winnerInfo;
-  List<ObjectNode> graphData;
+  Map<String, List<ObjectNode>> graphData;
   boolean win;
 
   String playerInfo;
@@ -27,7 +28,7 @@ public class ActionAjaxResBody {
     return valRes;
   }
 
-  public List<ObjectNode> getGraphData() {
+  public Map<String, List<ObjectNode>> getGraphData() {
     return graphData;
   }
 
@@ -35,7 +36,7 @@ public class ActionAjaxResBody {
     this.valRes = valRes;
   }
 
-  public void setGraphData(List<ObjectNode> graphData) {
+  public void setGraphData(Map<String, List<ObjectNode>> graphData) {
     this.graphData = graphData;
   }
 

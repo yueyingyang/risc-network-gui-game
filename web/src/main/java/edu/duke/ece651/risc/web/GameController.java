@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -57,7 +58,7 @@ public class GameController {
     GameMap map = (GameMap) jsonSerializer.deserialize(cs.recvMessage(), GameMap.class);
     int totalUnits = Integer.parseInt(cs.recvMessage());
     String mapViewString = cs.recvMessage();
-    List<ObjectNode> graphData = util.deNodeList(mapViewString);
+    Map<String, List<ObjectNode>> graphData = util.deNodeList(mapViewString);
 
 //    Below 2 lines are for local test
 //    GameMap map = util.createMap();

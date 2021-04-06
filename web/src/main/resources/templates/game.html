@@ -94,31 +94,17 @@
 
     let graphData = null
     const full_map_formatter = params => {
-        var res=`😉\t${params.data.owner}<br />` +
-        `🍽\t${params.data.foodProd}<br />` +
-        `💎\t${params.data.techProd}<br />` +
-        `📏\t${params.data.value}<br />`;
-        if(params.data.unit0!=0){
-            res+=`💂0\t${params.data.unit0}<br />`;
-        }
-        if(params.data.unit1!=0){
-            res+=`💂1\t${params.data.unit1}<br />`;
-        }
-        if(params.data.unit2!=0){
-            res+=`💂2\t${params.data.unit2}<br />`;
-        }
-        if(params.data.unit3!=0){
-            res+=`💂3\t${params.data.unit3}<br />`;
-        }
-        if(params.data.unit4!=0){
-            res+=`💂4\t${params.data.unit4}<br />`;
-        }
-        if(params.data.unit5!=0){
-            res+=`💂5\t${params.data.unit5}<br />`;
+        var res = `😉\t${params.data.owner}<br />` +
+            `🍽\t${params.data.foodProd}<br />` +
+            `💎\t${params.data.techProd}<br />` +
+            `📏\t${params.data.value}<br />`;
+        for (let i = 0; i <= 6; i++) {
+            if (params.data['unit' + i] != 0) {
+                res += `💂0\t${params.data['unit' + i]}<br />`;
+            }
         }
         return res;
     }
-
 
     // default is loading box
     $('#map_box').empty().append(load_html);

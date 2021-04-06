@@ -7,6 +7,7 @@ import edu.duke.ece651.risc.shared.JSONSerializer;
 import edu.duke.ece651.risc.shared.ServerPlayer;
 import edu.duke.ece651.risc.shared.Territory;
 
+import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -24,29 +25,56 @@ public class V2MapView {
     }
   }
 
+  private Point calPoint(Point middle, double angle, int radius) {
+    double radians = Math.toRadians(angle);
+    int x = (int) (middle.x + radius * Math.cos(radians));
+    int y = (int) (middle.y - radius * Math.sin(radians));
+    return new Point(x, y);
+  }
+
+  protected List<ObjectNode> createTerrEdge() {
+    List<ObjectNode> graphData = new ArrayList<>();
+    for (Territory t : map.getAllTerritories()) {
+      for (Territory neigh : t.getNeighbours()) {
+        ObjectNode o = jsonSerializer.getOm().createObjectNode();
+        o.put("source", t.getName());
+        o.put("target", neigh.getName());
+        graphData.add(o);
+      }
+    }
+    return graphData;
+  }
+
   /**
    * Convert GameMap to the JSON NODE to display map
    *
    * @return the MAP display info in JSON Node
    */
   protected List<ObjectNode> createTerrNode(boolean full) {
+    int height = 400;
+    int width = 400;
+    int radius = 30;
+    Point middle = new Point(width / 2, height / 2);
+    double angleOffset = 360.0 / map.getAllTerritories().size();
+    double angleStart = 0;
     List<ObjectNode> graphData = new ArrayList<>();
     for (Territory t : map.getAllTerritories()) {
+      Point point = calPoint(middle, angleStart, radius);
       ObjectNode o = jsonSerializer.getOm().createObjectNode();
       o.put("name", t.getName());
       o.put("owner", t.getOwnerName());
       o.put("value", t.getSize()); // hardcoded, need to change to t.size()
       o.put("color", playerColorMap.get(t.getOwnerName()));
       if (full) {
-        //o.put("units", t.getNumSoldiersInArmy());
         o.put("foodProd", t.getFoodProd());
         o.put("techProd", t.getTechProd());
-
         for (int i = 0; i <= 6; i++) {
-          o.put("unit" + i, t.getNumSoldiersInArmy("" + i));//t.getNumSoldiersInArmy(""+i)
+          o.put("unit" + i, t.getNumSoldiersInArmy(Integer.toString(i)));//t.getNumSoldiersInArmy(""+i)
         }
-
       }
+      o.put("x", point.x);
+      o.put("y", point.y);
+      angleStart -= angleOffset;
       graphData.add(o);
     }
     return graphData;
@@ -60,12 +88,10 @@ public class V2MapView {
    * @return string is JSON string
    */
   public String toString(boolean fullInfo) {
-    try {
-      return jsonSerializer.serializeList(createTerrNode(fullInfo), ObjectNode.class);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-    }
-    return null;
+    HashMap<String, List<ObjectNode>> data = new HashMap<>();
+    data.put("data", createTerrNode(fullInfo));
+    data.put("links", createTerrEdge());
+    return jsonSerializer.serialize(data);
   }
 }
 

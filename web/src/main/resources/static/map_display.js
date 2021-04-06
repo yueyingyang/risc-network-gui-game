@@ -1,5 +1,5 @@
 function getOption(tooltip_formatter_fn) {
-    let colors = graphData.map(territory => territory['color']);
+    let colors = graphData['data'].map(territory => territory['color']);
     return {
         tooltip: {
             trigger: 'item',
@@ -7,8 +7,15 @@ function getOption(tooltip_formatter_fn) {
         },
         series: [
             {
-                name: 'map',
-                type: 'pie',
+                type: "graph",
+                data: graphData['data'],
+                symbolSize: 80,
+                roam: true,
+                edgeSymbol: ['circle', 'arrow'],
+                edgeSymbolSize: [4, 10],
+                edgeLabel: {
+                    fontSize: 20
+                },
                 radius: ['40%', '70%'],
                 avoidLabelOverlap: false,
                 itemStyle: {
@@ -27,11 +34,77 @@ function getOption(tooltip_formatter_fn) {
                 labelLine: {
                     show: false
                 },
+                links: graphData['links']
             }
         ],
-        dataset: {
-            source: graphData
-        }
+    };
+
+}
+
+function getOption1(tooltip_formatter_fn) {
+    return option = {
+        title: {
+            text: 'Graph 简单示例'
+        },
+        tooltip: {},
+        animationDurationUpdate: 1500,
+        animationEasingUpdate: 'quinticInOut',
+        series: [
+            {
+                type: 'graph',
+                layout: 'none',
+                symbolSize: 50,
+                roam: true,
+                label: {
+                    show: true
+                },
+                edgeSymbol: ['circle', 'arrow'],
+                edgeSymbolSize: [4, 10],
+                edgeLabel: {
+                    fontSize: 20
+                },
+                data: graphData,
+                // links: [],
+                links: [{
+                    source: 0,
+                    target: 1,
+                    symbolSize: [5, 20],
+                    label: {
+                        show: true
+                    },
+                    lineStyle: {
+                        width: 5,
+                        curveness: 0.2
+                    }
+                }, {
+                    source: '节点2',
+                    target: '节点1',
+                    label: {
+                        show: true
+                    },
+                    lineStyle: {
+                        curveness: 0.2
+                    }
+                }, {
+                    source: '节点1',
+                    target: '节点3'
+                }, {
+                    source: '节点2',
+                    target: '节点3'
+                }, {
+                    source: '节点2',
+                    target: '节点4'
+                }, {
+                    source: '节点1',
+                    target: '节点4'
+                }],
+                lineStyle: {
+                    opacity: 0.9,
+                    width: 2,
+                    curveness: 0
+                }
+            }
+        ]
     };
 }
 
