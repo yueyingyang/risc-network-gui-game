@@ -1,5 +1,24 @@
 function getOption(tooltip_formatter_fn) {
     let colors = graphData['data'].map(territory => territory['color']);
+    // hide tooltips on edges
+    graphData['links'].map(link => {
+        link['tooltip'] = {show: false};
+        return link;
+    })
+    graphData['data'].map(item => {
+        item['itemStyle'] = {
+            color: item['color']
+        }
+        item['label'] = {
+            show: true,
+            position: 'inside',
+            fontSize: 20,
+            fontWeight: 'bold',
+            color: "#fff",
+            formatter: item['name'],
+        }
+        return item;
+    })
     return {
         tooltip: {
             trigger: 'item',
@@ -10,102 +29,25 @@ function getOption(tooltip_formatter_fn) {
                 type: "graph",
                 data: graphData['data'],
                 symbolSize: 80,
-                roam: true,
-                edgeSymbol: ['circle', 'arrow'],
                 edgeSymbolSize: [4, 10],
                 edgeLabel: {
-                    fontSize: 20
+                    color: "#fff"
                 },
-                radius: ['40%', '70%'],
                 avoidLabelOverlap: false,
-                itemStyle: {
-                    borderRadius: 10,
-                    borderColor: '#fff',
-                    borderWidth: 4,
-                },
                 color: colors,
-                label: {
-                    position: 'inner',
-                    fontSize: 20,
-                    fontWeight: 'bold',
-                    color: "#fff",
-                    formatter: "{@name}",
-                },
                 labelLine: {
                     show: false
                 },
-                links: graphData['links']
+                links: graphData['links'],
+                lineStyle: {
+                    color: "#b1a7a6",
+                    width: "1",
+                    type: "solid",
+                }
             }
         ],
     };
 
-}
-
-function getOption1(tooltip_formatter_fn) {
-    return option = {
-        title: {
-            text: 'Graph 简单示例'
-        },
-        tooltip: {},
-        animationDurationUpdate: 1500,
-        animationEasingUpdate: 'quinticInOut',
-        series: [
-            {
-                type: 'graph',
-                layout: 'none',
-                symbolSize: 50,
-                roam: true,
-                label: {
-                    show: true
-                },
-                edgeSymbol: ['circle', 'arrow'],
-                edgeSymbolSize: [4, 10],
-                edgeLabel: {
-                    fontSize: 20
-                },
-                data: graphData,
-                // links: [],
-                links: [{
-                    source: 0,
-                    target: 1,
-                    symbolSize: [5, 20],
-                    label: {
-                        show: true
-                    },
-                    lineStyle: {
-                        width: 5,
-                        curveness: 0.2
-                    }
-                }, {
-                    source: '节点2',
-                    target: '节点1',
-                    label: {
-                        show: true
-                    },
-                    lineStyle: {
-                        curveness: 0.2
-                    }
-                }, {
-                    source: '节点1',
-                    target: '节点3'
-                }, {
-                    source: '节点2',
-                    target: '节点3'
-                }, {
-                    source: '节点2',
-                    target: '节点4'
-                }, {
-                    source: '节点1',
-                    target: '节点4'
-                }],
-                lineStyle: {
-                    opacity: 0.9,
-                    width: 2,
-                    curveness: 0
-                }
-            }
-        ]
-    };
 }
 
 const map_html = '<div id="map" style="width:600px; height:400px;"></div>';
