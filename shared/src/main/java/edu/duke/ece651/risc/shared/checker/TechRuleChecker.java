@@ -13,7 +13,7 @@ public class TechRuleChecker extends Checker{
     @Override
     protected void checkMyRule(ActionEntry action, GameMap map, PlayerInfo myInfo) {
         if(myInfo.getTechLevel()>=6){
-            throw new IllegalArgumentException("Your Technology level is ready the highest!")
+            throw new IllegalArgumentException("Your Technology level is ready the highest!");
         }
         if(myInfo.getTechResource()<GameUtil.getTechCost(myInfo.getTechLevel())){
             throw new IllegalArgumentException("Your Technology resource is not enough!");
