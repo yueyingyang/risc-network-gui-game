@@ -27,7 +27,7 @@ public class ClientChecker extends Checker {
             throw new IllegalArgumentException("The input unit should not be negative!");
         }
 
-        if (start.getNumSoldiersInArmy(action.getFromType()) < action.getNumSoldiers()) {
+        if (start.getNumSoldiersInArmy() < action.getNumSoldiers()) {
             throw new IllegalArgumentException("The army in this territory is not enough for this action!");
         }
     }

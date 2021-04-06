@@ -19,7 +19,11 @@ public class FancyMoveRuleChecker extends Checker {
     public void checkMyRule(ActionEntry action, GameMap map, PlayerInfo myInfo) {
         Territory start = map.getTerritory(action.getFromName());
         Territory end = map.getTerritory(action.getToName());
-        if (start == end) {
+
+        if (start.getNumSoldiersInArmy(action.getFromType()) < action.getNumSoldiers()) {
+            throw new IllegalArgumentException("The army in this territory is not enough for this action!");
+        }
+        if (start.equals(end)) {
             throw new IllegalArgumentException("The destination of move action is same as the starting point!");
         }
 
