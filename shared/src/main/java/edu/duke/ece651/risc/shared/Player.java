@@ -49,7 +49,7 @@ public abstract class Player {
    * @param msg is the msg to write
    */
   public void sendMessage(String msg) {
-    LOGGER.info(msg);
+    //LOGGER.info(msg);
     out.println(msg);
   }
 
@@ -61,7 +61,7 @@ public abstract class Player {
    */
   public String recvMessage() throws IOException {
     String rev = in.readLine();
-    LOGGER.info(rev);
+    //LOGGER.info(rev);
     return rev;
   }
 

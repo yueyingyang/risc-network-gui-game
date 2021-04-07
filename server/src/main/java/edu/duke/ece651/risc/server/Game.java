@@ -2,19 +2,31 @@
 package edu.duke.ece651.risc.server;
 
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import edu.duke.ece651.risc.shared.*;
-import edu.duke.ece651.risc.shared.entry.ActionEntry;
-import edu.duke.ece651.risc.shared.game.V2MapView;
+import static edu.duke.ece651.risc.shared.Constant.COLORS;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
-import static edu.duke.ece651.risc.shared.Constant.COLORS;
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import edu.duke.ece651.risc.shared.Constant;
+import edu.duke.ece651.risc.shared.GameMap;
+import edu.duke.ece651.risc.shared.JSONSerializer;
+import edu.duke.ece651.risc.shared.Player;
+import edu.duke.ece651.risc.shared.PlayerInfo;
+import edu.duke.ece651.risc.shared.ServerPlayer;
+import edu.duke.ece651.risc.shared.Territory;
+import edu.duke.ece651.risc.shared.V2MapFactory;
+import edu.duke.ece651.risc.shared.entry.ActionEntry;
+import edu.duke.ece651.risc.shared.game.V2MapView;
 
 
 /**
@@ -52,6 +64,11 @@ public class Game {
         this.isComplete = false;
     }
 
+    /**
+     * get playerInfo by the player's name
+     * @param name
+     * @return
+     */
     public PlayerInfo getPlayerInfoByName(String name){
         return allplayerInfo.get(name);
     }
@@ -208,21 +225,22 @@ public class Game {
      * the move action and the move part in attack will be done immediately
      */
     public void receiveAndApplyMoves(ArrayList<ServerPlayer> stillInPlayers) {
-        ArrayList<OneTurnThread> threads = new ArrayList<>();
+        ExecutorService threadPool = Executors.newFixedThreadPool(5);
+        //ArrayList<OneTurnThread> threads = new ArrayList<>();
         for (ServerPlayer player : stillInPlayers) {
             //if the player is still active in this game
             if(player.getCurrentGame().equals(gameID)){
                 OneTurnThread thread = new OneTurnThread(gameMap, player, players,allplayerInfo.get(player.getName()));
-                threads.add(thread);
-                thread.start();
+                //threads.add(thread);
+                //thread.start();
+                threadPool.submit(thread);
             }
         }
-        for (OneTurnThread thread : threads) {
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                System.out.println("catch interruptException!\n" + e.getMessage());
-            }
+        threadPool.shutdown(); 
+        try{
+            threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
+        }catch(Exception e){
+            System.out.println(e.getMessage());
         }
     }
 
@@ -232,7 +250,7 @@ public class Game {
      * @return the combat result string
      */
     public String doAttacks() {
-        StringBuilder sb = new StringBuilder("The combat results are:\n");
+        StringBuilder sb = new StringBuilder("");
         for (Territory t : gameMap.getAllTerritories()) {
             //resolve combats and create combat results
             sb.append(t.resolveCombat(myRandom));
@@ -257,7 +275,6 @@ public class Game {
             allplayerInfo.get(p.getName()).effectTech();
         }
     }
-
     ArrayList<ServerPlayer> sendMap_GetConnectedPlayers(){
          //send map to players in the stillWatch list
          ArrayList<ServerPlayer> connectedPlayers = new ArrayList<>();
@@ -360,7 +377,6 @@ public class Game {
         for (ServerPlayer p : stillWatchPlayers) {
             if(p.getCurrentGame()==gameID){
                 p.closeSocket();
-                p.setCurrentGameID(2);
             }
         }
     }
@@ -375,19 +391,25 @@ public class Game {
         }
     }
 
+    /**
+     * send gameMap to all players and receive their placement using thread pool
+     * @param soldierNum is the num of soldier that one player own's
+     */
     public void sendAndPlace(int soldierNum){
-        ArrayList<PlacementThread> threads = new ArrayList<>();
+        ExecutorService threadPool = Executors.newFixedThreadPool(5);
+        List<PlacementThread> threads = new ArrayList<>();
         for(ServerPlayer p:players){
             PlacementThread placeThread = new PlacementThread(soldierNum,this.gameMap,allMapViews.get(p.getName()),p);
             threads.add(placeThread);
-            placeThread.start();
+            //placeThread.start();
+            threadPool.execute(placeThread);
         }
-        for(PlacementThread t:threads){
-            try{
-                t.join();
-            }catch(Exception e){
-                System.out.println("catch exception when join the threads");
-            }
+        threadPool.shutdown(); 
+        try{
+            //threadPool.invokeAll(threads);
+            threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
+        }catch(Exception e){
+            System.out.println(e.getMessage());
         }
     }
 
@@ -397,7 +419,7 @@ public class Game {
      *
      * @throws IOException
      */
-    public void runGame(int TerritoryPerPlayer, int totalSoldiers) throws IOException {
+    public void runGame(int TerritoryPerPlayer, int totalSoldiers) throws IOException, InterruptedException {
         //copy players list for stillIn and stillWatch
         stillInPlayers = new ArrayList<>(players);
         stillWatchPlayers = new ArrayList<>(players);
@@ -412,7 +434,7 @@ public class Game {
         }
         addResourcesToStillIn();
         sendAndPlace(totalSoldiers);
-        while (true) {
+        while (!Thread.currentThread().isInterrupted()) {
             ArrayList<ServerPlayer> connectedPlayers = sendMap_GetConnectedPlayers();
             //multi thread in this function to handle simultaneous input
             playOneTurn(connectedPlayers);
