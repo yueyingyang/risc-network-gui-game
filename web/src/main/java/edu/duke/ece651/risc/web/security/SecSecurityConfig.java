@@ -37,9 +37,9 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter{
         //.defaultSuccessUrl("/lobby", true)
         .failureUrl("/login?error=true")
         .and()
-        .logout()
-        .logoutUrl("/logout")
-        .logoutSuccessUrl("/");
+            .logout()
+            .logoutUrl("/logout")
+            .logoutSuccessUrl("/");
     }
 
     @Bean
@@ -52,7 +52,7 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter{
         return new MySimpleUrlAuthenticationSuccessHandler();
     }
 
-    
+
 
 }
 

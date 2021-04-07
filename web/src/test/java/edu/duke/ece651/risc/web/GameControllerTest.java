@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,6 +53,7 @@ class GameControllerTest {
   public static RequestPostProcessor mockUser() {
     return user("user1").password("user1Pass").roles("USER");
   }
+
   @Before
   public void setup() {
     mvc = MockMvcBuilders
@@ -63,21 +65,19 @@ class GameControllerTest {
   ClientSocket cs = Mockito.mock(ClientSocket.class);
 
   @Test
-  @Disabled
   void test_place() throws Exception {
     given(playerMapping.getSocket("user1")).willReturn(cs);
 //    Recv 1. empty game map, 2. total unit number, 3. mapview.toString(false)
     String mapStr = "{\"territoryFinder\":{\"0\":{\"name\":\"0\",\"ownerName\":\"p2\",\"myArmy\":null,\"neighbours\":[{\"name\":\"1\",\"ownerName\":\"p2\",\"myArmy\":null,\"neighbours\":[\"0\",{\"name\":\"2\",\"ownerName\":\"test\",\"myArmy\":null,\"neighbours\":[\"1\",{\"name\":\"3\",\"ownerName\":\"test\",\"myArmy\":null,\"neighbours\":[\"0\",\"2\"],\"attackerBuffer\":{}}],\"attackerBuffer\":{}}],\"attackerBuffer\":{}},\"3\"],\"attackerBuffer\":{}},\"1\":\"1\",\"2\":\"2\",\"3\":\"3\"}}";
-    String emptyView = "[{\"name\":\"0\",\"owner\":\"p2\",\"value\":2,\"color\":\"#97B8A3\"},{\"name\":\"1\",\"owner\":\"p2\",\"value\":2,\"color\":\"#97B8A3\"},{\"name\":\"2\",\"owner\":\"test\",\"value\":2,\"color\":\"#EDC3C7\"},{\"name\":\"3\",\"owner\":\"test\",\"value\":2,\"color\":\"#EDC3C7\"}]";
     given(cs.recvMessage()).willReturn(mapStr)
             .willReturn("1")
-            .willReturn(emptyView);
+            .willReturn("");
 
     GameMap map = (GameMap) jsonSerializer.deserialize(mapStr, GameMap.class);
 
     UtilService real = new UtilService();
     TerrUnitList tul = real.createTerrUnitList(map, "test");
-    Map<String, List<ObjectNode>> lon = real.deNodeList(emptyView);
+    Map<String, List<ObjectNode>> lon = new HashMap<>();
     given(util.deNodeList(any())).willReturn(lon);
     given(util.createTerrUnitList(any(), any())).willReturn(tul);
     mvc.perform(MockMvcRequestBuilders
@@ -86,6 +86,11 @@ class GameControllerTest {
             .andExpect(model().attribute("wrapper", is(tul)))
             .andExpect(model().attribute("units", is(1)))
             .andExpect(status().isOk());
+  }
+
+  @Test
+  void test_submit_place() {
+    
   }
 
 }
