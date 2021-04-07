@@ -76,8 +76,8 @@ public class GameController {
   @PostMapping(value = "/submit_place")
   public String place(@ModelAttribute(value = "wrapper") TerrUnitList list) throws IOException {
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-    List<ActionEntry> placementList = new ArrayList<>();
     ClientSocket cs = playerMapping.getSocket(userName);
+    List<ActionEntry> placementList = new ArrayList<>();
     for (TerrUnit tu : list.getTerrUnitList()) {
       placementList.add(new PlaceEntry(tu.getTerrName(), tu.getUnit(), userName));
     }
