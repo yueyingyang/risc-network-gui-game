@@ -24,3 +24,6 @@ i.e. everytime after running CI/CD pipeline(no matter on which branch), the new 
 
 - Shared
 <img src="./UMLs/shared.PNG" alt="shared" width="1000" />
+
+## UX principles v2
+<a href="./UX/UX_summary.pdf">
