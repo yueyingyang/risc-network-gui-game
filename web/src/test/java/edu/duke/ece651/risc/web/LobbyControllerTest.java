@@ -2,6 +2,7 @@ package edu.duke.ece651.risc.web;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import edu.duke.ece651.risc.shared.ClientSocket;
+import edu.duke.ece651.risc.shared.Constant;
 import edu.duke.ece651.risc.shared.JSONSerializer;
 import edu.duke.ece651.risc.shared.game.GameInfo;
 import org.junit.Before;
@@ -20,19 +21,20 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 
@@ -59,6 +61,10 @@ class LobbyControllerTest {
             .build();
   }
 
+  public static RequestPostProcessor mockUser() {
+    return user("user1").password("user1Pass").roles("USER");
+  }
+
   @Test
   void test_enter_lobby() throws Exception {
     List<GameInfo> gameList = new ArrayList<>();
@@ -75,17 +81,84 @@ class LobbyControllerTest {
             .andExpect(model().attribute("allOpenGames", is(equalTo(gameList))));
   }
 
-  public static RequestPostProcessor mockUser() {
-    return user("user1").password("user1Pass").roles("USER");
+  @Test
+  void test_start() throws Exception {
+    given(playerMapping.getSocket("user1")).willReturn(cs);
+    mvc.perform(MockMvcRequestBuilders
+            .post("/start").param("size", "2").with(mockUser()).with(csrf()))
+            // will redirect to waiting room
+            .andExpect(redirectedUrl("waiting"));
+    Mockito.spy(cs).sendMessage("{\"type\":\"start\",\"name\":\"test\",\"gameSize\":\"2\"}");
   }
 
-//  Didn't figure out post req test yet, expected 200 but return 302
-//  @Test
-//  void test_start() throws Exception {
-//    given(playerMapping.getSocket("test")).willReturn(cs);
-////    Mockito.spy(cs).sendMessage(any());
-//    mvc.perform(MockMvcRequestBuilders
-//            .post("/start").param("size", "2"))
-//            .andExpect(status().isOk());
-//}
+  @Test
+  void test_join_succeed() throws Exception {
+    given(playerMapping.getSocket("user1")).willReturn(cs);
+    given(cs.recvMessage()).willReturn(Constant.SUCCESS_NUMBER_CHOOSED);
+    mvc.perform(MockMvcRequestBuilders
+            .get("/join").param("id", "0").with(mockUser()).with(csrf()))
+            // will redirect to waiting room
+            .andExpect(redirectedUrl("waiting"));
+    Mockito.spy(cs).sendMessage("{\"type\":\"join\",\"name\":\"test\",\"gameID\":\"0\"}");
+  }
+
+  @Test
+  void test_join_fail() throws Exception {
+    given(playerMapping.getSocket("user1")).willReturn(cs);
+    given(cs.recvMessage()).willReturn("cannot join");
+    mvc.perform(MockMvcRequestBuilders
+            .get("/join").param("id", "0").with(mockUser()).with(csrf()))
+            // will redirect to waiting room
+            .andExpect(redirectedUrl("back_lobby"));
+    Mockito.spy(cs).sendMessage("{\"type\":\"join\",\"name\":\"test\",\"gameID\":\"0\"}");
+  }
+
+  @Test
+  void test_rejoin_succeed() throws Exception {
+    given(playerMapping.getSocket("user1")).willReturn(cs);
+    given(cs.recvMessage()).willReturn("can rejoin");
+    mvc.perform(MockMvcRequestBuilders
+            .get("/rejoin").param("id", "0").with(mockUser()).with(csrf()))
+            // will redirect to waiting room
+            .andExpect(redirectedUrl("/game/play"));
+    Mockito.spy(cs).sendMessage("{\"type\":\"rejoin\",\"name\":\"test\",\"gameID\":\"0\"}");
+  }
+
+  @Test
+  void test_rejoin_fail() throws Exception {
+    given(playerMapping.getSocket("user1")).willReturn(cs);
+    given(cs.recvMessage()).willReturn("cannot join");
+    mvc.perform(MockMvcRequestBuilders
+            .get("/join").param("id", "0").with(mockUser()).with(csrf()))
+            // will redirect to waiting room
+            .andExpect(redirectedUrl("back_lobby"));
+    Mockito.spy(cs).sendMessage("{\"type\":\"rejoin\",\"name\":\"test\",\"gameID\":\"0\"}");
+  }
+
+  @Test
+  void test_waiting_room() throws Exception {
+    mvc.perform(MockMvcRequestBuilders
+            .get("/waiting").with(mockUser()).with(csrf()))
+            // will redirect to waiting room
+            .andExpect(status().isOk());
+  }
+
+  @Test
+  void test_exit_game() throws Exception {
+    given(playerMapping.getSocket("user1")).willReturn(cs);
+    mvc.perform(MockMvcRequestBuilders
+            .get("/exit_game").with(mockUser()).with(csrf()))
+            // will redirect to waiting room
+            .andExpect(redirectedUrl("back_lobby"));
+    Mockito.spy(cs).sendMessage(Constant.DISCONNECT_GAME);
+  }
+
+  @Test
+  void test_back_lobby() throws Exception {
+    mvc.perform(MockMvcRequestBuilders
+            .get("/back_lobby").with(mockUser()).with(csrf()))
+            // will redirect to waiting room
+            .andExpect(redirectedUrl("lobby"));
+    Mockito.spy(playerMapping).removeUser("test");
+  }
 }

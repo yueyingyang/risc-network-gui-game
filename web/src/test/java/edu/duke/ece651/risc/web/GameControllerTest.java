@@ -21,9 +21,7 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -90,7 +88,16 @@ class GameControllerTest {
 
   @Test
   void test_submit_place() {
-    
+
+  }
+
+  @Test
+  void test_play_one_turn() throws Exception {
+    List<String> soldierTypes = new ArrayList<>(Arrays.asList("0", "1", "2", "3", "4", "5", "6"));
+    mvc.perform(MockMvcRequestBuilders
+            .get("/game/play").with(mockUser()).with(csrf()))
+            .andExpect(model().attribute("soldierType", is(soldierTypes)))
+            .andExpect(status().isOk());
   }
 
 }

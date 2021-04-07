@@ -214,43 +214,24 @@ public class AjaxController {
   public ResponseEntity<?> tryResolveCombat() throws IOException {
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
     ActionAjaxResBody resBody = new ActionAjaxResBody();
-//    for local test
-//    resBody.setValRes("test resolve combat result");
-//    resBody.setGraphData(util.mockObjectNodes());
-//    return ResponseEntity.status(HttpStatus.ACCEPTED).body(resBody);
     ClientSocket cs = playerMapping.getSocket(userName);
-    if (cs.hasNewMsg()) {
-//  1. recv combat result
-      String combatRes = cs.recvMessage();
-      resBody.setValRes((String) serializer.deserialize(combatRes, String.class));
-//  2. recv LOSE / CONTINUE
-      String playerStatus = cs.recvMessage();
-//      2.1 CONTINUE
-      if (playerStatus.equals(Constant.CONTINUE_PLAYING)) {
-        String gameStatus = cs.recvMessage(); // GAME_OVER or next turn's map
-        if (!gameStatus.equals(Constant.GAME_OVER)) {
-//          2.1.2 Next turn starts!
-          resBody.setGraphData(util.deNodeList(gameStatus));
-        } else {
-//          2.1.1 You are the last player! You're the winner!
-          resBody.setGraphData(null);
-          resBody.setWin(true);
-        }
-      } else {
-//        2.2 LOSE
-        String gameStatus = cs.recvMessage(); // GAME_OVER or Continue_playing
-        if (gameStatus.equals(Constant.GAME_OVER)) {
-//          2.2.1 Game over
-          String winnerInfo = cs.recvMessage();
-          resBody.setWinnerInfo(winnerInfo);
-        }
-        resBody.setGraphData(null);
-        resBody.setWin(false);
-      }
-      return ResponseEntity.status(HttpStatus.ACCEPTED).body(resBody);
+    if (!cs.hasNewMsg()) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
+    //  1. recv combat result
+    String combatRes = cs.recvMessage();
+    resBody.setValRes((String) serializer.deserialize(combatRes, String.class));
+//  2. recv LOSE / CONTINUE
+    String playerStatus = cs.recvMessage();
+//      2.1 CONTINUE
+    if (playerStatus.equals(Constant.CONTINUE_PLAYING)) {
+      handleContinue(resBody, cs);
+    } else {
+//        2.2 LOSE
+      handleLose(resBody, cs);
+    }
+    return ResponseEntity.status(HttpStatus.ACCEPTED).body(resBody);
 //    Continue to wait for combating result
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
   }
 
   @PostMapping(value = "/choose_watch")
@@ -261,40 +242,6 @@ public class AjaxController {
     cs.sendMessage(Constant.WATCH_GAME);
     Map<String, List<ObjectNode>> graphData = util.deNodeList(cs.recvMessage());
     return ResponseEntity.ok().body(graphData);
-  }
-
-
-  /**
-   * Helper function for validating action with socket server
-   *
-   * @param ae is the action entry
-   * @return a response entity whose body is ActionAjaxResBody
-   * @throws IOException
-   */
-  private ResponseEntity<ActionAjaxResBody> getActionAjaxResBodyResponseEntity(ActionEntry ae) throws IOException {
-    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-    //    Send to server
-    ClientSocket cs = playerMapping.getSocket(userName);
-    cs.sendMessage(serializer.serialize(ae));
-//    Receive validation res if valid then append msg to msg box,
-    String validRes = cs.recvMessage();
-//    if not append error info to msg box
-//    Receive new map view
-    Map<String, List<ObjectNode>> graphData = util.deNodeList(cs.recvMessage());
-
-    ActionAjaxResBody resBody = new ActionAjaxResBody();
-    resBody.setGraphData(graphData);
-    resBody.setValRes(validRes);
-    return ResponseEntity.ok(resBody);
-  }
-
-
-  // Wrap winner info as a JSON node
-  private ResponseEntity<?> wrapWinnerInfo(String winnerInfo) {
-    ObjectNode o = serializer.getOm().createObjectNode();
-    o.put("winnerInfo", winnerInfo);
-//        rejoin but receive game_over
-    return ResponseEntity.status(HttpStatus.ACCEPTED).body(o);
   }
 
   /**
@@ -319,4 +266,57 @@ public class AjaxController {
     }
   }
 
+  // Wrap winner info as a JSON node
+  private ResponseEntity<?> wrapWinnerInfo(String winnerInfo) {
+    ObjectNode o = serializer.getOm().createObjectNode();
+    o.put("winnerInfo", winnerInfo);
+//        rejoin but receive game_over
+    return ResponseEntity.status(HttpStatus.ACCEPTED).body(o);
+  }
+
+  /**
+   * Helper function for validating action with socket server
+   *
+   * @param ae is the action entry
+   * @return a response entity whose body is ActionAjaxResBody
+   * @throws IOException
+   */
+  private ResponseEntity<ActionAjaxResBody> getActionAjaxResBodyResponseEntity(ActionEntry ae) throws IOException {
+//    1. With server: send * 1 (action entry) + recv * 2 (validation result + mapView)
+    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+    ClientSocket cs = playerMapping.getSocket(userName);
+    cs.sendMessage(serializer.serialize(ae));
+    String validRes = cs.recvMessage();
+    String mapViewString = cs.recvMessage();
+//    2. Wrap response
+    Map<String, List<ObjectNode>> graphData = util.deNodeList(mapViewString);
+    ActionAjaxResBody resBody = new ActionAjaxResBody();
+    resBody.setGraphData(graphData);
+    resBody.setValRes(validRes);
+    return ResponseEntity.ok(resBody);
+  }
+
+
+  private void handleLose(ActionAjaxResBody resBody, ClientSocket cs) throws IOException {
+    String gameStatus = cs.recvMessage(); // GAME_OVER or Continue_playing
+    if (gameStatus.equals(Constant.GAME_OVER)) {
+//          2.2.1 Game over
+      String winnerInfo = cs.recvMessage();
+      resBody.setWinnerInfo(winnerInfo);
+    }
+    resBody.setGraphData(null);
+    resBody.setWin(false);
+  }
+
+  private void handleContinue(ActionAjaxResBody resBody, ClientSocket cs) throws IOException {
+    String gameStatus = cs.recvMessage(); // GAME_OVER or next turn's map
+    if (!gameStatus.equals(Constant.GAME_OVER)) {
+//          2.1.2 Next turn starts!
+      resBody.setGraphData(util.deNodeList(gameStatus));
+    } else {
+//          2.1.1 You are the last player! You're the winner!
+      resBody.setGraphData(null);
+      resBody.setWin(true);
+    }
+  }
 }
