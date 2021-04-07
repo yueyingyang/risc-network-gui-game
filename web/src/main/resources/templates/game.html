@@ -11,19 +11,17 @@
 <div class="ui two column grid" style="padding-top: 20px">
     <div class="seven wide column" id="player_info" style="padding:20px 0 0 50px">
     </div>
-    <div class="eight wide column" style="user-select: auto;height: 100px">
+    <div class="eight wide column" style="user-select: auto;">
         <div class="ui icon info message transition">
             <i class="inbox icon" style="user-select: auto;"></i>
-            <div class="header">
-                Room Activity
-            </div>
-            <div style="user-select: auto;" id="msg_box">
+            <div id="msg_box" style="user-select: auto; overflow: auto; height:150px">
+                <div class="header">
+                    Room Activity
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-
 
 <div class="ui grid vertically divided">
     <div class="two column row">
@@ -43,7 +41,6 @@
 
     </div>
 </div>
-
 
 <div class="ui basic modal" id="winner">
     <div class="ui icon header">

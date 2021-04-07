@@ -53,6 +53,7 @@ class GameControllerTest {
   public static RequestPostProcessor mockUser() {
     return user("user1").password("user1Pass").roles("USER");
   }
+
   @Before
   public void setup() {
     mvc = MockMvcBuilders
@@ -87,7 +88,9 @@ class GameControllerTest {
             .andExpect(status().isOk());
   }
 
-//  @Test
-//  void test_place()
+  @Test
+  void test_submit_place() {
+    
+  }
 
 }

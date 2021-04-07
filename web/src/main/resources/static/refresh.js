@@ -76,7 +76,7 @@ const resolve_combat = () => {
         success: function (resBody) {
             clearInterval(combat_resolve_timer)
             if (resBody) {
-                $('#msg_box').append('<p style="user-select: auto;"> [COMBAT RESULT]' + resBody['valRes'].replace("\n", "<br />") + '</p>');
+                $('#msg_box').append('<p style="user-select: auto;"> [COMBAT RESULT]' + resBody['valRes'].replace(new RegExp('\r?\n','g'), '<br />') + '</p>');
                 if (resBody['graphData'] != null) {
                     startNextTurn(resBody);
                 } else if (resBody['winnerInfo']) {
