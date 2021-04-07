@@ -59,11 +59,6 @@ public class GameController {
     int totalUnits = Integer.parseInt(cs.recvMessage());
     String mapViewString = cs.recvMessage();
     Map<String, List<ObjectNode>> graphData = util.deNodeList(mapViewString);
-
-//    Below 2 lines are for local test
-//    GameMap map = util.createMap();
-//    int totalUnits = 6;
-//    List<ObjectNode> graphData = util.mockObjectNodes();
     model.addAttribute("graphData", graphData);
     model.addAttribute("wrapper", util.createTerrUnitList(map, userName));
     model.addAttribute("units", totalUnits);
@@ -81,8 +76,8 @@ public class GameController {
   @PostMapping(value = "/submit_place")
   public String place(@ModelAttribute(value = "wrapper") TerrUnitList list) throws IOException {
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-    List<ActionEntry> placementList = new ArrayList<>();
     ClientSocket cs = playerMapping.getSocket(userName);
+    List<ActionEntry> placementList = new ArrayList<>();
     for (TerrUnit tu : list.getTerrUnitList()) {
       placementList.add(new PlaceEntry(tu.getTerrName(), tu.getUnit(), userName));
     }
