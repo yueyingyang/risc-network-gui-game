@@ -7,6 +7,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
 
@@ -29,10 +31,10 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter{
         .anyRequest().authenticated()
         .and()
         // ...
-            .formLogin()
-            .loginPage("/login")
-            .successHandler(myAuthenticationSuccessHandler())
-        //.defaultSuccessUrl("/lobby?name=test", true)
+        .formLogin()
+        .loginPage("/login")
+        .successHandler(myAuthenticationSuccessHandler())
+        //.defaultSuccessUrl("/lobby", true)
         .failureUrl("/login?error=true")
         .and()
             .logout()
@@ -49,6 +51,7 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter{
     public AuthenticationSuccessHandler myAuthenticationSuccessHandler(){
         return new MySimpleUrlAuthenticationSuccessHandler();
     }
+
 
 
 }
