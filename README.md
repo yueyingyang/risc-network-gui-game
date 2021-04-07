@@ -26,4 +26,4 @@ i.e. everytime after running CI/CD pipeline(no matter on which branch), the new 
 <img src="./UMLs/shared.PNG" alt="shared" width="1000" />
 
 ## UX principles v2
-<a href="./UX/UX_summary.pdf">
+(https://gitlab.oit.duke.edu/yy252/ece651-spr21-group2-risc/-/blob/master/UX/UX_summary.pdf)
