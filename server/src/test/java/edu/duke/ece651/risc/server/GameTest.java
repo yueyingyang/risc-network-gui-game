@@ -177,7 +177,9 @@ public class GameTest {
       BasicArmy myArmy = new BasicArmy("Red",3);
       t.setMyArmy(myArmy);
     }
-    g.addSoldiersToAll();
+    ArrayList<ServerPlayer> as = new ArrayList<>();
+    as.add(p);
+    g.addSoldiersToAll(as);
     int soldierNum = g.getMap().getAllTerritories().iterator().next().getNumSoldiersInArmy();
     assertEquals(4, soldierNum);
   }

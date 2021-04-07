@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
@@ -261,9 +262,15 @@ public class Game {
     /**
      * add one soldier to all territories after one turn
      */
-    public void addSoldiersToAll() {
-        for (Territory t : gameMap.getAllTerritories()) {
-            t.addSoldiersToArmy(1);
+    public void addSoldiersToAll(ArrayList<ServerPlayer> connectedPlayers) {
+        HashSet<String> connectedNames = new HashSet<>();
+        for(Player p:connectedPlayers){
+            connectedNames.add(p.getName());
+        }
+        for (Territory t : gameMap.getAllTerritories()) { 
+            if(connectedNames.contains(t.getOwnerName())){
+                t.addSoldiersToArmy(1);
+            }
         }
     }
 
@@ -384,8 +391,8 @@ public class Game {
     /**
      * add resources to all territories
      */
-    public void addResourcesToStillIn(){
-        for(ServerPlayer p:stillInPlayers){
+    public void addResourcesToConnected(ArrayList<ServerPlayer> connectedPlayers){
+        for(ServerPlayer p:connectedPlayers){
             Iterable<Territory> myTerrs = gameMap.getPlayerTerritories(p.getName());
             allplayerInfo.get(p.getName()).addResource(myTerrs);
         }
@@ -432,7 +439,7 @@ public class Game {
             V2MapView view = new V2MapView(this.gameMap, players, allplayerInfo.get(p.getName()));
             allMapViews.put(p.getName(),view);
         }
-        addResourcesToStillIn();
+        addResourcesToConnected(stillInPlayers);
         sendAndPlace(totalSoldiers);
         while (!Thread.currentThread().isInterrupted()) {
             ArrayList<ServerPlayer> connectedPlayers = sendMap_GetConnectedPlayers();
@@ -441,9 +448,9 @@ public class Game {
             //update stillIn and stillWatch players list
             updatePlayerLists();
             //add 1 soldier to all territories at the end of one turn;
-            addSoldiersToAll();
+            addSoldiersToAll(connectedPlayers);
             //add resources for all players
-            addResourcesToStillIn();
+            addResourcesToConnected(connectedPlayers);
             //check if the game is over
             if (checkWin() == true) {
                 this.isComplete = true;
