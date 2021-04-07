@@ -11,7 +11,9 @@
     <!-- <a href="/logout">Logout</a> -->
     <span sec:authentication="name"></span>
     <a class="right item" style="user-select: auto;">
-        <a class="ui button" style="user-select: auto;" th:href="@{/logout}">Log-out</a>
+        <form th:action="@{/logout}" method="post">
+            <input class="ui button" type="submit" value="Sign Out"/>
+        </form>
     </a>
 </div>
 <div class="ui grid centered" style="user-select: auto;">

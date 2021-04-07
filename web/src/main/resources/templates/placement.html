@@ -40,8 +40,8 @@
 
 <script th:src="@{/util.js}"></script>
 <script th:inline="javascript">
-    <!--    use Thymeleaf inline javascript to convert controller passed data into plain js variable -->
-    const colors = [[${graphData}]].map(territory => territory['color']);
+    // <!--    use Thymeleaf inline javascript to convert controller passed data into plain js variable -->
+    // const colors = [[${graphData}]].map(territory => territory['color']);
     const graphData = [[${graphData}]];
 </script>
 <!--include JS to render MAP -->

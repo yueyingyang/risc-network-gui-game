@@ -281,18 +281,10 @@ public class AjaxController {
 //    if not append error info to msg box
 //    Receive new map view
     Map<String, List<ObjectNode>> graphData = util.deNodeList(cs.recvMessage());
-    PlayerInfo playerInfo = (PlayerInfo) serializer.deserialize(cs.recvMessage(), PlayerInfo.class);
-//    Below 2 lines for mock recv() for local test
-//    List<ObjectNode> graphData = util.mockObjectNodes();
-//    String validRes = "test validRes";
 
     ActionAjaxResBody resBody = new ActionAjaxResBody();
     resBody.setGraphData(graphData);
     resBody.setValRes(validRes);
-    resBody.setPlayerInfo(playerInfo.getName() + " Tech level: " +
-            playerInfo.getTechLevel() + " Food: " +
-            playerInfo.getFoodResource() + " Tech: " +
-            playerInfo.getTechResource() + " Requested: " + playerInfo.isRequested());
     return ResponseEntity.ok(resBody);
   }
 

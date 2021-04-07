@@ -109,7 +109,6 @@ public class App {
   /**
    * @param playerName is the player's name
    */
-
   public String allGameList(String playerName) {
     List<GameInfo> allOpen = new ArrayList<>();
     for (Game g : this.getAvailableGames(playerName)) {
@@ -172,6 +171,12 @@ public class App {
     }
   }
 
+  /**
+   * join into the game and if the game has enough players, run it
+   * @param player is the player that choose join game
+   * @param rootNode
+   * @throws IOException
+   */
   public void joinAndRun(ServerPlayer player, JsonNode rootNode) throws IOException {
     Game g = this.joinExistingGame(player, rootNode);
     if (g.isGameFull()) {

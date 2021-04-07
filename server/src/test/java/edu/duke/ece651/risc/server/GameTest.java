@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import edu.duke.ece651.risc.shared.entry.ActionEntry;
 import edu.duke.ece651.risc.shared.entry.AttackEntry;
+import edu.duke.ece651.risc.shared.entry.FancyAttackEntry;
 import edu.duke.ece651.risc.shared.entry.PlaceEntry;
 import org.mockito.*;
 import java.io.*;
@@ -158,7 +159,7 @@ public class GameTest {
     g.addPlayer(p);
     g.makeMap(3);
     String res = g.doAttacks();
-    String expected = "The combat results are:\n";
+    String expected = "";
     assertEquals(expected,res);
   }
 
@@ -245,8 +246,9 @@ public class GameTest {
     // wait for "acceptPlayers" finishing
     Thread.sleep(2000);
     g.endGame();
-    assertEquals(-1,p2.getCurrentGame());
-    //assertThrows(Exception.class, ()->{p2.recvMessage();});   
+    assertEquals(null, p2.recvMessage());
+    t.interrupt();
+    t.join();
   }
 
   @Test
@@ -287,6 +289,8 @@ public class GameTest {
     assertEquals("Red", g.getMap().getTerritory("1").getOwnerName());   
     assertEquals(true,g.checkLost(p2));  
     assertDoesNotThrow(()->{g.updatePlayerLists();});
+    t.interrupt();
+    t.join();
   }
 
   @Test
@@ -335,18 +339,25 @@ public class GameTest {
     g.doAttacks();
     assertEquals(true, g.checkLost(p2));
     g.updatePlayerLists();
-    //assertThrows(Exception.class, ()->{g.updatePlayerLists();});
+    assertDoesNotThrow(()->{g.updatePlayerLists();});
+    t.interrupt();
+    t.join();
   }
 
   @Test
   public void test_runGameEnd() throws IOException, InterruptedException{
     ServerPlayer player1 = Mockito.mock(ServerPlayer.class);
     ServerPlayer player2 = Mockito.mock(ServerPlayer.class);
-    PlayerInfo pi1 = new PlayerInfo("Red");
-    PlayerInfo pi2 = new PlayerInfo("Blue");
+    Mockito.when(player1.getName()).thenReturn("Red");
+    Mockito.when(player2.getName()).thenReturn("Blue");
+    Mockito.when(player1.getColor()).thenReturn(Color.RED);
+    Mockito.when(player2.getColor()).thenReturn(Color.BLUE);
+    //PlayerInfo pi1 = new PlayerInfo("Red");
+    //PlayerInfo pi2 = new PlayerInfo("Blue");
     PlaceEntry pe1 = new PlaceEntry("0", 2, "Red");
     PlaceEntry pe2 = new PlaceEntry("1", 0, "Blue");
-    AttackEntry a1 = new AttackEntry("0","1", 2, "Red");
+    FancyAttackEntry a1= new FancyAttackEntry("0","1", 2, "0", "Red");
+    //AttackEntry a1 = new AttackEntry("0","1", 2, "Red");
     List<ActionEntry> placements1 = new ArrayList<>();
     placements1.add(pe1);
     List<ActionEntry> placements2 = new ArrayList<>();
@@ -356,12 +367,6 @@ public class GameTest {
     }).writeValueAsString(placements1)).thenReturn(serializer.serialize(a1)).thenReturn(Constant.ORDER_COMMIT).thenReturn(Constant.DISCONNECT_GAME);
     Mockito.when(player2.recvMessage()).thenReturn(serializer.getOm().writerFor(new TypeReference<List<ActionEntry>>() {
     }).writeValueAsString(placements2)).thenReturn(Constant.ORDER_COMMIT).thenReturn(Constant.DISCONNECT_GAME);  
-    Mockito.when(player1.getName()).thenReturn("Red");
-    Mockito.when(player2.getName()).thenReturn("Blue");
-    Mockito.when(player1.getColor()).thenReturn(Color.RED);
-    Mockito.when(player2.getColor()).thenReturn(Color.BLUE);
-    //Mockito.when(player1.getPlayerInfo()).thenReturn(pi1);
-    //Mockito.when(player2.getPlayerInfo()).thenReturn(pi2);
     Game g = new Game(2,0,1);                                                                                    
     g.addPlayer(player1);
     g.addPlayer(player2); 
@@ -373,8 +378,11 @@ public class GameTest {
     });
     t.start();
     // wait for "acceptPlayers" finishing
-    Thread.sleep(5000);  
+    Thread.sleep(5000);
+    assertEquals(true,g.isComplete);  
     assertEquals(true,g.checkWin());
+    t.interrupt();
+    t.join();
   }
 
   @Test
@@ -408,9 +416,6 @@ public class GameTest {
     Mockito.when(player1.getColor()).thenReturn(Color.RED);
     Mockito.when(player2.getColor()).thenReturn(Color.BLUE);
     Mockito.when(player3.getColor()).thenReturn(Color.green);
-    //Mockito.when(player1.getPlayerInfo()).thenReturn(pi1);
-    //Mockito.when(player2.getPlayerInfo()).thenReturn(pi2);
-    //Mockito.when(player2.getPlayerInfo()).thenReturn(pi3);
     Game g = new Game(3,0,1);                                                                                    
     g.addPlayer(player1);
     g.addPlayer(player2); 
@@ -426,5 +431,4 @@ public class GameTest {
     Thread.sleep(5000);  
     assertEquals(false,g.checkWin());
   }
-
 }

@@ -8,14 +8,28 @@
 <body>
 <div th:insert="fragments/common_header.html :: header"></div>
 
+<div class="ui two column grid" style="padding-top: 20px">
+    <div class="seven wide column" id="player_info" style="padding:20px 0 0 50px">
+    </div>
+    <div class="eight wide column" style="user-select: auto;">
+        <div class="ui icon info message transition">
+            <i class="inbox icon" style="user-select: auto;"></i>
+            <div id="msg_box" style="user-select: auto; overflow: auto; height:150px">
+                <div class="header">
+                    Room Activity
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="ui grid vertically divided">
-    <div class="two column centered row">
-        <div class="six wide column" id="map_box" style="width:600px; height:400px; padding-top: 80px">
+    <div class="two column row">
+        <div class="seven wide column" id="map_box" style="width:600px; height:400px; padding-top: 80px">
         </div>
         <div class="eight wide column" id="action_box" style="user-select: auto;">
-            <br>
-            <div class="ui two column grid">
-                <div th:insert="fragments/action_form.html :: action_form(${soldierType})"></div>
+            <div class="ui column grid">
+                <div style="display: block" th:insert="fragments/action_form.html :: action_form(${soldierType})"></div>
                 <div class="ui vertical labeled icon buttons">
                     <button class="ui button toggle" id="commit" style="user-select: auto;">
                         <i class="play icon" style="user-select: auto;"></i>
@@ -24,22 +38,7 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
-<div class="ui two column centered grid">
-    <div class="six wide column" style="user-select: auto;">
-        <div class="ui icon message">
-            <i class="inbox icon" style="user-select: auto;"></i>
-            <div class="scrolling content">
-                <div class="header" style="user-select: auto;">Room Activity</div>
-                <div style="user-select: auto;" id="msg_box">
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="column" style="user-select: auto;">
-        <button class="ui submit button" style="user-select: auto;" id="refresh">Refresh</button>
     </div>
 </div>
 
@@ -100,7 +99,7 @@
             `📏\t${params.data.value}<br />`;
         for (let i = 0; i <= 6; i++) {
             if (params.data['unit' + i] != 0) {
-                res += `💂0\t${params.data['unit' + i]}<br />`;
+                res += `💂${i}\t${params.data['unit' + i]}<br />`;
             }
         }
         return res;

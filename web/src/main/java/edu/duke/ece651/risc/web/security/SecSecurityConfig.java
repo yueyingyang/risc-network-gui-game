@@ -29,15 +29,15 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter{
         .anyRequest().authenticated()
         .and()
         // ...
-        .formLogin()
-        .loginPage("/login")
-        .successHandler(myAuthenticationSuccessHandler())
+            .formLogin()
+            .loginPage("/login")
+            .successHandler(myAuthenticationSuccessHandler())
         //.defaultSuccessUrl("/lobby?name=test", true)
         .failureUrl("/login?error=true")
         .and()
-        .logout()
-        .logoutUrl("/logout")
-        .logoutSuccessUrl("/");
+            .logout()
+            .logoutUrl("/logout")
+            .logoutSuccessUrl("/");
     }
 
     @Bean

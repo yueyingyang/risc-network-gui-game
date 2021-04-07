@@ -2,10 +2,7 @@ package edu.duke.ece651.risc.shared.game;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import edu.duke.ece651.risc.shared.GameMap;
-import edu.duke.ece651.risc.shared.JSONSerializer;
-import edu.duke.ece651.risc.shared.ServerPlayer;
-import edu.duke.ece651.risc.shared.Territory;
+import edu.duke.ece651.risc.shared.*;
 
 import java.awt.*;
 import java.util.*;
@@ -15,10 +12,12 @@ public class V2MapView {
   private final GameMap map;
   private final JSONSerializer jsonSerializer;
   private final Map<String, String> playerColorMap;
+  private final PlayerInfo playerInfo;
 
-  public V2MapView(GameMap map, List<ServerPlayer> players) {
+  public V2MapView(GameMap map, List<ServerPlayer> players, PlayerInfo playerInfo) {
     this.map = map;
     this.jsonSerializer = new JSONSerializer();
+    this.playerInfo = playerInfo;
     this.playerColorMap = new HashMap<>();
     for (ServerPlayer p : players) {
       playerColorMap.put(p.getName(), "#" + Integer.toHexString(p.getColor().getRGB()).substring(2).toUpperCase(Locale.ROOT));
@@ -91,7 +90,20 @@ public class V2MapView {
     HashMap<String, List<ObjectNode>> data = new HashMap<>();
     data.put("data", createTerrNode(fullInfo));
     data.put("links", createTerrEdge());
+    data.put("playerInfo", createPlayerInfoNode());
     return jsonSerializer.serialize(data);
+  }
+
+  private List<ObjectNode> createPlayerInfoNode() {
+    List<ObjectNode> list = new ArrayList<>();
+    ObjectNode o = jsonSerializer.getOm().createObjectNode();
+    o.put("name", playerInfo.getName());
+    o.put("techLevel", playerInfo.getTechLevel());
+    o.put("foodRes", playerInfo.getFoodResource());
+    o.put("techRes", playerInfo.getTechResource());
+    o.put("isRequested", playerInfo.isRequested());
+    list.add(o);
+    return list;
   }
 }
 

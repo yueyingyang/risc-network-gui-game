@@ -12,7 +12,6 @@ $('#actions a.item').on('click', function () {
 
 
 function toggleActionAndRefresh() {
-    $('#refresh').toggleClass('disabled');
     $("#commit").toggleClass("active").toggleClass("disabled");
     $("div.field").toggleClass("disabled");
     $(".submit.button.basic").toggleClass("disabled");
