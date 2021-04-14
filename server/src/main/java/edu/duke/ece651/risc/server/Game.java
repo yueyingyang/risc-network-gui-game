@@ -303,7 +303,9 @@ public class Game {
         //resolve all combats and send combat results to players still watch the game
         String combatResult = doAttacks();
         effectTechForStillIn(connectedPlayers);
-        sendObjectToAll(combatResult, connectedPlayers);
+        for(ServerPlayer p : connectedPlayers){
+            if(p.getCurrentGame() == gameID) p.sendObject(combatResult);
+        }
     }
 
     /**
