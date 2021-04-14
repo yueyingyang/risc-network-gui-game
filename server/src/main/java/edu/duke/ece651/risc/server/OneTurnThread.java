@@ -6,17 +6,20 @@ import edu.duke.ece651.risc.shared.entry.ActionEntry;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.CyclicBarrier;
 
 /**
  * This is the class for multi thread used in handling incoming actions from players
  */
-public class OneTurnThread extends Thread {
+public class OneTurnThread implements Runnable {
     private GameMap mapLocal;
     private GameMap gameMap;
     private ServerPlayer player;
     // for playerInfo field
     private final List<ServerPlayer> playerList;
     PlayerInfo playerInfo;
+    CyclicBarrier barrier;
+    int gameID;
 
     /**
      * constructor
@@ -24,7 +27,7 @@ public class OneTurnThread extends Thread {
      * @param g the gameMap of the game
      * @param p the player
      */
-    public OneTurnThread(GameMap g, ServerPlayer p, List<ServerPlayer> playerList, PlayerInfo playerInfo) {
+    public OneTurnThread(GameMap g, ServerPlayer p, List<ServerPlayer> playerList, PlayerInfo playerInfo, CyclicBarrier barrier, int gameID) {
         this.gameMap = g;
         this.player = p;
         // Each player keep a local copy of game map, to update during one turn
@@ -32,6 +35,8 @@ public class OneTurnThread extends Thread {
         // need to generate player info table later
         this.playerList = playerList;
         this.playerInfo = playerInfo;
+        this.barrier = barrier;
+        this.gameID = gameID;
     }
 
     /**
@@ -66,7 +71,9 @@ public class OneTurnThread extends Thread {
             try {
                 String s = player.recvMessage();
                 if(s==null){
-                    player.setCurrentGameID(-1);
+                    if(player.getCurrentGame()==gameID){
+                        player.setCurrentGameID(-1);
+                    }                    
                     break;
                 }
                 //check if the player has done with his orders
@@ -79,6 +86,13 @@ public class OneTurnThread extends Thread {
                 System.out.println("receive message exception!\n" + e.getMessage());
                 break;
             }
+        }
+        try{
+            System.out.println("wait for barrier to open");
+            barrier.await();
+            System.out.println("barrier open!");
+        }catch(Exception e){
+            System.out.println(e.getMessage());
         }
     }
 }

@@ -72,6 +72,7 @@ public abstract class Player {
    */
   public void sendObject(Object o) {
     JSONSerializer js = new JSONSerializer();
+    LOGGER.info(js.serialize(o));
     out.println(js.serialize(o));
   }
 

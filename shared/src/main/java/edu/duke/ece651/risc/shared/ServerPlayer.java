@@ -47,8 +47,8 @@ public class ServerPlayer extends Player {
    * set the players current gameID
    * @param gameID
    */
-  public void setCurrentGameID(Integer gameID){
-    this.currentGameID = gameID;
+  public synchronized void setCurrentGameID(Integer gameID){
+      this.currentGameID = gameID; 
   }
 
   /**
