@@ -88,9 +88,7 @@ public class OneTurnThread implements Runnable {
             }
         }
         try{
-            System.out.println("wait for barrier to open");
             barrier.await();
-            System.out.println("barrier open!");
         }catch(Exception e){
             System.out.println(e.getMessage());
         }

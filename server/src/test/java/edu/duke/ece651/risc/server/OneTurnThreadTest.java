@@ -12,6 +12,8 @@ import java.net.Socket;
 import java.util.*;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +30,7 @@ import edu.duke.ece651.risc.shared.Territory;
 
 class OneTurnThreadTest {
   @Test
-  public void test_oneTurnExceoption() {
+  public void test_oneTurnExceoption() throws InterruptedException, BrokenBarrierException{
 
     List<List<String>> connections=new ArrayList<>();
     Map<String,Territory> territoryFinder=new HashMap<>();
@@ -64,16 +66,17 @@ class OneTurnThreadTest {
     p.setName("Blue");
     p.setColor(Color.red);
     PlayerInfo pi = new PlayerInfo("Blue");
-    OneTurnThread t = new OneTurnThread(map,p, new ArrayList<>(Collections.singletonList(p)),pi);
-    t.start();
-    assertDoesNotThrow(()->{t.join();});
+    CyclicBarrier barrier = new CyclicBarrier(2);
+    OneTurnThread t = new OneTurnThread(map,p, new ArrayList<>(Collections.singletonList(p)),pi,barrier,0);
+    Thread newthread = new Thread(t);
+    assertDoesNotThrow(()->{newthread.start();barrier.await();});
     assertEquals("Blue",t1.getOwnerName());
     assertEquals(1, t1.getNumSoldiersInArmy());
     assertEquals(1, t2.getNumSoldiersInArmy());
   }
 
   @Test
-  public void test_oneTurnNoException(){
+  public void test_oneTurnNoException() throws InterruptedException, BrokenBarrierException{
     List<List<String>> connections=new ArrayList<>();
     Map<String,Territory> territoryFinder=new HashMap<>();
     Territory t1=new Territory("A");
@@ -104,9 +107,10 @@ class OneTurnThreadTest {
     p.setName("Blue");
     p.setColor(Color.BLUE);
     PlayerInfo pi = new PlayerInfo("Blue");
-    OneTurnThread t = new OneTurnThread(map,p,new ArrayList<>(Collections.singletonList(p)),pi);
-    t.start();
-    assertDoesNotThrow(()->{t.join();});
+    CyclicBarrier barrier = new CyclicBarrier(2);
+    OneTurnThread t = new OneTurnThread(map,p,new ArrayList<>(Collections.singletonList(p)),pi,barrier,0);
+    Thread newthread = new Thread(t);
+    assertDoesNotThrow(()->{newthread.start();barrier.await();});  
     assertEquals("Blue",t1.getOwnerName());
     assertEquals(0, t1.getNumSoldiersInArmy());
     assertEquals(2, t2.getNumSoldiersInArmy());

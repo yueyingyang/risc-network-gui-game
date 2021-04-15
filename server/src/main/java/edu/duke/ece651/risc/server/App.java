@@ -23,7 +23,7 @@ import edu.duke.ece651.risc.shared.game.*;
 
 
 public class App {
-  private final ArrayList<Game> games;
+  public ArrayList<Game> games;
   private final HostSocket hostSocket;
   private final PrintStream output;
   private Map<String, ServerPlayer> players;

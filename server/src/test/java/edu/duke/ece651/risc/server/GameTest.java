@@ -248,7 +248,7 @@ public class GameTest {
     // wait for "acceptPlayers" finishing
     Thread.sleep(2000);
     g.endGame();
-    assertEquals(null, p2.recvMessage());
+    assertThrows(IOException.class, ()->{p1.recvMessage();});
     t.interrupt();
     t.join();
   }

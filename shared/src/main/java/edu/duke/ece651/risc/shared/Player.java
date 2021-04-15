@@ -61,7 +61,7 @@ public abstract class Player {
    */
   public String recvMessage() throws IOException {
     String rev = in.readLine();
-    LOGGER.info("[" + name + "]" + rev);
+    //LOGGER.info("[" + name + "]" + rev);
     return rev;
   }
 
@@ -72,7 +72,7 @@ public abstract class Player {
    */
   public void sendObject(Object o) {
     JSONSerializer js = new JSONSerializer();
-    LOGGER.info("[" + name + "]" + js.serialize(o));
+    //LOGGER.info("[" + name + "]" + js.serialize(o));
     out.println(js.serialize(o));
   }
 
