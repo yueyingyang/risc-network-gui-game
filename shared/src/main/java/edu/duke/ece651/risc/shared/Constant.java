@@ -31,6 +31,11 @@ public class Constant {
     public static final String STARTGAME = "start";
     public static final String JOINGAME = "join";
     public static final String REJOINGAME = "rejoin";
+    public static final String CAN_REJOINGAME = "can rejoin";
+    public static final String CANNOT_REJOINGAME = "cannot rejoin";
+    public static final String CANNOT_REJOINGAME_LOSE = "You have lost all your territories! Cannot rejoin!";
+    public static final String CANNOT_REJOINGAME_WIN = "The game is over!";
+
     public static final String[] COLORS = {"#97B8A3", "#EDC3C7", "#FDF06F", "#A6CFE2", "#9C9CDD"};
 
 

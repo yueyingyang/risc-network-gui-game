@@ -1,6 +1,7 @@
 package edu.duke.ece651.risc.server;
 
 import java.util.Collection;
+import java.util.concurrent.CyclicBarrier;
 import java.io.IOException;
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -11,17 +12,19 @@ import edu.duke.ece651.risc.shared.entry.ActionEntry;
 import edu.duke.ece651.risc.shared.game.V2MapView;
 import edu.duke.ece651.risc.shared.PlayerInfo;
 
-public class PlacementThread extends Thread{
+public class PlacementThread implements Runnable{
     private Integer totalSoldiers;
     private GameMap gameMap;
     private V2MapView view;
     private ServerPlayer p;
+    private CyclicBarrier barrier;
 
-    public PlacementThread(Integer soldierNum,GameMap gameMap,V2MapView view,ServerPlayer p){
+    public PlacementThread(Integer soldierNum,GameMap gameMap,V2MapView view,ServerPlayer p, CyclicBarrier barrier){
         this.totalSoldiers = soldierNum;
         this.gameMap = gameMap;
         this.view = view;
         this.p = p;
+        this.barrier = barrier;
     }
 
     public void run(){
@@ -51,7 +54,11 @@ public class PlacementThread extends Thread{
                 System.out.println("Exception catched when recving message form player");
             }       
         }
-
+        try{
+            barrier.await();
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
     }
     
 }

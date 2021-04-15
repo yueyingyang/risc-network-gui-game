@@ -11,6 +11,8 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -21,51 +23,36 @@ import edu.duke.ece651.risc.shared.game.*;
 
 
 public class App {
-  private final ArrayList<Game> games;
-  private final HostSocket hostSocket;
+  public volatile ArrayList<Game> games;
+  private final ServerSocket hostSocket;
   private final PrintStream output;
   private Map<String, ServerPlayer> players;
   private Map<String, actionHandler> actionHandlerMap;
+  private ExecutorService threadPool;
 
   /**
    * the constructor of App build the socket based on the port number initialize
    * the games list
    */
-  public App(HostSocket s, PrintStream out) {
+  public App(ServerSocket s, PrintStream out) {
     games = new ArrayList<>();
     this.output = out;
     this.hostSocket = s;
     this.players = new HashMap<>();
     this.actionHandlerMap = new HashMap<>();
+    this.threadPool = Executors.newFixedThreadPool(10);
     actionHandlerMap.put(Constant.GET_GAMELIST, this::sendGameList);
-    actionHandlerMap.put(Constant.STARTGAME, (p, n) -> {
-      try {
-        startNewGame(p, n);
-      } catch (Exception e) {
-      }
-    });
-    actionHandlerMap.put(Constant.JOINGAME, (p, n) -> {
-      try {
-        joinAndRun(p, n);
-      } catch (Exception e) {
-      }
-    });
-
-    actionHandlerMap.put(Constant.REJOINGAME, (p, n) -> {
-      try {
-        rejoinGame(p, n);
-      } catch (Exception e) {
-      }
-    });
-
+    actionHandlerMap.put(Constant.STARTGAME, this::startNewGame);
+    actionHandlerMap.put(Constant.JOINGAME, this::joinAndRun);
+    actionHandlerMap.put(Constant.REJOINGAME, this::rejoinGame);
   }
 
   /**
    * All steps of the server side program
    */
-  public void run() {
-    this.acceptPlayers(this.hostSocket.getSocket());
-    this.hostSocket.closeSocket();
+  public void run() throws IOException{
+    this.acceptPlayers(this.hostSocket);
+    this.hostSocket.close();
   }
 
   /**
@@ -135,12 +122,11 @@ public class App {
    * @param player is the player needs to login
    * @throws IOException if R/W exception
    */
-  public Game startNewGame(ServerPlayer player, JsonNode rootNode) throws IOException {
+  public Game startNewGame(ServerPlayer player, JsonNode rootNode) {
     int gameID = games.size();
-    int randomSeed = 1;
-    Game newGame = new Game(Integer.parseInt(rootNode.path("gameSize").textValue()), gameID, randomSeed);
+    Game newGame = new Game(Integer.parseInt(rootNode.path("gameSize").textValue()), gameID);
     player.setCurrentGameID(gameID);
-    this.games.add(newGame);
+    games.add(newGame);
     // a new game should always add a player successfully
     // new game should assert newGame.addPlayer(player) == null;
     newGame.addPlayer(player);
@@ -153,7 +139,7 @@ public class App {
    * @param player is the player needs to login
    * @throws IOException if R/W exception
    */
-  public Game joinExistingGame(ServerPlayer player, JsonNode rootNode) throws IOException {
+  public Game joinExistingGame(ServerPlayer player, JsonNode rootNode){
     // wait util the user give a valid game number
     int gameID = Integer.parseInt(rootNode.path("gameID").textValue());
     while (true) {
@@ -177,7 +163,7 @@ public class App {
    * @param rootNode
    * @throws IOException
    */
-  public void joinAndRun(ServerPlayer player, JsonNode rootNode) throws IOException {
+  public void joinAndRun(ServerPlayer player, JsonNode rootNode){
     Game g = this.joinExistingGame(player, rootNode);
     if (g.isGameFull()) {
       Thread t = new Thread(() -> {
@@ -200,16 +186,16 @@ public class App {
   public void rejoinGame(ServerPlayer player, JsonNode n) {
     Integer currentGameID = Integer.parseInt(n.path("gameID").textValue());
     if(games.get(currentGameID).checkWin().equals(true)){
-      player.sendMessage("cannot rejoin");
-      player.sendMessage("The game is over!");
+      player.sendMessage(Constant.CANNOT_REJOINGAME);
+      player.sendMessage(Constant.CANNOT_REJOINGAME_WIN);
       return;
     }
     if(games.get(currentGameID).checkLost(player).equals(true)){
-      player.sendMessage("cannot rejoin");
-      player.sendMessage("You have lost all your territories! Cannot rejoin!");
+      player.sendMessage(Constant.CANNOT_REJOINGAME);
+      player.sendMessage(Constant.CANNOT_REJOINGAME_LOSE);
       return;
     }
-    player.sendMessage("can rejoin");
+    player.sendMessage(Constant.CAN_REJOINGAME);
     player.setCurrentGameID(currentGameID);
   }
 
@@ -259,9 +245,11 @@ public class App {
         String actionType = rootNode.path("type").textValue();
         String playerName = rootNode.path("name").textValue();
         ServerPlayer player = createOrUpdatePlayer(playerName, in, out, clientSocket);
-        if (actionHandlerMap.containsKey(actionType)) {
-          actionHandlerMap.get(actionType).apply(player, rootNode);
+        threadPool.execute(() -> {
+          if (actionHandlerMap.containsKey(actionType)) {
+              actionHandlerMap.get(actionType).apply(player, rootNode);        
         }
+      });
       } catch (Exception e) {
         this.output.println(e.getMessage());
       }
@@ -273,8 +261,8 @@ public class App {
    *
    * @param args is command line args which is [] for this program
    */
-  public static void main(String[] args) {
-    App app = new App(new HostSocket(4444), System.out);
+  public static void main(String[] args) throws IOException{
+    App app = new App(new ServerSocket(4444), System.out);
     app.run();
   }
 

@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -43,8 +45,8 @@ public class Game {
     private HashMap<String, V2MapView> allMapViews;
     private GameMap gameMap;
     private Random myRandom;
-    private int randomSeed;
     public Boolean isComplete;
+    private ExecutorService threadPool;
 
 
     /**
@@ -52,7 +54,7 @@ public class Game {
      *
      * @param playerNum is the required number of players in this game
      */
-    public Game(int playerNum,int gameID,int r) {
+    public Game(int playerNum,int gameID) {
         this.gameID = gameID;
         this.playerNum = playerNum;
         this.players = new ArrayList<>();
@@ -60,9 +62,9 @@ public class Game {
         this.stillWatchPlayers = new ArrayList<>();
         this.allplayerInfo = new HashMap<>();
         this.allMapViews = new HashMap<>();
-        this.randomSeed = r;
-        this.myRandom = new Random(randomSeed);
+        this.myRandom = new Random();
         this.isComplete = false;
+        this.threadPool = Executors.newFixedThreadPool(5);
     }
 
     /**
@@ -225,24 +227,13 @@ public class Game {
      * This method will create a thread for each player to receive their actions
      * the move action and the move part in attack will be done immediately
      */
-    public void receiveAndApplyMoves(ArrayList<ServerPlayer> stillInPlayers) {
-        ExecutorService threadPool = Executors.newFixedThreadPool(5);
+    public void receiveAndApplyMoves(ArrayList<ServerPlayer> stillInPlayers) throws BrokenBarrierException, InterruptedException{
         //ArrayList<OneTurnThread> threads = new ArrayList<>();
+        CyclicBarrier barrier = new CyclicBarrier(stillInPlayers.size()+1);
         for (ServerPlayer player : stillInPlayers) {
-            //if the player is still active in this game
-            if(player.getCurrentGame().equals(gameID)){
-                OneTurnThread thread = new OneTurnThread(gameMap, player, players,allplayerInfo.get(player.getName()));
-                //threads.add(thread);
-                //thread.start();
-                threadPool.submit(thread);
-            }
+            threadPool.execute(new OneTurnThread(gameMap, player, players,allplayerInfo.get(player.getName()),barrier,gameID));
         }
-        threadPool.shutdown(); 
-        try{
-            threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
-        }catch(Exception e){
-            System.out.println(e.getMessage());
-        }
+        barrier.await();
     }
 
     /**
@@ -299,14 +290,16 @@ public class Game {
      *
      * @throws IOException
      */
-    public void playOneTurn(ArrayList<ServerPlayer> connectedPlayers) throws IOException {
+    public void playOneTurn(ArrayList<ServerPlayer> connectedPlayers) throws IOException, BrokenBarrierException, InterruptedException {
         //create a thread for each player to type their actions until receive commit
         //for inactive players, do nothing, just like they drectly type in Commit
         receiveAndApplyMoves(stillInPlayers);
         //resolve all combats and send combat results to players still watch the game
         String combatResult = doAttacks();
         effectTechForStillIn(connectedPlayers);
-        sendObjectToAll(combatResult, connectedPlayers);
+        for(ServerPlayer p : connectedPlayers){
+            if(p.getCurrentGame() == gameID) p.sendObject(combatResult);
+        }
     }
 
     /**
@@ -402,22 +395,12 @@ public class Game {
      * send gameMap to all players and receive their placement using thread pool
      * @param soldierNum is the num of soldier that one player own's
      */
-    public void sendAndPlace(int soldierNum){
-        ExecutorService threadPool = Executors.newFixedThreadPool(5);
-        List<PlacementThread> threads = new ArrayList<>();
+    public void sendAndPlace(int soldierNum) throws InterruptedException,BrokenBarrierException{
+        CyclicBarrier barrier = new CyclicBarrier(players.size()+1);
         for(ServerPlayer p:players){
-            PlacementThread placeThread = new PlacementThread(soldierNum,this.gameMap,allMapViews.get(p.getName()),p);
-            threads.add(placeThread);
-            //placeThread.start();
-            threadPool.execute(placeThread);
+            threadPool.execute(new PlacementThread(soldierNum,this.gameMap,allMapViews.get(p.getName()),p,barrier));
         }
-        threadPool.shutdown(); 
-        try{
-            //threadPool.invokeAll(threads);
-            threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
-        }catch(Exception e){
-            System.out.println(e.getMessage());
-        }
+        barrier.await();       
     }
 
 
@@ -426,7 +409,7 @@ public class Game {
      *
      * @throws IOException
      */
-    public void runGame(int TerritoryPerPlayer, int totalSoldiers) throws IOException, InterruptedException {
+    public void runGame(int TerritoryPerPlayer, int totalSoldiers) throws IOException, InterruptedException, BrokenBarrierException {
         //copy players list for stillIn and stillWatch
         stillInPlayers = new ArrayList<>(players);
         stillWatchPlayers = new ArrayList<>(players);
