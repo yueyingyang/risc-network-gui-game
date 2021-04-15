@@ -43,7 +43,7 @@ class AppTest {
   private ServerSocket ss;
 
   @Mock
-  private HostSocket hs;
+  private ServerSocket hs;
 
   @Mock
   private ServerPlayer player;

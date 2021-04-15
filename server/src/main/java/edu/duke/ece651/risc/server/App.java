@@ -24,7 +24,7 @@ import edu.duke.ece651.risc.shared.game.*;
 
 public class App {
   public ArrayList<Game> games;
-  private final HostSocket hostSocket;
+  private final ServerSocket hostSocket;
   private final PrintStream output;
   private Map<String, ServerPlayer> players;
   private Map<String, actionHandler> actionHandlerMap;
@@ -34,7 +34,7 @@ public class App {
    * the constructor of App build the socket based on the port number initialize
    * the games list
    */
-  public App(HostSocket s, PrintStream out) {
+  public App(ServerSocket s, PrintStream out) {
     games = new ArrayList<>();
     this.output = out;
     this.hostSocket = s;
@@ -50,9 +50,9 @@ public class App {
   /**
    * All steps of the server side program
    */
-  public void run() {
-    this.acceptPlayers(this.hostSocket.getSocket());
-    this.hostSocket.closeSocket();
+  public void run() throws IOException{
+    this.acceptPlayers(this.hostSocket);
+    this.hostSocket.close();
   }
 
   /**
@@ -264,8 +264,8 @@ public class App {
    *
    * @param args is command line args which is [] for this program
    */
-  public static void main(String[] args) {
-    App app = new App(new HostSocket(4444), System.out);
+  public static void main(String[] args) throws IOException{
+    App app = new App(new ServerSocket(4444), System.out);
     app.run();
   }
 
