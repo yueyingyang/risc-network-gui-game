@@ -56,7 +56,7 @@ class AppTest {
             new PrintWriter(bytes, true),s);
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree("{\"type\":\"start\",\"name\":\"test\",\"gameSize\":\"2\"}");
-    Game g = app.startNewGame(sp,rootNode,app.games);
+    Game g = app.startNewGame(sp,rootNode);
     assertEquals(2,g.getPlayerNum());
   }
 
@@ -73,8 +73,8 @@ class AppTest {
     ServerPlayer p2 = app.createOrUpdatePlayer("Blue",new BufferedReader(new StringReader("")),new PrintWriter(bytes2, true),socket2);   
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree("{\"type\":\"start\",\"name\":\"test\",\"gameSize\":\"3\"}");                                                                                           
-    Game g1 = app.startNewGame(p1,rootNode,app.games);
-    Game g2 = app.startNewGame(p2,rootNode,app.games);
+    Game g1 = app.startNewGame(p1,rootNode);
+    Game g2 = app.startNewGame(p2,rootNode);
     assertEquals("[{\"id\":1,\"players\":[\"Blue\"]}]\n[{\"id\":0,\"players\":[\"Red\"]}]", app.allGameList("Red"));
     app.createOrUpdatePlayer("Blue",new BufferedReader(new StringReader("")),new PrintWriter(bytes3, true),socket3);
     assertDoesNotThrow(()->{p2.sendMessage("msg");});
@@ -92,9 +92,9 @@ class AppTest {
             new PrintWriter(bytes1, true),s1);
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree("{\"type\":\"start\",\"name\":\"test\",\"gameSize\":\"2\"}");
-    app.startNewGame(sp, rootNode,app.games);
+    app.startNewGame(sp, rootNode);
     JsonNode rootNode1 = mapper.readTree("{\"type\":\"join\",\"name\":\"p2\",\"gameID\":\"0\"}");
-    app.joinAndRun(sp1, rootNode1,app.games);
+    app.joinAndRun(sp1, rootNode1);
     assertEquals(0,app.games.get(0).getGameID());
     assertEquals(2,app.games.get(0).getAllPlayers().size());
   }
@@ -116,13 +116,13 @@ class AppTest {
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree("{\"type\":\"start\",\"name\":\"test\",\"gameSize\":\"2\"}");
     JsonNode rejoinReq = mapper.readTree("{\"type\":\"rejoin\",\"name\":\"test\",\"gameID\":\"0\"}");
-    Game g = app.startNewGame(sp, rootNode,app.games);
+    Game g = app.startNewGame(sp, rootNode);
     g.addPlayer(sp1);
     g.makeMap(2);
-    Game g1 = app.startNewGame(sp, rootNode,app.games);
+    Game g1 = app.startNewGame(sp, rootNode);
     g1.addPlayer(sp2);
     g1.makeMap(2);
-    app.rejoinGame(sp, rejoinReq,app.games);
+    app.rejoinGame(sp, rejoinReq);
     assertEquals(false, g.checkWin());
     assertEquals(false, g.checkLost(sp));
     assertEquals(false, g1.checkWin());
@@ -221,7 +221,7 @@ class AppTest {
     sp.setName("Red");
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree("{\"type\":\"start\",\"name\":\"test\",\"gameSize\":\"3\"}");
-    app.startNewGame(sp,rootNode,app.games);
+    app.startNewGame(sp,rootNode);
     String str = app.allGameList(sp.getName());
     assertEquals("[]\n[{\"id\":0,\"players\":[\"Red\"]}]",str);
   }

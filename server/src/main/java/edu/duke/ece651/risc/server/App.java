@@ -23,7 +23,7 @@ import edu.duke.ece651.risc.shared.game.*;
 
 
 public class App {
-  public ArrayList<Game> games;
+  public volatile ArrayList<Game> games;
   private final ServerSocket hostSocket;
   private final PrintStream output;
   private Map<String, ServerPlayer> players;
@@ -89,7 +89,7 @@ public class App {
    * @param player
    * @param playerName
    */
-  public void sendGameList(ServerPlayer player, JsonNode rootNode, ArrayList<Game> games) {
+  public void sendGameList(ServerPlayer player, JsonNode rootNode) {
     player.sendMessage(allGameList(rootNode.path("name").textValue()));
   }
 
@@ -122,7 +122,7 @@ public class App {
    * @param player is the player needs to login
    * @throws IOException if R/W exception
    */
-  public Game startNewGame(ServerPlayer player, JsonNode rootNode, ArrayList<Game> games) {
+  public Game startNewGame(ServerPlayer player, JsonNode rootNode) {
     int gameID = games.size();
     Game newGame = new Game(Integer.parseInt(rootNode.path("gameSize").textValue()), gameID);
     player.setCurrentGameID(gameID);
@@ -163,7 +163,7 @@ public class App {
    * @param rootNode
    * @throws IOException
    */
-  public void joinAndRun(ServerPlayer player, JsonNode rootNode, ArrayList<Game> games){
+  public void joinAndRun(ServerPlayer player, JsonNode rootNode){
     Game g = this.joinExistingGame(player, rootNode);
     if (g.isGameFull()) {
       Thread t = new Thread(() -> {
@@ -183,7 +183,7 @@ public class App {
    * @param player
    * @param n is the JSON Node recv from server
    */
-  public void rejoinGame(ServerPlayer player, JsonNode n, ArrayList<Game> games) {
+  public void rejoinGame(ServerPlayer player, JsonNode n) {
     Integer currentGameID = Integer.parseInt(n.path("gameID").textValue());
     if(games.get(currentGameID).checkWin().equals(true)){
       player.sendMessage(Constant.CANNOT_REJOINGAME);
@@ -247,7 +247,7 @@ public class App {
         ServerPlayer player = createOrUpdatePlayer(playerName, in, out, clientSocket);
         threadPool.execute(() -> {
           if (actionHandlerMap.containsKey(actionType)) {
-              actionHandlerMap.get(actionType).apply(player, rootNode, this.games);        
+              actionHandlerMap.get(actionType).apply(player, rootNode);        
         }
       });
       } catch (Exception e) {

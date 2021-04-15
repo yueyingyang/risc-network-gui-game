@@ -8,5 +8,5 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 @FunctionalInterface
 public interface actionHandler {
-    void apply(ServerPlayer player, JsonNode rootNode, ArrayList<Game> games);
+    void apply(ServerPlayer player, JsonNode rootNode);
 }

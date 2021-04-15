@@ -227,10 +227,10 @@ public class Game {
      * This method will create a thread for each player to receive their actions
      * the move action and the move part in attack will be done immediately
      */
-    public void receiveAndApplyMoves(ArrayList<ServerPlayer> connectedPlayers) throws BrokenBarrierException, InterruptedException{
+    public void receiveAndApplyMoves(ArrayList<ServerPlayer> stillInPlayers) throws BrokenBarrierException, InterruptedException{
         //ArrayList<OneTurnThread> threads = new ArrayList<>();
-        CyclicBarrier barrier = new CyclicBarrier(connectedPlayers.size()+1);
-        for (ServerPlayer player : connectedPlayers) {
+        CyclicBarrier barrier = new CyclicBarrier(stillInPlayers.size()+1);
+        for (ServerPlayer player : stillInPlayers) {
             threadPool.execute(new OneTurnThread(gameMap, player, players,allplayerInfo.get(player.getName()),barrier,gameID));
         }
         barrier.await();
@@ -293,7 +293,7 @@ public class Game {
     public void playOneTurn(ArrayList<ServerPlayer> connectedPlayers) throws IOException, BrokenBarrierException, InterruptedException {
         //create a thread for each player to type their actions until receive commit
         //for inactive players, do nothing, just like they drectly type in Commit
-        receiveAndApplyMoves(connectedPlayers);
+        receiveAndApplyMoves(stillInPlayers);
         //resolve all combats and send combat results to players still watch the game
         String combatResult = doAttacks();
         effectTechForStillIn(connectedPlayers);

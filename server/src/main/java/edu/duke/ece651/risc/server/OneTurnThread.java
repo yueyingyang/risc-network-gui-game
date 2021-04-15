@@ -2,6 +2,7 @@ package edu.duke.ece651.risc.server;
 
 import edu.duke.ece651.risc.shared.*;
 import edu.duke.ece651.risc.shared.game.V2MapView;
+import jdk.nashorn.api.tree.VariableTree;
 import edu.duke.ece651.risc.shared.entry.ActionEntry;
 
 import java.io.IOException;
@@ -67,6 +68,14 @@ public class OneTurnThread implements Runnable {
     public void run() {
         JSONSerializer js = new JSONSerializer();
         //player.sendObject(gameMap);
+        if(player.getCurrentGame()!=gameID){
+            try{
+                barrier.await();
+            }catch(Exception e){
+                System.out.println(e.getMessage());
+            }
+            return;
+        }
         while (true) {
             try {
                 String s = player.recvMessage();

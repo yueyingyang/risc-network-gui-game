@@ -65,6 +65,7 @@ class OneTurnThreadTest {
 //    work should be done during adding player
     p.setName("Blue");
     p.setColor(Color.red);
+    p.setCurrentGameID(0);
     PlayerInfo pi = new PlayerInfo("Blue");
     CyclicBarrier barrier = new CyclicBarrier(2);
     OneTurnThread t = new OneTurnThread(map,p, new ArrayList<>(Collections.singletonList(p)),pi,barrier,0);
@@ -106,6 +107,7 @@ class OneTurnThreadTest {
     //    work should be done during adding player
     p.setName("Blue");
     p.setColor(Color.BLUE);
+    p.setCurrentGameID(0);
     PlayerInfo pi = new PlayerInfo("Blue");
     CyclicBarrier barrier = new CyclicBarrier(2);
     OneTurnThread t = new OneTurnThread(map,p,new ArrayList<>(Collections.singletonList(p)),pi,barrier,0);
