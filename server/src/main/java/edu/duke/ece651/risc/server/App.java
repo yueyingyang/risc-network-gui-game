@@ -250,9 +250,6 @@ public class App {
               actionHandlerMap.get(actionType).apply(player, rootNode, this.games);        
         }
       });
-        // if (actionHandlerMap.containsKey(actionType)) {
-        //   actionHandlerMap.get(actionType).apply(player, rootNode);
-        // }
       } catch (Exception e) {
         this.output.println(e.getMessage());
       }

@@ -231,13 +231,7 @@ public class Game {
         //ArrayList<OneTurnThread> threads = new ArrayList<>();
         CyclicBarrier barrier = new CyclicBarrier(connectedPlayers.size()+1);
         for (ServerPlayer player : connectedPlayers) {
-            //if the player is still active in this game
-            //if(player.getCurrentGame().equals(gameID)){
-                //OneTurnThread thread = new OneTurnThread(gameMap, player, players,allplayerInfo.get(player.getName()),barrier,gameID);
-                //threads.add(thread);
-                //thread.start();
-                threadPool.execute(new OneTurnThread(gameMap, player, players,allplayerInfo.get(player.getName()),barrier,gameID));
-           // }
+            threadPool.execute(new OneTurnThread(gameMap, player, players,allplayerInfo.get(player.getName()),barrier,gameID));
         }
         barrier.await();
     }
@@ -402,11 +396,8 @@ public class Game {
      * @param soldierNum is the num of soldier that one player own's
      */
     public void sendAndPlace(int soldierNum) throws InterruptedException,BrokenBarrierException{
-        //List<PlacementThread> threads = new ArrayList<>();
         CyclicBarrier barrier = new CyclicBarrier(players.size()+1);
         for(ServerPlayer p:players){
-            //PlacementThread placeThread = new PlacementThread(soldierNum,this.gameMap,allMapViews.get(p.getName()),p,barrier);
-            //threads.add(placeThread);
             threadPool.execute(new PlacementThread(soldierNum,this.gameMap,allMapViews.get(p.getName()),p,barrier));
         }
         barrier.await();       
