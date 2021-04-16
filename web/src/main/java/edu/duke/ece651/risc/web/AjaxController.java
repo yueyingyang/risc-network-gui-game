@@ -39,9 +39,6 @@ public class AjaxController {
    */
   @GetMapping(value = "/check_room_status")
   public ResponseEntity<?> checkRoomStatus() throws IOException {
-//    Below 1 lines are for local test
-//    return ResponseEntity.status(HttpStatus.ACCEPTED).body(false);
-
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
     ClientSocket cs = playerMapping.getSocket(userName);
 
@@ -60,9 +57,8 @@ public class AjaxController {
    */
   @GetMapping(value = "/update_map")
   public ResponseEntity<?> tryUpdateMap() throws IOException {
-//    Below 2 lines are for local test
-//    return ResponseEntity.status(HttpStatus.ACCEPTED).body(util.mockObjectNodes());
-//    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    // REALLY NEEDED FOR UI TEST :)
+    // return ResponseEntity.status(HttpStatus.ACCEPTED).body(util.mockObjectNodes());
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
     ClientSocket cs = playerMapping.getSocket(userName);
     if (cs.hasNewMsg()) {
@@ -76,7 +72,7 @@ public class AjaxController {
         } else {
           ObjectNode o = serializer.getOm().createObjectNode();
           o.put("lose", true);
-//        rejoin but receive game_over
+          // rejoin but receive game_over
           return ResponseEntity.status(HttpStatus.ACCEPTED).body(o);
         }
       }
@@ -119,28 +115,28 @@ public class AjaxController {
     ActionAjaxResBody resBody = new ActionAjaxResBody();
     ClientSocket cs = playerMapping.getSocket(userName);
     if (!cs.hasNewMsg()) {
+      // Continue to wait for combating result
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
-    //  1. recv combat result
+    // 1. recv combat result
     String combatRes = cs.recvMessage();
     resBody.setValRes((String) serializer.deserialize(combatRes, String.class));
-//  2. recv LOSE / CONTINUE
+    // 2. recv LOSE / CONTINUE
     String playerStatus = cs.recvMessage();
-//      2.1 CONTINUE
+    // 2.1 CONTINUE
     if (playerStatus.equals(Constant.CONTINUE_PLAYING)) {
       handleContinue(resBody, cs);
     } else {
-//        2.2 LOSE
+    // 2.2 LOSE
       handleLose(resBody, cs);
     }
     return ResponseEntity.status(HttpStatus.ACCEPTED).body(resBody);
-//    Continue to wait for combating result
   }
 
   @PostMapping(value = "/choose_watch")
   public ResponseEntity<?> chooseToWatch() throws IOException {
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-    //    Send to server
+    // Send to server
     ClientSocket cs = playerMapping.getSocket(userName);
     cs.sendMessage(Constant.WATCH_GAME);
     Map<String, List<ObjectNode>> graphData = util.deNodeList(cs.recvMessage());
@@ -173,7 +169,7 @@ public class AjaxController {
   private ResponseEntity<?> wrapWinnerInfo(String winnerInfo) {
     ObjectNode o = serializer.getOm().createObjectNode();
     o.put("winnerInfo", winnerInfo);
-//        rejoin but receive game_over
+    // rejoin but receive game_over
     return ResponseEntity.status(HttpStatus.ACCEPTED).body(o);
   }
 
@@ -181,7 +177,7 @@ public class AjaxController {
   private void handleLose(ActionAjaxResBody resBody, ClientSocket cs) throws IOException {
     String gameStatus = cs.recvMessage(); // GAME_OVER or Continue_playing
     if (gameStatus.equals(Constant.GAME_OVER)) {
-//          2.2.1 Game over
+      // 2.2.1 Game over
       String winnerInfo = cs.recvMessage();
       resBody.setWinnerInfo(winnerInfo);
     }
@@ -192,10 +188,10 @@ public class AjaxController {
   private void handleContinue(ActionAjaxResBody resBody, ClientSocket cs) throws IOException {
     String gameStatus = cs.recvMessage(); // GAME_OVER or next turn's map
     if (!gameStatus.equals(Constant.GAME_OVER)) {
-//          2.1.2 Next turn starts!
+      // 2.1.2 Next turn starts!
       resBody.setGraphData(util.deNodeList(gameStatus));
     } else {
-//          2.1.1 You are the last player! You're the winner!
+      // 2.1.1 You are the last player! You're the winner!
       resBody.setGraphData(null);
       resBody.setWin(true);
     }
