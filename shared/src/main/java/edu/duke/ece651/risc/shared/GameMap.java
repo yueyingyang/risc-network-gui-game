@@ -191,4 +191,17 @@ public class GameMap {
         return (distance.get(end)+start.getSize()+end.getSize())*unit/2;
     }
     
+    public boolean isAdjacentEnemy(String playerName, Territory terr){
+        for(Territory t:territoryFinder.values()){
+            if(t.getOwnerName().equals(playerName)){
+                if(terr.isAdjacent(t)){
+                    return true;
+                }
+                if(t.getOwnerName.equals(playerName)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
