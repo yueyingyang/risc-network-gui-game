@@ -197,9 +197,6 @@ public class GameMap {
                 if(terr.isAdjacent(t)){
                     return true;
                 }
-                if(t.getOwnerName.equals(playerName)){
-                    return true;
-                }
             }
         }
         return false;

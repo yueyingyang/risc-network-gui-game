@@ -186,11 +186,12 @@ public class GameMapTest {
     nameList.add("Red");
     nameList.add("Blue");
     nameList.add("Green");
-    GameMap map=factory.createMap(nameList,3);
+    GameMap map=factory.createMap(nameList,2);
 
     assertTrue(map.isAdjacentEnemy("Red",map.getTerritory("2")));
     assertFalse(map.isAdjacentEnemy("Red",map.getTerritory("4")));
-
+    assertTrue(map.isAdjacentEnemy("Red",map.getTerritory("5")));
+    assertTrue(map.isAdjacentEnemy("Red",map.getTerritory("3")));
 
   }
 }
