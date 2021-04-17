@@ -27,6 +27,10 @@ public class Soldier implements Comparable<Soldier> {
         this("0");
     }
 
+    /**
+     * Copy constructor of Soldier
+     * @param s is a soldier
+     */
     public Soldier(Soldier s) {
         this.type = s.type;
     }
