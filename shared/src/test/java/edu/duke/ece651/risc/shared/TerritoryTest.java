@@ -112,8 +112,8 @@ class TerritoryTest {
     @Test
     public void test_add_remove_with_type() {
         Territory terr = new Territory("NANJING");
-        assertEquals(-1, terr.getNumSoldiersInArmy());
-        assertEquals(-1, terr.getNumSoldiersInArmy("1"));
+        assertEquals(0, terr.getNumSoldiersInArmy());
+        assertEquals(0, terr.getNumSoldiersInArmy("1"));
         Army army = new BasicArmy("LiLei", 5);
         terr.setMyArmy(army);
         assertEquals(5, terr.getNumSoldiersInArmy("0"));

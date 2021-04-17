@@ -222,11 +222,10 @@ public class Territory {
      * Get the number of soldier in myArmy
      *
      * @return the number of soldier in myArmy
-     * -1 if myArmy has not been setup
      */
     public int getNumSoldiersInArmy() {
         if (myArmy == null) {
-            return -1;
+            return 0;
         }
         return myArmy.getNumSoldiers();
     }
@@ -239,7 +238,7 @@ public class Territory {
      */
     public int getNumSoldiersInArmy(String type) {
         if (myArmy == null) {
-            return -1;
+            return 0;
         }
         return myArmy.getNumSoldiers(type);
     }
@@ -367,6 +366,9 @@ public class Territory {
      * @param numSpies is the number of spies
      */
     public void addSpies(int numSpies) {
+        if (mySpies == null) {
+            mySpies = new BasicArmy(ownerName, 1);
+        }
         mySpies.addSoldiers(numSpies, "0");
     }
 
@@ -385,6 +387,9 @@ public class Territory {
      * @return the number of spies
      */
     public int getNumSpies() {
+        if (mySpies == null) {
+            return 0;
+        }
         return mySpies.getNumSoldiers();
     }
 
