@@ -2,7 +2,7 @@ package edu.duke.ece651.risc.shared;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import org.checkerframework.checker.units.qual.A;
+import java.util.Map.Entry;
 
 import java.util.*;
 
@@ -26,6 +26,8 @@ public class Territory {
     private int cloaking;
     private Army mySpies;
     private Map<String, Army> enemySpiesBuffer;
+    private Army tempSpies;
+    private Map<String, Army> tempBuffer;
 
     /**
      * Add for Jackson deserialization
@@ -62,6 +64,8 @@ public class Territory {
         this.cloaking = 0;
         this.mySpies = null;
         this.enemySpiesBuffer = new HashMap<>();
+        this.tempSpies = null;
+        this.enemySpiesBuffer = new HashMap<>();
     }
 
     /**
@@ -70,17 +74,25 @@ public class Territory {
      * @param terr is a territory
      */
     public Territory(Territory terr) {
+        // deep copy
         this.name = terr.name;
         this.ownerName = terr.ownerName;
         this.myArmy = new Army(terr.myArmy);
-        this.neighbours = terr.neighbours;
-        this.attackerBuffer = new HashMap<>();
         this.size = terr.size;
         this.foodProd = terr.foodProd;
         this.techProd = terr.techProd;
         this.cloaking = terr.cloaking;
         this.mySpies = new Army(terr.mySpies);
         this.enemySpiesBuffer = new HashMap<>();
+        for (Entry<String, Army> e : terr.enemySpiesBuffer.entrySet()) {
+            this.enemySpiesBuffer.put(e.getKey(), new Army(e.getValue()));
+        }
+
+        // shallow copy
+        this.neighbours = terr.neighbours;
+        this.attackerBuffer = terr.attackerBuffer;
+        this.tempSpies = terr.tempSpies;
+        this.tempBuffer = terr.tempBuffer;
     }
 
     /**
@@ -367,19 +379,6 @@ public class Territory {
     }
 
     /**
-     * Add spies
-     *
-     * @param numSpies is the number of spies
-     */
-    public void addMySpies(int numSpies) {
-        if (mySpies == null) {
-            mySpies = new Army(ownerName, numSpies);
-        } else {
-            mySpies.addSoldiers(numSpies, "0");
-        }
-    }
-
-    /**
      * Get the number of spies
      *
      * @return the number of spies
@@ -430,12 +429,25 @@ public class Territory {
     }
 
     /**
+     * Add my spies
+     *
+     * @param numSpies is the number of spies
+     */
+    public void addMySpies(int numSpies) {
+        if (mySpies == null) {
+            tempSpies = new Army(ownerName, numSpies);
+        } else {
+            tempSpies.addSoldiers(numSpies, "0");
+        }
+    }
+
+    /**
      * Add enemy spies
      *
      * @param spies is the spies from enemy
      */
     public void addEnemySpies(Army spies) {
-        bufferEnemy(spies, enemySpiesBuffer);
+        bufferEnemy(spies, tempBuffer);
     }
 
     /**
@@ -445,6 +457,7 @@ public class Territory {
      */
     public void removeMySpies(int numSpies) {
         mySpies.removeSoldiers(numSpies, "0");
+        tempSpies.removeSoldiers(numSpies, "0");
     }
 
     /**
@@ -456,6 +469,7 @@ public class Territory {
     public void removeEnemySpies(String name, int numSpies) {
         if (enemySpiesBuffer.containsKey(name)) {
             enemySpiesBuffer.get(name).removeSoldiers(numSpies, "0");
+            tempBuffer.get(name).removeSoldiers(numSpies, "0");
         }
     }
 
@@ -486,6 +500,11 @@ public class Territory {
             Army spies = new Army(name, numSpies, "0");
             addEnemySpies(spies);
         }
+    }
+
+    public void effectSpyMove() {
+        mySpies = tempSpies;
+        enemySpiesBuffer = tempBuffer;
     }
 
 }

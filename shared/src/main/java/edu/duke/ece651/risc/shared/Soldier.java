@@ -12,14 +12,12 @@ import java.util.Random;
 public class Soldier implements Comparable<Soldier> {
 
     private String type;
-    private boolean requested;
 
     /**
      * Construct a Basic Soldier Object
      */
     public Soldier(String type) {
         this.type = type;
-        this.requested = false;
     }
 
     /**
@@ -35,7 +33,6 @@ public class Soldier implements Comparable<Soldier> {
      */
     public Soldier(Soldier s) {
         this.type = s.type;
-        this.requested = false;
     }
 
     /**
