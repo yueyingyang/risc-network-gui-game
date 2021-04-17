@@ -187,4 +187,19 @@ class TerritoryTest {
         assertEquals(20, terr.getTechProd());
     }
 
+    @Test
+    public void test_cloaking() {
+        Territory terr = new Territory("NANJING");
+        terr.addCloaking();
+        assertEquals(3, terr.getCloaking());
+        terr.useCloaking();
+        assertEquals(2, terr.getCloaking());
+        terr.useCloaking();
+        assertEquals(1, terr.getCloaking());
+        terr.useCloaking();
+        assertEquals(0, terr.getCloaking());
+        terr.useCloaking();
+        assertEquals(0, terr.getCloaking());
+    }
+
 }
