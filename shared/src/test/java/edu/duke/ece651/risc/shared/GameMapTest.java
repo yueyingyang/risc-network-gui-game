@@ -192,6 +192,6 @@ public class GameMapTest {
     assertFalse(map.isAdjacentEnemy("Red",map.getTerritory("4")));
     assertTrue(map.isAdjacentEnemy("Red",map.getTerritory("5")));
     assertTrue(map.isAdjacentEnemy("Red",map.getTerritory("3")));
-
+    assertTrue(map.isAdjacentEnemy("Red",map.getTerritory("0")));
   }
 }
