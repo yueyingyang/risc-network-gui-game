@@ -45,7 +45,7 @@ public class AjaxActionController {
   @PostMapping(value = "/attack", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ActionAjaxResBody> attack(@RequestBody UserActionInput input) throws IOException {
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-//    Wrap a Attack entry
+    // Wrap a Attack entry
     FancyAttackEntry attackEntry = new FancyAttackEntry(input.getFromName(),
             input.getToName(),
             input.getSoldierNum(),
@@ -64,7 +64,7 @@ public class AjaxActionController {
   @PostMapping(value = "/move", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ActionAjaxResBody> move(@RequestBody UserActionInput input) throws IOException {
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-//    Wrap a Move entry
+    // Wrap a Move entry
     FancyMoveEntry moveEntry = new FancyMoveEntry(input.getFromName(),
             input.getToName(),
             input.getSoldierNum(),
@@ -83,7 +83,7 @@ public class AjaxActionController {
   @PostMapping(value = "/soldier", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ActionAjaxResBody> soldier(@RequestBody UserActionInput input) throws IOException {
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-//    Wrap a Soldier entry
+    // Wrap a Soldier entry
     SoldierEntry soldierEntry = new SoldierEntry(
             input.getToName(),
             input.getFromType(),
@@ -103,7 +103,7 @@ public class AjaxActionController {
   @PostMapping(value = "/tech", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ActionAjaxResBody> tech(@RequestBody UserActionInput input) throws IOException {
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-//    Wrap a Tech entry
+    // Wrap a Tech entry
     TechEntry techEntry = new TechEntry(
             userName);
     return getActionAjaxResBodyResponseEntity(techEntry);
@@ -131,13 +131,13 @@ public class AjaxActionController {
    * @throws IOException
    */
   private ResponseEntity<ActionAjaxResBody> getActionAjaxResBodyResponseEntity(ActionEntry ae) throws IOException {
-//    1. With server: send * 1 (action entry) + recv * 2 (validation result + mapView)
+    // 1. With server: send * 1 (action entry) + recv * 2 (validation result + mapView)
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
     ClientSocket cs = playerMapping.getSocket(userName);
     cs.sendMessage(serializer.serialize(ae));
     String validRes = cs.recvMessage();
     String mapViewString = cs.recvMessage();
-//    2. Wrap response
+    // 2. Wrap response
     Map<String, List<ObjectNode>> graphData = util.deNodeList(mapViewString);
     ActionAjaxResBody resBody = new ActionAjaxResBody();
     resBody.setGraphData(graphData);

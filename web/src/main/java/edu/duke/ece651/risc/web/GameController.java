@@ -35,8 +35,6 @@ public class GameController {
   // utils
   private final JSONSerializer jsonSerializer;
 
-  Logger logger = LoggerFactory.getLogger(GameController.class);
-
   public GameController(PlayerSocketMap playerMapping, UtilService util) {
     this.util = util;
     this.jsonSerializer = new JSONSerializer();
@@ -85,7 +83,7 @@ public class GameController {
     }).writeValueAsString(placementList);
     cs.sendMessage(json);
     String valRes = cs.recvMessage();
-    if (valRes.equals("invalid")) {
+    if (valRes.equals(Constant.PLACEMENT_INVALID)) {
       return "redirect:place";
     }
     return "redirect:play";

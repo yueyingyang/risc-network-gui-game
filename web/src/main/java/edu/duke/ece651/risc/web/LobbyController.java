@@ -48,7 +48,7 @@ public class LobbyController {
     // send getGameList request: wrap a JSON request as defined in doc
     ClientSocket c = playerMapping.getOneTimeSocket();
     ObjectNode gameListReq = JsonNodeFactory.instance.objectNode();
-    gameListReq.put("type", "getGameList");
+    gameListReq.put("type", Constant.GET_GAMELIST);
     gameListReq.put("name", userName);
     c.sendMessage(mapper.writeValueAsString(gameListReq));
     // recv 2 times for 2 type of list: all open games and all joined games
@@ -76,7 +76,7 @@ public class LobbyController {
     String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
     ClientSocket c = playerMapping.getSocket(currentUserName);
     ObjectNode startReq = JsonNodeFactory.instance.objectNode();
-    startReq.put("type", "start");
+    startReq.put("type", Constant.STARTGAME);
     startReq.put("name", currentUserName);
     startReq.put("gameSize", size);
     c.sendMessage(new ObjectMapper().writeValueAsString(startReq));
@@ -95,7 +95,7 @@ public class LobbyController {
     String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
     ClientSocket c = playerMapping.getSocket(currentUserName);
     ObjectNode startReq = JsonNodeFactory.instance.objectNode();
-    startReq.put("type", "join");
+    startReq.put("type", Constant.JOINGAME);
     startReq.put("name", currentUserName);
     startReq.put("gameID", gameID);
     c.sendMessage(new ObjectMapper().writeValueAsString(startReq));
@@ -115,7 +115,7 @@ public class LobbyController {
     startReq.put("gameID", gameId);
     cs.sendMessage(new ObjectMapper().writeValueAsString(startReq));
     String valRes = cs.recvMessage();
-    if (valRes.equals("can rejoin")) {
+    if (valRes.equals(Constant.CAN_REJOINGAME)) {
       return "redirect:/game/play";
     }
     return "redirect:back_lobby";
@@ -135,7 +135,7 @@ public class LobbyController {
   @GetMapping(value = "/exit_game")
   public String exitGame() throws IOException {
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-    //    Send to server
+    // Send to server
     ClientSocket cs = playerMapping.getSocket(userName);
     cs.sendMessage(Constant.DISCONNECT_GAME);
     return "redirect:back_lobby";

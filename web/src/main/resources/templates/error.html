@@ -1,0 +1,17 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <header th:insert="fragments/common_header.html :: headerfiles"></header>
+    <title>Error</title>
+</head>
+<body>
+<div class="ui red message" style="width: fit-content">
+    <div class="header">Something went wrong! </div>
+    <div> Please retry to enter the lobby later...</div>
+</div>
+<a th:href="@{lobby}" class="ui violet basic button" style="user-select: auto;color: blueviolet">
+    Lobby
+</a>
+</body>
+</html>
