@@ -22,6 +22,19 @@ public class BasicArmy implements Army {
     }
 
     /**
+     * Copy constructor of BasicArmy
+     *
+     * @param myArmy is a BasicArmy
+     */
+    public BasicArmy(BasicArmy myArmy) {
+        this.ownerName = myArmy.ownerName;
+        this.force = new ArrayList<>();
+        for (Soldier s : myArmy.force) {
+            this.force.add(new BasicSoldier((BasicSoldier) s));
+        }
+    }
+
+    /**
      * Construct a BasicArmy object
      *
      * @param ownerName   is the name of the owner of the army
@@ -185,8 +198,6 @@ public class BasicArmy implements Army {
         ans.delete(ans.length() - 2, ans.length());
         return ans.toString();
     }
-
-
 
 
 }

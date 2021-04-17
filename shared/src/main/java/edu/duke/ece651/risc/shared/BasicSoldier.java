@@ -27,6 +27,10 @@ public class BasicSoldier implements Soldier {
         this("0");
     }
 
+    public BasicSoldier(BasicSoldier s) {
+        this.type = s.type;
+    }
+
     /**
      * Fight with the attacker
      *
