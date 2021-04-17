@@ -202,4 +202,16 @@ class TerritoryTest {
         assertEquals(0, terr.getCloaking());
     }
 
+    @Test
+    public void test_mySpies() {
+        Territory terr = new Territory("NANJING");
+        assertEquals(0, terr.getNumSpies());
+        terr.addSpies(2);
+        assertEquals(2, terr.getNumSpies());
+        terr.addSpies(3);
+        assertEquals(5, terr.getNumSpies());
+        terr.removeSpies(4);
+        assertEquals(1, terr.getNumSpies());
+    }
+
 }

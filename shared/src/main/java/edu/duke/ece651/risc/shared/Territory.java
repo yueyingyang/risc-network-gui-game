@@ -367,9 +367,10 @@ public class Territory {
      */
     public void addSpies(int numSpies) {
         if (mySpies == null) {
-            mySpies = new BasicArmy(ownerName, 1);
+            mySpies = new BasicArmy(ownerName, numSpies);
+        } else {
+            mySpies.addSoldiers(numSpies, "0");
         }
-        mySpies.addSoldiers(numSpies, "0");
     }
 
     /**
@@ -405,6 +406,5 @@ public class Territory {
         }
         return enemySpies.get(name).getNumSoldiers();
     }
-
 
 }
