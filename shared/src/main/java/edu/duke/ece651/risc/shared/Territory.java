@@ -23,6 +23,8 @@ public class Territory {
     private int foodProd;
     private int techProd;
     private int cloaking;
+    private Army mySpies;
+    private Map<String, Army> enemySpies;
 
     /**
      * Add for Jackson deserialization
@@ -36,15 +38,7 @@ public class Territory {
      * @param name is the name of the territory
      */
     public Territory(String name) {
-        this.name = name;
-        this.ownerName = null;
-        this.myArmy = null;
-        this.neighbours = new HashSet<>();
-        this.attackerBuffer = new HashMap<>();
-        this.size = 0;
-        this.foodProd = 0;
-        this.techProd = 0;
-        this.cloaking = 0;
+        this(name, 0, 0, 0);
     }
 
     /**
@@ -65,6 +59,30 @@ public class Territory {
         this.foodProd = foodProd;
         this.techProd = techProd;
         this.cloaking = 0;
+        this.mySpies =  null;
+        this.enemySpies = new HashMap<>();
+    }
+
+    /**
+     * Create a territory object
+     *
+     * @param name     is the name of the territory
+     * @param size     is the size of the territory
+     * @param foodProd is the food production of the territory
+     * @param techProd is the tech production of the territory
+     */
+    public Territory(String name, String ownerName, int size, int foodProd, int techProd) {
+        this.name = name;
+        this.ownerName = ownerName;
+        this.myArmy = new BasicArmy(ownerName, 0);
+        this.neighbours = new HashSet<>();
+        this.attackerBuffer = new HashMap<>();
+        this.size = size;
+        this.foodProd = foodProd;
+        this.techProd = techProd;
+        this.cloaking = 0;
+        this.mySpies = new BasicArmy(ownerName, 0);
+        this.enemySpies = new HashMap<>();
     }
 
     /**
@@ -310,14 +328,12 @@ public class Territory {
      *
      * @param name is the name of the attacker owner
      * @return the number of soldiers in the attacker
-     * or -1 if the attacker does not exist
      */
     public int getNumSoldiersInAttacker(String name) {
-        Army attacker = attackerBuffer.get(name);
-        if (attacker == null) {
-            return -1;
+        if (!attackerBuffer.containsKey(name)) {
+            return 0;
         }
-        return attacker.getNumSoldiers();
+        return attackerBuffer.get(name).getNumSoldiers();
     }
 
     /**
@@ -326,15 +342,12 @@ public class Territory {
      * @param name is the name of the attacker owner
      * @param type is the type of the soldier
      * @return the number of soldiers in the attacker
-     * or -1 if the attacker does not exist
      */
     public int getNumSoldiersInAttacker(String name, String type) {
-        Army attacker = attackerBuffer.get(name);
-        if (attacker == null) {
-            return -1;
+        if (!attackerBuffer.containsKey(name)) {
+            return 0;
         }
-        return attacker.getNumSoldiers(type);
-
+        return attackerBuffer.get(name).getNumSoldiers(type);
     }
 
     /**
@@ -361,6 +374,55 @@ public class Territory {
         if (cloaking > 0) {
             cloaking -= 1;
         }
+    }
+
+    /**
+     * Get the cloaking
+     *
+     * @return the cloaking
+     */
+    public int getCloaking() {
+        return cloaking;
+    }
+
+    /**
+     * Add spies
+     *
+     * @param numSpies is the number of spies
+     */
+    public void addSpies(int numSpies) {
+        mySpies.addSoldiers(numSpies, "0");
+    }
+
+    /**
+     * Remove spies
+     *
+     * @param numSpies is the number of spies
+     */
+    public void removeSpies(int numSpies) {
+        mySpies.removeSoldiers(numSpies, "0");
+    }
+
+    /**
+     * Get the number of spies
+     *
+     * @return the number of spies
+     */
+    public int getNumSpies() {
+        return mySpies.getNumSoldiers();
+    }
+
+    /**
+     * Get the number of spies of the given enemy
+     *
+     * @param name is the name of the enemy
+     * @return the number of spies of the enemy
+     */
+    public int getNumEnemySpies(String name) {
+        if (!enemySpies.containsKey(name)) {
+            return 0;
+        }
+        return enemySpies.get(name).getNumSoldiers();
     }
 
 
