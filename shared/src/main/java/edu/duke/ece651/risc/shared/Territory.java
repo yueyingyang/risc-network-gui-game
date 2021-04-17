@@ -2,6 +2,7 @@ package edu.duke.ece651.risc.shared;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.*;
 
@@ -60,6 +61,25 @@ public class Territory {
         this.techProd = techProd;
         this.cloaking = 0;
         this.mySpies = null;
+        this.enemySpiesBuffer = new HashMap<>();
+    }
+
+    /**
+     * Copy constructor of Territory
+     *
+     * @param terr is a territory
+     */
+    public Territory(Territory terr) {
+        this.name = terr.name;
+        this.ownerName = terr.ownerName;
+        this.myArmy = new Army(terr.myArmy);
+        this.neighbours = terr.neighbours;
+        this.attackerBuffer = new HashMap<>();
+        this.size = terr.size;
+        this.foodProd = terr.foodProd;
+        this.techProd = terr.techProd;
+        this.cloaking = terr.cloaking;
+        this.mySpies = new Army(terr.mySpies);
         this.enemySpiesBuffer = new HashMap<>();
     }
 
