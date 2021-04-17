@@ -190,5 +190,19 @@ public class GameMap {
         }
         return (distance.get(end)+start.getSize()+end.getSize())*unit/2;
     }
-    
+
+    /**
+     * check whether the territory terr is adjacent to any territory belonging to a specific player's
+     * @param playerName the player's name
+     * @param terr       the target territory
+     * @return
+     */
+    public boolean isAdjacentEnemy(String playerName, Territory terr){
+        for(Territory t:territoryFinder.values()){
+            if(t.getOwnerName().equals(playerName) && terr.isAdjacent(t)){
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -178,4 +178,20 @@ public class GameMapTest {
     int cost=map.computeCost(t1,t3,2);
     assertEquals(cost,18);
   }
+
+  @Test
+  public void test_isAdjacentEnemy(){
+    V2MapFactory factory=new V2MapFactory();
+    List<String> nameList=new ArrayList<>();
+    nameList.add("Red");
+    nameList.add("Blue");
+    nameList.add("Green");
+    GameMap map=factory.createMap(nameList,2);
+
+    assertTrue(map.isAdjacentEnemy("Red",map.getTerritory("2")));
+    assertFalse(map.isAdjacentEnemy("Red",map.getTerritory("4")));
+    assertTrue(map.isAdjacentEnemy("Red",map.getTerritory("5")));
+    assertTrue(map.isAdjacentEnemy("Red",map.getTerritory("3")));
+    assertTrue(map.isAdjacentEnemy("Red",map.getTerritory("0")));
+  }
 }
