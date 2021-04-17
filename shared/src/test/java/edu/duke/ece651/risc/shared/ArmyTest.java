@@ -1,5 +1,6 @@
 package edu.duke.ece651.risc.shared;
 
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -116,4 +117,12 @@ class ArmyTest {
         assertEquals(expt2, army2.toString());
     }
 
+    @Test
+    public void test_copy() {
+        Army army1 = new Army("Green", 2, "4");
+        Army army2 = new Army(army1);
+        army1.addSoldiers(1, "4");
+        assertEquals(3, army1.getNumSoldiers("4"));
+        assertEquals(2, army2.getNumSoldiers("4"));
+    }
 }
