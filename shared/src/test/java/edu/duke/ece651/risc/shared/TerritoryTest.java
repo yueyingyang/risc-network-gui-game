@@ -206,11 +206,11 @@ class TerritoryTest {
     public void test_mySpies() {
         Territory terr = new Territory("NANJING");
         assertEquals(0, terr.getNumSpies());
-        terr.addSpies(2);
+        terr.addMySpies(2);
         assertEquals(2, terr.getNumSpies());
-        terr.addSpies(3);
+        terr.addMySpies(3);
         assertEquals(5, terr.getNumSpies());
-        terr.removeSpies(4);
+        terr.removeMySpies(4);
         assertEquals(1, terr.getNumSpies());
     }
 
@@ -218,11 +218,11 @@ class TerritoryTest {
     public void test_enemySpies() {
         Territory terr = new Territory("NANJING");
         assertEquals(0, terr.getNumEnemySpies("LiLei"));
-        terr.bufferEnemySpies(new Army("LiLei", 2));
+        terr.addEnemySpies(new Army("LiLei", 2));
         assertEquals(2, terr.getNumEnemySpies("LiLei"));
-        terr.bufferEnemySpies(new Army("LiLei", 4));
+        terr.addEnemySpies(new Army("LiLei", 4));
         assertEquals(6, terr.getNumEnemySpies("LiLei"));
-        terr.bufferEnemySpies(new Army("HanMeiMei", 3));
+        terr.addEnemySpies(new Army("HanMeiMei", 3));
         assertEquals(3, terr.getNumEnemySpies("HanMeiMei"));
     }
 

@@ -371,21 +371,12 @@ public class Territory {
      *
      * @param numSpies is the number of spies
      */
-    public void addSpies(int numSpies) {
+    public void addMySpies(int numSpies) {
         if (mySpies == null) {
             mySpies = new Army(ownerName, numSpies);
         } else {
             mySpies.addSoldiers(numSpies, "0");
         }
-    }
-
-    /**
-     * Remove spies
-     *
-     * @param numSpies is the number of spies
-     */
-    public void removeSpies(int numSpies) {
-        mySpies.removeSoldiers(numSpies, "0");
     }
 
     /**
@@ -443,8 +434,58 @@ public class Territory {
      *
      * @param spies is the spies from enemy
      */
-    public void bufferEnemySpies(Army spies) {
+    public void addEnemySpies(Army spies) {
         bufferEnemy(spies, enemySpiesBuffer);
+    }
+
+    /**
+     * Remove my spies
+     *
+     * @param numSpies is the number of spies
+     */
+    public void removeMySpies(int numSpies) {
+        mySpies.removeSoldiers(numSpies, "0");
+    }
+
+    /**
+     * Remove enemy spies
+     *
+     * @param name     is the player name
+     * @param numSpies is the number of spies
+     */
+    public void removeEnemySpies(String name, int numSpies) {
+        if (enemySpiesBuffer.containsKey(name)) {
+            enemySpiesBuffer.get(name).removeSoldiers(numSpies, "0");
+        }
+    }
+
+    /**
+     * Remove my spies or enemy spies
+     *
+     * @param name     is the player name
+     * @param numSpies is the number of spies
+     */
+    public void removeSpies(String name, int numSpies) {
+        if (ownerName.equals(name)) {
+            removeMySpies(numSpies);
+        } else {
+            removeEnemySpies(name, numSpies);
+        }
+    }
+
+    /**
+     * Add my spies or enemy spies
+     *
+     * @param name     is the player name
+     * @param numSpies is the number spies
+     */
+    public void addSpies(String name, int numSpies) {
+        if (ownerName.equals(name)) {
+            addMySpies(numSpies);
+        } else {
+            Army spies = new Army(name, numSpies, "0");
+            addEnemySpies(spies);
+        }
     }
 
 }
