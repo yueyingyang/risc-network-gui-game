@@ -22,9 +22,9 @@ public class SoldierRuleCheckerTest {
         namelist.add("player1");
         namelist.add("player2");
         GameMap map = factory.createMap(namelist, 2);
-        Army army1 = new BasicArmy("player1", 2);
+        Army army1 = new Army("player1", 2);
         map.getTerritory("1").setMyArmy(army1);
-        Army army2 = new BasicArmy("player1", 4);
+        Army army2 = new Army("player1", 4);
         map.getTerritory("2").setMyArmy(army2);
         // check tech level is not enough case
         SoldierEntry upgrade1=new SoldierEntry("1","0","2",2,"player1");

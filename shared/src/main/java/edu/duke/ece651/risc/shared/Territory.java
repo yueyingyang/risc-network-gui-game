@@ -353,7 +353,7 @@ public class Territory {
      */
     public void addSpies(int numSpies) {
         if (mySpies == null) {
-            mySpies = new BasicArmy(ownerName, numSpies);
+            mySpies = new Army(ownerName, numSpies);
         } else {
             mySpies.addSoldiers(numSpies, "0");
         }

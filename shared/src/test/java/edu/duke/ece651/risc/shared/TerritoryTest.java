@@ -63,7 +63,7 @@ class TerritoryTest {
     @Test
     public void test_add_remove() {
         Territory terr = new Territory("NANJING");
-        Army myArmy = new BasicArmy("HanMeiMei", 3);
+        Army myArmy = new Army("HanMeiMei", 3);
         terr.setMyArmy(myArmy);
         assertEquals(3, terr.getNumSoldiersInArmy());
         terr.addSoldiersToArmy(4);
@@ -75,12 +75,12 @@ class TerritoryTest {
     @Test
     public void test_bufferAttacker() {
         Territory terr = new Territory("NANJING");
-        Army myArmy = new BasicArmy("LiLei", 5);
+        Army myArmy = new Army("LiLei", 5);
         terr.setMyArmy(myArmy);
 
-        Army attacker0 = new BasicArmy("HanMeiMei", 4);
-        Army attacker1 = new BasicArmy("Kitty", 6);
-        Army attacker2 = new BasicArmy("HanMeiMei", 8);
+        Army attacker0 = new Army("HanMeiMei", 4);
+        Army attacker1 = new Army("Kitty", 6);
+        Army attacker2 = new Army("HanMeiMei", 8);
 
         Army[] attackers = {attacker0, attacker1, attacker2};
         for (Army attacker : attackers) {
@@ -114,7 +114,7 @@ class TerritoryTest {
         Territory terr = new Territory("NANJING");
         assertEquals(0, terr.getNumSoldiersInArmy());
         assertEquals(0, terr.getNumSoldiersInArmy("1"));
-        Army army = new BasicArmy("LiLei", 5);
+        Army army = new Army("LiLei", 5);
         terr.setMyArmy(army);
         assertEquals(5, terr.getNumSoldiersInArmy("0"));
 
@@ -133,15 +133,15 @@ class TerritoryTest {
     public void test_resolveCombat() {
         Territory terr0 = new Territory("1");
         terr0.setOwnerName("Purple");
-        Army army0 = new BasicArmy("Purple", 1);
+        Army army0 = new Army("Purple", 1);
         army0.addSoldiers(2, "3");
         army0.addSoldiers(3, "2");
         terr0.setMyArmy(army0);
         Random myRandom = new Random(0);
 
-        Army army1 = new BasicArmy("Green", 2, "4");
+        Army army1 = new Army("Green", 2, "4");
         army1.addSoldiers(3, "2");
-        Army army2 = new BasicArmy("Green", 1, "3");
+        Army army2 = new Army("Green", 1, "3");
         army2.addSoldiers(1, "4");
         terr0.bufferAttacker(army1);
         terr0.bufferAttacker(army2);
@@ -157,9 +157,9 @@ class TerritoryTest {
         assertEquals(expt0, ans0);
 
         // second combat on territory0
-        Army army3 = new BasicArmy("Blue", 2, "5");
+        Army army3 = new Army("Blue", 2, "5");
         army3.addSoldiers(1, "3");
-        Army army4 = new BasicArmy("Orange", 4, "2");
+        Army army4 = new Army("Orange", 4, "2");
         terr0.bufferAttacker(army3);
         terr0.bufferAttacker(army4);
         String ans1 = terr0.resolveCombat(myRandom);
@@ -218,11 +218,11 @@ class TerritoryTest {
     public void test_enemySpies() {
         Territory terr = new Territory("NANJING");
         assertEquals(0, terr.getNumEnemySpies("LiLei"));
-        terr.bufferEnemySpies(new BasicArmy("LiLei", 2));
+        terr.bufferEnemySpies(new Army("LiLei", 2));
         assertEquals(2, terr.getNumEnemySpies("LiLei"));
-        terr.bufferEnemySpies(new BasicArmy("LiLei", 4));
+        terr.bufferEnemySpies(new Army("LiLei", 4));
         assertEquals(6, terr.getNumEnemySpies("LiLei"));
-        terr.bufferEnemySpies(new BasicArmy("HanMeiMei", 3));
+        terr.bufferEnemySpies(new Army("HanMeiMei", 3));
         assertEquals(3, terr.getNumEnemySpies("HanMeiMei"));
     }
 
