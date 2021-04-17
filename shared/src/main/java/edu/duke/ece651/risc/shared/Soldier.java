@@ -6,10 +6,10 @@ import edu.duke.ece651.risc.shared.game.GameUtil;
 import java.util.Random;
 
 /**
- * A class represents a basic soldier
+ * A class represents a Soldier
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Soldier {
+public class Soldier implements Comparable<Soldier> {
 
     private String type;
 
@@ -21,7 +21,7 @@ public class Soldier {
     }
 
     /**
-     * Construct a Basic Soldier Object
+     * Construct a Soldier Object
      */
     public Soldier() {
         this("0");

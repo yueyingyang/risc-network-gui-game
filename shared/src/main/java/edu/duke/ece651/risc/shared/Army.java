@@ -4,14 +4,14 @@ import java.beans.ConstructorProperties;
 import java.util.*;
 
 /**
- * A class represents a basic army
+ * A class represents a army
  */
 public class Army {
     protected String ownerName;
     protected List<Soldier> force;
 
     /**
-     * Construct a BasicArmy object
+     * Construct a Army object
      *
      * @param ownerName is the name of the owner of the army
      * @param force     is the force in the army
@@ -22,20 +22,20 @@ public class Army {
     }
 
     /**
-     * Copy constructor of BasicArmy
+     * Copy constructor of Army
      *
-     * @param myArmy is a BasicArmy
+     * @param myArmy is a Army
      */
     public Army(Army myArmy) {
         this.ownerName = myArmy.ownerName;
         this.force = new ArrayList<>();
         for (Soldier s : myArmy.force) {
-            this.force.add(new Soldier((Soldier) s));
+            this.force.add(new Soldier(s));
         }
     }
 
     /**
-     * Construct a BasicArmy object
+     * Construct a Army object
      *
      * @param ownerName   is the name of the owner of the army
      * @param numSoldiers is the number of soldiers in the force
@@ -46,7 +46,7 @@ public class Army {
     }
 
     /**
-     * Construct a BasicArmy object
+     * Construct a Army object
      *
      * @param ownerName   is the name of the owner of the army
      * @param numSoldiers is the number of soldiers in the force
