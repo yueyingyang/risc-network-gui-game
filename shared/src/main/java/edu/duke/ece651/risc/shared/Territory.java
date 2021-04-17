@@ -423,7 +423,7 @@ public class Territory {
      *
      * @param spies is the spies from enemy
      */
-    public void addEnemySpies(Army spies) {
+    public void bufferEnemySpies(Army spies) {
         bufferEnemy(spies, enemySpiesBuffer);
     }
 

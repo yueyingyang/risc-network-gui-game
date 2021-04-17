@@ -214,4 +214,16 @@ class TerritoryTest {
         assertEquals(1, terr.getNumSpies());
     }
 
+    @Test
+    public void test_enemySpies() {
+        Territory terr = new Territory("NANJING");
+        assertEquals(0, terr.getNumEnemySpies("LiLei"));
+        terr.bufferEnemySpies(new BasicArmy("LiLei", 2));
+        assertEquals(2, terr.getNumEnemySpies("LiLei"));
+        terr.bufferEnemySpies(new BasicArmy("LiLei", 4));
+        assertEquals(6, terr.getNumEnemySpies("LiLei"));
+        terr.bufferEnemySpies(new BasicArmy("HanMeiMei", 3));
+        assertEquals(3, terr.getNumEnemySpies("HanMeiMei"));
+    }
+
 }
