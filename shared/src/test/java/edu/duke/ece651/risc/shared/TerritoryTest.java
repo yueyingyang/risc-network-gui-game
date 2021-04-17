@@ -175,8 +175,8 @@ class TerritoryTest {
         // no combat
         String ans2 = terr0.resolveCombat(myRandom);
         assertEquals("", ans2);
-        assertEquals(-1, terr0.getNumSoldiersInAttacker("Purple"));
-        assertEquals(-1, terr0.getNumSoldiersInAttacker("Purple", "1"));
+        assertEquals(0, terr0.getNumSoldiersInAttacker("Purple"));
+        assertEquals(0, terr0.getNumSoldiersInAttacker("Purple", "1"));
     }
 
     @Test
