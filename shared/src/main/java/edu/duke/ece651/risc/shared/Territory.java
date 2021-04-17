@@ -59,29 +59,7 @@ public class Territory {
         this.foodProd = foodProd;
         this.techProd = techProd;
         this.cloaking = 0;
-        this.mySpies =  null;
-        this.enemySpies = new HashMap<>();
-    }
-
-    /**
-     * Create a territory object
-     *
-     * @param name     is the name of the territory
-     * @param size     is the size of the territory
-     * @param foodProd is the food production of the territory
-     * @param techProd is the tech production of the territory
-     */
-    public Territory(String name, String ownerName, int size, int foodProd, int techProd) {
-        this.name = name;
-        this.ownerName = ownerName;
-        this.myArmy = new BasicArmy(ownerName, 0);
-        this.neighbours = new HashSet<>();
-        this.attackerBuffer = new HashMap<>();
-        this.size = size;
-        this.foodProd = foodProd;
-        this.techProd = techProd;
-        this.cloaking = 0;
-        this.mySpies = new BasicArmy(ownerName, 0);
+        this.mySpies = null;
         this.enemySpies = new HashMap<>();
     }
 
@@ -258,14 +236,12 @@ public class Territory {
      *
      * @param type is the type of soldier
      * @return the number of soldiers with the given type
-     * -1 if myArmy has not been setup
      */
     public int getNumSoldiersInArmy(String type) {
         if (myArmy == null) {
             return -1;
         }
         return myArmy.getNumSoldiers(type);
-
     }
 
     /**
