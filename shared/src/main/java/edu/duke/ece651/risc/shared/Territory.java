@@ -7,7 +7,7 @@ import java.util.*;
 
 /**
  * An class represents a territory
- *
+ * <p>
  * Annotation JsonIdentityInfo is added for bidirectional serialization
  */
 @JsonIdentityInfo(
@@ -24,7 +24,7 @@ public class Territory {
     private int techProd;
     private int cloaking;
     private Army mySpies;
-    private Map<String, Army> enemySpies;
+    private Map<String, Army> enemySpiesBuffer;
 
     /**
      * Add for Jackson deserialization
@@ -60,7 +60,7 @@ public class Territory {
         this.techProd = techProd;
         this.cloaking = 0;
         this.mySpies = null;
-        this.enemySpies = new HashMap<>();
+        this.enemySpiesBuffer = new HashMap<>();
     }
 
     /**
@@ -243,20 +243,6 @@ public class Territory {
         return myArmy.getNumSoldiers(type);
     }
 
-    /**
-     * Add attackers to attacker buffer
-     *
-     * @param attacker is the army that attack the territory
-     */
-    public void bufferAttacker(Army attacker) {
-        String owner = attacker.getOwnerName();
-        if (attackerBuffer.containsKey(owner)) {
-            Army curr = attackerBuffer.get(owner);
-            curr.mergeForce(attacker);
-        } else {
-            attackerBuffer.put(owner, attacker);
-        }
-    }
 
     /**
      * Resolve combat on the territory
@@ -401,10 +387,44 @@ public class Territory {
      * @return the number of spies of the enemy
      */
     public int getNumEnemySpies(String name) {
-        if (!enemySpies.containsKey(name)) {
+        if (!enemySpiesBuffer.containsKey(name)) {
             return 0;
         }
-        return enemySpies.get(name).getNumSoldiers();
+        return enemySpiesBuffer.get(name).getNumSoldiers();
+    }
+
+    /**
+     * Buffer enemy army
+     *
+     * @param enemy  is an enemy army
+     * @param buffer is buffer to store the enemy
+     */
+    protected void bufferEnemy(Army enemy, Map<String, Army> buffer) {
+        String owner = enemy.getOwnerName();
+        if (buffer.containsKey(owner)) {
+            Army curr = buffer.get(owner);
+            curr.mergeForce(enemy);
+        } else {
+            buffer.put(owner, enemy);
+        }
+    }
+
+    /**
+     * Add attackers
+     *
+     * @param attacker is the army that attack the territory
+     */
+    public void bufferAttacker(Army attacker) {
+        bufferEnemy(attacker, attackerBuffer);
+    }
+
+    /**
+     * Add enemy spies
+     *
+     * @param spies is the spies from enemy
+     */
+    public void addEnemySpies(Army spies) {
+        bufferEnemy(spies, enemySpiesBuffer);
     }
 
 }
