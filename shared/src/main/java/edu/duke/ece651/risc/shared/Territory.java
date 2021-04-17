@@ -7,7 +7,7 @@ import java.util.*;
 
 /**
  * An class represents a territory
- * <p>
+ *
  * Annotation JsonIdentityInfo is added for bidirectional serialization
  */
 @JsonIdentityInfo(
@@ -22,6 +22,7 @@ public class Territory {
     private int size;
     private int foodProd;
     private int techProd;
+    private int cloaking;
 
     /**
      * Add for Jackson deserialization
@@ -43,6 +44,7 @@ public class Territory {
         this.size = 0;
         this.foodProd = 0;
         this.techProd = 0;
+        this.cloaking = 0;
     }
 
     /**
@@ -62,6 +64,7 @@ public class Territory {
         this.size = size;
         this.foodProd = foodProd;
         this.techProd = techProd;
+        this.cloaking = 0;
     }
 
     /**
@@ -334,7 +337,6 @@ public class Territory {
 
     }
 
-
     /**
      * Check if the two territories belong to the same owner
      *
@@ -343,6 +345,22 @@ public class Territory {
      */
     public boolean belongToSameOwner(Territory terr) {
         return ownerName.equals(terr.getOwnerName());
+    }
+
+    /**
+     * Add cloaking
+     */
+    public void addCloaking() {
+        cloaking += 3;
+    }
+
+    /**
+     * Use cloaking
+     */
+    public void useCloaking() {
+        if (cloaking > 0) {
+            cloaking -= 1;
+        }
     }
 
 
