@@ -25,9 +25,7 @@ public class Territory {
     private int foodProd;
     private int techProd;
     private int cloaking;
-    private Army mySpies;
     private Map<String, Army> spies;
-    private Army tempSpies;
     private Map<String, Army> spyBuffer;
     private int tempCloaking;
 
@@ -64,9 +62,7 @@ public class Territory {
         this.foodProd = foodProd;
         this.techProd = techProd;
         this.cloaking = 0;
-        this.mySpies = null;
         this.spies = new HashMap<>();
-        this.tempSpies = null;
         this.spyBuffer = new HashMap<>();
         this.tempCloaking = 0;
     }
@@ -92,11 +88,6 @@ public class Territory {
             this.myArmy = new Army(terr.myArmy);
         }
 
-        if (terr.mySpies == null) {
-            mySpies = null;
-        } else {
-            this.mySpies = new Army(terr.mySpies);
-        }
 
         this.spies = new HashMap<>();
         for (Entry<String, Army> e : terr.spies.entrySet()) {
@@ -107,7 +98,6 @@ public class Territory {
         // shallow copy
         this.neighbours = terr.neighbours;
         this.attackerBuffer = terr.attackerBuffer;
-        this.tempSpies = terr.tempSpies;
         this.spyBuffer = terr.spyBuffer;
     }
 
@@ -418,18 +408,6 @@ public class Territory {
     }
 
     /**
-     * Get the number of spies
-     *
-     * @return the number of spies
-     */
-    public int getNumSpies() {
-        if (mySpies == null) {
-            return 0;
-        }
-        return mySpies.getNumSoldiers();
-    }
-
-    /**
      * Get the number of spies of the given enemy
      *
      * @param name is the name of the enemy
@@ -442,46 +420,6 @@ public class Territory {
         return spies.get(name).getNumSoldiers();
     }
 
-    /**
-     * Add my spies
-     *
-     * @param numSpies is the number of spies
-     */
-    public void addMySpies(int numSpies) {
-        if (mySpies == null) {
-            mySpies = new Army(ownerName, numSpies, "0");
-        } else {
-            mySpies.addSoldiers(numSpies, "0");
-        }
-        bufferMySpies(numSpies);
-    }
-
-    /**
-     * Buffer my spies
-     *
-     * @param numSpies is the number of spies
-     */
-    public void bufferMySpies(int numSpies) {
-        if (tempSpies == null) {
-            tempSpies = new Army(ownerName, numSpies, "0");
-        } else {
-            tempSpies.addSoldiers(numSpies, "0");
-        }
-    }
-
-    /**
-     * Remove my spies
-     *
-     * @param numSpies is the number of spies
-     */
-    public void removeMySpies(int numSpies) {
-        if (mySpies != null) {
-            mySpies.removeSoldiers(numSpies, "0");
-        }
-        if (tempSpies != null) {
-            tempSpies.removeSoldiers(numSpies, "0");
-        }
-    }
 
     /**
      * Add enemy spies
@@ -518,47 +456,6 @@ public class Territory {
     }
 
     /**
-     * Add my spies or enemy spies
-     *
-     * @param name     is the player name
-     * @param numSpies is the number spies
-     */
-    public void bufferSpies(String name, int numSpies) {
-        if (ownerName.equals(name)) {
-            bufferMySpies(numSpies);
-        } else {
-            Army spies = new Army(name, numSpies, "0");
-            bufferEnemySpies(spies);
-        }
-    }
-
-    /**
-     * Remove my spies or enemy spies
-     *
-     * @param name     is the player name
-     * @param numSpies is the number of spies
-     */
-    public void removeSpies(String name, int numSpies) {
-        if (ownerName.equals(name)) {
-            removeMySpies(numSpies);
-        } else {
-            removeEnemySpies(name, numSpies);
-        }
-    }
-
-
-    /**
-     * Synchronize mySpies with tempSpies
-     */
-    protected void syncMySpies() {
-        if (tempSpies == null) {
-            mySpies = null;
-        } else {
-            mySpies = new Army(tempSpies);
-        }
-    }
-
-    /**
      * Synchronize spies with spyBuffer
      */
     protected void syncBuffer() {
@@ -572,20 +469,7 @@ public class Territory {
      * Take effect of the spy move
      */
     public void effectSpyMove() {
-        syncMySpies();
         syncBuffer();
-    }
-
-    /**
-     * Get the latest number of my spies
-     *
-     * @return the latest number of my spies
-     */
-    protected int getLatestNumSpies() {
-        if (tempSpies == null) {
-            return 0;
-        }
-        return tempSpies.getNumSoldiers();
     }
 
     /**
@@ -594,7 +478,7 @@ public class Territory {
      * @param name is the player name
      * @return the latest number of my spies
      */
-    protected int getLatestNumEnemySpies(String name) {
+    protected int getBufferedNumSpies(String name) {
         if (!spyBuffer.containsKey(name)) {
             return 0;
         }
