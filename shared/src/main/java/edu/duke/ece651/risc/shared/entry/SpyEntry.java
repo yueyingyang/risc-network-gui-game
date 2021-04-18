@@ -5,6 +5,8 @@ import edu.duke.ece651.risc.shared.GameMap;
 import edu.duke.ece651.risc.shared.PlayerInfo;
 import edu.duke.ece651.risc.shared.Territory;
 
+import java.beans.ConstructorProperties;
+
 /**
  * An entry used to upgrade type-0 soldiers to spies
  */
@@ -17,6 +19,7 @@ public class SpyEntry extends BasicEntry {
      * @param numSoldiers is the number of soldiers
      * @param playerName  is the player name
      */
+    @ConstructorProperties({"toName", "numSoldiers", "playerName"})
     public SpyEntry(String toName, int numSoldiers, String playerName) {
         super(null, toName, numSoldiers, playerName, null, null);
     }

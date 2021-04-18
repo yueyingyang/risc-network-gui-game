@@ -3,6 +3,8 @@ package edu.duke.ece651.risc.shared.entry;
 import edu.duke.ece651.risc.shared.GameMap;
 import edu.duke.ece651.risc.shared.PlayerInfo;
 
+import java.beans.ConstructorProperties;
+
 /**
  * An class represents an entry to research the cloaking
  */
@@ -13,6 +15,7 @@ public class CloakingTechEntry extends BasicEntry {
      *
      * @param playerName is the player name
      */
+    @ConstructorProperties("playerName")
     public CloakingTechEntry(String playerName) {
         super(null, null, -1, playerName, null, null);
     }

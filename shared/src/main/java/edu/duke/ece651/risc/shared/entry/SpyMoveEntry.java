@@ -4,6 +4,8 @@ import edu.duke.ece651.risc.shared.GameMap;
 import edu.duke.ece651.risc.shared.PlayerInfo;
 import edu.duke.ece651.risc.shared.Territory;
 
+import java.beans.ConstructorProperties;
+
 /**
  * An entry to move the spy
  */
@@ -16,6 +18,7 @@ public class SpyMoveEntry extends BasicEntry {
      * @param numSoldiers is the number of soldiers
      * @param playerName  is the player name
      */
+    @ConstructorProperties({"fromName", "toName", "numSoldiers", "playerName"})
     public SpyMoveEntry(String fromName, String toName, int numSoldiers,
                         String playerName) {
         super(fromName, toName, numSoldiers, playerName, "0", null);
