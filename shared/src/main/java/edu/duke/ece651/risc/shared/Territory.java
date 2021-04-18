@@ -448,6 +448,7 @@ public class Territory {
         for (Army spies : spyBuffer.values()) {
             bufferArmy(spies, spyCamp);
         }
+        spyBuffer = new HashMap<>();
     }
 
     /**
