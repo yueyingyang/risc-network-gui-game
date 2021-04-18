@@ -188,16 +188,29 @@ class TerritoryTest {
     @Test
     public void test_cloaking() {
         Territory terr = new Territory("NANJING");
-        terr.addCloaking();
+        // first turn
+        terr.bufferCloaking();
+        assertEquals(3, terr.getTempCloaking());
+        assertEquals(0, terr.getCloaking());
+
+        terr.consumeCloaking();
+        assertEquals(0, terr.getCloaking());
+
+        terr.effectCloaking();
         assertEquals(3, terr.getCloaking());
-        terr.useCloaking();
+        assertEquals(0, terr.getTempCloaking());
+
+        // second turn
+        terr.bufferCloaking();
+        terr.bufferCloaking();
+        terr.consumeCloaking();
+        assertEquals(6, terr.getTempCloaking());
         assertEquals(2, terr.getCloaking());
-        terr.useCloaking();
-        assertEquals(1, terr.getCloaking());
-        terr.useCloaking();
-        assertEquals(0, terr.getCloaking());
-        terr.useCloaking();
-        assertEquals(0, terr.getCloaking());
+
+        terr.effectCloaking();
+        assertEquals(8, terr.getCloaking());
+        assertEquals(0, terr.getTempCloaking());
+
     }
 
     @Test

@@ -29,6 +29,7 @@ public class Territory {
     private Map<String, Army> enemySpiesBuffer;
     private Army tempSpies;
     private Map<String, Army> tempBuffer;
+    private int tempCloaking;
 
     /**
      * Add for Jackson deserialization
@@ -67,6 +68,7 @@ public class Territory {
         this.enemySpiesBuffer = new HashMap<>();
         this.tempSpies = null;
         this.tempBuffer = new HashMap<>();
+        this.tempCloaking = 0;
     }
 
     /**
@@ -88,6 +90,7 @@ public class Territory {
         for (Entry<String, Army> e : terr.enemySpiesBuffer.entrySet()) {
             this.enemySpiesBuffer.put(e.getKey(), new Army(e.getValue()));
         }
+        this.tempCloaking = terr.tempCloaking;
 
         // shallow copy
         this.neighbours = terr.neighbours;
@@ -385,31 +388,6 @@ public class Territory {
     }
 
     /**
-     * Add cloaking
-     */
-    public void addCloaking() {
-        cloaking += 3;
-    }
-
-    /**
-     * Use cloaking
-     */
-    public void useCloaking() {
-        if (cloaking > 0) {
-            cloaking -= 1;
-        }
-    }
-
-    /**
-     * Get the cloaking
-     *
-     * @return the cloaking
-     */
-    public int getCloaking() {
-        return cloaking;
-    }
-
-    /**
      * Get the number of spies
      *
      * @return the number of spies
@@ -611,5 +589,48 @@ public class Territory {
         }
         return false;
     }
+
+    /**
+     * Add cloaking
+     */
+    public void bufferCloaking() {
+        tempCloaking += 3;
+    }
+
+    /**
+     * Take effect of the cloaking
+     */
+    public void effectCloaking() {
+        cloaking += tempCloaking;
+        tempCloaking = 0;
+    }
+
+    /**
+     * Use cloaking
+     */
+    public void consumeCloaking() {
+        if (cloaking > 0) {
+            cloaking -= 1;
+        }
+    }
+
+    /**
+     * Get the cloaking
+     *
+     * @return the cloaking
+     */
+    protected int getCloaking() {
+        return cloaking;
+    }
+
+    /**
+     * Get the temp cloaking
+     *
+     * @return the temp cloaking
+     */
+    protected int getTempCloaking() {
+        return tempCloaking;
+    }
+
 
 }
