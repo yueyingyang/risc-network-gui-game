@@ -26,9 +26,9 @@ public class Territory {
     private int techProd;
     private int cloaking;
     private Army mySpies;
-    private Map<String, Army> enemySpiesBuffer;
+    private Map<String, Army> spies;
     private Army tempSpies;
-    private Map<String, Army> tempBuffer;
+    private Map<String, Army> spyBuffer;
     private int tempCloaking;
 
     /**
@@ -65,9 +65,9 @@ public class Territory {
         this.techProd = techProd;
         this.cloaking = 0;
         this.mySpies = null;
-        this.enemySpiesBuffer = new HashMap<>();
+        this.spies = new HashMap<>();
         this.tempSpies = null;
-        this.tempBuffer = new HashMap<>();
+        this.spyBuffer = new HashMap<>();
         this.tempCloaking = 0;
     }
 
@@ -98,9 +98,9 @@ public class Territory {
             this.mySpies = new Army(terr.mySpies);
         }
 
-        this.enemySpiesBuffer = new HashMap<>();
-        for (Entry<String, Army> e : terr.enemySpiesBuffer.entrySet()) {
-            this.enemySpiesBuffer.put(e.getKey(), new Army(e.getValue()));
+        this.spies = new HashMap<>();
+        for (Entry<String, Army> e : terr.spies.entrySet()) {
+            this.spies.put(e.getKey(), new Army(e.getValue()));
         }
         this.tempCloaking = terr.tempCloaking;
 
@@ -108,7 +108,7 @@ public class Territory {
         this.neighbours = terr.neighbours;
         this.attackerBuffer = terr.attackerBuffer;
         this.tempSpies = terr.tempSpies;
-        this.tempBuffer = terr.tempBuffer;
+        this.spyBuffer = terr.spyBuffer;
     }
 
     /**
@@ -355,13 +355,15 @@ public class Territory {
         ownerName = winner.getOwnerName();
         myArmy = winner;
         attackerBuffer = new HashMap<>();
+        /*
         addEnemySpies(mySpies);
-        mySpies = enemySpiesBuffer.get(ownerName);
+        mySpies = spies.get(ownerName);
         if (mySpies == null) {
             tempSpies = null;
         } else {
             tempSpies = new Army(mySpies);
         }
+         */
     }
 
     /**
@@ -434,10 +436,10 @@ public class Territory {
      * @return the number of spies of the enemy
      */
     public int getNumEnemySpies(String name) {
-        if (!enemySpiesBuffer.containsKey(name)) {
+        if (!spies.containsKey(name)) {
             return 0;
         }
-        return enemySpiesBuffer.get(name).getNumSoldiers();
+        return spies.get(name).getNumSoldiers();
     }
 
     /**
@@ -484,11 +486,11 @@ public class Territory {
     /**
      * Add enemy spies
      *
-     * @param spies is the spies from enemy
+     * @param enemySpies is the spies from enemy
      */
-    public void addEnemySpies(Army spies) {
-        bufferEnemy(spies, enemySpiesBuffer);
-        bufferEnemy(new Army(spies), tempBuffer);
+    public void addEnemySpies(Army enemySpies) {
+        bufferEnemy(enemySpies, spies);
+        bufferEnemy(new Army(enemySpies), spyBuffer);
     }
 
     /**
@@ -497,7 +499,7 @@ public class Territory {
      * @param spies is the spies from enemy
      */
     public void bufferEnemySpies(Army spies) {
-        bufferEnemy(spies, tempBuffer);
+        bufferEnemy(spies, spyBuffer);
     }
 
     /**
@@ -507,11 +509,11 @@ public class Territory {
      * @param numSpies is the number of spies
      */
     public void removeEnemySpies(String name, int numSpies) {
-        if (enemySpiesBuffer.containsKey(name)) {
-            enemySpiesBuffer.get(name).removeSoldiers(numSpies, "0");
+        if (spies.containsKey(name)) {
+            spies.get(name).removeSoldiers(numSpies, "0");
         }
-        if (tempBuffer.containsKey(name)) {
-            tempBuffer.get(name).removeSoldiers(numSpies, "0");
+        if (spyBuffer.containsKey(name)) {
+            spyBuffer.get(name).removeSoldiers(numSpies, "0");
         }
     }
 
@@ -557,12 +559,12 @@ public class Territory {
     }
 
     /**
-     * Synchronize enemySpiesBuffer with tempBuffer
+     * Synchronize spies with spyBuffer
      */
     protected void syncBuffer() {
-        enemySpiesBuffer = new HashMap<>();
-        for (Entry<String, Army> e : tempBuffer.entrySet()) {
-            this.enemySpiesBuffer.put(e.getKey(), new Army(e.getValue()));
+        spies = new HashMap<>();
+        for (Entry<String, Army> e : spyBuffer.entrySet()) {
+            this.spies.put(e.getKey(), new Army(e.getValue()));
         }
     }
 
@@ -593,10 +595,10 @@ public class Territory {
      * @return the latest number of my spies
      */
     protected int getLatestNumEnemySpies(String name) {
-        if (!tempBuffer.containsKey(name)) {
+        if (!spyBuffer.containsKey(name)) {
             return 0;
         }
-        return tempBuffer.get(name).getNumSoldiers();
+        return spyBuffer.get(name).getNumSoldiers();
     }
 
     /**
