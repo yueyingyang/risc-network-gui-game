@@ -42,7 +42,7 @@ public class Territory {
      * @param name is the name of the territory
      */
     public Territory(String name) {
-        this(name, 0, 0, 0);
+        this(name, 5, 20, 20);
     }
 
     /**
