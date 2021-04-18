@@ -419,21 +419,23 @@ public class Territory {
     /**
      * Buffer spies
      *
-     * @param spies is an army of spies
+     * @param playerName is the player name
+     * @param numSpies   is the number spies
      */
-    public void bufferSpies(Army spies) {
+    public void bufferSpies(String playerName, int numSpies) {
+        Army spies = new Army(playerName, numSpies, "0");
         bufferArmy(spies, spyBuffer);
     }
 
     /**
      * Remove spies
      *
-     * @param name     is the player name
+     * @param playerName     is the player name
      * @param numSpies is the number of spyCamp
      */
-    public void removeSpies(String name, int numSpies) {
-        if (spyCamp.containsKey(name)) {
-            spyCamp.get(name).removeSoldiers(numSpies, "0");
+    public void removeSpies(String playerName, int numSpies) {
+        if (spyCamp.containsKey(playerName)) {
+            spyCamp.get(playerName).removeSoldiers(numSpies, "0");
         }
     }
 
@@ -447,35 +449,35 @@ public class Territory {
     }
 
     /**
-     * Get the number of spies
+     * Get the number of spyCamp of the given player
      *
-     * @param name is the player name
-     * @return the number of my spyCamp
+     * @param playerName is the playerName
+     * @return the number of spyCamp of the enemy
      */
-    protected int getBufferedNumSpies(String name) {
-        if (!spyBuffer.containsKey(name)) {
+    public int getNumSpies(String playerName) {
+        if (!spyCamp.containsKey(playerName)) {
             return 0;
         }
-        return spyBuffer.get(name).getNumSoldiers();
+        return spyCamp.get(playerName).getNumSoldiers();
     }
 
     /**
-     * Get the number of spyCamp of the given player
+     * Get the number of spies
      *
-     * @param name is the playerName
-     * @return the number of spyCamp of the enemy
+     * @param playerName is the player playerName
+     * @return the number of my spyCamp
      */
-    public int getNumSpies(String name) {
-        if (!spyCamp.containsKey(name)) {
+    protected int getBufferedNumSpies(String playerName) {
+        if (!spyBuffer.containsKey(playerName)) {
             return 0;
         }
-        return spyCamp.get(name).getNumSoldiers();
+        return spyBuffer.get(playerName).getNumSoldiers();
     }
 
     /**
      * Check if the territory is an immediately adjacent enemy to the player
      *
-     * @param playerName is the name of the player
+     * @param playerName is the player name
      * @return ture if the the territory is an immediately adjacent enemy to
      * the player else false
      */
