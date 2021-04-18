@@ -420,5 +420,48 @@ class TerritoryTest {
         assertFalse(terr0.isAdjacentEnemy(name0));
     }
 
+    @Test
+    public void test_isVisible() {
+        String name0 = "Green";
+        String name1 = "Yellow";
+        String name2 = "Blue";
+        PlayerInfo myInfo0 = new PlayerInfo(name0);
+        PlayerInfo myInfo1 = new PlayerInfo(name1);
+        PlayerInfo myInfo2 = new PlayerInfo(name2);
+
+        AbstractMapFactory f = new V1MapFactory();
+        List<String> names = Arrays.asList(name0, name1, name2);
+        GameMap myMap = f.createMap(names, 2);
+        Territory terr0 = myMap.getTerritory("0");
+
+        // my territory
+        assertTrue(terr0.isVisible(myInfo0));
+        assertNotNull(myInfo0.getPrevSeenTerr("0"));
+
+        // adjacent
+        assertFalse(terr0.isVisible(myInfo1));
+        // not adjacent, no spy
+        assertTrue(terr0.isVisible(myInfo2));
+
+        terr0.addEnemySpies(new Army(name1, 1));
+        // not adjacent, has spy
+        assertTrue(terr0.isVisible(myInfo1));
+
+        terr0.bufferCloaking();
+        terr0.effectCloaking();
+        // my territory
+        assertTrue(terr0.isVisible(myInfo0));
+        // adjacent, hide, no spy
+        assertTrue(terr0.isVisible(myInfo1));
+        // not adjacent, hide, has spy
+        assertFalse(terr0.isVisible(myInfo2));
+
+        terr0.addEnemySpies(new Army(name2, 1));
+        // adjacent, hide, has spy
+        assertTrue(terr0.isVisible(myInfo1));
+
+
+    }
+
 
 }
