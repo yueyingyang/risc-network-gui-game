@@ -110,7 +110,7 @@ public class Army {
      * @param type        is the type of the soldier
      */
     public void removeSoldiers(int numSoldiers, String type) {
-        if (numSoldiers <= Collections.frequency(force, type)) {
+        if (numSoldiers <= getNumSoldiers(type)) {
             Soldier s = new Soldier(type);
             for (int i = 0; i < numSoldiers; i++) {
                 force.remove(s);
@@ -168,8 +168,8 @@ public class Army {
      * @param myArmy is the army from the same owner
      */
     public void mergeForce(Army myArmy) {
-        if (myArmy.getOwnerName().equals(getOwnerName())) {
-            getForce().addAll(myArmy.getForce());
+        if (myArmy.ownerName.equals(ownerName)) {
+            force.addAll(myArmy.force);
         }
     }
 
