@@ -11,6 +11,13 @@
         <a class="ui red ribbon label" style="user-select: auto;">Attack</a>
         <form class="ui form" id="attack">
             <div th:insert="fragments/action_form_fields.html :: move_attack_fields(${soldierType})"></div>
+            <div class="inline field">
+                <div class="ui toggle checkbox">
+                    <input type="checkbox" tabindex="0" class="hidden">
+                    <label>Use Ship</label>
+                </div>
+                <label></label>
+            </div>
             <button class="ui submit button tiny red basic" style="user-select: auto;">
                 Submit
             </button>
@@ -26,7 +33,7 @@
         <p></p>
     </div>
 </div>
-<div class="column" style="user-select: auto;">
+<div class="column" style="user-select: auto;" hidden>
     <div class="ui segment" style="user-select: auto;">
         <a class="ui orange right ribbon label" style="user-select: auto;">Technology Level Upgrade</a>
         <form class="ui form" id="tech">

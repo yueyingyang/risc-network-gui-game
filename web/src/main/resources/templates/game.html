@@ -28,10 +28,18 @@
         <div class="seven wide column" id="map_box" style="width:600px; height:400px; padding-top: 80px">
         </div>
         <div class="eight wide column" id="action_box" style="user-select: auto;">
-            <div class="ui column grid">
+            <div class="ui secondary pointing menu" style="margin-bottom: 5px">
+                <a class="item active" style="user-select: auto;">
+                    Attack and Move
+                </a>
+                <a class="item" style="user-select: auto;">
+                    Upgrade
+                </a>
+            </div>
+            <div class="ui column grid" style="margin: 5px 0 0 0 ">
                 <div style="display: block" th:insert="fragments/action_form.html :: action_form(${soldierType})"></div>
                 <div class="ui vertical labeled icon buttons">
-                    <button class="ui button toggle" id="commit" style="user-select: auto;">
+                    <button class="ui button toggle" id="commit" style="margin-top:5px; user-select: auto;">
                         <i class="play icon" style="user-select: auto;"></i>
                         Commit for ending this turn's order issue
                     </button>

@@ -1,6 +1,14 @@
 // Enable select
 $('select.dropdown')
     .dropdown();
+$('.ui.checkbox')
+    .checkbox()
+$('.ui.menu a.item').on('click', function() {
+    $(this)
+        .addClass('active')
+        .siblings()
+        .removeClass('active');
+})
 
 // Set interaction of action tabs
 $('#actions a.item').on('click', function () {
