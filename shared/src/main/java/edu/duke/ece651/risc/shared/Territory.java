@@ -619,7 +619,7 @@ public class Territory {
      *
      * @return the cloaking
      */
-    protected int getCloaking() {
+    public int getCloaking() {
         return cloaking;
     }
 

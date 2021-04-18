@@ -11,9 +11,12 @@ public class PlayerInfo {
     private int foodResource;
     private int techResource;
     private boolean requested;
+    private boolean cloakingTech;
 
 
-    public PlayerInfo(){}
+    public PlayerInfo() {
+    }
+
     /**
      * Construct a PlayerInfo object
      *
@@ -28,6 +31,7 @@ public class PlayerInfo {
         this.foodResource = foodResource;
         this.techResource = techResource;
         this.requested = false;
+        this.cloakingTech = false;
     }
 
     /**
@@ -133,5 +137,20 @@ public class PlayerInfo {
         }
     }
 
-    
+    /**
+     * Research the cloakingTech
+     */
+    public void researchCloakingTech() {
+        cloakingTech = true;
+        techResource -= 100;
+    }
+
+    /**
+     * Check whether a player has the cloaking tech
+     *
+     * @return true if the player has else false
+     */
+    public boolean hasCloakingTech() {
+        return cloakingTech;
+    }
 }

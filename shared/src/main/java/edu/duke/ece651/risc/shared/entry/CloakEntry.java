@@ -2,11 +2,12 @@ package edu.duke.ece651.risc.shared.entry;
 
 import edu.duke.ece651.risc.shared.GameMap;
 import edu.duke.ece651.risc.shared.PlayerInfo;
+import edu.duke.ece651.risc.shared.Territory;
 
 import java.beans.ConstructorProperties;
 
 /**
- * An class represents a cloak entry
+ * An class represents an entry to increase the number of turns to hide a territory
  */
 public class CloakEntry extends BasicEntry {
 
@@ -29,8 +30,8 @@ public class CloakEntry extends BasicEntry {
      */
     @Override
     public void apply(GameMap myMap, PlayerInfo myInfo) {
-        // TODO
-        // effect immediately or next turn
+        Territory terr = myMap.getTerritory(toName);
+        terr.bufferCloaking();
         myInfo.consumeTech(20);
     }
 }
