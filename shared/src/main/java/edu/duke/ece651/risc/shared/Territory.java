@@ -27,7 +27,7 @@ public class Territory {
     private int cloaking;
     private Map<String, Army> spyCamp;
     private Map<String, Army> spyBuffer;
-    private int tempCloaking;
+    private int cloakingBuffer;
 
     /**
      * Add for Jackson deserialization
@@ -64,7 +64,7 @@ public class Territory {
         this.cloaking = 0;
         this.spyCamp = new HashMap<>();
         this.spyBuffer = new HashMap<>();
-        this.tempCloaking = 0;
+        this.cloakingBuffer = 0;
     }
 
     /**
@@ -80,7 +80,7 @@ public class Territory {
         this.foodProd = terr.foodProd;
         this.techProd = terr.techProd;
         this.cloaking = terr.cloaking;
-        this.tempCloaking = terr.tempCloaking;
+        this.cloakingBuffer = terr.cloakingBuffer;
 
         // deep copy
         if (terr.myArmy == null) {
@@ -386,7 +386,7 @@ public class Territory {
      * Get the number of soldier in the attacker with the given type
      *
      * @param playerName is the player name
-     * @param type is the type of the soldier
+     * @param type       is the type of the soldier
      * @return the number of soldiers in the attacker
      */
     public int getNumSoldiersInAttacker(String playerName, String type) {
@@ -432,8 +432,8 @@ public class Territory {
     /**
      * Remove spies
      *
-     * @param playerName     is the player name
-     * @param numSpies is the number of spyCamp
+     * @param playerName is the player name
+     * @param numSpies   is the number of spyCamp
      */
     public void removeSpies(String playerName, int numSpies) {
         if (spyCamp.containsKey(playerName)) {
@@ -499,15 +499,15 @@ public class Territory {
      * Add cloaking
      */
     public void bufferCloaking() {
-        tempCloaking += Constant.CLOAKING_TURNS;
+        cloakingBuffer += Constant.CLOAKING_TURNS;
     }
 
     /**
      * Take effect of the cloaking
      */
     public void effectCloaking() {
-        cloaking += tempCloaking;
-        tempCloaking = 0;
+        cloaking += cloakingBuffer;
+        cloakingBuffer = 0;
     }
 
     /**
@@ -534,7 +534,7 @@ public class Territory {
      * @return the temp cloaking
      */
     protected int getTempCloaking() {
-        return tempCloaking;
+        return cloakingBuffer;
     }
 
     /**
