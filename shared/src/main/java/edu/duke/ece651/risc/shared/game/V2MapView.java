@@ -67,8 +67,8 @@ public class V2MapView {
       if (full) {
         o.put("foodProd", t.getFoodProd());
         o.put("techProd", t.getTechProd());
-        for (int i = 0; i <= 6; i++) {
-          o.put("unit" + i, t.getNumSoldiersInArmy(Integer.toString(i)));//t.getNumSoldiersInArmy(""+i)
+        for (String s : GameUtil.getTypeList()) {
+          o.put("unit" + s, t.getNumSoldiersInArmy(s));//t.getNumSoldiersInArmy(""+i)
         }
       }
       o.put("x", point.x);
