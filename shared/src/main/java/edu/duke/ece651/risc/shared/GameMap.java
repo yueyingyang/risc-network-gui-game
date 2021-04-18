@@ -149,7 +149,7 @@ public class GameMap {
      *
      * @param start the starting territory
      * @param end   the end territory
-     * @param unit  how many unit of army to be moved
+     * @param unit  the number of army units to be moved
      * @return      the minimum cost of move
      */
     public int computeCost(Territory start, Territory end, int unit){
