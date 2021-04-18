@@ -245,34 +245,31 @@ class TerritoryTest {
         assertEquals(expect1, terr.getNumSpies(name));
         assertEquals(expect2, terr.getBufferedNumSpies(name));
     }
-/*
+
     @Test
-    @Disabled
     public void test_copy() {
         String name0 = "Green";
         String name1 = "Purple";
         String name2 = "Blue";
         String name3 = "Orange";
+
         Territory terr0 = new Territory("0");
         terr0.setOwnerName(name0);
         terr0.addSoldiersToArmy(4);
-        terr0.addMySpies(2);
-        terr0.addEnemySpies(new Army(name1, 3));
-        terr0.addEnemySpies(new Army(name2, 5));
-
+        terr0.addSpies(name0, 2);
+        terr0.addSpies(name1, 3);
         Territory terr1 = new Territory(terr0);
+
         terr0.removeSoldiersFromArmy(3);
-        terr0.addMySpies(6);
-        terr0.addEnemySpies(new Army(name1, 4));
+        terr0.addSpies(name1, 6);
 
         assertEquals(1, terr0.getNumSoldiersInArmy());
-        assertEquals(8, terr0.getNumSpies());
-        assertEquals(7, terr0.getNumEnemySpies(name1));
+        assertEquals(2, terr0.getNumSpies(name0));
+        assertEquals(9, terr0.getNumSpies(name1));
 
         assertEquals(4, terr1.getNumSoldiersInArmy());
-        assertEquals(2, terr1.getNumSpies());
-        assertEquals(3, terr1.getNumEnemySpies(name1));
-        assertEquals(5, terr1.getNumEnemySpies(name2));
+        assertEquals(2, terr1.getNumSpies(name0));
+        assertEquals(3, terr1.getNumSpies(name1));
 
         Territory terr2 = new Territory("1");
         terr2.setOwnerName(name2);
@@ -281,7 +278,7 @@ class TerritoryTest {
         assertEquals(terr3.getOwnerName(), name2);
         assertEquals(terr2.getOwnerName(), name3);
     }
-*/
+
 
     @Test
     public void test_isAdjacentEnemy() {
