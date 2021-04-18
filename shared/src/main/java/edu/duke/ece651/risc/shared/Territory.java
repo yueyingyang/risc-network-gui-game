@@ -219,7 +219,7 @@ public class Territory {
      * @param numSoldiers is the number of soldiers
      */
     public void addSoldiersToArmy(int numSoldiers) {
-        addSoldiers(numSoldiers, myArmy, "0");
+        addSoldiersToArmy(numSoldiers, "0");
     }
 
     /**
@@ -229,7 +229,11 @@ public class Territory {
      * @param type        is the type of the soldier
      */
     public void addSoldiersToArmy(int numSoldiers, String type) {
-        addSoldiers(numSoldiers, myArmy, type);
+        if (myArmy == null) {
+            myArmy = new Army(ownerName, numSoldiers, type);
+        } else {
+            myArmy.addSoldiers(numSoldiers, type);
+        }
     }
 
     /**
@@ -430,28 +434,17 @@ public class Territory {
     }
 
     /**
-     * Add soldiers to an army
-     *
-     * @param numSoldiers is the number of soldiers
-     * @param curr        is the an army
-     * @param type        is the type of soldier
-     */
-    protected void addSoldiers(int numSoldiers, Army curr, String type) {
-        if (curr == null) {
-            curr = new Army(ownerName, numSoldiers, type);
-        } else {
-            curr.addSoldiers(numSoldiers, type);
-        }
-    }
-
-    /**
      * Add my spies
      *
      * @param numSpies is the number of spies
      */
     public void addMySpies(int numSpies) {
-        addSoldiers(numSpies, mySpies, "0");
-        addSoldiers(numSpies, tempSpies, "0");
+        if (mySpies == null) {
+            mySpies = new Army(ownerName, numSpies, "0");
+        } else {
+            mySpies.addSoldiers(numSpies, "0");
+        }
+        bufferMySpies(numSpies);
     }
 
     /**
@@ -470,7 +463,11 @@ public class Territory {
      * @param numSpies is the number of spies
      */
     public void bufferMySpies(int numSpies) {
-        addSoldiers(numSpies, tempSpies, "0");
+        if (tempSpies == null) {
+            tempSpies = new Army(ownerName, numSpies, "0");
+        } else {
+            tempSpies.addSoldiers(numSpies, "0");
+        }
     }
 
     /**

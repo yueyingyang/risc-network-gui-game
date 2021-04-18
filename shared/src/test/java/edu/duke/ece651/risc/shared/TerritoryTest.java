@@ -203,7 +203,6 @@ class TerritoryTest {
         assertEquals(0, terr.getCloaking());
     }
 
-    @Disabled
     @Test
     public void test_mySpies() {
         Territory terr = new Territory("NANJING");
