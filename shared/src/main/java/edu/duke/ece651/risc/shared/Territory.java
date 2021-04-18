@@ -410,9 +410,11 @@ public class Territory {
     /**
      * Add spies
      *
-     * @param spies is an army of spies
+     * @param playerName is the player name
+     * @param numSpies   is the number spies
      */
-    public void addSpies(Army spies) {
+    public void addSpies(String playerName, int numSpies) {
+        Army spies = new Army(playerName, numSpies, "0");
         bufferArmy(spies, spyCamp);
     }
 
