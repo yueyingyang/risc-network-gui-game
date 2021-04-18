@@ -543,7 +543,11 @@ public class Territory {
      * Synchronize mySpies with tempSpies
      */
     protected void syncMySpies() {
-        mySpies = new Army(tempSpies);
+        if (tempSpies == null) {
+            mySpies = null;
+        } else {
+            mySpies = new Army(tempSpies);
+        }
     }
 
     /**

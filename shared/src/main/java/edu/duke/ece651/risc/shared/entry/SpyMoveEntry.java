@@ -6,8 +6,8 @@ import edu.duke.ece651.risc.shared.Territory;
 
 public class SpyMoveEntry extends BasicEntry {
     public SpyMoveEntry(String fromName, String toName, int numSoldiers,
-                        String playerName, String fromType) {
-        super(fromName, toName, numSoldiers, playerName, fromType, null);
+                        String playerName) {
+        super(fromName, toName, numSoldiers, playerName, "0", null);
     }
 
     @Override
