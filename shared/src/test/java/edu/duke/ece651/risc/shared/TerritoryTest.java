@@ -220,6 +220,8 @@ class TerritoryTest {
         String name0 = "Green";
         String name1 = "Yellow";
         String name2 = "Blue";
+
+        // round one
         terr.addSpies(name0, 3);
         test_spies(terr, name0, 3, 0);
         terr.addSpies(name0, 2);
@@ -239,6 +241,14 @@ class TerritoryTest {
         test_spies(terr, name0, 9, 0);
         test_spies(terr, name1, 8, 0);
         test_spies(terr, name2, 2, 0);
+
+        // round 2
+        terr.bufferSpies(name0, 3);
+        test_spies(terr, name0, 9, 3);
+        terr.removeSpies(name0, 2);
+        test_spies(terr, name0, 7, 3);
+        terr.effectSpyMove();
+        test_spies(terr, name0, 10, 0);
     }
 
     private void test_spies(Territory terr, String name, int expect1, int expect2) {
