@@ -1,6 +1,9 @@
 display_store_modal = () => {
     $('#store').modal('show');
 }
+hide_buy_modal = () => {
+    $('#store').modal('hide');
+}
 products = [
     {
         "name": "Missile",
@@ -51,8 +54,8 @@ products.forEach(item => {
 })
 // Calculate total price
 const update_total = () => {
-    const type = $("form#buy [name*='type']").val().toLowerCase()
-    const amount = parseInt($("form#buy [name*='amount']").val())
+    const type = $("form#buy [name*='fromType']").val().toLowerCase()
+    const amount = parseInt($("form#buy [name*='soldierNum']").val())
     console.log(type)
     console.log(amount)
     $("#total").empty().append(product_price[type] * amount)
