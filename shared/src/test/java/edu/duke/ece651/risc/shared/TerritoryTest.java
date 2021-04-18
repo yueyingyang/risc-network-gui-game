@@ -1,6 +1,5 @@
 package edu.duke.ece651.risc.shared;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;

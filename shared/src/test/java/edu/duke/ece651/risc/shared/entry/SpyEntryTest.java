@@ -1,7 +1,6 @@
 package edu.duke.ece651.risc.shared.entry;
 
 import edu.duke.ece651.risc.shared.*;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -11,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SpyEntryTest {
 
-    @Disabled
     @Test
     public void test_apply() {
         AbstractMapFactory f = new V1MapFactory();
