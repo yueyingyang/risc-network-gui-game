@@ -2,6 +2,7 @@ package edu.duke.ece651.risc.shared;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import java.util.Map.Entry;
 
 import java.util.*;
@@ -65,7 +66,7 @@ public class Territory {
         this.mySpies = null;
         this.enemySpiesBuffer = new HashMap<>();
         this.tempSpies = null;
-        this.enemySpiesBuffer = new HashMap<>();
+        this.tempBuffer = new HashMap<>();
     }
 
     /**
@@ -218,7 +219,7 @@ public class Territory {
      * @param numSoldiers is the number of soldiers
      */
     public void addSoldiersToArmy(int numSoldiers) {
-        myArmy.addSoldiers(numSoldiers, "0");
+        addSoldiers(numSoldiers, myArmy, "0");
     }
 
     /**
@@ -228,7 +229,7 @@ public class Territory {
      * @param type        is the type of the soldier
      */
     public void addSoldiersToArmy(int numSoldiers, String type) {
-        myArmy.addSoldiers(numSoldiers, type);
+        addSoldiers(numSoldiers, myArmy, type);
     }
 
     /**
@@ -429,16 +430,28 @@ public class Territory {
     }
 
     /**
+     * Add soldiers to an army
+     *
+     * @param numSoldiers is the number of soldiers
+     * @param curr        is the an army
+     * @param type        is the type of soldier
+     */
+    protected void addSoldiers(int numSoldiers, Army curr, String type) {
+        if (curr == null) {
+            curr = new Army(ownerName, numSoldiers, type);
+        } else {
+            curr.addSoldiers(numSoldiers, type);
+        }
+    }
+
+    /**
      * Add my spies
      *
      * @param numSpies is the number of spies
      */
     public void addMySpies(int numSpies) {
-        if (mySpies == null) {
-            tempSpies = new Army(ownerName, numSpies);
-        } else {
-            tempSpies.addSoldiers(numSpies, "0");
-        }
+        addSoldiers(numSpies, mySpies, "0");
+        addSoldiers(numSpies, tempSpies, "0");
     }
 
     /**
@@ -447,7 +460,41 @@ public class Territory {
      * @param spies is the spies from enemy
      */
     public void addEnemySpies(Army spies) {
+        bufferEnemy(spies, enemySpiesBuffer);
+        bufferEnemy(new Army(spies), tempBuffer);
+    }
+
+    /**
+     * Buffer my spies
+     *
+     * @param numSpies is the number of spies
+     */
+    public void bufferMySpies(int numSpies) {
+        addSoldiers(numSpies, tempSpies, "0");
+    }
+
+    /**
+     * Buffer enemy spies
+     *
+     * @param spies is the spies from enemy
+     */
+    public void bufferEnemySpies(Army spies) {
         bufferEnemy(spies, tempBuffer);
+    }
+
+    /**
+     * Add my spies or enemy spies
+     *
+     * @param name     is the player name
+     * @param numSpies is the number spies
+     */
+    public void bufferSpies(String name, int numSpies) {
+        if (ownerName.equals(name)) {
+            bufferMySpies(numSpies);
+        } else {
+            Army spies = new Army(name, numSpies, "0");
+            bufferEnemySpies(spies);
+        }
     }
 
     /**
@@ -487,24 +534,12 @@ public class Territory {
         }
     }
 
-    /**
-     * Add my spies or enemy spies
-     *
-     * @param name     is the player name
-     * @param numSpies is the number spies
-     */
-    public void addSpies(String name, int numSpies) {
-        if (ownerName.equals(name)) {
-            addMySpies(numSpies);
-        } else {
-            Army spies = new Army(name, numSpies, "0");
-            addEnemySpies(spies);
-        }
-    }
-
     public void effectSpyMove() {
-        mySpies = tempSpies;
-        enemySpiesBuffer = tempBuffer;
+        mySpies = new Army(tempSpies);
+        enemySpiesBuffer = new HashMap<>();
+        for (Entry<String, Army> e : tempBuffer.entrySet()) {
+            this.enemySpiesBuffer.put(e.getKey(), new Army(e.getValue()));
+        }
     }
 
 }

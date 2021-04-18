@@ -15,6 +15,6 @@ public class SpyMoveEntry extends BasicEntry {
         Territory fromTerr = myMap.getTerritory(fromName);
         Territory toTerr = myMap.getTerritory(toName);
         fromTerr.removeSpies(playerName, numSoldiers);
-        toTerr.addSpies(playerName, numSoldiers);
+        toTerr.bufferSpies(playerName, numSoldiers);
     }
 }
