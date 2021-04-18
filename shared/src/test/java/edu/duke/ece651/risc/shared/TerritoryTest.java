@@ -376,6 +376,7 @@ class TerritoryTest {
         String name0 = "Green";
         String name1 = "Purple";
         String name2 = "Blue";
+        String name3 = "Orange";
         Territory terr0 = new Territory("0");
         terr0.setOwnerName(name0);
         terr0.addSoldiersToArmy(4);
@@ -396,6 +397,13 @@ class TerritoryTest {
         assertEquals(2, terr1.getNumSpies());
         assertEquals(3, terr1.getNumEnemySpies(name1));
         assertEquals(5, terr1.getNumEnemySpies(name2));
+
+        Territory terr2 = new Territory("1");
+        terr2.setOwnerName(name2);
+        Territory terr3 = new Territory(terr2);
+        terr2.setOwnerName(name3);
+        assertEquals(terr3.getOwnerName(), name2);
+        assertEquals(terr2.getOwnerName(), name3);
     }
 
     @Test
@@ -411,5 +419,6 @@ class TerritoryTest {
         assertTrue(terr0.isAdjacentEnemy(name2));
         assertFalse(terr0.isAdjacentEnemy(name0));
     }
+
 
 }

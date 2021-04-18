@@ -77,15 +77,27 @@ public class Territory {
      * @param terr is a territory
      */
     public Territory(Territory terr) {
-        // deep copy
+        // immutable
         this.name = terr.name;
         this.ownerName = terr.ownerName;
-        this.myArmy = new Army(terr.myArmy);
         this.size = terr.size;
         this.foodProd = terr.foodProd;
         this.techProd = terr.techProd;
         this.cloaking = terr.cloaking;
-        this.mySpies = new Army(terr.mySpies);
+
+        // deep copy
+        if (terr.myArmy == null) {
+            this.myArmy = null;
+        } else {
+            this.myArmy = new Army(terr.myArmy);
+        }
+
+        if (terr.mySpies == null) {
+            mySpies = null;
+        } else {
+            this.mySpies = new Army(terr.mySpies);
+        }
+
         this.enemySpiesBuffer = new HashMap<>();
         for (Entry<String, Army> e : terr.enemySpiesBuffer.entrySet()) {
             this.enemySpiesBuffer.put(e.getKey(), new Army(e.getValue()));
@@ -630,6 +642,24 @@ public class Territory {
      */
     protected int getTempCloaking() {
         return tempCloaking;
+    }
+
+    /**
+     * Check if the territory if visible to certain player
+     *
+     * @param myInfo is the playerInfo
+     * @return true if the territory is visible to the player else false
+     */
+    public boolean isVisible(PlayerInfo myInfo) {
+        String myName = myInfo.getName();
+        boolean ownTerr = ownerName.equals(myName);
+        boolean adjEnemy = cloaking == 0 && isAdjacentEnemy(myName);
+        boolean hasSpy = getNumEnemySpies(myName) > 0;
+        if (ownTerr || adjEnemy || hasSpy) {
+            myInfo.seeTerr(this);
+            return true;
+        }
+        return false;
     }
 
 

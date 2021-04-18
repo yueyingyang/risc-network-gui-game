@@ -2,6 +2,9 @@ package edu.duke.ece651.risc.shared;
 
 import edu.duke.ece651.risc.shared.game.GameUtil;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * A class represent player info
  */
@@ -12,6 +15,7 @@ public class PlayerInfo {
     private int techResource;
     private boolean requested;
     private boolean cloakingTech;
+    private Map<String, Territory> hasSeen;
 
 
     public PlayerInfo() {
@@ -32,6 +36,7 @@ public class PlayerInfo {
         this.techResource = techResource;
         this.requested = false;
         this.cloakingTech = false;
+        this.hasSeen = new HashMap<>();
     }
 
     /**
@@ -152,5 +157,26 @@ public class PlayerInfo {
      */
     public boolean hasCloakingTech() {
         return cloakingTech;
+    }
+
+    /**
+     * Save the information of a territory
+     *
+     * @param terr0 is a territory
+     */
+    public void seeTerr(Territory terr0) {
+        Territory terr1 = new Territory(terr0);
+        hasSeen.put(terr1.getName(), terr1);
+    }
+
+    /**
+     * Get the previously seen territory
+     *
+     * @param name is the name of the territory
+     * @return the previous seen territory, return null if the player haven't
+     * seen the territory before
+     */
+    public Territory getPrevSeenTerr(String name) {
+        return hasSeen.get(name);
     }
 }
