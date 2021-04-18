@@ -39,6 +39,7 @@ class PlayerInfoTest {
         assertFalse(myInfo.isRequested());
     }
 
+    /*
     @Test
     public void test_seeTerr() {
         String name0 = "Green";
@@ -68,5 +69,7 @@ class PlayerInfoTest {
         assertEquals(3, terr1.getNumEnemySpies(name1));
         assertEquals(5, terr1.getNumEnemySpies(name2));
     }
+
+     */
 
 }

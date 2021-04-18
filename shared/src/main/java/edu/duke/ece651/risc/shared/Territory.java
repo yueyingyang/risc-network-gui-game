@@ -25,7 +25,7 @@ public class Territory {
     private int foodProd;
     private int techProd;
     private int cloaking;
-    private Map<String, Army> spies;
+    private Map<String, Army> spyCamp;
     private Map<String, Army> spyBuffer;
     private int tempCloaking;
 
@@ -62,7 +62,7 @@ public class Territory {
         this.foodProd = foodProd;
         this.techProd = techProd;
         this.cloaking = 0;
-        this.spies = new HashMap<>();
+        this.spyCamp = new HashMap<>();
         this.spyBuffer = new HashMap<>();
         this.tempCloaking = 0;
     }
@@ -80,6 +80,7 @@ public class Territory {
         this.foodProd = terr.foodProd;
         this.techProd = terr.techProd;
         this.cloaking = terr.cloaking;
+        this.tempCloaking = terr.tempCloaking;
 
         // deep copy
         if (terr.myArmy == null) {
@@ -88,12 +89,10 @@ public class Territory {
             this.myArmy = new Army(terr.myArmy);
         }
 
-
-        this.spies = new HashMap<>();
-        for (Entry<String, Army> e : terr.spies.entrySet()) {
-            this.spies.put(e.getKey(), new Army(e.getValue()));
+        this.spyCamp = new HashMap<>();
+        for (Entry<String, Army> e : terr.spyCamp.entrySet()) {
+            this.spyCamp.put(e.getKey(), new Army(e.getValue()));
         }
-        this.tempCloaking = terr.tempCloaking;
 
         // shallow copy
         this.neighbours = terr.neighbours;
@@ -288,18 +287,18 @@ public class Territory {
     }
 
     /**
-     * Buffer enemy army
+     * Buffer army
      *
-     * @param enemy  is an enemy army
-     * @param buffer is buffer to store the enemy
+     * @param army   is an army
+     * @param buffer is a buffer to store the enemy
      */
-    protected void bufferEnemy(Army enemy, Map<String, Army> buffer) {
-        String owner = enemy.getOwnerName();
+    protected void bufferArmy(Army army, Map<String, Army> buffer) {
+        String owner = army.getOwnerName();
         if (buffer.containsKey(owner)) {
             Army curr = buffer.get(owner);
-            curr.mergeForce(enemy);
+            curr.mergeForce(army);
         } else {
-            buffer.put(owner, enemy);
+            buffer.put(owner, army);
         }
     }
 
@@ -309,7 +308,7 @@ public class Territory {
      * @param attacker is the army that attack the territory
      */
     public void bufferAttacker(Army attacker) {
-        bufferEnemy(attacker, attackerBuffer);
+        bufferArmy(attacker, attackerBuffer);
     }
 
     /**
@@ -347,7 +346,7 @@ public class Territory {
         attackerBuffer = new HashMap<>();
         /*
         addEnemySpies(mySpies);
-        mySpies = spies.get(ownerName);
+        mySpies = spyCamp.get(ownerName);
         if (mySpies == null) {
             tempSpies = null;
         } else {
@@ -407,61 +406,34 @@ public class Territory {
         return ownerName.equals(terr.getOwnerName());
     }
 
-    /**
-     * Get the number of spies of the given enemy
-     *
-     * @param name is the name of the enemy
-     * @return the number of spies of the enemy
-     */
-    public int getNumEnemySpies(String name) {
-        if (!spies.containsKey(name)) {
-            return 0;
-        }
-        return spies.get(name).getNumSoldiers();
-    }
-
 
     /**
-     * Add enemy spies
+     * Add spies
      *
-     * @param enemySpies is the spies from enemy
+     * @param spies is an army of spies
      */
-    public void addEnemySpies(Army enemySpies) {
-        bufferEnemy(enemySpies, spies);
-        bufferEnemy(new Army(enemySpies), spyBuffer);
+    public void addSpies(Army spies) {
+        bufferArmy(spies, spyCamp);
     }
 
     /**
-     * Buffer enemy spies
+     * Buffer spies
      *
-     * @param spies is the spies from enemy
+     * @param spies is an army of spies
      */
-    public void bufferEnemySpies(Army spies) {
-        bufferEnemy(spies, spyBuffer);
+    public void bufferSpies(Army spies) {
+        bufferArmy(spies, spyBuffer);
     }
 
     /**
-     * Remove enemy spies
+     * Remove spies
      *
      * @param name     is the player name
-     * @param numSpies is the number of spies
+     * @param numSpies is the number of spyCamp
      */
-    public void removeEnemySpies(String name, int numSpies) {
-        if (spies.containsKey(name)) {
-            spies.get(name).removeSoldiers(numSpies, "0");
-        }
-        if (spyBuffer.containsKey(name)) {
-            spyBuffer.get(name).removeSoldiers(numSpies, "0");
-        }
-    }
-
-    /**
-     * Synchronize spies with spyBuffer
-     */
-    protected void syncBuffer() {
-        spies = new HashMap<>();
-        for (Entry<String, Army> e : spyBuffer.entrySet()) {
-            this.spies.put(e.getKey(), new Army(e.getValue()));
+    public void removeSpies(String name, int numSpies) {
+        if (spyCamp.containsKey(name)) {
+            spyCamp.get(name).removeSoldiers(numSpies, "0");
         }
     }
 
@@ -469,20 +441,35 @@ public class Territory {
      * Take effect of the spy move
      */
     public void effectSpyMove() {
-        syncBuffer();
+        for (Army spies : spyBuffer.values()) {
+            bufferArmy(spies, spyCamp);
+        }
     }
 
     /**
-     * Get the latest number of enemy spies
+     * Get the number of spies
      *
      * @param name is the player name
-     * @return the latest number of my spies
+     * @return the number of my spyCamp
      */
     protected int getBufferedNumSpies(String name) {
         if (!spyBuffer.containsKey(name)) {
             return 0;
         }
         return spyBuffer.get(name).getNumSoldiers();
+    }
+
+    /**
+     * Get the number of spyCamp of the given player
+     *
+     * @param name is the playerName
+     * @return the number of spyCamp of the enemy
+     */
+    public int getNumSpies(String name) {
+        if (!spyCamp.containsKey(name)) {
+            return 0;
+        }
+        return spyCamp.get(name).getNumSoldiers();
     }
 
     /**
@@ -556,7 +543,7 @@ public class Territory {
         String myName = myInfo.getName();
         boolean ownTerr = ownerName.equals(myName);
         boolean adjEnemy = cloaking == 0 && isAdjacentEnemy(myName);
-        boolean hasSpy = getNumEnemySpies(myName) > 0;
+        boolean hasSpy = getNumSpies(myName) > 0;
         if (ownTerr || adjEnemy || hasSpy) {
             myInfo.seeTerr(this);
             return true;

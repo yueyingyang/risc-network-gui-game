@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SpyEntryTest {
 
+    /*
     @Test
     @Disabled
     public void test_apply() {
@@ -37,5 +38,7 @@ class SpyEntryTest {
         assertEquals(7, terr0.getNumSpies());
         assertEquals(40, myInfo.getTechResource());
     }
+
+     */
 
 }

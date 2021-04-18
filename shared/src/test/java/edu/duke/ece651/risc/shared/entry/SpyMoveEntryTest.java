@@ -10,7 +10,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SpyMoveEntryTest {
-
+    /*
     @Test
     @Disabled
     public void test_apply() {
@@ -65,5 +65,7 @@ class SpyMoveEntryTest {
         assertEquals(3, terr3.getNumEnemySpies(name0));
 
     }
+
+     */
 
 }

@@ -34,7 +34,7 @@ public class SpyEntry extends BasicEntry {
     public void apply(GameMap myMap, PlayerInfo myInfo) {
         Territory terr = myMap.getTerritory(toName);
         terr.removeSoldiersFromArmy(numSoldiers);
-        terr.addMySpies(numSoldiers);
+        // terr.addMySpies(numSoldiers);
         int cost = numSoldiers * Constant.UPGRADE_TO_SPY_COST;
         myInfo.consumeTech(cost);
     }
