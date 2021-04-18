@@ -594,7 +594,7 @@ public class Territory {
      * Add cloaking
      */
     public void bufferCloaking() {
-        tempCloaking += 3;
+        tempCloaking += Constant.CLOAKING_TURNS;
     }
 
     /**

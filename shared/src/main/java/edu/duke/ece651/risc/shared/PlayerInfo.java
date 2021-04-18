@@ -142,7 +142,7 @@ public class PlayerInfo {
      */
     public void researchCloakingTech() {
         cloakingTech = true;
-        techResource -= 100;
+        techResource -= Constant.RESEARCH_CLOAKING_COST;
     }
 
     /**

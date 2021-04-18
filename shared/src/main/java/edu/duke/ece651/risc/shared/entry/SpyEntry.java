@@ -1,5 +1,6 @@
 package edu.duke.ece651.risc.shared.entry;
 
+import edu.duke.ece651.risc.shared.Constant;
 import edu.duke.ece651.risc.shared.GameMap;
 import edu.duke.ece651.risc.shared.PlayerInfo;
 import edu.duke.ece651.risc.shared.Territory;
@@ -31,7 +32,7 @@ public class SpyEntry extends BasicEntry {
         Territory terr = myMap.getTerritory(toName);
         terr.removeSoldiersFromArmy(numSoldiers);
         terr.addMySpies(numSoldiers);
-        int cost = numSoldiers * 20;
+        int cost = numSoldiers * Constant.UPGRADE_TO_SPY_COST;
         myInfo.consumeTech(cost);
     }
 }

@@ -116,6 +116,10 @@ public class Constant {
         soldierTypes.add("6");
     }
 
+    public static int UPGRADE_TO_SPY_COST = 20;
+    public static int ORDER_CLOAKING_COST = 20;
+    public static int RESEARCH_CLOAKING_COST = 100;
+    public static int CLOAKING_TURNS = 3;
 
 }
 

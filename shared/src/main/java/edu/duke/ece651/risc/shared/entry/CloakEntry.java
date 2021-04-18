@@ -1,5 +1,6 @@
 package edu.duke.ece651.risc.shared.entry;
 
+import edu.duke.ece651.risc.shared.Constant;
 import edu.duke.ece651.risc.shared.GameMap;
 import edu.duke.ece651.risc.shared.PlayerInfo;
 import edu.duke.ece651.risc.shared.Territory;
@@ -32,6 +33,6 @@ public class CloakEntry extends BasicEntry {
     public void apply(GameMap myMap, PlayerInfo myInfo) {
         Territory terr = myMap.getTerritory(toName);
         terr.bufferCloaking();
-        myInfo.consumeTech(20);
+        myInfo.consumeTech(Constant.ORDER_CLOAKING_COST);
     }
 }
