@@ -22,10 +22,10 @@ Below are 4 types of props sold in the Props Store(the number after each prop is
    - Explanation: move units without rules (no adjacent rule)
    - User input: to territory, soldier type, soldier number 
 3. Shield(defender)(30):
-   - Explanation: will increase the defense level of player's own territory = increase bonus(15) on defender buffer
+   - Explanation: will increase the defense level of player's own territory = increase bonus(3) on defender buffer
    - User input: to territory
-4. Sword(attacker)(30)：increase bonus(15) on attackers (enemy territory)
-   - Explanation: will increase the attack level if you attacked this territory in this turn = increase bonus(15) on attack buffer
+4. Sword(attacker)(30)：
+   - Explanation: will increase the attack level if you attacked this territory in this turn = increase bonus(3) on attack buffer
    - User input: to territory
 
 ### Other implementation details:
