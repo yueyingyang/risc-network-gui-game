@@ -2,9 +2,7 @@ package edu.duke.ece651.risc.shared;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -385,7 +383,20 @@ class TerritoryTest {
         assertEquals(2, terr1.getNumSpies());
         assertEquals(3, terr1.getNumEnemySpies(name1));
         assertEquals(5, terr1.getNumEnemySpies(name2));
-        
+    }
+
+    @Test
+    public void test_isAdjacentEnemy() {
+        AbstractMapFactory f = new V1MapFactory();
+        String name0 = "Green";
+        String name1 = "Yellow";
+        String name2 = "Blue";
+        List<String> names = Arrays.asList(name0, name1, name2);
+        GameMap myMap = f.createMap(names, 2);
+        Territory terr0 = myMap.getTerritory("0");
+        assertFalse(terr0.isAdjacentEnemy(name1));
+        assertTrue(terr0.isAdjacentEnemy(name2));
+        assertFalse(terr0.isAdjacentEnemy(name0));
     }
 
 }

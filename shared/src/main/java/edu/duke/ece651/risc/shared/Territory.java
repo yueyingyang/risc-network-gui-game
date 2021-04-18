@@ -593,4 +593,23 @@ public class Territory {
         return tempBuffer.get(name).getNumSoldiers();
     }
 
+    /**
+     * Check if the territory is an immediately adjacent enemy to the player
+     *
+     * @param playerName is the name of the player
+     * @return ture if the the territory is an immediately adjacent enemy to
+     * the player else false
+     */
+    protected boolean isAdjacentEnemy(String playerName) {
+        if (ownerName.equals(playerName)) {
+            return false;
+        }
+        for (Territory t : neighbours) {
+            if (t.ownerName.equals(playerName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
