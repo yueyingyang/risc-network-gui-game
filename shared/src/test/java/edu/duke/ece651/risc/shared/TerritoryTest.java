@@ -1,5 +1,6 @@
 package edu.duke.ece651.risc.shared;
 
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
@@ -215,8 +216,74 @@ class TerritoryTest {
     }
 
     @Test
+    public void test_bufferMySpies() {
+        Territory terr = new Territory("NANJING");
+
+        // both null, remove
+        terr.removeMySpies(2);
+        verify_bufferMySpies(terr, 0, 0);
+
+        // both null, buffer
+        terr.bufferMySpies(2);
+        verify_bufferMySpies(terr, 0, 2);
+
+        // mySpies = null, temp not null, buffer
+        terr.bufferMySpies(3);
+        verify_bufferMySpies(terr, 0, 5);
+
+        // mySpies = null, temp not null, add
+        terr.addMySpies(3);
+        verify_bufferMySpies(terr, 3, 8);
+
+        // mySpies = null, temp not null, remove
+        terr.removeMySpies(2);
+        verify_bufferMySpies(terr, 1, 6);
+
+        // not equal, buffer
+        terr.bufferMySpies(4);
+        verify_bufferMySpies(terr, 1, 10);
+
+        // not equal, add
+        terr.addMySpies(6);
+        verify_bufferMySpies(terr, 7, 16);
+
+        // not equal, remove
+        terr.removeMySpies(4);
+        verify_bufferMySpies(terr, 3, 12);
+
+        // sync mySpies with tempSpies
+        terr.syncMySpies();
+        verify_bufferMySpies(terr, 12, 12);
+
+        // equal add
+        terr.addMySpies(3);
+        verify_bufferMySpies(terr, 15, 15);
+
+        // equal remove
+        terr.removeMySpies(6);
+        verify_bufferMySpies(terr, 9, 9);
+
+        // equal buffer
+        terr.bufferMySpies(4);
+        verify_bufferMySpies(terr, 9, 13);
+
+        Territory terr1 = new Territory("SHANGHAI");
+
+        // both null, add
+        terr1.addMySpies(3);
+        verify_bufferMySpies(terr1, 3, 3);
+    }
+
+    private void verify_bufferMySpies(Territory terr, int expect1, int expect2) {
+        assertEquals(expect1, terr.getNumSpies());
+        assertEquals(expect2, terr.getLatestNumSpies());
+    }
+
+
+    @Test
     public void test_enemySpies() {
         Territory terr = new Territory("NANJING");
+
         assertEquals(0, terr.getNumEnemySpies("LiLei"));
         terr.addEnemySpies(new Army("LiLei", 2));
         assertEquals(2, terr.getNumEnemySpies("LiLei"));
@@ -224,6 +291,74 @@ class TerritoryTest {
         assertEquals(6, terr.getNumEnemySpies("LiLei"));
         terr.addEnemySpies(new Army("HanMeiMei", 3));
         assertEquals(3, terr.getNumEnemySpies("HanMeiMei"));
+
+        terr.removeEnemySpies("LiLei", 5);
+        assertEquals(1, terr.getNumEnemySpies("LiLei"));
+    }
+
+    @Test
+    public void test_bufferEnemySpies() {
+        Territory terr = new Territory("NANJING");
+        String name1 = "LiLei";
+        String name2 = "HanMeiMei";
+
+        // both null, remove
+        terr.removeEnemySpies(name1, 2);
+        verify_bufferEnemySpies(terr, name1, 0, 0);
+
+        // both null, buffer
+        terr.bufferEnemySpies(new Army(name1, 3));
+        verify_bufferEnemySpies(terr, name1, 0, 3);
+
+        // both null, add
+        terr.addEnemySpies(new Army(name2, 6));
+        verify_bufferEnemySpies(terr, name2, 6, 6);
+
+        // one null, one not null, buffer
+        terr.bufferEnemySpies(new Army(name1, 2));
+        verify_bufferEnemySpies(terr, name1, 0, 5);
+
+        // one null, one not null, remove
+        terr.removeEnemySpies(name1, 4);
+        verify_bufferEnemySpies(terr, name1, 0, 1);
+
+        // one null, one not null, add
+        terr.addEnemySpies(new Army(name1, 5));
+        verify_bufferEnemySpies(terr, name1, 5, 6);
+
+        // not equal, remove
+        terr.removeEnemySpies(name1, 2);
+        verify_bufferEnemySpies(terr, name1, 3, 4);
+
+        // not equal, buffer
+        terr.bufferEnemySpies(new Army(name1, 3));
+        verify_bufferEnemySpies(terr, name1, 3, 7);
+
+        // not equal, add
+        terr.addEnemySpies(new Army(name1, 2));
+        verify_bufferEnemySpies(terr, name1, 5, 9);
+
+        // sync buffer
+        terr.syncBuffer();
+        verify_bufferEnemySpies(terr, name1, 9, 9);
+        verify_bufferEnemySpies(terr, name2, 6, 6);
+
+        // equal add
+        terr.addEnemySpies(new Army(name1, 2));
+        verify_bufferEnemySpies(terr, name1, 11, 11);
+
+        // equal remove
+        terr.removeEnemySpies(name1, 3);
+        verify_bufferEnemySpies(terr, name1, 8, 8);
+
+        // equal buffer
+        terr.bufferEnemySpies(new Army(name1, 4));
+        verify_bufferEnemySpies(terr, name1, 8, 12);
+    }
+
+    protected void verify_bufferEnemySpies(Territory terr, String name, int expect1, int expect2) {
+        assertEquals(expect1, terr.getNumEnemySpies(name));
+        assertEquals(expect2, terr.getLatestNumEnemySpies(name));
     }
 
 }

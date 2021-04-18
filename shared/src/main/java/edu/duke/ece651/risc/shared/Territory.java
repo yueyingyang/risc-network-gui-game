@@ -282,6 +282,30 @@ public class Territory {
         return myArmy.getNumSoldiers(type);
     }
 
+    /**
+     * Buffer enemy army
+     *
+     * @param enemy  is an enemy army
+     * @param buffer is buffer to store the enemy
+     */
+    protected void bufferEnemy(Army enemy, Map<String, Army> buffer) {
+        String owner = enemy.getOwnerName();
+        if (buffer.containsKey(owner)) {
+            Army curr = buffer.get(owner);
+            curr.mergeForce(enemy);
+        } else {
+            buffer.put(owner, enemy);
+        }
+    }
+
+    /**
+     * Add attackers
+     *
+     * @param attacker is the army that attack the territory
+     */
+    public void bufferAttacker(Army attacker) {
+        bufferEnemy(attacker, attackerBuffer);
+    }
 
     /**
      * Resolve combat on the territory
@@ -411,31 +435,6 @@ public class Territory {
     }
 
     /**
-     * Buffer enemy army
-     *
-     * @param enemy  is an enemy army
-     * @param buffer is buffer to store the enemy
-     */
-    protected void bufferEnemy(Army enemy, Map<String, Army> buffer) {
-        String owner = enemy.getOwnerName();
-        if (buffer.containsKey(owner)) {
-            Army curr = buffer.get(owner);
-            curr.mergeForce(enemy);
-        } else {
-            buffer.put(owner, enemy);
-        }
-    }
-
-    /**
-     * Add attackers
-     *
-     * @param attacker is the army that attack the territory
-     */
-    public void bufferAttacker(Army attacker) {
-        bufferEnemy(attacker, attackerBuffer);
-    }
-
-    /**
      * Add my spies
      *
      * @param numSpies is the number of spies
@@ -504,6 +503,8 @@ public class Territory {
     public void removeEnemySpies(String name, int numSpies) {
         if (enemySpiesBuffer.containsKey(name)) {
             enemySpiesBuffer.get(name).removeSoldiers(numSpies, "0");
+        }
+        if (tempBuffer.containsKey(name)) {
             tempBuffer.get(name).removeSoldiers(numSpies, "0");
         }
     }
@@ -537,12 +538,55 @@ public class Territory {
         }
     }
 
-    public void effectSpyMove() {
+
+    /**
+     * Synchronize mySpies with tempSpies
+     */
+    protected void syncMySpies() {
         mySpies = new Army(tempSpies);
+    }
+
+    /**
+     * Synchronize enemySpiesBuffer with tempBuffer
+     */
+    protected void syncBuffer() {
         enemySpiesBuffer = new HashMap<>();
         for (Entry<String, Army> e : tempBuffer.entrySet()) {
             this.enemySpiesBuffer.put(e.getKey(), new Army(e.getValue()));
         }
+    }
+
+    /**
+     * Take effect of the spy move
+     */
+    public void effectSpyMove() {
+        syncMySpies();
+        syncBuffer();
+    }
+
+    /**
+     * Get the latest number of my spies
+     *
+     * @return the latest number of my spies
+     */
+    protected int getLatestNumSpies() {
+        if (tempSpies == null) {
+            return 0;
+        }
+        return tempSpies.getNumSoldiers();
+    }
+
+    /**
+     * Get the latest number of enemy spies
+     *
+     * @param name is the player name
+     * @return the latest number of my spies
+     */
+    protected int getLatestNumEnemySpies(String name) {
+        if (!tempBuffer.containsKey(name)) {
+            return 0;
+        }
+        return tempBuffer.get(name).getNumSoldiers();
     }
 
 }
