@@ -252,7 +252,9 @@ public class Territory {
      * @param type        is the type of the soldier
      */
     public void removeSoldiersFromArmy(int numSoldiers, String type) {
-        myArmy.removeSoldiers(numSoldiers, type);
+        if (myArmy != null) {
+            myArmy.removeSoldiers(numSoldiers, type);
+        }
     }
 
     /**
@@ -448,16 +450,6 @@ public class Territory {
     }
 
     /**
-     * Add enemy spies
-     *
-     * @param spies is the spies from enemy
-     */
-    public void addEnemySpies(Army spies) {
-        bufferEnemy(spies, enemySpiesBuffer);
-        bufferEnemy(new Army(spies), tempBuffer);
-    }
-
-    /**
      * Buffer my spies
      *
      * @param numSpies is the number of spies
@@ -471,12 +463,49 @@ public class Territory {
     }
 
     /**
+     * Remove my spies
+     *
+     * @param numSpies is the number of spies
+     */
+    public void removeMySpies(int numSpies) {
+        if (mySpies != null) {
+            mySpies.removeSoldiers(numSpies, "0");
+        }
+        if (tempSpies != null) {
+            tempSpies.removeSoldiers(numSpies, "0");
+        }
+    }
+
+    /**
+     * Add enemy spies
+     *
+     * @param spies is the spies from enemy
+     */
+    public void addEnemySpies(Army spies) {
+        bufferEnemy(spies, enemySpiesBuffer);
+        bufferEnemy(new Army(spies), tempBuffer);
+    }
+
+    /**
      * Buffer enemy spies
      *
      * @param spies is the spies from enemy
      */
     public void bufferEnemySpies(Army spies) {
         bufferEnemy(spies, tempBuffer);
+    }
+
+    /**
+     * Remove enemy spies
+     *
+     * @param name     is the player name
+     * @param numSpies is the number of spies
+     */
+    public void removeEnemySpies(String name, int numSpies) {
+        if (enemySpiesBuffer.containsKey(name)) {
+            enemySpiesBuffer.get(name).removeSoldiers(numSpies, "0");
+            tempBuffer.get(name).removeSoldiers(numSpies, "0");
+        }
     }
 
     /**
@@ -491,29 +520,6 @@ public class Territory {
         } else {
             Army spies = new Army(name, numSpies, "0");
             bufferEnemySpies(spies);
-        }
-    }
-
-    /**
-     * Remove my spies
-     *
-     * @param numSpies is the number of spies
-     */
-    public void removeMySpies(int numSpies) {
-        mySpies.removeSoldiers(numSpies, "0");
-        tempSpies.removeSoldiers(numSpies, "0");
-    }
-
-    /**
-     * Remove enemy spies
-     *
-     * @param name     is the player name
-     * @param numSpies is the number of spies
-     */
-    public void removeEnemySpies(String name, int numSpies) {
-        if (enemySpiesBuffer.containsKey(name)) {
-            enemySpiesBuffer.get(name).removeSoldiers(numSpies, "0");
-            tempBuffer.get(name).removeSoldiers(numSpies, "0");
         }
     }
 
