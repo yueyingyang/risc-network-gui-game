@@ -110,9 +110,11 @@ public class Army {
      * @param type        is the type of the soldier
      */
     public void removeSoldiers(int numSoldiers, String type) {
-        Soldier s = new Soldier(type);
-        for (int i = 0; i < numSoldiers; i++) {
-            force.remove(s);
+        if (numSoldiers <= Collections.frequency(force, type)) {
+            Soldier s = new Soldier(type);
+            for (int i = 0; i < numSoldiers; i++) {
+                force.remove(s);
+            }
         }
     }
 
