@@ -9,7 +9,13 @@
 <div th:insert="fragments/common_header.html :: header"></div>
 
 <div class="ui two column grid" style="padding-top: 20px">
-    <div class="seven wide column" id="player_info" style="padding:20px 0 0 50px">
+    <div class="seven wide column" style="padding:20px 0 0 50px">
+        <div id="player_info"></div>
+        <br>
+        <button class="ui icon button violet basic" onclick="display_store_modal()" style="float: right; margin-right: 30px">
+            <i class="shopping cart icon" style="user-select: auto;"></i>
+            Store Entry
+        </button>
     </div>
     <div class="eight wide column" style="user-select: auto;">
         <div class="ui icon info message transition">
@@ -84,9 +90,13 @@
     </div>
 </div>
 
+
+<div th:insert="fragments/store.html :: store_modal(${propType})"></div>
+
 <script th:src="@{/util.js}" type="text/javascript"></script>
 <!-- Map display utils -->
 <script th:src="@{/map_display.js}"></script>
+<script th:src="@{/store.js}"></script>
 <script th:inline="javascript">
     //<!--    the start state is disabled commit and fields -->
     let map_refresh_timer;

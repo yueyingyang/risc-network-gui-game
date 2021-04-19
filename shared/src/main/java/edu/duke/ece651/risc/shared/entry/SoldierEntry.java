@@ -39,9 +39,9 @@ public class SoldierEntry extends BasicEntry {
     public void apply(GameMap myMap, PlayerInfo myInfo) {
         Checker myChecker = new SoldierRuleChecker(null);
         myChecker.checkAction(this, myMap, myInfo);
-        Territory toTerr = myMap.getTerritory(toName);
-        toTerr.removeSoldiersFromArmy(numSoldiers, fromType);
-        toTerr.addSoldiersToArmy(numSoldiers, toType);
+        Territory terr = myMap.getTerritory(toName);
+        terr.removeSoldiersFromArmy(numSoldiers, fromType);
+        terr.addSoldiersToArmy(numSoldiers, toType);
         int cost = GameUtil.getSoldierCost(fromType, toType, numSoldiers);
         myInfo.consumeTech(cost);
     }

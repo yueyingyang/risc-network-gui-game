@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>Action Form Fragment</title>
+</head>
+<body>
+<div th:fragment="store_modal(props_type)">
+    <div class="ui modal" id="store">
+        <div class="header">Store</div>
+        <div class="content ui">
+            <p>Please enjoy the props shopping here! All wonderful products can be bought using <strong>food
+                resources.</strong></p>
+            <form action="" class="ui grid form" id="buy">
+                <div class="row">
+                    <!-- Product list -->
+                    <div class="=eight wide column">
+                        <div class="ui ordered relaxed list" id="prop_list">
+                        </div>
+                    </div>
+                    <!-- form -->
+                    <div class="eight wide column">
+                        <div class="fields" style="user-select: auto;">
+                            <div class="field">
+                                <label style="user-select: auto;">Prop type</label>
+                                <select th:name="fromType"
+                                        class="ui fluid search dropdown" onchange="update_total()">
+                                    <option th:each="t : ${props_type}" th:text="${t}" th:value="${t}"></option>
+                                </select>
+                            </div>
+                            <div class="field" style="user-select: auto;">
+                                <label style="user-select: auto;">Amount</label>
+                                <input type="number" min="1"
+                                       name="soldierNum" onchange="update_total()">
+                            </div>
+                        </div>
+                        <div class="ui violet left pointing basic label" style="user-select: auto;">
+                            Total cost: <p style="display: inline" id="total">0</p>
+                        </div>
+                        <button class="ui submit button tiny" style="user-select: auto;" onclick="hide_buy_modal()">
+                            Confirm to buy
+                        </button>
+                    </div>
+                </div>
+                <br/>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

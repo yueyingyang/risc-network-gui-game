@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -97,6 +98,7 @@ public class GameController {
   @GetMapping(value = "/play")
   public String playOneTurn(Model model) {
     model.addAttribute("soldierType", Constant.soldierCost.keySet().stream().sorted().collect(Collectors.toList()));
+    model.addAttribute("propType", Arrays.asList("Missile", "Ship", "Shield", "Sword"));
     return "game";
   }
 
