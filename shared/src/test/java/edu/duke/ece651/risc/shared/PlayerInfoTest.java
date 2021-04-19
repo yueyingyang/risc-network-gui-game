@@ -76,9 +76,15 @@ class PlayerInfoTest {
         myInfo.addShipCount(2);
         assertEquals(myInfo.getFoodResource(),900);
         assertEquals(myInfo.getShipCount(),2);
-        myInfo.addMissileCount(2);
+        myInfo.addMissileCount(1);
         assertEquals(myInfo.getFoodResource(),800);
-        assertEquals(myInfo.getMissileCount(),2);
+        assertEquals(myInfo.getMissileCount(),1);
+        myInfo.addShieldCount(2);
+        assertEquals(myInfo.getFoodResource(),700);
+        assertEquals(myInfo.getShieldCount(),2);
+        myInfo.addSwordCount(2);
+        assertEquals(myInfo.getFoodResource(),600);
+        assertEquals(myInfo.getSwordCount(),2);
     }
 
 }

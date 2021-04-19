@@ -126,7 +126,7 @@ public class Constant {
     public static final Map<String, Integer> prodCost = new HashMap<>();
     static{
         prodCost.put(ship,50);
-        prodCost.put(missile,50);
+        prodCost.put(missile,100);
         prodCost.put(shield,50);
         prodCost.put(sword,50);
     }
