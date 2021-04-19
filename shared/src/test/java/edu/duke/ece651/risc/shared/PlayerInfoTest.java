@@ -39,7 +39,6 @@ class PlayerInfoTest {
         assertFalse(myInfo.isRequested());
     }
 
-    /*
     @Test
     public void test_seeTerr() {
         String name0 = "Green";
@@ -48,28 +47,27 @@ class PlayerInfoTest {
         Territory terr0 = new Territory("0");
         terr0.setOwnerName(name0);
         terr0.addSoldiersToArmy(4);
-        terr0.addMySpies(2);
-        terr0.addEnemySpies(new Army(name1, 3));
-        terr0.addEnemySpies(new Army(name2, 5));
+        terr0.addSpies(name0, 2);
+        terr0.addSpies(name1, 3);
 
         PlayerInfo myInfo = new PlayerInfo(name0);
         myInfo.seeTerr(terr0);
         terr0.removeSoldiersFromArmy(3);
-        terr0.addMySpies(6);
-        terr0.addEnemySpies(new Army(name1, 4));
+        terr0.addSpies(name0, 4);
 
         assertEquals(1, terr0.getNumSoldiersInArmy());
-        assertEquals(8, terr0.getNumSpies());
-        assertEquals(7, terr0.getNumEnemySpies(name1));
+        assertEquals(6, terr0.getNumSpies(name0));
+        assertEquals(3, terr0.getNumSpies(name1));
 
 
         Territory terr1 = myInfo.getPrevSeenTerr("0");
         assertEquals(4, terr1.getNumSoldiersInArmy());
-        assertEquals(2, terr1.getNumSpies());
-        assertEquals(3, terr1.getNumEnemySpies(name1));
-        assertEquals(5, terr1.getNumEnemySpies(name2));
+        assertEquals(2, terr1.getNumSpies(name0));
+        assertEquals(3, terr1.getNumSpies(name1));
+
+        assertNull(myInfo.getPrevSeenTerr("1"));
     }
 
-     */
+
 
 }
