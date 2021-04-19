@@ -1,7 +1,6 @@
 package edu.duke.ece651.risc.shared.entry;
 
 import edu.duke.ece651.risc.shared.*;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -10,9 +9,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SpyMoveEntryTest {
-    /*
     @Test
-    @Disabled
     public void test_apply() {
         AbstractMapFactory f = new V1MapFactory();
         String name0 = "LiLei";
@@ -35,37 +32,35 @@ class SpyMoveEntryTest {
         // my - my
         ActionEntry entry2 = new SpyMoveEntry("0", "1", 8, name0);
         entry2.apply(myMap, myInfo);
-        assertEquals(4, terr0.getNumSpies());
-        assertEquals(0, terr1.getNumSpies());
+        assertEquals(4, terr0.getNumSpies(name0));
+        assertEquals(0, terr1.getNumSpies(name0));
         terr1.effectSpyMove();
-        assertEquals(8, terr1.getNumSpies());
+        assertEquals(8, terr1.getNumSpies(name0));
 
         // my - other's
         ActionEntry entry3 = new SpyMoveEntry("1", "2", 5, name0);
         entry3.apply(myMap, myInfo);
-        assertEquals(3, terr1.getNumSpies());
-        assertEquals(0, terr2.getNumEnemySpies(name0));
+        assertEquals(3, terr1.getNumSpies(name0));
+        assertEquals(0, terr2.getNumSpies(name0));
         terr2.effectSpyMove();
-        assertEquals(5, terr2.getNumEnemySpies(name0));
+        assertEquals(5, terr2.getNumSpies(name0));
 
         // other's - my
         ActionEntry entry4 = new SpyMoveEntry("2", "1", 1, name0);
         entry4.apply(myMap, myInfo);
-        assertEquals(3, terr1.getNumSpies());
-        assertEquals(4, terr2.getNumEnemySpies(name0));
+        assertEquals(3, terr1.getNumSpies(name0));
+        assertEquals(4, terr2.getNumSpies(name0));
         terr1.effectSpyMove();
-        assertEquals(4, terr1.getNumSpies());
+        assertEquals(4, terr1.getNumSpies(name0));
 
         // other's - other's
         ActionEntry entry5 = new SpyMoveEntry("2", "3", 3, name0);
         entry5.apply(myMap, myInfo);
-        assertEquals(1, terr2.getNumEnemySpies(name0));
-        assertEquals(0, terr3.getNumEnemySpies(name0));
+        assertEquals(1, terr2.getNumSpies(name0));
+        assertEquals(0, terr3.getNumSpies(name0));
         terr3.effectSpyMove();
-        assertEquals(3, terr3.getNumEnemySpies(name0));
+        assertEquals(3, terr3.getNumSpies(name0));
 
     }
-
-     */
 
 }
