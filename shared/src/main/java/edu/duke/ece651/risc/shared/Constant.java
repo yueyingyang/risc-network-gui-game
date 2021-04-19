@@ -39,7 +39,7 @@ public class Constant {
     public static final String shield="SHIELD";
     public static final String sword="SWORD";
 
-    public static final String[] COLORS = {"#97B8A3", "#EDC3C7", "#FDF06F", "#A6CFE2", "#9C9CDD"};
+    public static final String[] COLORS = {"#97B8A3", "#EDC3C7", "#E76F51", "#A6CFE2", "#9C9CDD"};
 
 
     /**

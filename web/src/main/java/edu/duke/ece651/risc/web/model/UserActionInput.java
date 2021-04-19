@@ -9,7 +9,7 @@ public class UserActionInput {
   int soldierNum;
   String fromType;
   String toType;
-  
+  String useShip;
 
   public void setToName(String toName) {
     this.toName = toName;
@@ -49,5 +49,13 @@ public class UserActionInput {
 
   public String getToType() {
     return toType;
+  }
+
+  public String getUseShip() {
+    return useShip;
+  }
+
+  public void setUseShip(String useShip) {
+    this.useShip = useShip;
   }
 }
