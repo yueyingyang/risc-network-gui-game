@@ -34,6 +34,11 @@ public class Constant {
     public static final String PLACEMENT_VALID = "valid";
     public static final String PLACEMENT_INVALID = "invalid";
 
+    public static final String ship="SHIP";
+    public static final String missile="MISSILE";
+    public static final String shield="SHIELD";
+    public static final String sword="SWORD";
+
     public static final String[] COLORS = {"#97B8A3", "#EDC3C7", "#FDF06F", "#A6CFE2", "#9C9CDD"};
 
 
@@ -118,8 +123,13 @@ public class Constant {
     public static int ORDER_CLOAKING_COST = 20;
     public static int RESEARCH_CLOAKING_COST = 100;
     public static int CLOAKING_TURNS = 3;
-    public static int SHIP_COST=50;
-    public static int MISSILE_COST=50;
+    public static final Map<String, Integer> prodCost = new HashMap<>();
+    static{
+        prodCost.put(ship,50);
+        prodCost.put(missile,50);
+        prodCost.put(shield,50);
+        prodCost.put(sword,50);
+    }
 
 }
 

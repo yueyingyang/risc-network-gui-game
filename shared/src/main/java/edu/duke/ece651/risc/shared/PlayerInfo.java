@@ -18,6 +18,8 @@ public class PlayerInfo {
     private Map<String, Territory> hasSeen;
     private int shipCount;
     private int missileCount;
+    private int shieldCount;
+    private int swordCount;
 
     public PlayerInfo() {
     }
@@ -40,6 +42,8 @@ public class PlayerInfo {
         this.hasSeen = new HashMap<>();
         this.shipCount = 0;
         this.missileCount = 0;
+        this.shieldCount = 0;
+        this.swordCount = 0;
     }
 
     /**
@@ -201,20 +205,22 @@ public class PlayerInfo {
         return missileCount;
     }
 
+    public int getShieldCount() {
+        return shieldCount;
+    }
+
+    public int getSwordCount() {
+        return swordCount;
+    }
+
     /**
      * the method for add ships
      *
      * @param count the number of ship to be added
      */
     public void addShipCount(int count){
-        if(count<0){
-            throw new IllegalArgumentException("The count can't be negative!");
-        }
-        if(count*Constant.SHIP_COST>getFoodResource()){
-            throw new IllegalArgumentException("The food resource is not enough!");
-        }
         shipCount+=count;
-        foodResource-=count*Constant.SHIP_COST;
+        foodResource-=count*Constant.prodCost.get(Constant.ship);
     }
 
     /**
@@ -223,13 +229,27 @@ public class PlayerInfo {
      * @param count the number of missile to be added
      */
     public void addMissileCount(int count){
-        if(count<0){
-            throw new IllegalArgumentException("The count can't be negative!");
-        }
-        if(count*Constant.MISSILE_COST>getFoodResource()){
-            throw new IllegalArgumentException("The food resource is not enough!");
-        }
         missileCount+=count;
-        foodResource-=count*Constant.MISSILE_COST;
+        foodResource-=count*Constant.prodCost.get(Constant.missile);
+    }
+
+    /**
+     * the method for add new shield
+     *
+     * @param count the number of shield to be added
+     */
+    public void addShieldCount(int count){
+        shieldCount+=count;
+        foodResource-=count*Constant.prodCost.get(Constant.shield);
+    }
+
+    /**
+     * the method for add new sword
+     *
+     * @param count the number of sword to be added
+     */
+    public void addSwordCount(int count){
+        swordCount+=count;
+        foodResource-=count*Constant.prodCost.get(Constant.sword);
     }
 }
