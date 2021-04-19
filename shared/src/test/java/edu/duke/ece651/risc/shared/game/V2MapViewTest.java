@@ -4,9 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import edu.duke.ece651.risc.shared.*;
-import edu.duke.ece651.risc.shared.entry.ActionEntry;
-import edu.duke.ece651.risc.shared.entry.PlaceEntry;
-import edu.duke.ece651.risc.shared.entry.SoldierEntry;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
@@ -22,7 +19,7 @@ class V2MapViewTest {
   void test_to_string() throws JsonProcessingException {
     List<String> playerNames = Arrays.asList("John", "Tom");
     GameMap map = getGameMap(1, playerNames);
-    Army army = new BasicArmy("John", 5, "3");
+    Army army = new Army("John", 5, "3");
     Territory t = map.getTerritory("0");
     t.setMyArmy(army);
     Map<String, String> colorMapping = new HashMap<>();

@@ -49,7 +49,7 @@ public class MapViewTest {
 
         for (String playerName : map.getAllPlayerTerritories().keySet()) {
             for (Territory t : map.getPlayerTerritories(playerName)) {
-                t.setMyArmy(new BasicArmy(playerName, 1));
+                t.setMyArmy(new Army(playerName, 1));
             }
         }
         return map;

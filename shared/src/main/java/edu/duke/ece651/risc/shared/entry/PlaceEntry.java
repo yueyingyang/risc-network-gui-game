@@ -30,7 +30,7 @@ public class PlaceEntry extends BasicEntry {
     @Override
     public void apply(GameMap myMap, PlayerInfo myInfo) {
         Territory terr = myMap.getTerritory(toName);
-        Army myArmy = new BasicArmy(terr.getOwnerName(), numSoldiers);
+        Army myArmy = new Army(terr.getOwnerName(), numSoldiers);
         terr.setMyArmy(myArmy);
     }
 }

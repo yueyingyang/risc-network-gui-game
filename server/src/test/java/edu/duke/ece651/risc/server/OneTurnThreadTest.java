@@ -18,12 +18,11 @@ import java.util.concurrent.CyclicBarrier;
 import org.junit.jupiter.api.Test;
 
 import edu.duke.ece651.risc.shared.entry.ActionEntry;
-import edu.duke.ece651.risc.shared.BasicArmy;
+import edu.duke.ece651.risc.shared.Army;
 import edu.duke.ece651.risc.shared.Constant;
 import edu.duke.ece651.risc.shared.GameMap;
 import edu.duke.ece651.risc.shared.JSONSerializer;
 import edu.duke.ece651.risc.shared.entry.MoveEntry;
-import edu.duke.ece651.risc.shared.Player;
 import edu.duke.ece651.risc.shared.PlayerInfo;
 import edu.duke.ece651.risc.shared.ServerPlayer;
 import edu.duke.ece651.risc.shared.Territory;
@@ -43,10 +42,10 @@ class OneTurnThreadTest {
     t3.setOwnerName("Red");
     t4.setOwnerName("Red");
 
-    t1.setMyArmy(new BasicArmy(t1.getOwnerName(), 1));
-    t2.setMyArmy(new BasicArmy(t2.getOwnerName(), 1));
-    t3.setMyArmy(new BasicArmy(t3.getOwnerName(), 1));
-    t4.setMyArmy(new BasicArmy(t4.getOwnerName(), 1));
+    t1.setMyArmy(new Army(t1.getOwnerName(), 1));
+    t2.setMyArmy(new Army(t2.getOwnerName(), 1));
+    t3.setMyArmy(new Army(t3.getOwnerName(), 1));
+    t4.setMyArmy(new Army(t4.getOwnerName(), 1));
 
     territoryFinder.put("A",t1);
     territoryFinder.put("B",t2);
@@ -85,8 +84,8 @@ class OneTurnThreadTest {
     t1.setOwnerName("Blue");
     t2.setOwnerName("Blue");
 
-    t1.setMyArmy(new BasicArmy(t1.getOwnerName(), 1));
-    t2.setMyArmy(new BasicArmy(t2.getOwnerName(), 1));
+    t1.setMyArmy(new Army(t1.getOwnerName(), 1));
+    t2.setMyArmy(new Army(t2.getOwnerName(), 1));
 
     territoryFinder.put("A",t1);
     territoryFinder.put("B",t2);
