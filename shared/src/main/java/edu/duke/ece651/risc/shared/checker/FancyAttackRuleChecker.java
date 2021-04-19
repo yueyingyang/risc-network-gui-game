@@ -1,6 +1,7 @@
 package edu.duke.ece651.risc.shared.checker;
 
 
+import edu.duke.ece651.risc.shared.Constant;
 import edu.duke.ece651.risc.shared.GameMap;
 import edu.duke.ece651.risc.shared.PlayerInfo;
 import edu.duke.ece651.risc.shared.Territory;
@@ -23,7 +24,7 @@ public class FancyAttackRuleChecker extends Checker {
             throw new IllegalArgumentException("expected attacked territory is adjacent to this territory!");
         }
 
-        if(action.isUseShip() && myinfo.getShipCount()<=0){
+        if(action.isUseShip() && myinfo.getProdCount(Constant.ship)<=0){
             throw new IllegalArgumentException("You don't have enough ship!");
         }
 
