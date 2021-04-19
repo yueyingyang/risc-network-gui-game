@@ -26,14 +26,6 @@ public class ProdEntry extends BasicEntry{
     public void apply(GameMap myMap, PlayerInfo myInfo) {
         Checker checker=new ProdChecker(null);
         checker.checkAction(this,myMap,myInfo);
-        if(prodName.equals(Constant.ship)){
-            myInfo.addShipCount(numProds);
-        }else if(prodName.equals(Constant.missile)){
-            myInfo.addMissileCount(numProds);
-        }else if(prodName.equals(Constant.shield)){
-            myInfo.addShieldCount(numProds);
-        }else{
-            myInfo.addSwordCount(numProds);
-        }
+        myInfo.addProd(this.prodName,this.numProds);
     }
 }

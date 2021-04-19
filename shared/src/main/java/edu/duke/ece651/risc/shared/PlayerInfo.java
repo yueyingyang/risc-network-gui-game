@@ -16,10 +16,7 @@ public class PlayerInfo {
     private boolean requested;
     private boolean cloakingTech;
     private Map<String, Territory> hasSeen;
-    private int shipCount;
-    private int missileCount;
-    private int shieldCount;
-    private int swordCount;
+    private Map<String, Integer> prod;
 
     public PlayerInfo() {
     }
@@ -40,10 +37,11 @@ public class PlayerInfo {
         this.requested = false;
         this.cloakingTech = false;
         this.hasSeen = new HashMap<>();
-        this.shipCount = 0;
-        this.missileCount = 0;
-        this.shieldCount = 0;
-        this.swordCount = 0;
+        this.prod=new HashMap<>();
+        prod.put(Constant.ship,0);
+        prod.put(Constant.missile,0);
+        prod.put(Constant.shield,0);
+        prod.put(Constant.sword,0);
     }
 
     /**
@@ -193,7 +191,7 @@ public class PlayerInfo {
      * @return the number of remaining ship can be used
      */
     public int getShipCount(){
-        return shipCount;
+        return prod.get(Constant.ship);
     }
 
     /**
@@ -202,15 +200,15 @@ public class PlayerInfo {
      * @return the number of remaining missile can be used
      */
     public int getMissileCount() {
-        return missileCount;
+        return prod.get(Constant.missile);
     }
 
     public int getShieldCount() {
-        return shieldCount;
+        return prod.get(Constant.shield);
     }
 
     public int getSwordCount() {
-        return swordCount;
+        return prod.get(Constant.sword);
     }
 
     /**
@@ -218,38 +216,8 @@ public class PlayerInfo {
      *
      * @param count the number of ship to be added
      */
-    public void addShipCount(int count){
-        shipCount+=count;
-        foodResource-=count*Constant.prodCost.get(Constant.ship);
-    }
-
-    /**
-     * the method for add new missiles
-     *
-     * @param count the number of missile to be added
-     */
-    public void addMissileCount(int count){
-        missileCount+=count;
-        foodResource-=count*Constant.prodCost.get(Constant.missile);
-    }
-
-    /**
-     * the method for add new shield
-     *
-     * @param count the number of shield to be added
-     */
-    public void addShieldCount(int count){
-        shieldCount+=count;
-        foodResource-=count*Constant.prodCost.get(Constant.shield);
-    }
-
-    /**
-     * the method for add new sword
-     *
-     * @param count the number of sword to be added
-     */
-    public void addSwordCount(int count){
-        swordCount+=count;
-        foodResource-=count*Constant.prodCost.get(Constant.sword);
+    public void addProd(String prodName,int count){
+        prod.put(prodName,prod.get(prodName)+count);
+        foodResource-=count*Constant.prodCost.get(prodName);
     }
 }

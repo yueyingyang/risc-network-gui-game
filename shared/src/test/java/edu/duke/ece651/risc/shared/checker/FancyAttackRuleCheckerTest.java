@@ -8,10 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
-import edu.duke.ece651.risc.shared.Army;
-import edu.duke.ece651.risc.shared.GameMap;
-import edu.duke.ece651.risc.shared.PlayerInfo;
-import edu.duke.ece651.risc.shared.Territory;
+import edu.duke.ece651.risc.shared.*;
 import edu.duke.ece651.risc.shared.entry.ActionEntry;
 import edu.duke.ece651.risc.shared.entry.FancyAttackEntry;
 import org.junit.jupiter.api.Test;
@@ -32,7 +29,7 @@ public class FancyAttackRuleCheckerTest {
         // check not enough food resource
         ActionEntry attack4=new FancyAttackEntry("4","2",5,"0","player2");
         // check use ship case
-        info1.addShipCount(1);
+        info1.addProd(Constant.ship,1);
         ActionEntry attack5=new FancyAttackEntry("1", "4",  2, "0","player1", true);
         assertThrows(IllegalArgumentException.class, () -> checker.checkAction(attack1,map1,info1));
         assertThrows(IllegalArgumentException.class, () -> checker.checkAction(attack2,map1,info1));

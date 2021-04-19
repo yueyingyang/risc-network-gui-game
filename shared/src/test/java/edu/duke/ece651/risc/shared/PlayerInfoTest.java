@@ -73,16 +73,16 @@ class PlayerInfoTest {
     @Test
     public void test_adder(){
         PlayerInfo myInfo = new PlayerInfo("Green",5,1000,100);
-        myInfo.addShipCount(2);
+        myInfo.addProd(Constant.ship,2);
         assertEquals(myInfo.getFoodResource(),900);
         assertEquals(myInfo.getShipCount(),2);
-        myInfo.addMissileCount(1);
+        myInfo.addProd(Constant.missile,1);
         assertEquals(myInfo.getFoodResource(),800);
         assertEquals(myInfo.getMissileCount(),1);
-        myInfo.addShieldCount(2);
+        myInfo.addProd(Constant.shield,2);
         assertEquals(myInfo.getFoodResource(),700);
         assertEquals(myInfo.getShieldCount(),2);
-        myInfo.addSwordCount(2);
+        myInfo.addProd(Constant.sword,2);
         assertEquals(myInfo.getFoodResource(),600);
         assertEquals(myInfo.getSwordCount(),2);
     }
