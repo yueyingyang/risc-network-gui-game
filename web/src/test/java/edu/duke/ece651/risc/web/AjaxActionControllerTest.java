@@ -93,12 +93,50 @@ class AjaxActionControllerTest {
   }
 
   @Test
-  void test_upgrade_tech() throws Exception {
+  void test_commit() throws Exception {
     String inputJson = "";
     MvcResult res = mvc.perform(MockMvcRequestBuilders
-            .post("/tech").contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson).with(mockUser()).with(csrf()))
+            .post("/commit").contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson).with(mockUser()).with(csrf()))
             .andReturn();
 //    commit only return null as body
     assertEquals("", res.getResponse().getContentAsString());
   }
+
+  @Test
+  void test_move_spy() throws Exception {
+    String inputJson = "{\"fromName\":\"0\",\"toName\":\"1\",\"soldierNum\":\"1\"}";
+    MvcResult res = mvc.perform(MockMvcRequestBuilders
+            .post("/move_spy").contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson).with(mockUser()).with(csrf()))
+            .andReturn();
+    assertEquals(resStr, res.getResponse().getContentAsString());
+  }
+
+  @Test
+  void test_res_cloaking() throws Exception {
+    String inputJson = "{}";
+    MvcResult res = mvc.perform(MockMvcRequestBuilders
+            .post("/res_cloaking").contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson).with(mockUser()).with(csrf()))
+            .andReturn();
+    assertEquals(resStr, res.getResponse().getContentAsString());
+  }
+
+  @Test
+  void test_spy() throws Exception {
+    String inputJson = "{\"soldierNum\":\"1\",\"toName\":\"1\"}";
+    MvcResult res = mvc.perform(MockMvcRequestBuilders
+            .post("/spy").contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson).with(mockUser()).with(csrf()))
+            .andReturn();
+    assertEquals(resStr, res.getResponse().getContentAsString());
+  }
+
+  @Test
+  void test_tool() throws Exception {
+    String inputJson = "{\"fromType\":\"cloaking\",\"toName\":\"1\"}";
+    MvcResult res = mvc.perform(MockMvcRequestBuilders
+            .post("/tools").contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson).with(mockUser()).with(csrf()))
+            .andReturn();
+    assertEquals(resStr, res.getResponse().getContentAsString());
+  }
+
+
 }
