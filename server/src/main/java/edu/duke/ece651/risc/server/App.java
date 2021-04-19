@@ -14,9 +14,16 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+
+import org.bson.Document;
 
 import edu.duke.ece651.risc.shared.*;
 import edu.duke.ece651.risc.shared.game.*;
@@ -29,6 +36,12 @@ public class App {
   private Map<String, ServerPlayer> players;
   private Map<String, actionHandler> actionHandlerMap;
   private ExecutorService threadPool;
+
+  public volatile MongoClient mongoClient;
+  public volatile MongoDatabase mongoDatabase;
+  public volatile MongoCollection<Document> playersCollection;
+  public volatile MongoCollection<Document> gamesCollection;
+  private JSONSerializer serializer;
 
   /**
    * the constructor of App build the socket based on the port number initialize
