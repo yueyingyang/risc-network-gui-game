@@ -75,10 +75,10 @@ public class App {
     System.out.println("Connect to database successfully");
     //create or get players collection
     this.playersCollection = mongoDatabase.getCollection("players");
-    System.out.println("集合 players 选择成功");
+    System.out.println("Choose players collection successfully");
     //create or get games collection
     this.gamesCollection = mongoDatabase.getCollection("games");
-    System.out.println("集合 games 选择成功");
+    System.out.println("Choose games collection successfully");
     this.serializer = new JSONSerializer();
   }
 
@@ -265,6 +265,10 @@ public class App {
   public synchronized void insertPlayersCollection(ServerPlayer player){
     Document document = new Document("playerName", player.getName());
     playersCollection.insertOne(document);
+  }
+
+  public synchronized void insertGamesCollection(Game g){
+    
   }
 
 

@@ -12,6 +12,7 @@ import java.io.PrintWriter;
  * <p>
  * Could add more features based on server-side needs
  */
+
 public class ServerPlayer extends Player {
   private Socket clientSocket;
   private Integer currentGameID;

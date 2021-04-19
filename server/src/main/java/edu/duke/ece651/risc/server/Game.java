@@ -14,7 +14,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import edu.duke.ece651.risc.shared.Constant;
@@ -35,21 +37,26 @@ import java.util.stream.Collectors;
 /**
  * Game class is responsible for the one game's play
  */
-@JsonIgnoreProperties(value = { "threadpool" })
+@JsonIgnoreProperties(value = {"threadpool"})
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "gameID")
 public class Game {
     private int gameID;
     private int playerNum;
     private ArrayList<ServerPlayer> players;
     private ArrayList<ServerPlayer> stillInPlayers;//players still didn't lose
     private ArrayList<ServerPlayer> stillWatchPlayers;//players stillIn with those who want to watch after losing
-    private HashMap<String, PlayerInfo> allplayerInfo;
-    private HashMap<String, V2MapView> allMapViews;
+    private Map<String, PlayerInfo> allplayerInfo;
+    private Map<String, V2MapView> allMapViews;
     private GameMap gameMap;
-    private Random myRandom;
+    //private Random myRandom;
     public Boolean isComplete;
     private ExecutorService threadPool;
     private Map<String, String> playerColorMap;
 
+
+    public Game(){}
 
     /**
      * the construtor of the game
@@ -65,7 +72,7 @@ public class Game {
         this.allplayerInfo = new HashMap<>();
         this.allMapViews = new HashMap<>();
         this.playerColorMap = new HashMap<>();
-        this.myRandom = new Random();
+        //this.myRandom = new Random();
         this.isComplete = false;
         this.threadPool = Executors.newFixedThreadPool(5);
     }
@@ -259,7 +266,7 @@ public class Game {
         StringBuilder sb = new StringBuilder("");
         for (Territory t : gameMap.getAllTerritories()) {
             //resolve combats and create combat results
-            sb.append(t.resolveCombat(myRandom));
+            sb.append(t.resolveCombat(new Random()));
         }
         return sb.toString();
     }

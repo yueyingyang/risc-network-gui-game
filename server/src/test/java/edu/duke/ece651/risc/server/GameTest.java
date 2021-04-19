@@ -438,4 +438,17 @@ public class GameTest {
     Thread.sleep(5000);  
     assertEquals(false,g.checkWin());
   }
+
+  @Test
+  public void test_serializeGame(){
+    ServerPlayer player1 = new ServerPlayer(null, null, null);
+    ServerPlayer player2 = new ServerPlayer(null, null, null);
+    Game g = new Game(2,0);
+    g.addPlayer(player1);
+    g.addPlayer(player2);
+    JSONSerializer js = new JSONSerializer();
+    String s = js.serialize(g);
+    assertEquals("", s);
+  }
+  
 }
