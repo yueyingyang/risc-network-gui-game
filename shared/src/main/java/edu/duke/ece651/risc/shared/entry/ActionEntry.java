@@ -72,5 +72,5 @@ public interface ActionEntry {
      */
     public String getToType();
 
-
+    public boolean isUseShip();
 }

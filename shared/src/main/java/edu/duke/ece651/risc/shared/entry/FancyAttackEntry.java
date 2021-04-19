@@ -27,6 +27,22 @@ public class FancyAttackEntry extends BasicEntry {
     }
 
     /**
+     * Create a FancyAttackEntry object
+     *
+     * @param fromName    is the name of the from-territory
+     * @param toName      is the name of the to-territory
+     * @param numSoldiers is the number of soldiers
+     * @param fromType    is the type of the soldier participating in the attack
+     * @param playerName  is the name of the player
+     * @param useShip     is the indicator of use ship to attack
+     */
+    @ConstructorProperties({"fromName", "toName", "numSoldiers", "fromType", "playerName","useShip"})
+    public FancyAttackEntry(String fromName, String toName, int numSoldiers,
+                            String fromType, String playerName, boolean useShip) {
+        super(fromName, toName, numSoldiers, playerName, fromType, null, useShip);
+    }
+
+    /**
      * Send attackers
      *
      * @param myMap  is the map of the game

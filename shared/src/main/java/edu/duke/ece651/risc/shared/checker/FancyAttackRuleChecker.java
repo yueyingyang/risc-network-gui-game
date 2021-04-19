@@ -22,7 +22,7 @@ public class FancyAttackRuleChecker extends Checker {
         if (start.getNumSoldiersInArmy(action.getFromType()) < action.getNumSoldiers()) {
             throw new IllegalArgumentException("The army in this territory is not enough for this action!");
         }
-        if (!start.isAdjacent(end)) {
+        if (!action.isUseShip() && !start.isAdjacent(end)) {
             throw new IllegalArgumentException("expected attacked territory is adjacent to this territory!");
         }
         if (start.belongToSameOwner(end)) {
