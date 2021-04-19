@@ -304,9 +304,7 @@ class TerritoryTest {
         assertFalse(terr0.isAdjacentEnemy(name0));
     }
 
-    /*
     @Test
-    @Disabled
     public void test_isVisible() {
         String name0 = "Green";
         String name1 = "Yellow";
@@ -329,7 +327,7 @@ class TerritoryTest {
         // not adjacent, no spy
         assertTrue(terr0.isVisible(myInfo2));
 
-        terr0.addEnemySpies(new Army(name1, 1));
+        terr0.addSpies(name1, 1);
         // not adjacent, has spy
         assertTrue(terr0.isVisible(myInfo1));
 
@@ -342,14 +340,11 @@ class TerritoryTest {
         // not adjacent, hide, has spy
         assertFalse(terr0.isVisible(myInfo2));
 
-        terr0.addEnemySpies(new Army(name2, 1));
+        terr0.addSpies(name2, 1);
         // adjacent, hide, has spy
         assertTrue(terr0.isVisible(myInfo1));
 
 
     }
-    */
-
-
 
 }
