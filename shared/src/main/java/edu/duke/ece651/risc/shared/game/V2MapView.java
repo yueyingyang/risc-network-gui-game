@@ -19,8 +19,10 @@ public class V2MapView {
     this.jsonSerializer = new JSONSerializer();
     this.playerInfo = playerInfo;
     this.playerColorMap = new HashMap<>();
+    System.out.println("in v2mapview");
     for (ServerPlayer p : players) {
       playerColorMap.put(p.getName(), "#" + Integer.toHexString(p.getColor().getRGB()).substring(2).toUpperCase(Locale.ROOT));
+      System.out.println(p.getName()+"   "+p.getColor());
     }
   }
 

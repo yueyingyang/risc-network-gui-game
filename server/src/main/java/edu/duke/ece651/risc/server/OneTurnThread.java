@@ -60,6 +60,7 @@ public class OneTurnThread implements Runnable {
         }
         // send the updated map view
         player.sendMessage(new V2MapView(mapLocal, playerList, playerInfo).toString(true));
+        System.out.println(this.gameID+"  "+player.getName()+"     "+player.getColor());
     }
 
     /**

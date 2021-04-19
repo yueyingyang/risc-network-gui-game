@@ -49,7 +49,7 @@ public abstract class Player {
    * @param msg is the msg to write
    */
   public void sendMessage(String msg) {
-    LOGGER.info("[" + name + "]" + msg);
+    //LOGGER.info("[" + name + "]" + msg);
     out.println(msg);
   }
 

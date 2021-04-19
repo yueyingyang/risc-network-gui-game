@@ -17,6 +17,7 @@ import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -30,6 +31,9 @@ import edu.duke.ece651.risc.shared.Territory;
 import edu.duke.ece651.risc.shared.V2MapFactory;
 import edu.duke.ece651.risc.shared.entry.ActionEntry;
 import edu.duke.ece651.risc.shared.game.V2MapView;
+
+
+import java.util.stream.Collectors;
 
 
 /**
@@ -118,7 +122,7 @@ public class Game {
      * @return true if no more players can be accepted
      * false if can accpet more players
      */
-    public Boolean isGameFull() {
+    public synchronized Boolean isGameFull() {
         return (this.players.size() == this.playerNum);
     }
 
@@ -227,10 +231,11 @@ public class Game {
      * This method will create a thread for each player to receive their actions
      * the move action and the move part in attack will be done immediately
      */
-    public void receiveAndApplyMoves(ArrayList<ServerPlayer> stillInPlayers) throws BrokenBarrierException, InterruptedException{
+    public void receiveAndApplyMoves(ArrayList<ServerPlayer> connectePlayers) throws BrokenBarrierException, InterruptedException{
         //ArrayList<OneTurnThread> threads = new ArrayList<>();
-        CyclicBarrier barrier = new CyclicBarrier(stillInPlayers.size()+1);
-        for (ServerPlayer player : stillInPlayers) {
+        List<ServerPlayer> temp = connectePlayers.stream().filter(it -> stillInPlayers.contains(it)).collect(Collectors.toList());
+        CyclicBarrier barrier = new CyclicBarrier(temp.size()+1);
+        for (ServerPlayer player : temp) {
             threadPool.execute(new OneTurnThread(gameMap, player, players,allplayerInfo.get(player.getName()),barrier,gameID));
         }
         barrier.await();
@@ -293,7 +298,7 @@ public class Game {
     public void playOneTurn(ArrayList<ServerPlayer> connectedPlayers) throws IOException, BrokenBarrierException, InterruptedException {
         //create a thread for each player to type their actions until receive commit
         //for inactive players, do nothing, just like they drectly type in Commit
-        receiveAndApplyMoves(stillInPlayers);
+        receiveAndApplyMoves(connectedPlayers);
         //resolve all combats and send combat results to players still watch the game
         String combatResult = doAttacks();
         effectTechForStillIn(connectedPlayers);
@@ -307,7 +312,7 @@ public class Game {
      *
      * @throws IOException
      */
-    public void updatePlayerLists() throws IOException {
+    public void updatePlayerLists(ArrayList<ServerPlayer> connectedPlayers) throws IOException {
         //update the stillWatch players list and the stillIn players list
         ArrayList<ServerPlayer> temp = new ArrayList<ServerPlayer>(stillInPlayers);
         ArrayList<ServerPlayer> losers = new ArrayList<>();
@@ -322,7 +327,7 @@ public class Game {
             }
             //for those who didn't lose, tell them to continue
             else {
-                if(player.getCurrentGame().equals(this.gameID)){
+                if(player.getCurrentGame().equals(this.gameID) && connectedPlayers.contains(player)){
                     try{player.sendMessage(Constant.CONTINUE_PLAYING);}catch(Exception e){}
                 }
             }
@@ -429,7 +434,7 @@ public class Game {
             //multi thread in this function to handle simultaneous input
             playOneTurn(connectedPlayers);
             //update stillIn and stillWatch players list
-            updatePlayerLists();
+            updatePlayerLists(connectedPlayers);
             //add 1 soldier to all territories at the end of one turn;
             addSoldiersToAll(connectedPlayers);
             //add resources for all players

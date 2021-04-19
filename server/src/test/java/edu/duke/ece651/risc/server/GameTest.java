@@ -290,7 +290,10 @@ public class GameTest {
     g.doAttacks();
     assertEquals("Red", g.getMap().getTerritory("1").getOwnerName());   
     assertEquals(true,g.checkLost(p2));  
-    assertDoesNotThrow(()->{g.updatePlayerLists();});
+    ArrayList<ServerPlayer> temp = new ArrayList<>();
+    temp.add(p1);
+    temp.add(p2);
+    assertDoesNotThrow(()->{g.updatePlayerLists(temp);});
     t.interrupt();
     t.join();
   }
@@ -340,8 +343,10 @@ public class GameTest {
     a2.apply(g.getMap(),  g.getPlayerInfoByName(p3.getName()));
     g.doAttacks();
     assertEquals(true, g.checkLost(p2));
-    g.updatePlayerLists();
-    assertDoesNotThrow(()->{g.updatePlayerLists();});
+    ArrayList<ServerPlayer> temp = new ArrayList<>();
+    temp.add(p1);
+    temp.add(p2);
+    assertDoesNotThrow(()->{g.updatePlayerLists(temp);});
     t.interrupt();
     t.join();
   }
