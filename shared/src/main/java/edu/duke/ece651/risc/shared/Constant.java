@@ -119,7 +119,7 @@ public class Constant {
     public static int RESEARCH_CLOAKING_COST = 100;
     public static int CLOAKING_TURNS = 3;
     public static int SHIP_COST=50;
-    public static int MISSILE_COST=50；
+    public static int MISSILE_COST=50;
 
 }
 
