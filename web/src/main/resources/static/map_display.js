@@ -19,11 +19,12 @@ function getOption(tooltip_formatter_fn) {
             item["tooltip"] = {
                 show: false,
             }
+            item["label"]["color"] = "#B1A7A6";
         }
         item["itemStyle"] = {
             color: item["color"],
             borderWidth: 1,
-            borderColor: '#b1a7a6',
+            borderColor: '#B1A7A6',
         };
         return item;
     });
@@ -48,7 +49,7 @@ function getOption(tooltip_formatter_fn) {
                 },
                 links: graphData["links"],
                 lineStyle: {
-                    color: "#b1a7a6",
+                    color: "#B1A7A6",
                     width: "1",
                     type: "solid",
                 },
