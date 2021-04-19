@@ -46,7 +46,7 @@ public class FancyAttackRuleCheckerTest {
     @Test
     public void test_combinedRule(){
         GameMap map1=createTestMap();
-        Checker checker=new ClientChecker(new FancyAttackRuleChecker(null));
+        Checker checker=new ClientChecker(new FancyClientChecker(new FancyAttackRuleChecker(null)));
         PlayerInfo info1=new PlayerInfo("player1",2,1000,20);
         PlayerInfo info2=new PlayerInfo("player2",2,4,20);
         // check same owner case

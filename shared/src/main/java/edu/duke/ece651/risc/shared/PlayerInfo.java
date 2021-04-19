@@ -16,7 +16,8 @@ public class PlayerInfo {
     private boolean requested;
     private boolean cloakingTech;
     private Map<String, Territory> hasSeen;
-
+    private int shipCount;
+    private int missileCount;
 
     public PlayerInfo() {
     }
@@ -37,6 +38,8 @@ public class PlayerInfo {
         this.requested = false;
         this.cloakingTech = false;
         this.hasSeen = new HashMap<>();
+        this.shipCount = 0;
+        this.missileCount = 0;
     }
 
     /**
@@ -178,5 +181,45 @@ public class PlayerInfo {
      */
     public Territory getPrevSeenTerr(String name) {
         return hasSeen.get(name);
+    }
+
+    /**
+     * get the remaining ship count
+     *
+     * @return the number of remaining ship can be used
+     */
+    public int getShipCount(){
+        return shipCount;
+    }
+
+    /**
+     * get the remaining missile count
+     *
+     * @return the number of remaining missile can be used
+     */
+    public int getMissileCount() {
+        return missileCount;
+    }
+
+    public void addShipCount(int count){
+        if(count<0){
+            throw new IllegalArgumentException("The count can't be negative!");
+        }
+        if(count*Constant.SHIP_COST<getFoodResource()){
+            throw new IllegalArgumentException("The food resource is not enough!");
+        }
+        shipCount+=count;
+        foodResource-=count*Constant.SHIP_COST;
+    }
+
+    public void addMissileCount(int count){
+        if(count<0){
+            throw new IllegalArgumentException("The count can't be negative!");
+        }
+        if(count*Constant.MISSILE_COST<getFoodResource()){
+            throw new IllegalArgumentException("The food resource is not enough!");
+        }
+        shipCount+=count;
+        foodResource-=count*Constant.MISSILE_COST;
     }
 }

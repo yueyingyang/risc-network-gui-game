@@ -43,7 +43,7 @@ public class FancyMoveRuleCheckerTest {
     @Test
     public void test_combinedRule(){
         GameMap map1=createTestMap();
-        Checker checker=new ClientChecker(new FancyMoveRuleChecker(null));
+        Checker checker=new ClientChecker(new FancyClientChecker(new FancyMoveRuleChecker(null)));
         PlayerInfo info1=new PlayerInfo("player1",2,1000,10);
         PlayerInfo info2=new PlayerInfo("player2",2,10,10);
         // check move to other player's territory
