@@ -18,6 +18,15 @@ class FancyAttackEntryTest {
         assertEquals(5, entry.getNumSoldiers());
         assertEquals("LiLei", entry.getPlayerName());
         assertEquals("0", entry.getFromType());
+
+        ActionEntry entry1 = new FancyAttackEntry("0", "1", 5,
+                "0", "LiLei",true);
+        assertEquals("0", entry1.getFromName());
+        assertEquals("1", entry1.getToName());
+        assertEquals(5, entry1.getNumSoldiers());
+        assertEquals("LiLei", entry1.getPlayerName());
+        assertEquals("0", entry1.getFromType());
+        assertTrue(entry1.isUseShip());
     }
 
     @Test
@@ -35,6 +44,8 @@ class FancyAttackEntryTest {
                 "2", "LiLei");
         ActionEntry entry5 = new FancyAttackEntry("0", "3", 2,
                  "3", "LiLei");
+        ActionEntry entry6 = new FancyAttackEntry("0","2",1,
+                "2","LiLei",true);
 
         entry0.apply(myMap, myInfo);
         entry1.apply(myMap, myInfo);
@@ -56,5 +67,9 @@ class FancyAttackEntryTest {
         assertEquals(5, terr1.getNumSoldiersInAttacker("LiLei"));
         assertEquals(3, terr1.getNumSoldiersInAttacker("LiLei","2"));
         assertEquals(2, terr1.getNumSoldiersInAttacker("LiLei", "3"));
+        entry6.apply(myMap, myInfo);
+        assertEquals(314,myInfo.getFoodResource());
+        Territory terr2 = myMap.getTerritory("2");
+        assertEquals(1,terr2.getNumSoldiersInAttacker("LiLei","2"));
     }
 }
