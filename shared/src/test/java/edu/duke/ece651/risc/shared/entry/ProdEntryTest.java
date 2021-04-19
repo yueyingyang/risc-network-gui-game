@@ -21,7 +21,7 @@ public class ProdEntryTest {
         nameList.add("Tom");
         GameMap m=f.createMap(nameList,2);
         action.apply(m,myInfo);
-        assertEquals(myInfo.getShipCount(),2);
+        assertEquals(myInfo.getProdCount(Constant.ship),2);
         assertEquals(myInfo.getFoodResource(),200);
     }
 }
