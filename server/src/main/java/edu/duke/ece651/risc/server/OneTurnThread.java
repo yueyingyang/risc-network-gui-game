@@ -6,13 +6,16 @@ import jdk.nashorn.api.tree.VariableTree;
 import edu.duke.ece651.risc.shared.entry.ActionEntry;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CyclicBarrier;
 
 /**
  * This is the class for multi thread used in handling incoming actions from players
  */
 public class OneTurnThread implements Runnable {
+
     private GameMap mapLocal;
     private GameMap gameMap;
     private ServerPlayer player;
@@ -21,6 +24,7 @@ public class OneTurnThread implements Runnable {
     PlayerInfo playerInfo;
     CyclicBarrier barrier;
     int gameID;
+    private Map<String, String> playerColorMap;
 
     /**
      * constructor
@@ -38,6 +42,12 @@ public class OneTurnThread implements Runnable {
         this.playerInfo = playerInfo;
         this.barrier = barrier;
         this.gameID = gameID;
+        this.playerColorMap = new HashMap<>();
+    }
+
+    public OneTurnThread(GameMap g, ServerPlayer p, List<ServerPlayer> playerList, PlayerInfo playerInfo, CyclicBarrier barrier, int gameID, Map<String, String> playerColorMap) {
+        this(g, p, playerList, playerInfo, barrier, gameID);
+        this.playerColorMap = playerColorMap;
     }
 
     /**
@@ -49,7 +59,7 @@ public class OneTurnThread implements Runnable {
     private void applyMovement(ActionEntry a) {
         synchronized (gameMap) {
             try {
-                PlayerInfo pi = new PlayerInfo(playerInfo.getName(),playerInfo.getTechLevel(),playerInfo.getFoodResource(),playerInfo.getTechResource());
+                PlayerInfo pi = new PlayerInfo(playerInfo.getName(), playerInfo.getTechLevel(), playerInfo.getFoodResource(), playerInfo.getTechResource());
                 a.apply(gameMap, playerInfo);
 //                also apply on the local copy
                 a.apply(mapLocal, pi);
@@ -59,7 +69,7 @@ public class OneTurnThread implements Runnable {
             }
         }
         // send the updated map view
-        player.sendMessage(new V2MapView(mapLocal, playerList, playerInfo).toString(true));
+        player.sendMessage(new V2MapView(mapLocal, playerList, playerInfo, playerColorMap).toString(true));
     }
 
     /**
@@ -68,10 +78,10 @@ public class OneTurnThread implements Runnable {
     public void run() {
         JSONSerializer js = new JSONSerializer();
         //player.sendObject(gameMap);
-        if(player.getCurrentGame()!=gameID){
-            try{
+        if (player.getCurrentGame() != gameID) {
+            try {
                 barrier.await();
-            }catch(Exception e){
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
             return;
@@ -79,10 +89,10 @@ public class OneTurnThread implements Runnable {
         while (true) {
             try {
                 String s = player.recvMessage();
-                if(s==null){
-                    if(player.getCurrentGame()==gameID){
+                if (s == null) {
+                    if (player.getCurrentGame() == gameID) {
                         player.setCurrentGameID(-1);
-                    }                    
+                    }
                     break;
                 }
                 //check if the player has done with his orders
@@ -96,9 +106,9 @@ public class OneTurnThread implements Runnable {
                 break;
             }
         }
-        try{
+        try {
             barrier.await();
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
