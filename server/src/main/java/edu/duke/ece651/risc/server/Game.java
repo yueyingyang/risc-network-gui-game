@@ -14,11 +14,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
+
+import org.bson.Document;
 
 import edu.duke.ece651.risc.shared.Constant;
 import edu.duke.ece651.risc.shared.GameMap;
@@ -431,11 +436,10 @@ public class Game {
         barrier.await();
     }
 
-    public synchronized void updateGamesCollection(){
-    String s = serializer.serialize(this);
-    
-    Document document = new Document("gameID", g.getGameID()).append("description", s);
-    gamesCollection.insertOne(document);
+    public synchronized void updateGamesCollection(MongoCollection<Document> gamesCollection){
+        JSONSerializer serializer = new JSONSerializer();
+        String s = serializer.serialize(this);
+        gamesCollection.updateOne(Filters.eq("gameID", this.gameID), Updates.set("description", s));    
   }
 
 
