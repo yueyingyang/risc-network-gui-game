@@ -3,15 +3,14 @@ $('select.dropdown')
     .dropdown();
 $('.ui.checkbox')
     .checkbox()
-$('.ui.menu a.item').on('click', function() {
-    $(this)
-        .addClass('active')
+$('.ui.menu a.item').on('click', function () {
+    // display corresponding form
+    let idx = $(this).index()
+    $('#action_forms').children().eq(idx)
+        .removeAttr('hidden')
         .siblings()
-        .removeClass('active');
-})
-
-// Set interaction of action tabs
-$('#actions a.item').on('click', function () {
+        .addClass().attr('hidden','');
+    // set active links
     $(this)
         .addClass('active')
         .siblings()
