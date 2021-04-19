@@ -14,16 +14,11 @@ public class V2MapView {
   private final Map<String, String> playerColorMap;
   private final PlayerInfo playerInfo;
 
-  public V2MapView(GameMap map, List<ServerPlayer> players, PlayerInfo playerInfo) {
+  public V2MapView(GameMap map, List<ServerPlayer> players, PlayerInfo playerInfo, Map<String, String> playerColorMap) {
     this.map = map;
     this.jsonSerializer = new JSONSerializer();
     this.playerInfo = playerInfo;
-    this.playerColorMap = new HashMap<>();
-    System.out.println("in v2mapview");
-    for (ServerPlayer p : players) {
-      playerColorMap.put(p.getName(), "#" + Integer.toHexString(p.getColor().getRGB()).substring(2).toUpperCase(Locale.ROOT));
-      System.out.println(p.getName()+"   "+p.getColor());
-    }
+    this.playerColorMap = playerColorMap;
   }
 
   private Point calPoint(Point middle, double angle, int radius) {

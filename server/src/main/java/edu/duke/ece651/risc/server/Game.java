@@ -6,12 +6,7 @@ import static edu.duke.ece651.risc.shared.Constant.COLORS;
 
 import java.awt.Color;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
@@ -45,12 +40,13 @@ public class Game {
     private ArrayList<ServerPlayer> players;
     private ArrayList<ServerPlayer> stillInPlayers;//players still didn't lose
     private ArrayList<ServerPlayer> stillWatchPlayers;//players stillIn with those who want to watch after losing
-    private HashMap<String,PlayerInfo> allplayerInfo;
+    private HashMap<String, PlayerInfo> allplayerInfo;
     private HashMap<String, V2MapView> allMapViews;
     private GameMap gameMap;
     private Random myRandom;
     public Boolean isComplete;
     private ExecutorService threadPool;
+    private Map<String, String> playerColorMap;
 
 
     /**
@@ -58,7 +54,7 @@ public class Game {
      *
      * @param playerNum is the required number of players in this game
      */
-    public Game(int playerNum,int gameID) {
+    public Game(int playerNum, int gameID) {
         this.gameID = gameID;
         this.playerNum = playerNum;
         this.players = new ArrayList<>();
@@ -66,6 +62,7 @@ public class Game {
         this.stillWatchPlayers = new ArrayList<>();
         this.allplayerInfo = new HashMap<>();
         this.allMapViews = new HashMap<>();
+        this.playerColorMap = new HashMap<>();
         this.myRandom = new Random();
         this.isComplete = false;
         this.threadPool = Executors.newFixedThreadPool(5);
@@ -73,28 +70,31 @@ public class Game {
 
     /**
      * get playerInfo by the player's name
+     *
      * @param name
      * @return
      */
-    public PlayerInfo getPlayerInfoByName(String name){
+    public PlayerInfo getPlayerInfoByName(String name) {
         return allplayerInfo.get(name);
     }
 
     /**
      * get the current gameID
+     *
      * @return the current gameID
      */
-    public Integer getGameID(){
+    public Integer getGameID() {
         return this.gameID;
     }
 
     /**
      * get all players' name in game
+     *
      * @return the list of playerName
      */
-    public List<String> getAllPlayers(){
+    public List<String> getAllPlayers() {
         ArrayList<String> res = new ArrayList<String>();
-        for(Player p:players){
+        for (Player p : players) {
             res.add(p.getName());
         }
         return res;
@@ -112,7 +112,7 @@ public class Game {
         }
         this.players.add(player);
         // assign a color to player based on the idx of the player in the list
-        player.setColor(Color.decode(COLORS[players.size() - 1]));
+        playerColorMap.put(player.getName(), toHexStr(Color.decode(COLORS[players.size() - 1])));
         return null;
     }
 
@@ -146,12 +146,13 @@ public class Game {
 
     /**
      * check if a player exist in a game or not
+     *
      * @param playerName is the name of the player
      * @return
      */
-    public Boolean IsPlayerExist(String playerName){
-        for(Player p:players){
-            if(p.getName().equals(playerName)){
+    public Boolean IsPlayerExist(String playerName) {
+        for (Player p : players) {
+            if (p.getName().equals(playerName)) {
                 return true;
             }
         }
@@ -191,7 +192,10 @@ public class Game {
      */
     public void sendObjectToAll(Object o, ArrayList<ServerPlayer> p) {
         for (Player player : p) {
-            try{player.sendObject(o);}catch(Exception e){}
+            try {
+                player.sendObject(o);
+            } catch (Exception e) {
+            }
         }
     }
 
@@ -203,7 +207,10 @@ public class Game {
      */
     public void sendStringToAll(String s, ArrayList<ServerPlayer> p) {
         for (Player player : p) {
-            try{player.sendMessage(s);}catch(Exception e){}
+            try {
+                player.sendMessage(s);
+            } catch (Exception e) {
+            }
         }
     }
 
@@ -236,7 +243,7 @@ public class Game {
         List<ServerPlayer> temp = connectePlayers.stream().filter(it -> stillInPlayers.contains(it)).collect(Collectors.toList());
         CyclicBarrier barrier = new CyclicBarrier(temp.size()+1);
         for (ServerPlayer player : temp) {
-            threadPool.execute(new OneTurnThread(gameMap, player, players,allplayerInfo.get(player.getName()),barrier,gameID));
+            threadPool.execute(new OneTurnThread(gameMap, player, players, allplayerInfo.get(player.getName()), barrier, gameID, playerColorMap));
         }
         barrier.await();
     }
@@ -260,11 +267,11 @@ public class Game {
      */
     public void addSoldiersToAll(ArrayList<ServerPlayer> connectedPlayers) {
         HashSet<String> connectedNames = new HashSet<>();
-        for(Player p:connectedPlayers){
+        for (Player p : connectedPlayers) {
             connectedNames.add(p.getName());
         }
-        for (Territory t : gameMap.getAllTerritories()) { 
-            if(connectedNames.contains(t.getOwnerName())){
+        for (Territory t : gameMap.getAllTerritories()) {
+            if (connectedNames.contains(t.getOwnerName())) {
                 t.addSoldiersToArmy(1);
             }
         }
@@ -273,19 +280,20 @@ public class Game {
     /**
      * upgrade the tech level if requested
      */
-    public void effectTechForStillIn(ArrayList<ServerPlayer> connectedPlayers){
-        for(ServerPlayer p:connectedPlayers){
+    public void effectTechForStillIn(ArrayList<ServerPlayer> connectedPlayers) {
+        for (ServerPlayer p : connectedPlayers) {
             allplayerInfo.get(p.getName()).effectTech();
         }
     }
-    ArrayList<ServerPlayer> sendMap_GetConnectedPlayers(){
-         //send map to players in the stillWatch list
-         ArrayList<ServerPlayer> connectedPlayers = new ArrayList<>();
-         for (ServerPlayer p : stillWatchPlayers) {
-             if(p.getCurrentGame()==gameID){
+
+    ArrayList<ServerPlayer> sendMap_GetConnectedPlayers() {
+        //send map to players in the stillWatch list
+        ArrayList<ServerPlayer> connectedPlayers = new ArrayList<>();
+        for (ServerPlayer p : stillWatchPlayers) {
+            if (p.getCurrentGame() == gameID) {
                 p.sendMessage(allMapViews.get(p.getName()).toString(true));
                 connectedPlayers.add(p);
-             }
+            }
         }
         return connectedPlayers;
     }
@@ -302,8 +310,8 @@ public class Game {
         //resolve all combats and send combat results to players still watch the game
         String combatResult = doAttacks();
         effectTechForStillIn(connectedPlayers);
-        for(ServerPlayer p : connectedPlayers){
-            if(p.getCurrentGame() == gameID) p.sendObject(combatResult);
+        for (ServerPlayer p : connectedPlayers) {
+            if (p.getCurrentGame() == gameID) p.sendObject(combatResult);
         }
     }
 
@@ -320,7 +328,10 @@ public class Game {
             //if lost the game, the player can only watch or disconnect
             if (checkLost(player)) {
                 //we will only send lose game info to who has just lost the game
-                try{player.sendMessage(Constant.LOSE_GAME);}catch(Exception e){}
+                try {
+                    player.sendMessage(Constant.LOSE_GAME);
+                } catch (Exception e) {
+                }
                 //remove the lost player from stillIn
                 stillInPlayers.remove(player);
                 losers.add(player);
@@ -334,18 +345,18 @@ public class Game {
         }
 
         // should end game as only winner left in the room
-        if(stillInPlayers.size() == 1){
+        if (stillInPlayers.size() == 1) {
             return;
         }
 
-        for(ServerPlayer player : losers){
-            if(player.getCurrentGame()==gameID){
+        for (ServerPlayer player : losers) {
+            if (player.getCurrentGame() == gameID) {
                 player.sendMessage(Constant.CONTINUE_PLAYING);
                 //if receive disconnect, rmv from the watch game list
                 String msg = player.recvMessage();
-                if (msg!=null && msg.equals(Constant.DISCONNECT_GAME)) {
-                  stillWatchPlayers.remove(player);
-                  player.closeSocket();
+                if (msg != null && msg.equals(Constant.DISCONNECT_GAME)) {
+                    stillWatchPlayers.remove(player);
+                    player.closeSocket();
                 }
             }
         }
@@ -378,9 +389,9 @@ public class Game {
     /**
      * close all sockets when the game ends
      */
-    public void endGame() throws IOException{
+    public void endGame() throws IOException {
         for (ServerPlayer p : stillWatchPlayers) {
-            if(p.getCurrentGame()==gameID){
+            if (p.getCurrentGame() == gameID) {
                 p.closeSocket();
             }
         }
@@ -389,8 +400,8 @@ public class Game {
     /**
      * add resources to all territories
      */
-    public void addResourcesToConnected(ArrayList<ServerPlayer> connectedPlayers){
-        for(ServerPlayer p:connectedPlayers){
+    public void addResourcesToConnected(ArrayList<ServerPlayer> connectedPlayers) {
+        for (ServerPlayer p : connectedPlayers) {
             Iterable<Territory> myTerrs = gameMap.getPlayerTerritories(p.getName());
             allplayerInfo.get(p.getName()).addResource(myTerrs);
         }
@@ -398,14 +409,15 @@ public class Game {
 
     /**
      * send gameMap to all players and receive their placement using thread pool
+     *
      * @param soldierNum is the num of soldier that one player own's
      */
-    public void sendAndPlace(int soldierNum) throws InterruptedException,BrokenBarrierException{
-        CyclicBarrier barrier = new CyclicBarrier(players.size()+1);
-        for(ServerPlayer p:players){
-            threadPool.execute(new PlacementThread(soldierNum,this.gameMap,allMapViews.get(p.getName()),p,barrier));
+    public void sendAndPlace(int soldierNum) throws InterruptedException, BrokenBarrierException {
+        CyclicBarrier barrier = new CyclicBarrier(players.size() + 1);
+        for (ServerPlayer p : players) {
+            threadPool.execute(new PlacementThread(soldierNum, this.gameMap, allMapViews.get(p.getName()), p, barrier));
         }
-        barrier.await();       
+        barrier.await();
     }
 
 
@@ -418,14 +430,14 @@ public class Game {
         //copy players list for stillIn and stillWatch
         stillInPlayers = new ArrayList<>(players);
         stillWatchPlayers = new ArrayList<>(players);
-        for(ServerPlayer p:players){
+        for (ServerPlayer p : players) {
             PlayerInfo pi = new PlayerInfo(p.getName());
-            allplayerInfo.put(p.getName(),pi);
+            allplayerInfo.put(p.getName(), pi);
         }
         makeMap(TerritoryPerPlayer);
-        for(ServerPlayer p:players){
-            V2MapView view = new V2MapView(this.gameMap, players, allplayerInfo.get(p.getName()));
-            allMapViews.put(p.getName(),view);
+        for (ServerPlayer p : players) {
+            V2MapView view = new V2MapView(this.gameMap, players, allplayerInfo.get(p.getName()), playerColorMap);
+            allMapViews.put(p.getName(), view);
         }
         addResourcesToConnected(stillInPlayers);
         sendAndPlace(totalSoldiers);
@@ -450,6 +462,16 @@ public class Game {
         }
         //close sockets
         endGame();
+    }
+
+    /**
+     * Convert color object to hex string
+     *
+     * @param c is the color to convert
+     * @return hex string
+     */
+    private String toHexStr(Color c) {
+        return '#' + Integer.toHexString(c.getRGB()).substring(2).toUpperCase(Locale.ROOT);
     }
 
 }
