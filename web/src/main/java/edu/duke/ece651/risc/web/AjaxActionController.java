@@ -54,6 +54,7 @@ public class AjaxActionController {
   @PostMapping(value = "/attack", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ActionAjaxResBody> attack(@RequestBody UserActionInput input) throws IOException {
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+    Boolean useShip = input.getUseShip() != null && input.getUseShip().equals("on");
     // Wrap a Attack entry
     FancyAttackEntry attackEntry = new FancyAttackEntry(input.getFromName(),
             input.getToName(),

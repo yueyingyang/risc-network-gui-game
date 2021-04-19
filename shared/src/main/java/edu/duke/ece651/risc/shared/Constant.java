@@ -34,7 +34,7 @@ public class Constant {
     public static final String PLACEMENT_VALID = "valid";
     public static final String PLACEMENT_INVALID = "invalid";
 
-    public static final String[] COLORS = {"#97B8A3", "#EDC3C7", "#FDF06F", "#A6CFE2", "#9C9CDD"};
+    public static final String[] COLORS = {"#97B8A3", "#EDC3C7", "#E76F51", "#A6CFE2", "#9C9CDD"};
 
 
     /**
