@@ -34,6 +34,7 @@ public abstract class BasicEntry implements ActionEntry {
         this.useShip = false;
     }
 
+    /*
     /**
      * Construct a basic entry
      *
@@ -43,7 +44,7 @@ public abstract class BasicEntry implements ActionEntry {
      * @param playerName  is the name of the player
      * @param fromType    is the current type of the soldier
      * @param toType      is the type of the soldier after update
-     */
+
     public BasicEntry(String fromName, String toName, int numSoldiers, String playerName,
                       String fromType, String toType, boolean useShip) {
         this.fromName = fromName;
@@ -54,6 +55,7 @@ public abstract class BasicEntry implements ActionEntry {
         this.toType = toType;
         this.useShip = useShip;
     }
+    */
 
     /**
      * Get the name of the from-territory
