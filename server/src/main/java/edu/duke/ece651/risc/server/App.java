@@ -250,6 +250,7 @@ public class App {
       player = new ServerPlayer(in, out, clientSocket);
       players.put(playerName, player);
       player.setName(playerName);
+      insertPlayersCollection(player);
     } else {
       player = players.get(playerName);
       //update the player's inputstream and outputstream
@@ -257,6 +258,11 @@ public class App {
       player.setSocket(clientSocket);
     }
     return player;
+  }
+
+  public synchronized void insertPlayersCollection(ServerPlayer player){
+    Document document = new Document("playerName", player.getName());
+    playersCollection.insertOne(document);
   }
 
 
