@@ -24,7 +24,10 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 import org.bson.Document;
+import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
 import edu.duke.ece651.risc.shared.*;
 import edu.duke.ece651.risc.shared.game.*;
 
@@ -39,7 +42,7 @@ public class App {
 
   public volatile MongoClient mongoClient;
   public volatile MongoDatabase mongoDatabase;
-  public volatile MongoCollection<Document> playersCollection;
+  public volatile MongoCollection<Document> playersCollection;// only need players names
   public volatile MongoCollection<Document> gamesCollection;
   private JSONSerializer serializer;
 
@@ -58,6 +61,23 @@ public class App {
     actionHandlerMap.put(Constant.STARTGAME, this::startNewGame);
     actionHandlerMap.put(Constant.JOINGAME, this::joinAndRun);
     actionHandlerMap.put(Constant.REJOINGAME, this::rejoinGame);
+
+    //ignore some annoying log of MongoDB
+    LoggerContext loggerContext = (LoggerContext)LoggerFactory.getILoggerFactory();
+    loggerContext.getLogger("org.mongodb.driver").setLevel(Level.ERROR);
+    //instantiate a MongoClient object without any parameters to connect to a MongoDB instance 
+    //running on localhost on port 27017
+    this.mongoClient = new MongoClient("localhost" , 27017);
+    //create or get database mydb
+    this.mongoDatabase = mongoClient.getDatabase("mydb");
+    System.out.println("Connect to database successfully");
+    //create or get players collection
+    this.playersCollection = mongoDatabase.getCollection("players");
+    System.out.println("集合 players 选择成功");
+    //create or get games collection
+    this.gamesCollection = mongoDatabase.getCollection("games");
+    System.out.println("集合 games 选择成功");
+    this.serializer = new JSONSerializer();
   }
 
   /**
