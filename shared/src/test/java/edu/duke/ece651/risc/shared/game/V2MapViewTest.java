@@ -25,7 +25,10 @@ class V2MapViewTest {
     Army army = new BasicArmy("John", 5, "3");
     Territory t = map.getTerritory("0");
     t.setMyArmy(army);
-    V2MapView view = new V2MapView(map, playerList(playerNames), new PlayerInfo("John", 1, 20, 20));
+    Map<String, String> colorMapping = new HashMap<>();
+    colorMapping.put("John", "#97B8A3");
+    colorMapping.put("Tom", "#EDC3C7");
+    V2MapView view = new V2MapView(map, playerList(playerNames), new PlayerInfo("John", 1, 20, 20), colorMapping);
     String fullMapView = view.toString(true);
     JSONSerializer s = new JSONSerializer();
     TypeReference<HashMap<String, List<ObjectNode>>> typeRef
