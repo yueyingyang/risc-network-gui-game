@@ -190,25 +190,8 @@ public class PlayerInfo {
      *
      * @return the number of remaining ship can be used
      */
-    public int getShipCount(){
-        return prod.get(Constant.ship);
-    }
-
-    /**
-     * get the remaining missile count
-     *
-     * @return the number of remaining missile can be used
-     */
-    public int getMissileCount() {
-        return prod.get(Constant.missile);
-    }
-
-    public int getShieldCount() {
-        return prod.get(Constant.shield);
-    }
-
-    public int getSwordCount() {
-        return prod.get(Constant.sword);
+    public int getProdCount(String prodName){
+        return prod.get(prodName);
     }
 
     /**
