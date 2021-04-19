@@ -6,6 +6,8 @@ import edu.duke.ece651.risc.shared.PlayerInfo;
 import edu.duke.ece651.risc.shared.checker.Checker;
 import edu.duke.ece651.risc.shared.checker.ProdChecker;
 
+import java.beans.ConstructorProperties;
+
 public class ProdEntry extends BasicEntry{
     /**
      * construct a prod entry
@@ -13,6 +15,7 @@ public class ProdEntry extends BasicEntry{
      * @param prodName the name of prod
      * @param numProds the number rof prods to be added
      */
+    @ConstructorProperties({"prodName", "numProds"})
     public ProdEntry(String prodName, int numProds) {
         super(null,null,0,null,null,null);
         this.prodName=prodName;
