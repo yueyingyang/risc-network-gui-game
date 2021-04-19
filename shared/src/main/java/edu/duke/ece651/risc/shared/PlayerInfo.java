@@ -201,25 +201,35 @@ public class PlayerInfo {
         return missileCount;
     }
 
+    /**
+     * the method for add ships
+     *
+     * @param count the number of ship to be added
+     */
     public void addShipCount(int count){
         if(count<0){
             throw new IllegalArgumentException("The count can't be negative!");
         }
-        if(count*Constant.SHIP_COST<getFoodResource()){
+        if(count*Constant.SHIP_COST>getFoodResource()){
             throw new IllegalArgumentException("The food resource is not enough!");
         }
         shipCount+=count;
         foodResource-=count*Constant.SHIP_COST;
     }
 
+    /**
+     * the method for add new missiles
+     *
+     * @param count the number of missile to be added
+     */
     public void addMissileCount(int count){
         if(count<0){
             throw new IllegalArgumentException("The count can't be negative!");
         }
-        if(count*Constant.MISSILE_COST<getFoodResource()){
+        if(count*Constant.MISSILE_COST>getFoodResource()){
             throw new IllegalArgumentException("The food resource is not enough!");
         }
-        shipCount+=count;
+        missileCount+=count;
         foodResource-=count*Constant.MISSILE_COST;
     }
 }

@@ -58,6 +58,8 @@ class PlayerInfoTest {
         assertEquals(1, terr0.getNumSoldiersInArmy());
         assertEquals(6, terr0.getNumSpies(name0));
         assertEquals(3, terr0.getNumSpies(name1));
+        assertEquals(0, myInfo.getShipCount());
+        assertEquals(0,myInfo.getMissileCount());
 
 
         Territory terr1 = myInfo.getPrevSeenTerr("0");
@@ -68,6 +70,15 @@ class PlayerInfoTest {
         assertNull(myInfo.getPrevSeenTerr("1"));
     }
 
-
+    @Test
+    public void test_adder(){
+        PlayerInfo myInfo = new PlayerInfo("Green",5,1000,100);
+        myInfo.addShipCount(2);
+        assertEquals(myInfo.getFoodResource(),900);
+        assertEquals(myInfo.getShipCount(),2);
+        myInfo.addMissileCount(2);
+        assertEquals(myInfo.getFoodResource(),800);
+        assertEquals(myInfo.getMissileCount(),2);
+    }
 
 }

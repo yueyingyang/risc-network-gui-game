@@ -31,16 +31,14 @@ public class FancyAttackRuleCheckerTest {
         ActionEntry attack3=new FancyAttackEntry("3","4",1, "0","player1");
         // check not enough food resource
         ActionEntry attack4=new FancyAttackEntry("4","2",5,"0","player2");
-        // check no enough soldier in required level
-        ActionEntry attack5=new FancyAttackEntry("3","4",1, "1","player1");
         // check use ship case
-        ActionEntry attack6=new FancyAttackEntry("1", "4",  2, "0","player1", true);
+        info1.addShipCount(1);
+        ActionEntry attack5=new FancyAttackEntry("1", "4",  2, "0","player1", true);
         assertThrows(IllegalArgumentException.class, () -> checker.checkAction(attack1,map1,info1));
         assertThrows(IllegalArgumentException.class, () -> checker.checkAction(attack2,map1,info1));
         checker.checkAction(attack3,map1,info1);
         assertThrows(IllegalArgumentException.class, () -> checker.checkAction(attack4,map1,info2));
-        assertThrows(IllegalArgumentException.class, () -> checker.checkAction(attack5,map1,info1));
-        assertDoesNotThrow(()->checker.checkAction(attack6,map1,info1));
+        assertDoesNotThrow(()->checker.checkAction(attack5,map1,info1));
     }
 
     @Test
