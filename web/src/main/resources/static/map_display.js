@@ -6,9 +6,7 @@ function getOption(tooltip_formatter_fn) {
         return link;
     });
     graphData["data"].map((item) => {
-        item["itemStyle"] = {
-            color: item["color"],
-        };
+        // 1. label
         item["label"] = {
             show: true,
             position: "inside",
@@ -16,6 +14,16 @@ function getOption(tooltip_formatter_fn) {
             fontWeight: "bold",
             color: "#fff",
             formatter: item["name"],
+        };
+        if (item["isOutline"] === true) {
+            item["tooltip"] = {
+                show: false,
+            }
+        }
+        item["itemStyle"] = {
+            color: item["color"],
+            borderWidth: 1,
+            borderColor: '#b1a7a6',
         };
         return item;
     });

@@ -53,6 +53,7 @@ public class V2MapView {
       } else {
         // 2.3.= outline only
         o.put("isOutline", true);
+        o.put("color", "#202020");
       }
       // 3. position info
       putPos(calPoint(middle, angleStart, radius), o);
