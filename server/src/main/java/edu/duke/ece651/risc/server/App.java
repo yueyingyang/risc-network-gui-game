@@ -20,7 +20,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.MongoClient;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 
 import org.bson.Document;
@@ -273,6 +275,15 @@ public class App {
    * @param ss is the server socket for accepting connection
    */
   public void acceptPlayers(ServerSocket ss) {
+    FindIterable<Document> findIterable = playersCollection.find();  
+    MongoCursor<Document> mongoCursor = findIterable.iterator();  
+    while(mongoCursor.hasNext()){
+      ServerPlayer sp = new ServerPlayer(null,null,null);
+      sp.setName((String)mongoCursor.next().get("playerName"));
+      sp.setCurrentGameID(-1);
+      System.out.println(sp.getName());
+      players.put(sp.getName(), sp);
+    }  
     while (!Thread.currentThread().isInterrupted()) {
       try {
         // accept a new connection and create a new player based on that

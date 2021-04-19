@@ -14,6 +14,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import edu.duke.ece651.risc.shared.Constant;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 /**
  * Game class is responsible for the one game's play
  */
+@JsonIgnoreProperties(value = { "threadpool" })
 public class Game {
     private int gameID;
     private int playerNum;
