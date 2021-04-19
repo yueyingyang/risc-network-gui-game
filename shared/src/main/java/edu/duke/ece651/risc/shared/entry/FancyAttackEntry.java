@@ -40,7 +40,7 @@ public class FancyAttackEntry extends BasicEntry {
     public FancyAttackEntry(String fromName, String toName, int numSoldiers,
                             String fromType, String playerName, boolean useShip) {
         super(fromName, toName, numSoldiers, playerName, fromType, null);
-        this.useShip=true;
+        this.useShip=useShip;
     }
 
     /**
