@@ -331,28 +331,10 @@ public class Territory {
             defender = defender.fight(attacker, myRandom);
             temp.append(defender.getOwnerName()).append(" player wins.\n");
         }
-        changeOwnership(defender);
-        return temp.toString();
-    }
-
-    /**
-     * Change the ownership of the territory
-     *
-     * @param winner is the army wins the territory
-     */
-    protected void changeOwnership(Army winner) {
-        ownerName = winner.getOwnerName();
-        myArmy = winner;
+        myArmy = defender;
+        ownerName = myArmy.getOwnerName();
         attackerBuffer = new HashMap<>();
-        /*
-        addEnemySpies(mySpies);
-        mySpies = spyCamp.get(ownerName);
-        if (mySpies == null) {
-            tempSpies = null;
-        } else {
-            tempSpies = new Army(mySpies);
-        }
-         */
+        return temp.toString();
     }
 
     /**
