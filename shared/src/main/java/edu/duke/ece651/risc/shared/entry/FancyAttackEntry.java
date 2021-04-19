@@ -20,7 +20,7 @@ public class FancyAttackEntry extends BasicEntry {
      * @param fromType    is the type of the soldier participating in the attack
      * @param playerName  is the name of the player
      */
-    @ConstructorProperties({"fromName", "toName", "numSoldiers", "fromType", "playerName"})
+    //@ConstructorProperties({"fromName", "toName", "numSoldiers", "fromType", "playerName"})
     public FancyAttackEntry(String fromName, String toName, int numSoldiers,
                             String fromType, String playerName) {
         super(fromName, toName, numSoldiers, playerName, fromType, null);
