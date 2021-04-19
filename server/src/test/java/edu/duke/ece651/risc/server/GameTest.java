@@ -13,6 +13,8 @@ import edu.duke.ece651.risc.shared.entry.ActionEntry;
 import edu.duke.ece651.risc.shared.entry.AttackEntry;
 import edu.duke.ece651.risc.shared.entry.FancyAttackEntry;
 import edu.duke.ece651.risc.shared.entry.PlaceEntry;
+import edu.duke.ece651.risc.shared.game.V2MapView;
+
 import org.mockito.*;
 import java.io.*;
 import java.net.Socket;
@@ -441,12 +443,15 @@ public class GameTest {
 
   @Test
   public void test_serializeGame(){
+    JSONSerializer js = new JSONSerializer();
     ServerPlayer player1 = new ServerPlayer(null, null, null);
+    player1.setName("player1");
     ServerPlayer player2 = new ServerPlayer(null, null, null);
+    player2.setName("player2");
+    //assertEquals("expected", js.serialize(player1));
     Game g = new Game(2,0);
     g.addPlayer(player1);
     g.addPlayer(player2);
-    JSONSerializer js = new JSONSerializer();
     String s = js.serialize(g);
     assertEquals("", s);
   }

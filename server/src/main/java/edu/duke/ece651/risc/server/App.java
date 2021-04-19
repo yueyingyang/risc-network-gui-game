@@ -165,6 +165,7 @@ public class App {
     // a new game should always add a player successfully
     // new game should assert newGame.addPlayer(player) == null;
     newGame.addPlayer(player);
+    insertGamesCollection(newGame);
     return newGame;
   }
 
@@ -203,7 +204,7 @@ public class App {
     if (g.isGameFull()) {
       Thread t = new Thread(() -> {
         try {
-          g.runGame(2, 6);
+          g.runGame(2, 6, gamesCollection);
         } catch (Exception e) {
           System.out.println("Exception catched when running the game!" + e.getMessage());
         }
@@ -268,9 +269,12 @@ public class App {
   }
 
   public synchronized void insertGamesCollection(Game g){
-    
+    String s = serializer.serialize(g);
+    Document document = new Document("gameID", g.getGameID()).append("description", s);
+    gamesCollection.insertOne(document);
   }
 
+    
 
   /**
    * continuously accept connections and initialize players the player will be

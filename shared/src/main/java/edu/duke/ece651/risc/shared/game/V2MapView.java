@@ -1,5 +1,6 @@
 package edu.duke.ece651.risc.shared.game;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import edu.duke.ece651.risc.shared.*;
@@ -8,11 +9,14 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
+@JsonIgnoreProperties({ "jsonSerializer"})
 public class V2MapView {
-  private final GameMap map;
-  private final JSONSerializer jsonSerializer;
-  private final Map<String, String> playerColorMap;
-  private final PlayerInfo playerInfo;
+  private GameMap map;
+  private JSONSerializer jsonSerializer;
+  private Map<String, String> playerColorMap;
+  private PlayerInfo playerInfo;
+
+  public V2MapView(){}
 
   public V2MapView(GameMap map, List<ServerPlayer> players, PlayerInfo playerInfo, Map<String, String> playerColorMap) {
     this.map = map;

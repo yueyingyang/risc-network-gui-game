@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -37,10 +38,7 @@ import java.util.stream.Collectors;
 /**
  * Game class is responsible for the one game's play
  */
-@JsonIgnoreProperties(value = {"threadpool"})
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "gameID")
+@JsonIgnoreProperties({ "threadPool"})
 public class Game {
     private int gameID;
     private int playerNum;
@@ -83,6 +81,7 @@ public class Game {
      * @param name
      * @return
      */
+    @JsonIgnore
     public PlayerInfo getPlayerInfoByName(String name) {
         return allplayerInfo.get(name);
     }
@@ -101,6 +100,7 @@ public class Game {
      *
      * @return the list of playerName
      */
+    @JsonIgnore
     public List<String> getAllPlayers() {
         ArrayList<String> res = new ArrayList<String>();
         for (Player p : players) {
@@ -149,6 +149,7 @@ public class Game {
      *
      * @return the num of players participated in the game in total
      */
+    @JsonIgnore
     public int getPLayerInGameNum() {
         return this.players.size();
     }
@@ -173,6 +174,7 @@ public class Game {
      *
      * @return the map of this game
      */
+    @JsonIgnore
     public GameMap getMap() {
         return this.gameMap;
     }
@@ -429,13 +431,20 @@ public class Game {
         barrier.await();
     }
 
+    public synchronized void updateGamesCollection(){
+    String s = serializer.serialize(this);
+    
+    Document document = new Document("gameID", g.getGameID()).append("description", s);
+    gamesCollection.insertOne(document);
+  }
+
 
     /**
      * after the game room's required number of people is reached, run the game
      *
      * @throws IOException
      */
-    public void runGame(int TerritoryPerPlayer, int totalSoldiers) throws IOException, InterruptedException, BrokenBarrierException {
+    public void runGame(int TerritoryPerPlayer, int totalSoldiers, MongoCollection<Document> gamesCollection) throws IOException, InterruptedException, BrokenBarrierException {
         //copy players list for stillIn and stillWatch
         stillInPlayers = new ArrayList<>(players);
         stillWatchPlayers = new ArrayList<>(players);
