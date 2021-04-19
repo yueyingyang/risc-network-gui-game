@@ -28,6 +28,9 @@ public class Territory {
     private Map<String, Army> spyCamp;
     private Map<String, Army> spyBuffer;
     private int cloakingBuffer;
+    private boolean useShield;
+    private Set<String> useSword;
+    private Set<String> recvMissile;
 
     /**
      * Add for Jackson deserialization
