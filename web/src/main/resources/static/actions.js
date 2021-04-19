@@ -6,11 +6,14 @@ const soldier_form = $("form#soldier");
 const soldier_btn = $("form#soldier .submit");
 const tech_form = $("form#tech");
 const tech_bin = $("form#tech .submit");
+const buy_form = $("form#buy");
+const buy_btn = $("form#buy .submit");
 
 setupForm(attack_form, attack_btn, "/attack");
 setupForm(move_form, move_btn, "/move");
 setupForm(soldier_form, soldier_btn, "/soldier");
 setupForm(tech_form, tech_bin, "/tech");
+setupForm(buy_form, buy_btn, "/buy");
 
 function setupForm(form, submit_btn, url) {
     form.submit(function (event) {

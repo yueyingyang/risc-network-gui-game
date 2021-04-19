@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -107,6 +108,22 @@ public class AjaxActionController {
     TechEntry techEntry = new TechEntry(
             userName);
     return getActionAjaxResBodyResponseEntity(techEntry);
+  }
+
+  /**
+   * Buy action
+   *
+   * @param input
+   * @return
+   * @throws IOException
+   */
+  @PostMapping(value = "/buy", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<ActionAjaxResBody> buy(@RequestBody UserActionInput input) throws IOException {
+    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+    // todo: Wrap a Product Entry
+    // TechEntry techEntry = new TechEntry(userName);
+    System.out.println("type: " + input.getFromType().toLowerCase(Locale.ROOT) + " soldierNum: " + input.getSoldierNum());
+    return getActionAjaxResBodyResponseEntity(null);
   }
 
   /**
