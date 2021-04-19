@@ -39,7 +39,8 @@ public class FancyAttackEntry extends BasicEntry {
     @ConstructorProperties({"fromName", "toName", "numSoldiers", "fromType", "playerName","useShip"})
     public FancyAttackEntry(String fromName, String toName, int numSoldiers,
                             String fromType, String playerName, boolean useShip) {
-        super(fromName, toName, numSoldiers, playerName, fromType, null, useShip);
+        super(fromName, toName, numSoldiers, playerName, fromType, null);
+        this.useShip=true;
     }
 
     /**
