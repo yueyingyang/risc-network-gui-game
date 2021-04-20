@@ -20,7 +20,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 
 import org.bson.Document;
@@ -47,19 +50,18 @@ import java.util.stream.Collectors;
 public class Game {
     private int gameID;
     private int playerNum;
-    private ArrayList<ServerPlayer> players;
-    private ArrayList<ServerPlayer> stillInPlayers;//players still didn't lose
-    private ArrayList<ServerPlayer> stillWatchPlayers;//players stillIn with those who want to watch after losing
+    public ArrayList<ServerPlayer> players;
+    public ArrayList<ServerPlayer> stillInPlayers;//players still didn't lose
+    public ArrayList<ServerPlayer> stillWatchPlayers;//players stillIn with those who want to watch after losing
     private Map<String, PlayerInfo> allplayerInfo;
     private Map<String, V2MapView> allMapViews;
     private GameMap gameMap;
-    //private Random myRandom;
     public Boolean isComplete;
     private ExecutorService threadPool;
     private Map<String, String> playerColorMap;
 
 
-    public Game(){}
+    public Game(){this.threadPool = Executors.newFixedThreadPool(5);}
 
     /**
      * the construtor of the game
@@ -75,7 +77,6 @@ public class Game {
         this.allplayerInfo = new HashMap<>();
         this.allMapViews = new HashMap<>();
         this.playerColorMap = new HashMap<>();
-        //this.myRandom = new Random();
         this.isComplete = false;
         this.threadPool = Executors.newFixedThreadPool(5);
     }
@@ -113,6 +114,13 @@ public class Game {
         }
         return res;
     }
+
+    public void resetPlayers(ArrayList<ServerPlayer> players,ArrayList<ServerPlayer> stillIn,ArrayList<ServerPlayer> stillWatch){
+        this.players = players;
+        this.stillInPlayers = stillIn;
+        this.stillWatchPlayers = stillWatch;
+    }
+    
 
     /**
      * try to add one player to the game
@@ -305,9 +313,13 @@ public class Game {
     ArrayList<ServerPlayer> sendMap_GetConnectedPlayers() {
         //send map to players in the stillWatch list
         ArrayList<ServerPlayer> connectedPlayers = new ArrayList<>();
+        //System.out.println(players.get(0).getCurrentGame());
+        //System.out.println(stillWatchPlayers.get(0).getCurrentGame());
         for (ServerPlayer p : stillWatchPlayers) {
+           // System.out.println("in game "+this.gameID+" "+p.getName()+":  "+p.getCurrentGame());
             if (p.getCurrentGame() == gameID) {
                 p.sendMessage(allMapViews.get(p.getName()).toString(true));
+                System.out.println(allMapViews.get(p.getName()).toString(true));
                 connectedPlayers.add(p);
             }
         }
@@ -439,7 +451,11 @@ public class Game {
     public synchronized void updateGamesCollection(MongoCollection<Document> gamesCollection){
         JSONSerializer serializer = new JSONSerializer();
         String s = serializer.serialize(this);
-        gamesCollection.updateOne(Filters.eq("gameID", this.gameID), Updates.set("description", s));    
+        BasicDBObject newDocument = new BasicDBObject();
+        newDocument.put("description", s); // (2)
+        BasicDBObject updateObject = new BasicDBObject();
+        updateObject.put("$set", newDocument); // (3)
+        gamesCollection.updateOne(Filters.eq("gameID", this.gameID), updateObject);    
   }
 
 
@@ -448,21 +464,24 @@ public class Game {
      *
      * @throws IOException
      */
-    public void runGame(int TerritoryPerPlayer, int totalSoldiers, MongoCollection<Document> gamesCollection) throws IOException, InterruptedException, BrokenBarrierException {
-        //copy players list for stillIn and stillWatch
-        stillInPlayers = new ArrayList<>(players);
-        stillWatchPlayers = new ArrayList<>(players);
-        for (ServerPlayer p : players) {
-            PlayerInfo pi = new PlayerInfo(p.getName());
-            allplayerInfo.put(p.getName(), pi);
+    public void runGame(int TerritoryPerPlayer, int totalSoldiers, MongoCollection<Document> gamesCollection, Boolean isPlaceComplete) throws IOException, InterruptedException, BrokenBarrierException {
+        if(!isPlaceComplete){
+            stillInPlayers = new ArrayList<>(players);
+            stillWatchPlayers = new ArrayList<>(players);
+            for (ServerPlayer p : players) {
+                PlayerInfo pi = new PlayerInfo(p.getName());
+                allplayerInfo.put(p.getName(), pi);
+            }
+            makeMap(TerritoryPerPlayer);
+            for (ServerPlayer p : players) {
+                V2MapView view = new V2MapView(this.gameMap, players, allplayerInfo.get(p.getName()), playerColorMap);
+                allMapViews.put(p.getName(), view);
+            }
+            addResourcesToConnected(stillInPlayers);
+            sendAndPlace(totalSoldiers);
+            //update games collection
+            updateGamesCollection(gamesCollection);
         }
-        makeMap(TerritoryPerPlayer);
-        for (ServerPlayer p : players) {
-            V2MapView view = new V2MapView(this.gameMap, players, allplayerInfo.get(p.getName()), playerColorMap);
-            allMapViews.put(p.getName(), view);
-        }
-        addResourcesToConnected(stillInPlayers);
-        sendAndPlace(totalSoldiers);
         while (!Thread.currentThread().isInterrupted()) {
             ArrayList<ServerPlayer> connectedPlayers = sendMap_GetConnectedPlayers();
             //multi thread in this function to handle simultaneous input
@@ -479,8 +498,12 @@ public class Game {
                 String winner = this.gameMap.getAllPlayerTerritories().keySet().iterator().next();
                 sendStringToAll(Constant.GAME_OVER, stillWatchPlayers);
                 sendStringToAll("The winner is " + winner, stillWatchPlayers);
+                //update games collection
+                updateGamesCollection(gamesCollection);
                 break;
             }
+            //update games collection
+            updateGamesCollection(gamesCollection);
         }
         //close sockets
         endGame();

@@ -9,10 +9,10 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-@JsonIgnoreProperties({ "jsonSerializer"})
+//@JsonIgnoreProperties({ "jsonSerializer"})
 public class V2MapView {
   private GameMap map;
-  private JSONSerializer jsonSerializer;
+  //private JSONSerializer jsonSerializer;
   private Map<String, String> playerColorMap;
   private PlayerInfo playerInfo;
 
@@ -20,7 +20,7 @@ public class V2MapView {
 
   public V2MapView(GameMap map, List<ServerPlayer> players, PlayerInfo playerInfo, Map<String, String> playerColorMap) {
     this.map = map;
-    this.jsonSerializer = new JSONSerializer();
+    //this.jsonSerializer = new JSONSerializer();
     this.playerInfo = playerInfo;
     this.playerColorMap = playerColorMap;
   }
@@ -33,6 +33,7 @@ public class V2MapView {
   }
 
   protected List<ObjectNode> createTerrEdge() {
+    JSONSerializer jsonSerializer = new JSONSerializer();
     List<ObjectNode> graphData = new ArrayList<>();
     for (Territory t : map.getAllTerritories()) {
       for (Territory neigh : t.getNeighbours()) {
@@ -51,6 +52,7 @@ public class V2MapView {
    * @return the MAP display info in JSON Node
    */
   protected List<ObjectNode> createTerrNode(boolean full) {
+    JSONSerializer jsonSerializer = new JSONSerializer();
     int height = 400;
     int width = 400;
     int radius = 30;
@@ -88,6 +90,7 @@ public class V2MapView {
    * @return string is JSON string
    */
   public String toString(boolean fullInfo) {
+    JSONSerializer jsonSerializer = new JSONSerializer();
     HashMap<String, List<ObjectNode>> data = new HashMap<>();
     data.put("data", createTerrNode(fullInfo));
     data.put("links", createTerrEdge());
@@ -96,6 +99,7 @@ public class V2MapView {
   }
 
   private List<ObjectNode> createPlayerInfoNode() {
+    JSONSerializer jsonSerializer = new JSONSerializer();
     List<ObjectNode> list = new ArrayList<>();
     ObjectNode o = jsonSerializer.getOm().createObjectNode();
     o.put("name", playerInfo.getName());

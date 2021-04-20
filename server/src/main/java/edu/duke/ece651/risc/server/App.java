@@ -19,11 +19,14 @@ import java.util.concurrent.Executors;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import com.mongodb.connection.Server;
 
 import org.bson.Document;
 import org.slf4j.LoggerFactory;
@@ -38,7 +41,7 @@ public class App {
   public volatile ArrayList<Game> games;
   private final ServerSocket hostSocket;
   private final PrintStream output;
-  private Map<String, ServerPlayer> players;
+  private volatile Map<String, ServerPlayer> players;
   private Map<String, actionHandler> actionHandlerMap;
   private ExecutorService threadPool;
 
@@ -201,10 +204,11 @@ public class App {
    */
   public void joinAndRun(ServerPlayer player, JsonNode rootNode){
     Game g = this.joinExistingGame(player, rootNode);
+    updateGamesCollection(g);
     if (g.isGameFull()) {
       Thread t = new Thread(() -> {
         try {
-          g.runGame(2, 6, gamesCollection);
+          g.runGame(2, 6, gamesCollection,false);
         } catch (Exception e) {
           System.out.println("Exception catched when running the game!" + e.getMessage());
         }
@@ -233,6 +237,7 @@ public class App {
     }
     player.sendMessage(Constant.CAN_REJOINGAME);
     player.setCurrentGameID(currentGameID);
+    //System.out.print(player.getName()+"  "+currentGameID);
   }
 
 
@@ -247,7 +252,7 @@ public class App {
    * @param clientSocket is the player's socket
    * @return the unique serverplayer
    */
-  public ServerPlayer createOrUpdatePlayer(String playerName, BufferedReader in, PrintWriter out, Socket clientSocket) {
+  public synchronized ServerPlayer createOrUpdatePlayer(String playerName, BufferedReader in, PrintWriter out, Socket clientSocket) {
     ServerPlayer player = null;
     if (!players.containsKey(playerName)) {
       player = new ServerPlayer(in, out, clientSocket);
@@ -274,25 +279,72 @@ public class App {
     gamesCollection.insertOne(document);
   }
 
-    
+  public synchronized void updateGamesCollection(Game g){
+    String s = serializer.serialize(g);
+    BasicDBObject newDocument = new BasicDBObject();
+    newDocument.put("description", s); 
+    BasicDBObject updateObject = new BasicDBObject();
+    updateObject.put("$set", newDocument); 
+    gamesCollection.updateOne(Filters.eq("gameID", g.getGameID()), updateObject);
+  }
 
-  /**
-   * continuously accept connections and initialize players the player will be
-   * asked whether he/she want to start a new game or join a game
-   *
-   * @param ss is the server socket for accepting connection
-   */
-  public void acceptPlayers(ServerSocket ss) {
+  public void recoverPlayers(){
+    //recover players
     FindIterable<Document> findIterable = playersCollection.find();  
     MongoCursor<Document> mongoCursor = findIterable.iterator();  
     while(mongoCursor.hasNext()){
       ServerPlayer sp = new ServerPlayer(null,null,null);
       sp.setName((String)mongoCursor.next().get("playerName"));
       sp.setCurrentGameID(-1);
-      System.out.println(sp.getName());
       players.put(sp.getName(), sp);
-    }  
+    }
+  }
+
+  public ArrayList<ServerPlayer> reinitializePlayers(ArrayList<ServerPlayer> list){
+    ArrayList<ServerPlayer> res = new ArrayList<>();
+    for(ServerPlayer sp:list){
+      res.add(players.get(sp.getName()));
+    }
+    return res;
+  }
+
+  public void recoverGames(){
+    //recover games
+    FindIterable<Document> findIterable1 = gamesCollection.find();  
+    MongoCursor<Document> mongoCursor1= findIterable1.iterator();  
+    while(mongoCursor1.hasNext()){
+      String gameString = (String)mongoCursor1.next().get("description");
+      Game g = (Game)serializer.deserialize(gameString, Game.class);
+      ArrayList<ServerPlayer> reinitializePlayers = reinitializePlayers(g.players);
+      ArrayList<ServerPlayer> reinitializeStillIn = reinitializePlayers(g.stillInPlayers);
+      ArrayList<ServerPlayer> reinitializeStillWatch = reinitializePlayers(g.stillWatchPlayers);
+      g.resetPlayers(reinitializePlayers, reinitializeStillIn, reinitializeStillWatch);
+      games.add(g);
+      if(g.isGameFull() && !g.isComplete){
+        Boolean isPlaceComplete = !(g.getMap().getAllTerritories().get(0).getNumSoldiersInArmy()==-1);
+        Thread t = new Thread(() -> {
+          try {
+            g.runGame(2, 6, gamesCollection, isPlaceComplete);
+          } catch (Exception e) {e.printStackTrace();}
+        });
+        t.start();
+      }
+    }    
+  }
+
+    
+
+  /**
+   * continuously accept connections and initialize players the player will be
+   * asked whet he/she want to start a new game or join a game
+   *
+   * @param ss is the server socket for accepting connection
+   */
+  public void acceptPlayers(ServerSocket ss) {  
+    recoverPlayers();  
+    recoverGames();   
     while (!Thread.currentThread().isInterrupted()) {
+      System.out.println("enter app loop");
       try {
         // accept a new connection and create a new player based on that
         Socket clientSocket = ss.accept();
@@ -303,6 +355,7 @@ public class App {
         String actionType = rootNode.path("type").textValue();
         String playerName = rootNode.path("name").textValue();
         ServerPlayer player = createOrUpdatePlayer(playerName, in, out, clientSocket);
+        System.out.println(playerName+"  "+actionType);
         threadPool.execute(() -> {
           if (actionHandlerMap.containsKey(actionType)) {
               actionHandlerMap.get(actionType).apply(player, rootNode);        

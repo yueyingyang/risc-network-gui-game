@@ -4,6 +4,7 @@ import java.awt.*;
 import java.net.Socket;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.mongodb.connection.Server;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,6 +34,11 @@ public class ServerPlayer extends Player {
    */
   public void setColor(Color color) {
     this.color = color;
+  }
+
+  public ServerPlayer(){
+    super(null,null);
+    this.clientSocket=null;
   }
 
   /**
