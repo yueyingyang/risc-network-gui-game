@@ -89,6 +89,8 @@ public class App {
    * All steps of the server side program
    */
   public void run() throws IOException{
+    recoverPlayers();  
+    recoverGames();  
     this.acceptPlayers(this.hostSocket);
     this.hostSocket.close();
   }
@@ -340,11 +342,8 @@ public class App {
    *
    * @param ss is the server socket for accepting connection
    */
-  public void acceptPlayers(ServerSocket ss) {  
-    recoverPlayers();  
-    recoverGames();   
+  public void acceptPlayers(ServerSocket ss) {   
     while (!Thread.currentThread().isInterrupted()) {
-      System.out.println("enter app loop");
       try {
         // accept a new connection and create a new player based on that
         Socket clientSocket = ss.accept();
