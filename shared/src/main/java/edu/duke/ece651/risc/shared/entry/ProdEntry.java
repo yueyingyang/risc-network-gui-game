@@ -27,5 +27,6 @@ public class ProdEntry extends BasicEntry{
         Checker checker=new ProdChecker(null);
         checker.checkAction(this,myMap,myInfo);
         myInfo.addProd(this.prodName,this.numProds);
+        myInfo.consumeFood(this.numProds*Constant.prodCost.get(prodName));
     }
 }

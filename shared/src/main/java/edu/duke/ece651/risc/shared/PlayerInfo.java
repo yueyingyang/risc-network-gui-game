@@ -201,6 +201,14 @@ public class PlayerInfo {
      */
     public void addProd(String prodName,int count){
         prod.put(prodName,prod.get(prodName)+count);
-        foodResource-=count*Constant.prodCost.get(prodName);
+    }
+
+    /**
+     * remove 1 prod when used
+     *
+     * @param prodName the name of prod to be consumed
+     */
+    public void consumeProd(String prodName){
+        prod.put(prodName,prod.get(prodName)-1);
     }
 }

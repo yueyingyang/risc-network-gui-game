@@ -54,6 +54,9 @@ public class FancyAttackEntry extends BasicEntry {
     public void apply(GameMap myMap, PlayerInfo myInfo) {
         Checker myChecker = new ClientChecker(new FancyClientChecker(new FancyAttackRuleChecker(null)));
         myChecker.checkAction(this, myMap, myInfo);
+        if(this.useShip) {
+            myInfo.consumeProd(Constant.ship);
+        }
         Territory fromTerr = myMap.getTerritory(fromName);
         Territory toTerr = myMap.getTerritory(toName);
         fromTerr.removeSoldiersFromArmy(numSoldiers, fromType);
