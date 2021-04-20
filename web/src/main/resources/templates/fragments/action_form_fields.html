@@ -31,6 +31,25 @@
         </div>
     </div>
 </div>
+<div th:fragment="move_spy">
+    <div class="four fields" style="user-select: auto;">
+        <div class="field" style="user-select: auto;">
+            <label style="user-select: auto;">From Territory</label>
+            <input type="text" placeholder="From Territory" style="user-select: auto;"
+                   name="fromName">
+        </div>
+        <div class="field" style="user-select: auto;">
+            <label style="user-select: auto;">To Territory</label>
+            <input type="text" placeholder="To Territory" style="user-select: auto;"
+                   name="toName">
+        </div>
+        <div class="field" style="user-select: auto;">
+            <label style="user-select: auto;">Number of Soldiers</label>
+            <input type="number" placeholder="Number of Soldiers" style="user-select: auto;"
+                   name="soldierNum">
+        </div>
+    </div>
+</div>
 <div th:fragment="soldier_fields(soldierType)">
     <div class="four fields" style="user-select: auto;">
         <div class="field" style="user-select: auto;">
@@ -56,6 +75,39 @@
             <label style="user-select: auto;">Number of Soldiers</label>
             <input type="number" placeholder="Number of Soldiers" style="user-select: auto;"
                    name="soldierNum">
+        </div>
+    </div>
+</div>
+<div th:fragment="spy_soldier_fields">
+    <div class="four fields" style="user-select: auto;">
+        <div class="field" style="user-select: auto;">
+            <label style="user-select: auto;">Territory</label>
+            <input type="text" placeholder="Territory" style="user-select: auto;"
+                   name="toName">
+        </div>
+        <div class="field" style="user-select: auto;">
+            <label style="user-select: auto;">Number of Soldiers</label>
+            <input type="number" placeholder="Number of Soldiers" style="user-select: auto;"
+                   name="soldierNum">
+        </div>
+    </div>
+</div>
+<div th:fragment="tools_fields">
+    <div class="four fields" style="user-select: auto;">
+        <div class="field" style="user-select: auto;">
+            <label style="user-select: auto;">Types</label>
+            <select th:name="fromType"
+                    class="ui fluid search dropdown">
+                <option th:text="Cloaking" th:value="cloaking"></option>
+                <option th:text="Missile" th:value="missile"></option>
+                <option th:text="Sword" th:value="sword"></option>
+                <option th:text="Shield" th:value="shield"></option>
+            </select>
+        </div>
+        <div class="field" style="user-select: auto;">
+            <label style="user-select: auto;">Territory</label>
+            <input type="text" placeholder="Territory" style="user-select: auto;"
+                   name="toName">
         </div>
     </div>
 </div>

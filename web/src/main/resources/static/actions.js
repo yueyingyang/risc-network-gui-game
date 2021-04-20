@@ -8,12 +8,24 @@ const tech_form = $("form#tech");
 const tech_bin = $("form#tech .submit");
 const buy_form = $("form#buy");
 const buy_btn = $("form#buy .submit");
+const move_spy_form = $("form#move_spy");
+const move_spy_btn = $("form#move_spy .submit");
+const res_cloaking_form = $("form#res_cloaking");
+const res_cloaking_btn = $("form#res_cloaking .submit");
+const spy_form = $("form#spy");
+const spy_btn = $("form#spy .submit");
+const tools_form = $("form#tools");
+const tools_btn = $("form#tools .submit");
 
 setupForm(attack_form, attack_btn, "/attack");
 setupForm(move_form, move_btn, "/move");
 setupForm(soldier_form, soldier_btn, "/soldier");
 setupForm(tech_form, tech_bin, "/tech");
 setupForm(buy_form, buy_btn, "/buy");
+setupForm(move_spy_form, move_spy_btn, '/move_spy');
+setupForm(res_cloaking_form, res_cloaking_btn, "/res_cloaking")
+setupForm(spy_form, spy_btn, "/spy")
+setupForm(tools_form, tools_btn, "/tools")
 
 function setupForm(form, submit_btn, url) {
     form.submit(function (event) {

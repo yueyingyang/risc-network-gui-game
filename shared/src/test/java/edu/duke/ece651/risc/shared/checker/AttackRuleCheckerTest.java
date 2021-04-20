@@ -8,13 +8,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
-import edu.duke.ece651.risc.shared.BasicArmy;
+import edu.duke.ece651.risc.shared.Army;
 import edu.duke.ece651.risc.shared.GameMap;
 import edu.duke.ece651.risc.shared.PlayerInfo;
 import edu.duke.ece651.risc.shared.Territory;
-import edu.duke.ece651.risc.shared.checker.AttackRuleChecker;
-import edu.duke.ece651.risc.shared.checker.Checker;
-import edu.duke.ece651.risc.shared.checker.ClientChecker;
 import edu.duke.ece651.risc.shared.entry.ActionEntry;
 import edu.duke.ece651.risc.shared.entry.AttackEntry;
 import org.junit.jupiter.api.Test;
@@ -99,7 +96,7 @@ public class AttackRuleCheckerTest {
 
     for(String territoryName:territoryFinder.keySet()){
       Territory t=territoryFinder.get(territoryName);
-      t.setMyArmy(new BasicArmy(t.getOwnerName(), 3));
+      t.setMyArmy(new Army(t.getOwnerName(), 3));
     }
 
     return new GameMap(connections,territoryFinder);

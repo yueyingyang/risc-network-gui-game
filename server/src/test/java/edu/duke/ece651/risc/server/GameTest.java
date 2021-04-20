@@ -177,7 +177,7 @@ public class GameTest {
     g.addPlayer(p);
     g.makeMap(3);
     for(Territory t:g.getMap().getAllTerritories()){
-      BasicArmy myArmy = new BasicArmy("Red",3);
+      Army myArmy = new Army("Red",3);
       t.setMyArmy(myArmy);
     }
     ArrayList<ServerPlayer> as = new ArrayList<>();

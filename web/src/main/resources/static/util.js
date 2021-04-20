@@ -1,9 +1,16 @@
 // Enable select
 $('select.dropdown')
     .dropdown();
-
-// Set interaction of action tabs
-$('#actions a.item').on('click', function () {
+$('.ui.checkbox')
+    .checkbox()
+$('.ui.menu a.item').on('click', function () {
+    // display corresponding form
+    let idx = $(this).index()
+    $('#action_forms').children().eq(idx)
+        .removeAttr('hidden')
+        .siblings()
+        .addClass().attr('hidden','');
+    // set active links
     $(this)
         .addClass('active')
         .siblings()

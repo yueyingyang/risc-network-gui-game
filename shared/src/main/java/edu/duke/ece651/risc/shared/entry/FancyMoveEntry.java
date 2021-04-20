@@ -5,6 +5,7 @@ import edu.duke.ece651.risc.shared.PlayerInfo;
 import edu.duke.ece651.risc.shared.Territory;
 import edu.duke.ece651.risc.shared.checker.Checker;
 import edu.duke.ece651.risc.shared.checker.ClientChecker;
+import edu.duke.ece651.risc.shared.checker.FancyClientChecker;
 import edu.duke.ece651.risc.shared.checker.FancyMoveRuleChecker;
 
 import java.beans.ConstructorProperties;
@@ -37,7 +38,7 @@ public class FancyMoveEntry extends BasicEntry {
      */
     @Override
     public void apply(GameMap myMap, PlayerInfo myInfo) {
-        Checker myChecker = new ClientChecker(new FancyMoveRuleChecker(null));
+        Checker myChecker = new ClientChecker(new FancyClientChecker(new FancyMoveRuleChecker(null)));
         myChecker.checkAction(this, myMap, myInfo);
         Territory fromTerr = myMap.getTerritory(fromName);
         Territory toTerr = myMap.getTerritory(toName);

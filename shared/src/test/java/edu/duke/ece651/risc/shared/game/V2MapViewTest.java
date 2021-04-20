@@ -4,9 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import edu.duke.ece651.risc.shared.*;
-import edu.duke.ece651.risc.shared.entry.ActionEntry;
-import edu.duke.ece651.risc.shared.entry.PlaceEntry;
-import edu.duke.ece651.risc.shared.entry.SoldierEntry;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
@@ -22,7 +19,7 @@ class V2MapViewTest {
   void test_to_string() throws JsonProcessingException {
     List<String> playerNames = Arrays.asList("John", "Tom");
     GameMap map = getGameMap(1, playerNames);
-    Army army = new BasicArmy("John", 5, "3");
+    Army army = new Army("John", 5, "3");
     Territory t = map.getTerritory("0");
     t.setMyArmy(army);
     Map<String, String> colorMapping = new HashMap<>();
@@ -35,7 +32,7 @@ class V2MapViewTest {
             = new TypeReference<>() {
     };
     Map<String, List<ObjectNode>> deView = s.getOm().readValue(fullMapView, typeRef);
-    assertEquals("[{\"name\":\"0\",\"owner\":\"John\",\"value\":5,\"color\":\"#97B8A3\",\"foodProd\":20,\"techProd\":20,\"unit0\":0,\"unit1\":0,\"unit2\":0,\"unit3\":5,\"unit4\":0,\"unit5\":0,\"unit6\":0,\"x\":230,\"y\":200}, {\"name\":\"1\",\"owner\":\"Tom\",\"value\":5,\"color\":\"#EDC3C7\",\"foodProd\":20,\"techProd\":20,\"unit0\":1,\"unit1\":0,\"unit2\":0,\"unit3\":0,\"unit4\":0,\"unit5\":0,\"unit6\":0,\"x\":170,\"y\":200}]", deView.get("data").toString());
+    assertEquals("[{\"name\":\"0\",\"value\":5,\"owner\":\"John\",\"color\":\"#97B8A3\",\"foodProd\":20,\"techProd\":20,\"unit0\":0,\"unit1\":0,\"unit2\":0,\"unit3\":5,\"unit4\":0,\"unit5\":0,\"unit6\":0,\"x\":230,\"y\":200}, {\"name\":\"1\",\"value\":5,\"owner\":\"Tom\",\"color\":\"#EDC3C7\",\"foodProd\":20,\"techProd\":20,\"unit0\":1,\"unit1\":0,\"unit2\":0,\"unit3\":0,\"unit4\":0,\"unit5\":0,\"unit6\":0,\"x\":170,\"y\":200}]", deView.get("data").toString());
     assertEquals("[{\"source\":\"0\",\"target\":\"1\"}, {\"source\":\"1\",\"target\":\"0\"}]", deView.get("links").toString());
     assertEquals("[{\"name\":\"John\",\"techLevel\":1,\"foodRes\":20,\"techRes\":20,\"isRequested\":false}]", deView.get("playerInfo").toString());
   }

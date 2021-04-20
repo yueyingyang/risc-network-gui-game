@@ -8,16 +8,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
-import edu.duke.ece651.risc.shared.BasicArmy;
+import edu.duke.ece651.risc.shared.Army;
 import edu.duke.ece651.risc.shared.GameMap;
 import edu.duke.ece651.risc.shared.PlayerInfo;
 import edu.duke.ece651.risc.shared.Territory;
-import edu.duke.ece651.risc.shared.checker.Checker;
-import edu.duke.ece651.risc.shared.checker.ClientChecker;
-import edu.duke.ece651.risc.shared.checker.FancyMoveRuleChecker;
 import edu.duke.ece651.risc.shared.entry.ActionEntry;
 import edu.duke.ece651.risc.shared.entry.FancyMoveEntry;
-import edu.duke.ece651.risc.shared.entry.MoveEntry;
 import org.junit.jupiter.api.Test;
 
 public class FancyMoveRuleCheckerTest {
@@ -47,7 +43,7 @@ public class FancyMoveRuleCheckerTest {
     @Test
     public void test_combinedRule(){
         GameMap map1=createTestMap();
-        Checker checker=new ClientChecker(new FancyMoveRuleChecker(null));
+        Checker checker=new ClientChecker(new FancyClientChecker(new FancyMoveRuleChecker(null)));
         PlayerInfo info1=new PlayerInfo("player1",2,1000,10);
         PlayerInfo info2=new PlayerInfo("player2",2,10,10);
         // check move to other player's territory
@@ -113,7 +109,7 @@ public class FancyMoveRuleCheckerTest {
 
         for(String territoryName:territoryFinder.keySet()){
             Territory t=territoryFinder.get(territoryName);
-            t.setMyArmy(new BasicArmy(t.getOwnerName(), 3));
+            t.setMyArmy(new Army(t.getOwnerName(), 3));
         }
 
         return new GameMap(connections,territoryFinder);

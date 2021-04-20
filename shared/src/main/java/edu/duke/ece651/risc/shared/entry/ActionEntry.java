@@ -7,7 +7,7 @@ import edu.duke.ece651.risc.shared.PlayerInfo;
 
 /**
  * An interface represent an action entry
- * <p>
+ *
  * Annotation added for jackson subtype deserialization: https://www.baeldung.com/jackson-inheritance
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
@@ -18,7 +18,11 @@ import edu.duke.ece651.risc.shared.PlayerInfo;
         @JsonSubTypes.Type(value = FancyMoveEntry.class, name = "fancyMove"),
         @JsonSubTypes.Type(value = FancyAttackEntry.class, name = "fancyAttack"),
         @JsonSubTypes.Type(value = SoldierEntry.class, name = "soldier"),
-        @JsonSubTypes.Type(value = TechEntry.class, name = "tech")
+        @JsonSubTypes.Type(value = TechEntry.class, name = "tech"),
+        @JsonSubTypes.Type(value = CloakEntry.class, name = "cloak"),
+        @JsonSubTypes.Type(value = CloakingTechEntry.class, name = "cloakingTech"),
+        @JsonSubTypes.Type(value = SpyEntry.class, name = "spy"),
+        @JsonSubTypes.Type(value = SpyMoveEntry.class, name = "spyMove")
 })
 public interface ActionEntry {
 
@@ -72,5 +76,24 @@ public interface ActionEntry {
      */
     public String getToType();
 
+    /**
+     * Get whether the attack is using ship
+     *
+     * @return true if use ship otherwise return false
+     */
+    public boolean isUseShip();
 
+    /**
+     * Get the number of prods to buy
+     *
+     * @return the number of prods to buy
+     */
+    public int getNumProds();
+
+    /**
+     * Get the name of prod to buy
+     *
+     * @return the name of prod to buy
+     */
+    public String getProdName();
 }

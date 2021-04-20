@@ -4,17 +4,17 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import edu.duke.ece651.risc.shared.ClientSocket;
 import edu.duke.ece651.risc.shared.Constant;
 import edu.duke.ece651.risc.shared.JSONSerializer;
-import edu.duke.ece651.risc.shared.PlayerInfo;
 import edu.duke.ece651.risc.shared.entry.*;
 import edu.duke.ece651.risc.web.model.ActionAjaxResBody;
+import edu.duke.ece651.risc.web.model.ToolCreation;
 import edu.duke.ece651.risc.web.model.UserActionInput;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -29,11 +29,19 @@ public class AjaxActionController {
   private final PlayerSocketMap playerMapping;
   private final UtilService util;
   private final JSONSerializer serializer;
+  private final Map<String, ToolCreation> toolEntryMapping;
 
   public AjaxActionController(PlayerSocketMap playerMapping, UtilService util) {
     this.util = util;
     this.playerMapping = playerMapping;
     this.serializer = new JSONSerializer();
+    this.toolEntryMapping = initEntryMapping();
+  }
+
+  private Map<String, ToolCreation> initEntryMapping() {
+    Map<String, ToolCreation> m = new HashMap<>();
+    m.put("cloaking", CloakEntry::new);
+    return m;
   }
 
   /**
@@ -46,13 +54,14 @@ public class AjaxActionController {
   @PostMapping(value = "/attack", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ActionAjaxResBody> attack(@RequestBody UserActionInput input) throws IOException {
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+    Boolean useShip = input.getUseShip() != null && input.getUseShip().equals("on");
     // Wrap a Attack entry
     FancyAttackEntry attackEntry = new FancyAttackEntry(input.getFromName(),
             input.getToName(),
             input.getSoldierNum(),
             input.getFromType(),
             userName);
-    return getActionAjaxResBodyResponseEntity(attackEntry);
+    return getActionRes(attackEntry);
   }
 
   /**
@@ -71,7 +80,7 @@ public class AjaxActionController {
             input.getSoldierNum(),
             input.getFromType(),
             userName);
-    return getActionAjaxResBodyResponseEntity(moveEntry);
+    return getActionRes(moveEntry);
   }
 
   /**
@@ -91,7 +100,7 @@ public class AjaxActionController {
             input.getToType(),
             input.getSoldierNum(),
             userName);
-    return getActionAjaxResBodyResponseEntity(soldierEntry);
+    return getActionRes(soldierEntry);
   }
 
   /**
@@ -107,7 +116,7 @@ public class AjaxActionController {
     // Wrap a Tech entry
     TechEntry techEntry = new TechEntry(
             userName);
-    return getActionAjaxResBodyResponseEntity(techEntry);
+    return getActionRes(techEntry);
   }
 
   /**
@@ -123,7 +132,61 @@ public class AjaxActionController {
     // todo: Wrap a Product Entry
     // TechEntry techEntry = new TechEntry(userName);
     System.out.println("type: " + input.getFromType().toLowerCase(Locale.ROOT) + " soldierNum: " + input.getSoldierNum());
-    return getActionAjaxResBodyResponseEntity(null);
+    return getActionRes(null);
+  }
+
+  /**
+   * Move spy action
+   *
+   * @param input
+   * @return
+   * @throws IOException
+   */
+  @PostMapping(value = "/move_spy", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<ActionAjaxResBody> moveSpy(@RequestBody UserActionInput input) throws IOException {
+    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+    SpyMoveEntry spyMove = new SpyMoveEntry(input.getFromName(), input.getToName(), input.getSoldierNum(), userName);
+    return getActionRes(spyMove);
+  }
+
+  /**
+   * Research cloaking action
+   *
+   * @param input
+   * @return
+   * @throws IOException
+   */
+  @PostMapping(value = "/res_cloaking", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<ActionAjaxResBody> resCloaking(@RequestBody UserActionInput input) throws IOException {
+    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+    return getActionRes(new CloakingTechEntry(userName));
+  }
+
+  /**
+   * Upgrade to spy action
+   *
+   * @param input
+   * @return
+   * @throws IOException
+   */
+  @PostMapping(value = "/spy", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<ActionAjaxResBody> spy(@RequestBody UserActionInput input) throws IOException {
+    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+    SpyEntry spy = new SpyEntry(input.getToName(), input.getSoldierNum(), userName);
+    return getActionRes(spy);
+  }
+
+  /**
+   * Apply tools action
+   *
+   * @param input
+   * @return
+   * @throws IOException
+   */
+  @PostMapping(value = "/tools", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<ActionAjaxResBody> tool(@RequestBody UserActionInput input) throws IOException {
+    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+    return getActionRes(toolEntryMapping.get(input.getFromType()).apply(input.getToName(), userName));
   }
 
   /**
@@ -147,7 +210,7 @@ public class AjaxActionController {
    * @return a response entity whose body is ActionAjaxResBody
    * @throws IOException
    */
-  private ResponseEntity<ActionAjaxResBody> getActionAjaxResBodyResponseEntity(ActionEntry ae) throws IOException {
+  private ResponseEntity<ActionAjaxResBody> getActionRes(ActionEntry ae) throws IOException {
     // 1. With server: send * 1 (action entry) + recv * 2 (validation result + mapView)
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
     ClientSocket cs = playerMapping.getSocket(userName);

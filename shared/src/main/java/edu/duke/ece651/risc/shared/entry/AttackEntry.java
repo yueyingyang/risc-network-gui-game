@@ -39,7 +39,7 @@ public class AttackEntry extends BasicEntry {
         Territory fromTerr = myMap.getTerritory(fromName);
         Territory toTerr = myMap.getTerritory(toName);
         fromTerr.removeSoldiersFromArmy(numSoldiers);
-        Army attacker = new BasicArmy(fromTerr.getOwnerName(), numSoldiers);
+        Army attacker = new Army(fromTerr.getOwnerName(), numSoldiers);
         toTerr.bufferAttacker(attacker);
     }
 }
