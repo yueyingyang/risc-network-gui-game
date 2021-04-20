@@ -1,11 +1,9 @@
 package edu.duke.ece651.risc.shared.checker;
 
-import edu.duke.ece651.risc.shared.AbstractMapFactory;
-import edu.duke.ece651.risc.shared.GameMap;
-import edu.duke.ece651.risc.shared.PlayerInfo;
-import edu.duke.ece651.risc.shared.V2MapFactory;
+import edu.duke.ece651.risc.shared.*;
 import edu.duke.ece651.risc.shared.entry.ActionEntry;
 import edu.duke.ece651.risc.shared.entry.MissileEntry;
+import edu.duke.ece651.risc.shared.entry.ProdEntry;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -24,6 +22,8 @@ public class MissileRuleCheckerTest {
         GameMap m=f.createMap(nameList,3);
         PlayerInfo myInfo1 = new PlayerInfo("player1", 6, 500, 420);
         PlayerInfo myInfo2 = new PlayerInfo("player2", 6, 500, 420);
+        ActionEntry prod=new ProdEntry(Constant.missile,1);
+        prod.apply(m,myInfo1);
         // test player name not consistent case
         ActionEntry entry1=new MissileEntry("4","player2");
         assertThrows(IllegalArgumentException.class,()->checker.checkAction(entry1,m,myInfo2));
@@ -33,5 +33,9 @@ public class MissileRuleCheckerTest {
         //test normal case
         ActionEntry entry3=new MissileEntry("4","player1");
         assertDoesNotThrow(()->checker.checkAction(entry3,m,myInfo1));
+        entry3.apply(m,myInfo1);
+        // test missile is not enough case
+        ActionEntry entry4=new MissileEntry("4","player1");
+        assertThrows(IllegalArgumentException.class,()->checker.checkAction(entry4,m,myInfo1));
     }
 }

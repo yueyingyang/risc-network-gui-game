@@ -24,6 +24,7 @@ public class MissileEntry extends BasicEntry{
     public void apply(GameMap myMap, PlayerInfo myInfo) {
         Checker myChecker=new MissileRuleChecker(null);
         myChecker.checkAction(this,myMap,myInfo);
+        myInfo.consumeProd(Constant.missile);
         Territory toTerr=myMap.getTerritory(toName);
         toTerr.setMyArmy(new Army(toTerr.getOwnerName(),new ArrayList<>()));
     }

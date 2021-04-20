@@ -77,5 +77,24 @@ public interface ActionEntry {
      */
     public String getToType();
 
+    /**
+     * Get whether the attack is using ship
+     *
+     * @return true if use ship otherwise return false
+     */
+    public boolean isUseShip();
 
+    /**
+     * Get the number of prods to buy
+     *
+     * @return the number of prods to buy
+     */
+    public int getNumProds();
+
+    /**
+     * Get the name of prod to buy
+     *
+     * @return the name of prod to buy
+     */
+    public String getProdName();
 }

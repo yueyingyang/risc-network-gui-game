@@ -11,6 +11,9 @@ public abstract class BasicEntry implements ActionEntry {
     protected String playerName;
     protected String fromType;
     protected String toType;
+    protected boolean useShip;
+    protected int numProds;
+    protected String prodName;
 
     /**
      * Construct a basic entry
@@ -30,8 +33,11 @@ public abstract class BasicEntry implements ActionEntry {
         this.playerName = playerName;
         this.fromType = fromType;
         this.toType = toType;
-
+        this.useShip = false;
+        this.numProds = 0;
+        this.prodName = null;
     }
+
 
     /**
      * Get the name of the from-territory
@@ -73,11 +79,51 @@ public abstract class BasicEntry implements ActionEntry {
         return playerName;
     }
 
+    /**
+     * Get the name of from type
+     *
+     * @return the name of from type
+     */
+    @Override
     public String getFromType() {
         return fromType;
     }
 
+    /**
+     * Get the name of to type
+     *
+     * @return the name of to type
+     */
+    @Override
     public String getToType() {
         return toType;
+    }
+
+    /**
+     * Get whether the attack is using ship
+     *
+     * @return true if use ship otherwise return false
+     */
+    @Override
+    public boolean isUseShip(){ return useShip; }
+
+    /**
+     * Get the number of prods to buy
+     *
+     * @return the number of prods to buy
+     */
+    @Override
+    public int getNumProds() {
+        return numProds;
+    }
+
+    /**
+     * Get the name of prod to buy
+     *
+     * @return the name of prod to buy
+     */
+    @Override
+    public String getProdName() {
+        return prodName;
     }
 }

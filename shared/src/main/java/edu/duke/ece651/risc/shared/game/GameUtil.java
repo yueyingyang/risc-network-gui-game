@@ -2,6 +2,9 @@ package edu.duke.ece651.risc.shared.game;
 
 import edu.duke.ece651.risc.shared.Constant;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * A class to get info from constant
  */
@@ -47,5 +50,14 @@ public class GameUtil {
      */
     public static int getTechRequire(String type) {
         return Constant.requiredTech.get(type);
+    }
+
+    /**
+     * Get the list of soldier types to display
+     *
+     * @return the list of soldier types
+     */
+    public static List<String> getTypeList() {
+        return Constant.soldierCost.keySet().stream().sorted().collect(Collectors.toList());
     }
 }

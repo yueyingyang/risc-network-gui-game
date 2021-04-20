@@ -1,6 +1,7 @@
 package edu.duke.ece651.risc.shared.checker;
 
 
+import edu.duke.ece651.risc.shared.Constant;
 import edu.duke.ece651.risc.shared.GameMap;
 import edu.duke.ece651.risc.shared.PlayerInfo;
 import edu.duke.ece651.risc.shared.Territory;
@@ -19,12 +20,14 @@ public class FancyAttackRuleChecker extends Checker {
     public void checkMyRule(ActionEntry action, GameMap map, PlayerInfo myinfo) {
         Territory start = map.getTerritory(action.getFromName());
         Territory end = map.getTerritory(action.getToName());
-        if (start.getNumSoldiersInArmy(action.getFromType()) < action.getNumSoldiers()) {
-            throw new IllegalArgumentException("The army in this territory is not enough for this action!");
-        }
-        if (!start.isAdjacent(end)) {
+        if (!action.isUseShip() && !start.isAdjacent(end)) {
             throw new IllegalArgumentException("expected attacked territory is adjacent to this territory!");
         }
+
+        if(action.isUseShip() && myinfo.getProdCount(Constant.ship)<=0){
+            throw new IllegalArgumentException("You don't have enough ship!");
+        }
+
         if (start.belongToSameOwner(end)) {
             throw new IllegalArgumentException("The attacked territory should be owned by other players!");
         }

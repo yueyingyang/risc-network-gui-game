@@ -8,10 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
-import edu.duke.ece651.risc.shared.Army;
-import edu.duke.ece651.risc.shared.GameMap;
-import edu.duke.ece651.risc.shared.PlayerInfo;
-import edu.duke.ece651.risc.shared.Territory;
+import edu.duke.ece651.risc.shared.*;
 import edu.duke.ece651.risc.shared.entry.ActionEntry;
 import edu.duke.ece651.risc.shared.entry.FancyAttackEntry;
 import org.junit.jupiter.api.Test;
@@ -31,19 +28,20 @@ public class FancyAttackRuleCheckerTest {
         ActionEntry attack3=new FancyAttackEntry("3","4",1, "0","player1");
         // check not enough food resource
         ActionEntry attack4=new FancyAttackEntry("4","2",5,"0","player2");
-        // check no enough soldier in required level
-        ActionEntry attack5=new FancyAttackEntry("3","4",1, "1","player1");
+        // check use ship case
+        info1.addProd(Constant.ship,1);
+        ActionEntry attack5=new FancyAttackEntry("1", "4",  2, "0","player1", true);
         assertThrows(IllegalArgumentException.class, () -> checker.checkAction(attack1,map1,info1));
         assertThrows(IllegalArgumentException.class, () -> checker.checkAction(attack2,map1,info1));
         checker.checkAction(attack3,map1,info1);
         assertThrows(IllegalArgumentException.class, () -> checker.checkAction(attack4,map1,info2));
-        assertThrows(IllegalArgumentException.class, () -> checker.checkAction(attack5,map1,info1));
+        assertDoesNotThrow(()->checker.checkAction(attack5,map1,info1));
     }
 
     @Test
     public void test_combinedRule(){
         GameMap map1=createTestMap();
-        Checker checker=new ClientChecker(new FancyAttackRuleChecker(null));
+        Checker checker=new ClientChecker(new FancyClientChecker(new FancyAttackRuleChecker(null)));
         PlayerInfo info1=new PlayerInfo("player1",2,1000,20);
         PlayerInfo info2=new PlayerInfo("player2",2,4,20);
         // check same owner case
