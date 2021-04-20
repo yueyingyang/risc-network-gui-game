@@ -16,7 +16,7 @@ public class PlayerInfo {
     private boolean requested;
     private boolean cloakingTech;
     private Map<String, Territory> hasSeen;
-
+    private Map<String, Integer> prod;
 
     public PlayerInfo() {
     }
@@ -37,6 +37,11 @@ public class PlayerInfo {
         this.requested = false;
         this.cloakingTech = false;
         this.hasSeen = new HashMap<>();
+        this.prod=new HashMap<>();
+        prod.put(Constant.ship,0);
+        prod.put(Constant.missile,0);
+        prod.put(Constant.shield,0);
+        prod.put(Constant.sword,0);
     }
 
     /**
@@ -178,5 +183,32 @@ public class PlayerInfo {
      */
     public Territory getPrevSeenTerr(String name) {
         return hasSeen.get(name);
+    }
+
+    /**
+     * get the remaining ship count
+     *
+     * @return the number of remaining ship can be used
+     */
+    public int getProdCount(String prodName){
+        return prod.get(prodName);
+    }
+
+    /**
+     * the method for add ships
+     *
+     * @param count the number of ship to be added
+     */
+    public void addProd(String prodName,int count){
+        prod.put(prodName,prod.get(prodName)+count);
+    }
+
+    /**
+     * remove 1 prod when used
+     *
+     * @param prodName the name of prod to be consumed
+     */
+    public void consumeProd(String prodName){
+        prod.put(prodName,prod.get(prodName)-1);
     }
 }

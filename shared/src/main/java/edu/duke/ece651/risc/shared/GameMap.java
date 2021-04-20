@@ -149,7 +149,7 @@ public class GameMap {
      *
      * @param start the starting territory
      * @param end   the end territory
-     * @param unit  how many unit of army to be moved
+     * @param unit  the number of army units to be moved
      * @return      the minimum cost of move
      */
     public int computeCost(Territory start, Territory end, int unit){
@@ -189,20 +189,5 @@ public class GameMap {
             }
         }
         return (distance.get(end)+start.getSize()+end.getSize())*unit/2;
-    }
-
-    /**
-     * check whether the territory terr is adjacent to any territory belonging to a specific player's
-     * @param playerName the player's name
-     * @param terr       the target territory
-     * @return
-     */
-    public boolean isAdjacentEnemy(String playerName, Territory terr){
-        for(Territory t:territoryFinder.values()){
-            if(t.getOwnerName().equals(playerName) && terr.isAdjacent(t)){
-                return true;
-            }
-        }
-        return false;
     }
 }
