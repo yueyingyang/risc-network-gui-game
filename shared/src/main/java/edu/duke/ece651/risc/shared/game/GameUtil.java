@@ -2,7 +2,9 @@ package edu.duke.ece651.risc.shared.game;
 
 import edu.duke.ece651.risc.shared.Constant;
 
+import java.awt.*;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**
@@ -59,5 +61,15 @@ public class GameUtil {
      */
     public static List<String> getTypeList() {
         return Constant.soldierCost.keySet().stream().sorted().collect(Collectors.toList());
+    }
+
+    /**
+     * Convert color object to hex string
+     *
+     * @param c is the color to convert
+     * @return hex string
+     */
+    public static String toHexStr(Color c) {
+        return '#' + Integer.toHexString(c.getRGB()).substring(2).toUpperCase(Locale.ROOT);
     }
 }
