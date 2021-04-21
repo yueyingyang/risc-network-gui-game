@@ -458,6 +458,18 @@ public class Game {
         gamesCollection.updateOne(Filters.eq("gameID", this.gameID), updateObject);    
   }
 
+    public void  effectAllSpyMove(){
+        for(Territory t:gameMap.getAllTerritories()){
+            t.effectSpyMove();
+        }
+    }
+
+    public void effectAllCloaking(){
+        for(Territory t:gameMap.getAllTerritories()){
+            t.consumeCloaking();
+            t.effectCloaking();
+        }
+    }
 
     /**
      * after the game room's required number of people is reached, run the game
@@ -492,6 +504,10 @@ public class Game {
             addSoldiersToAll(connectedPlayers);
             //add resources for all players
             addResourcesToConnected(connectedPlayers);
+            // make the spies reach their destination
+            effectAllSpyMove();
+            // use cloaking
+            effectAllCloaking();
             //check if the game is over
             if (checkWin() == true) {
                 this.isComplete = true;
