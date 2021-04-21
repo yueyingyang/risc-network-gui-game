@@ -12,6 +12,7 @@ public class ProdUseChecker extends Checker{
 
     @Override
     protected void checkMyRule(ActionEntry action, GameMap map, PlayerInfo myInfo) {
+        // check if the target territory name is valid
         if(map.getTerritory(action.getToName())==null){
             throw new IllegalArgumentException("The target territory name is invalid!");
         }

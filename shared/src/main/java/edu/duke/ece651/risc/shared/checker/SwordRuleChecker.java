@@ -14,10 +14,12 @@ public class SwordRuleChecker extends Checker{
 
     @Override
     protected void checkMyRule(ActionEntry action, GameMap map, PlayerInfo myInfo) {
+        // check if the player has enough sword
         if(myInfo.getProdCount(Constant.sword)<=0){
             throw new IllegalArgumentException("Your sword is not enough!");
         }
 
+        // the sword can only be used on enemy's territory
         Territory terr=map.getTerritory(action.getToName());
         if(terr.getOwnerName().equals(myInfo.getName())){
             throw new IllegalArgumentException("The sword can only be added to enemy's territory!");

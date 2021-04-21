@@ -14,10 +14,11 @@ public class MissileRuleChecker extends Checker{
     @Override
     protected void checkMyRule(ActionEntry action, GameMap map, PlayerInfo myInfo) {
         Territory toTerr=map.getTerritory(action.getToName());
+        // missile can only be sent to enemy's territories
         if(myInfo.getName().equals(toTerr.getOwnerName())){
             throw new IllegalArgumentException("The missile should be placed to an enemy territory!");
         }
-
+        // check if the player has enough missile
         if(myInfo.getProdCount(Constant.missile)<=0){
             throw new IllegalArgumentException("Your missile is not enough!");
         }

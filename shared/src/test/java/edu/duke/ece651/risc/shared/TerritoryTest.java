@@ -176,13 +176,22 @@ class TerritoryTest {
         assertEquals("", ans2);
         assertEquals(0, terr0.getNumSoldiersInAttacker("Purple"));
         assertEquals(0, terr0.getNumSoldiersInAttacker("Purple", "1"));
+    }
+
+    @Test
+    public void test_displayMissileInfo(){
+        Territory terr0 = new Territory("1");
+        terr0.setOwnerName("Purple");
+        Army army0 = new Army("Purple", 1);
+        army0.addSoldiers(2, "3");
+        army0.addSoldiers(3, "2");
+        terr0.setMyArmy(army0);
+        Random myRandom = new Random(0);
 
         // combat with missile
         terr0.applyMissile("Blue");
-        String ans3 = terr0.resolveCombat(myRandom);
+        String ans3 = terr0.displayMissileInfo();
         assertEquals("The territory 1 is attacked by missile(s) from Blue\n", ans3);
-        assertEquals(0, terr0.getNumSoldiersInAttacker("Purple"));
-        assertEquals(0, terr0.getNumSoldiersInAttacker("Purple", "1"));
     }
 
     @Test

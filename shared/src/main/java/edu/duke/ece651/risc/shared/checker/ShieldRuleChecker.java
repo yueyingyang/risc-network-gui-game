@@ -14,10 +14,12 @@ public class ShieldRuleChecker extends Checker{
 
     @Override
     protected void checkMyRule(ActionEntry action, GameMap map, PlayerInfo myInfo) {
+        // check if the player has enough shield
         if(myInfo.getProdCount(Constant.shield)<=0){
             throw new IllegalArgumentException("Your shield is not enough!");
         }
 
+        // the shield can only be used on the player's own territory
         Territory terr=map.getTerritory(action.getToName());
         if(!terr.getOwnerName().equals(myInfo.getName())){
             throw new IllegalArgumentException("The shield can only be added to your own territory!");
