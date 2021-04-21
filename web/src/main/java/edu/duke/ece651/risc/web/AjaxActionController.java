@@ -54,13 +54,14 @@ public class AjaxActionController {
   @PostMapping(value = "/attack", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ActionAjaxResBody> attack(@RequestBody UserActionInput input) throws IOException {
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-    Boolean useShip = input.getUseShip() != null && input.getUseShip().equals("on");
+    boolean useShip = input.getUseShip() != null && input.getUseShip().equals("on");
     // Wrap a Attack entry
     FancyAttackEntry attackEntry = new FancyAttackEntry(input.getFromName(),
             input.getToName(),
             input.getSoldierNum(),
             input.getFromType(),
-            userName);
+            userName,
+            useShip);
     return getActionRes(attackEntry);
   }
 
@@ -128,11 +129,8 @@ public class AjaxActionController {
    */
   @PostMapping(value = "/buy", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ActionAjaxResBody> buy(@RequestBody UserActionInput input) throws IOException {
-    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-    // todo: Wrap a Product Entry
-    // TechEntry techEntry = new TechEntry(userName);
-    System.out.println("type: " + input.getFromType().toLowerCase(Locale.ROOT) + " soldierNum: " + input.getSoldierNum());
-    return getActionRes(null);
+    ProdEntry prodEntry = new ProdEntry(input.getFromType().toUpperCase(Locale.ROOT), input.getSoldierNum());
+    return getActionRes(prodEntry);
   }
 
   /**

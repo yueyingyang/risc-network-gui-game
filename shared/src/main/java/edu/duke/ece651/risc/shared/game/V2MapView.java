@@ -44,6 +44,7 @@ public class V2MapView {
       // 1. name and size are required
       o.put("name", t.getName());
       o.put("value", t.getSize());
+      o.put("spy", t.getNumSpies(playerInfo.getName()));
       if (t.isVisible(playerInfo)) {
         // 2.1 show the realtime information
         fillTerrInfo(o, t, playerColorMap.get(t.getOwnerName()), full);

@@ -24,7 +24,7 @@
                             <div class="field">
                                 <label style="user-select: auto;">Prop type</label>
                                 <select th:name="fromType"
-                                        class="ui fluid search dropdown" onchange="update_total()">
+                                        class="ui fluid search dropdown" onchange="update_total()" th:placeholder="${props_type[0]}">
                                     <option th:each="t : ${props_type}" th:text="${t}" th:value="${t}"></option>
                                 </select>
                             </div>
