@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class MissileRuleCheckerTest {
     @Test
     public void test_checkMyRule(){
-        Checker checker=new MissileRuleChecker(null);
+        Checker checker=new ProdUseChecker(new MissileRuleChecker(null));
         AbstractMapFactory f=new V2MapFactory();
         List<String> nameList=new ArrayList<>();
         nameList.add("player1");
@@ -25,17 +25,17 @@ public class MissileRuleCheckerTest {
         ActionEntry prod=new ProdEntry(Constant.missile,1);
         prod.apply(m,myInfo1);
         // test player name not consistent case
-        ActionEntry entry1=new MissileEntry("4","player2");
+        ActionEntry entry1=new MissileEntry("4");
         assertThrows(IllegalArgumentException.class,()->checker.checkAction(entry1,m,myInfo2));
         // test territory name invalid case
-        ActionEntry entry2=new MissileEntry("6","player1");
+        ActionEntry entry2=new MissileEntry("6");
         assertThrows(IllegalArgumentException.class,()->checker.checkAction(entry2,m,myInfo1));
         //test normal case
-        ActionEntry entry3=new MissileEntry("4","player1");
+        ActionEntry entry3=new MissileEntry("4");
         assertDoesNotThrow(()->checker.checkAction(entry3,m,myInfo1));
         entry3.apply(m,myInfo1);
         // test missile is not enough case
-        ActionEntry entry4=new MissileEntry("4","player1");
+        ActionEntry entry4=new MissileEntry("4");
         assertThrows(IllegalArgumentException.class,()->checker.checkAction(entry4,m,myInfo1));
     }
 }

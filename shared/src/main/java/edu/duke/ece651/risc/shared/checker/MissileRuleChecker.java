@@ -13,10 +13,6 @@ public class MissileRuleChecker extends Checker{
 
     @Override
     protected void checkMyRule(ActionEntry action, GameMap map, PlayerInfo myInfo) {
-        if(map.getTerritory(action.getToName())==null){
-            throw new IllegalArgumentException("Invalid territory name!");
-        }
-
         Territory toTerr=map.getTerritory(action.getToName());
         if(myInfo.getName().equals(toTerr.getOwnerName())){
             throw new IllegalArgumentException("The missile should be placed to an enemy territory!");

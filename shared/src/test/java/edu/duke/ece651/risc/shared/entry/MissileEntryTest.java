@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class MissileEntryTest {
     @Test
     public void test_getter(){
-        ActionEntry entry=new MissileEntry("1","player1");
+        ActionEntry entry=new MissileEntry("1");
         assertEquals("1",entry.getToName());
         assertEquals("player1", entry.getPlayerName());
     }
@@ -26,7 +26,7 @@ public class MissileEntryTest {
         nameList.add("player1");
         nameList.add("player2");
         GameMap m=f.createMap(nameList,3);
-        ActionEntry entry=new MissileEntry("4","player1");
+        ActionEntry entry=new MissileEntry("4");
         PlayerInfo myInfo = new PlayerInfo("player1", 6, 500, 420);
         ActionEntry prod=new ProdEntry(Constant.missile,1);
         prod.apply(m,myInfo);
