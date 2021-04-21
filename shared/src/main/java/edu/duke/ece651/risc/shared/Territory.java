@@ -585,4 +585,8 @@ public class Territory {
     public void applyMissile(String playerName){
         recvMissile.add(playerName);
     }
+
+    public boolean hasMissile(String playerName){
+        return recvMissile.contains(playerName);
+    }
 }

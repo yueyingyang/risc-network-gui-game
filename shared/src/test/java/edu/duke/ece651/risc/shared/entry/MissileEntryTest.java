@@ -16,7 +16,6 @@ public class MissileEntryTest {
     public void test_getter(){
         ActionEntry entry=new MissileEntry("1");
         assertEquals("1",entry.getToName());
-        assertEquals("player1", entry.getPlayerName());
     }
 
     @Test
@@ -33,6 +32,6 @@ public class MissileEntryTest {
         Territory terr1=m.getTerritory("4");
         terr1.setMyArmy(new Army("player2",2,"2"));
         entry.apply(m,myInfo);
-        assertEquals(terr1.getNumSoldiersInArmy(),0);
+        assertTrue(terr1.hasMissile("player1"));
     }
 }
