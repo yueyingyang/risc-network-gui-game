@@ -9,12 +9,15 @@ import edu.duke.ece651.risc.shared.checker.ProdUseChecker;
 import edu.duke.ece651.risc.shared.checker.ShieldRuleChecker;
 import edu.duke.ece651.risc.shared.checker.SwordRuleChecker;
 
+import java.beans.ConstructorProperties;
+
 public class ShieldEntry extends BasicEntry{
     /**
      * Construct a basic entry
      *
      * @param toName      is the name of the to-territory
      */
+    @ConstructorProperties({"toName"})
     public ShieldEntry(String toName) {
         super(null, toName, 0, null, null, null);
     }
