@@ -51,6 +51,10 @@ public class PlayerSocketMap {
    * @param userName is the name of user to be removed
    */
   public void removeUser(String userName) throws IOException {
+    if (!players.containsKey(userName)) {
+      logger.info("[" + userName + "]'s socket already removed");
+      return;
+    }
     players.get(userName).close();
     players.remove(userName);
     logger.info("Remove and close [" + userName + "]'s socket");
