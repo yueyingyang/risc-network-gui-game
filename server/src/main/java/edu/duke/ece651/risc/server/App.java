@@ -210,13 +210,22 @@ public class App {
     if (g.isGameFull()) {
       Thread t = new Thread(() -> {
         try {
-          g.runGame(2, 6, gamesCollection,false);
+          g.runGame(2, 6, gamesCollection);
         } catch (Exception e) {
           System.out.println("Exception catched when running the game!" + e.getMessage());
         }
       });
       t.start();
     }
+  }
+
+  public Boolean gameCanPlace(Game g){
+    for(ServerPlayer p:g.players){
+      if(g.getGameID()!=g.getGameID()){
+        return false;
+      }
+    }
+    return true;
   }
 
   /**
@@ -227,18 +236,34 @@ public class App {
    */
   public void rejoinGame(ServerPlayer player, JsonNode n) {
     Integer currentGameID = Integer.parseInt(n.path("gameID").textValue());
-    if(games.get(currentGameID).checkWin().equals(true)){
+    Game g = games.get(currentGameID);
+    if(g.isPlacementComplete && g.checkWin().equals(true)){
       player.sendMessage(Constant.CANNOT_REJOINGAME);
       player.sendMessage(Constant.CANNOT_REJOINGAME_WIN);
       return;
     }
-    if(games.get(currentGameID).checkLost(player).equals(true)){
+    if(g.isPlacementComplete && g.checkLost(player).equals(true)){
       player.sendMessage(Constant.CANNOT_REJOINGAME);
       player.sendMessage(Constant.CANNOT_REJOINGAME_LOSE);
       return;
     }
     player.sendMessage(Constant.CAN_REJOINGAME);
     player.setCurrentGameID(currentGameID);
+    //persistence rejoin
+    if(g.isPlacementComplete){
+      player.sendMessage("play");
+    }
+    else{
+      player.sendMessage("place");
+      if(this.gameCanPlace(g)){
+        Thread t = new Thread(() -> {
+          try {
+            g.runGame(2, 6, gamesCollection);
+          } catch (Exception e) {e.printStackTrace();}
+        });
+        t.start();
+      }     
+    }
     //System.out.print(player.getName()+"  "+currentGameID);
   }
 
@@ -323,13 +348,16 @@ public class App {
       g.resetPlayers(reinitializePlayers, reinitializeStillIn, reinitializeStillWatch);
       games.add(g);
       if(g.isGameFull() && !g.isComplete){
-        Boolean isPlaceComplete = !(g.getMap().getAllTerritories().get(0).getNumSoldiersInArmy()==-1);
-        Thread t = new Thread(() -> {
-          try {
-            g.runGame(2, 6, gamesCollection, isPlaceComplete);
-          } catch (Exception e) {e.printStackTrace();}
-        });
-        t.start();
+        //Boolean isPlaceComplete = !(g.getMap().getAllTerritories().get(0).getNumSoldiersInArmy()==-1);
+        if(g.isPlacementComplete){
+          //will only start to run game thread when placement phase is done
+          Thread t = new Thread(() -> {
+            try {
+              g.runGame(2, 6, gamesCollection);
+            } catch (Exception e) {e.printStackTrace();}
+          });
+          t.start();
+        }        
       }
     }    
   }

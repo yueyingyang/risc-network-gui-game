@@ -13,6 +13,7 @@ import java.util.*;
  * Annotation JsonIdentityInfo is added for bidirectional serialization
  */
 @JsonIdentityInfo(
+        scope = Territory.class,
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "name")
 public class Territory {
@@ -107,6 +108,10 @@ public class Territory {
      */
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**

@@ -243,7 +243,7 @@ public class GameTest {
     g.addPlayer(p2);
     Thread t = new Thread(() -> {
       try {
-        g.runGame(2,6,null,false);
+        g.runGame(2,6,null);
       } catch (Exception ignored) {
       }
     });
@@ -277,7 +277,7 @@ public class GameTest {
     g.addPlayer(p2);
     Thread t = new Thread(() -> {
       try {
-        g.runGame(1,2,null,false);
+        g.runGame(1,2,null);
       } catch (Exception ignored) {
       }
     });
@@ -332,7 +332,7 @@ public class GameTest {
     g.addPlayer(p3);
     Thread t = new Thread(() -> {
       try {
-        g.runGame(1,2,null,false);
+        g.runGame(1,2,null);
       } catch (Exception ignored) {
       }
     });
@@ -383,7 +383,7 @@ public class GameTest {
     g.addPlayer(player2); 
     Thread t = new Thread(() -> {
       try {
-        g.runGame(1,2,null,false);
+        g.runGame(1,2,null);
       } catch (Exception ignored) {
       }
     });
@@ -433,7 +433,7 @@ public class GameTest {
     g.addPlayer(player3);
     Thread t = new Thread(() -> {
       try {
-        g.runGame(1,2,null,false);
+        g.runGame(1,2,null);
       } catch (Exception ignored) {
       }
     });

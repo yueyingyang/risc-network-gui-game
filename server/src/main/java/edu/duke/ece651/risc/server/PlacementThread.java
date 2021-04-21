@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.concurrent.CyclicBarrier;
 import java.io.IOException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonSerializer;
 
 import edu.duke.ece651.risc.shared.GameMap;
 import edu.duke.ece651.risc.shared.JSONSerializer;
@@ -30,11 +31,13 @@ public class PlacementThread implements Runnable{
     public void run(){
         while(true){
             JSONSerializer js = new JSONSerializer();
+            System.out.println(js.serialize(this.gameMap));
             p.sendObject(this.gameMap);
             p.sendMessage(String.valueOf(totalSoldiers));
             p.sendMessage(view.toString(false));
             try{
                 String s = p.recvMessage();
+                System.out.println("in placement thread"+p.out.equals(null));
                 Collection<ActionEntry> placements = js.getOm().readValue(s, new TypeReference<Collection<ActionEntry>>() {
                 });
                 int sum = 0;
@@ -52,6 +55,7 @@ public class PlacementThread implements Runnable{
                 break;         
             }catch(IOException e){
                 System.out.println("Exception catched when recving message form player");
+                e.printStackTrace();
             }       
         }
         try{

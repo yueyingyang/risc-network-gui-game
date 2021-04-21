@@ -11,7 +11,7 @@ public abstract class Player {
   private static final Logger LOGGER = Logger.getLogger(Player.class.getName());
   // IO stream with game server
   protected BufferedReader in;
-  protected PrintWriter out;
+  public PrintWriter out;
   protected String name;
 
   /**
@@ -73,6 +73,7 @@ public abstract class Player {
   public void sendObject(Object o) {
     JSONSerializer js = new JSONSerializer();
     //LOGGER.info("[" + name + "]" + js.serialize(o));
+    System.out.println(out.equals(null));
     out.println(js.serialize(o));
   }
 

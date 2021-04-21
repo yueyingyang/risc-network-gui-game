@@ -59,6 +59,8 @@ public class Game {
     public Boolean isComplete;
     private ExecutorService threadPool;
     private Map<String, String> playerColorMap;
+    // to check the game's state
+    public Boolean isPlacementComplete;
 
 
     public Game(){this.threadPool = Executors.newFixedThreadPool(5);}
@@ -79,6 +81,7 @@ public class Game {
         this.playerColorMap = new HashMap<>();
         this.isComplete = false;
         this.threadPool = Executors.newFixedThreadPool(5);
+        this.isPlacementComplete = false;
     }
 
     /**
@@ -476,8 +479,8 @@ public class Game {
      *
      * @throws IOException
      */
-    public void runGame(int TerritoryPerPlayer, int totalSoldiers, MongoCollection<Document> gamesCollection, Boolean isPlaceComplete) throws IOException, InterruptedException, BrokenBarrierException {
-        if(!isPlaceComplete){
+    public void runGame(int TerritoryPerPlayer, int totalSoldiers, MongoCollection<Document> gamesCollection) throws IOException, InterruptedException, BrokenBarrierException {
+        if(!isPlacementComplete){
             stillInPlayers = new ArrayList<>(players);
             stillWatchPlayers = new ArrayList<>(players);
             for (ServerPlayer p : players) {
@@ -493,6 +496,7 @@ public class Game {
             sendAndPlace(totalSoldiers);
             //update games collection
             updateGamesCollection(gamesCollection);
+            this.isPlacementComplete = true;
         }
         while (!Thread.currentThread().isInterrupted()) {
             ArrayList<ServerPlayer> connectedPlayers = sendMap_GetConnectedPlayers();
