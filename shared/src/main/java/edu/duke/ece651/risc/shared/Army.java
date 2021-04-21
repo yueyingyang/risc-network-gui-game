@@ -126,11 +126,24 @@ public class Army {
      * @return the army that wins the fight
      */
     public Army fight(Army attacker, Random myRandom) {
+        return fight(attacker,myRandom,0,0);
+    }
+
+    /**
+     * figght with the attack
+     *
+     * @param attacker is the army that attack the territory
+     * @param myRandom is the random object set by the game
+     * @param attackerBonus is the bonus point for attacker's soldiers
+     * @param defenderBonus is the bonus point for defender's soldiers
+     * @return the army that wins the fight
+     */
+    public Army fight(Army attacker, Random myRandom, int attackerBonus, int defenderBonus){
         Collections.sort(force);
         Collections.sort(attacker.getForce());
-        int round = 1;
+        int round=1;
         while (getNumSoldiers() > 0 && attacker.getNumSoldiers() > 0) {
-            fightOneRound(attacker, myRandom, round);
+            fightOneRound(attacker, myRandom, round, attackerBonus, defenderBonus);
             round += 1;
         }
         if (getNumSoldiers() > 0) {
@@ -145,6 +158,15 @@ public class Army {
      * @param attacker is the army that attack the territory
      */
     protected void fightOneRound(Army attacker, Random myRandom, int round) {
+        fightOneRound(attacker,myRandom,round,0,0);
+    }
+
+    /**
+     * Fight with the attacker for one round
+     *
+     * @param attacker is the army that attack the territory
+     */
+    protected void fightOneRound(Army attacker, Random myRandom, int round, int attackerBonus, int defenderBonus) {
         List<Soldier> enemyForce = attacker.getForce();
         Soldier mySoldier, enemySoldier;
         if (round % 2 == 0) {
@@ -154,7 +176,7 @@ public class Army {
             mySoldier = force.get(force.size() - 1);
             enemySoldier = enemyForce.get(0);
         }
-        int res = mySoldier.fight(enemySoldier, myRandom);
+        int res = mySoldier.fight(enemySoldier, myRandom,attackerBonus,defenderBonus);
         if (res >= 0) {
             attacker.removeSoldiers(1, enemySoldier.getType());
         } else {
