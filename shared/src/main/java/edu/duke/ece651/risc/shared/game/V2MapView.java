@@ -74,42 +74,6 @@ public class V2MapView {
 
 
   /**
-   * Convert GameMap to the JSON NODE to display map
-   *
-   * @return the MAP display info in JSON Node
-   */
-  // protected List<ObjectNode> createTerrNode(boolean full) {
-  //   JSONSerializer jsonSerializer = new JSONSerializer();
-  //   int height = 400;
-  //   int width = 400;
-  //   int radius = 30;
-  //   Point middle = new Point(width / 2, height / 2);
-  //   double angleOffset = 360.0 / map.getAllTerritories().size();
-  //   double angleStart = 0;
-  //   List<ObjectNode> graphData = new ArrayList<>();
-  //   for (Territory t : map.getAllTerritories()) {
-  //     Point point = calPoint(middle, angleStart, radius);
-  //     ObjectNode o = jsonSerializer.getOm().createObjectNode();
-  //     o.put("name", t.getName());
-  //     o.put("owner", t.getOwnerName());
-  //     o.put("value", t.getSize()); // hardcoded, need to change to t.size()
-  //     o.put("color", playerColorMap.get(t.getOwnerName()));
-  //     if (full) {
-  //       o.put("foodProd", t.getFoodProd());
-  //       o.put("techProd", t.getTechProd());
-  //       for (int i = 0; i <= 6; i++) {
-  //         o.put("unit" + i, t.getNumSoldiersInArmy(Integer.toString(i)));//t.getNumSoldiersInArmy(""+i)
-  //       }
-  //     }
-  //     o.put("x", point.x);
-  //     o.put("y", point.y);
-  //     angleStart -= angleOffset;
-  //     graphData.add(o);
-  //   }
-  //   return graphData;
-  // }
-
-  /**
    * DATA part in map view
    *
    * @param full is false if it's for the placement phase map

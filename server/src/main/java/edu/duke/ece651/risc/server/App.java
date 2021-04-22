@@ -19,20 +19,8 @@ import java.util.concurrent.Executors;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.BasicDBObject;
-import com.mongodb.MongoClient;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
-import com.mongodb.connection.Server;
 
-import org.bson.Document;
-import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.LoggerContext;
 import edu.duke.ece651.risc.shared.*;
 import edu.duke.ece651.risc.shared.game.*;
 
@@ -45,11 +33,8 @@ public class App {
   private Map<String, actionHandler> actionHandlerMap;
   private ExecutorService threadPool;
 
-  public volatile MongoClient mongoClient;
-  public volatile MongoDatabase mongoDatabase;
-  public volatile MongoCollection<Document> playersCollection;// only need players names
-  public volatile MongoCollection<Document> gamesCollection;
-  private JSONSerializer serializer;
+  private Database database;
+  
 
   /**
    * the constructor of App build the socket based on the port number initialize
@@ -67,29 +52,14 @@ public class App {
     actionHandlerMap.put(Constant.JOINGAME, this::joinAndRun);
     actionHandlerMap.put(Constant.REJOINGAME, this::rejoinGame);
 
-    //ignore some annoying log of MongoDB
-    LoggerContext loggerContext = (LoggerContext)LoggerFactory.getILoggerFactory();
-    loggerContext.getLogger("org.mongodb.driver").setLevel(Level.ERROR);
-    //instantiate a MongoClient object without any parameters to connect to a MongoDB instance 
-    //running on localhost on port 27017
-    this.mongoClient = new MongoClient("localhost" , 27017);
-    //create or get database mydb
-    this.mongoDatabase = mongoClient.getDatabase("mydb");
-    System.out.println("Connect to database successfully");
-    //create or get players collection
-    this.playersCollection = mongoDatabase.getCollection("players");
-    System.out.println("Choose players collection successfully");
-    //create or get games collection
-    this.gamesCollection = mongoDatabase.getCollection("games");
-    System.out.println("Choose games collection successfully");
-    this.serializer = new JSONSerializer();
+    this.database = new Database();
   }
 
   /**
    * All steps of the server side program
    */
   public void run() throws IOException{
-    recoverPlayers();  
+    recoverPlayers(); 
     recoverGames();  
     this.acceptPlayers(this.hostSocket);
     this.hostSocket.close();
@@ -170,7 +140,7 @@ public class App {
     // a new game should always add a player successfully
     // new game should assert newGame.addPlayer(player) == null;
     newGame.addPlayer(player);
-    insertGamesCollection(newGame);
+    database.insertGamesCollection(newGame);
     return newGame;
   }
 
@@ -206,11 +176,11 @@ public class App {
    */
   public void joinAndRun(ServerPlayer player, JsonNode rootNode){
     Game g = this.joinExistingGame(player, rootNode);
-    updateGamesCollection(g);
+    database.updateGamesCollection(g);
     if (g.isGameFull()) {
       Thread t = new Thread(() -> {
         try {
-          g.runGame(2, 6, gamesCollection);
+          g.runGame(2, 6, database.getGamesCollection());
         } catch (Exception e) {
           System.out.println("Exception catched when running the game!" + e.getMessage());
         }
@@ -221,7 +191,7 @@ public class App {
 
   public Boolean gameCanPlace(Game g){
     for(ServerPlayer p:g.players){
-      if(g.getGameID()!=g.getGameID()){
+      if(p.getCurrentGame()!=g.getGameID()){
         return false;
       }
     }
@@ -258,7 +228,7 @@ public class App {
       if(this.gameCanPlace(g)){
         Thread t = new Thread(() -> {
           try {
-            g.runGame(2, 6, gamesCollection);
+            g.runGame(2, 6, database.getGamesCollection());
           } catch (Exception e) {e.printStackTrace();}
         });
         t.start();
@@ -285,7 +255,7 @@ public class App {
       player = new ServerPlayer(in, out, clientSocket);
       players.put(playerName, player);
       player.setName(playerName);
-      insertPlayersCollection(player);
+      database.insertPlayersCollection(player);
     } else {
       player = players.get(playerName);
       //update the player's inputstream and outputstream
@@ -295,37 +265,6 @@ public class App {
     return player;
   }
 
-  public synchronized void insertPlayersCollection(ServerPlayer player){
-    Document document = new Document("playerName", player.getName());
-    playersCollection.insertOne(document);
-  }
-
-  public synchronized void insertGamesCollection(Game g){
-    String s = serializer.serialize(g);
-    Document document = new Document("gameID", g.getGameID()).append("description", s);
-    gamesCollection.insertOne(document);
-  }
-
-  public synchronized void updateGamesCollection(Game g){
-    String s = serializer.serialize(g);
-    BasicDBObject newDocument = new BasicDBObject();
-    newDocument.put("description", s); 
-    BasicDBObject updateObject = new BasicDBObject();
-    updateObject.put("$set", newDocument); 
-    gamesCollection.updateOne(Filters.eq("gameID", g.getGameID()), updateObject);
-  }
-
-  public void recoverPlayers(){
-    //recover players
-    FindIterable<Document> findIterable = playersCollection.find();  
-    MongoCursor<Document> mongoCursor = findIterable.iterator();  
-    while(mongoCursor.hasNext()){
-      ServerPlayer sp = new ServerPlayer(null,null,null);
-      sp.setName((String)mongoCursor.next().get("playerName"));
-      sp.setCurrentGameID(-1);
-      players.put(sp.getName(), sp);
-    }
-  }
 
   public ArrayList<ServerPlayer> reinitializePlayers(ArrayList<ServerPlayer> list){
     ArrayList<ServerPlayer> res = new ArrayList<>();
@@ -336,12 +275,8 @@ public class App {
   }
 
   public void recoverGames(){
-    //recover games
-    FindIterable<Document> findIterable1 = gamesCollection.find();  
-    MongoCursor<Document> mongoCursor1= findIterable1.iterator();  
-    while(mongoCursor1.hasNext()){
-      String gameString = (String)mongoCursor1.next().get("description");
-      Game g = (Game)serializer.deserialize(gameString, Game.class);
+    ArrayList<Game> gameList = database.recoverGameList();
+    for(Game g:gameList){
       ArrayList<ServerPlayer> reinitializePlayers = reinitializePlayers(g.players);
       ArrayList<ServerPlayer> reinitializeStillIn = reinitializePlayers(g.stillInPlayers);
       ArrayList<ServerPlayer> reinitializeStillWatch = reinitializePlayers(g.stillWatchPlayers);
@@ -353,13 +288,20 @@ public class App {
           //will only start to run game thread when placement phase is done
           Thread t = new Thread(() -> {
             try {
-              g.runGame(2, 6, gamesCollection);
+              g.runGame(2, 6, database.getGamesCollection());
             } catch (Exception e) {e.printStackTrace();}
           });
           t.start();
         }        
       }
-    }    
+    }  
+  }
+
+  public void recoverPlayers(){
+    ArrayList<ServerPlayer> playerList = database.recoverPlayerList();
+    for(ServerPlayer sp:playerList){
+      this.players.put(sp.getName(), sp);
+    }
   }
 
     
