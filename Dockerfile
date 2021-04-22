@@ -5,10 +5,7 @@ MAINTAINER Yueying Yang "yy252@duke.edu"
 USER root
 
 ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update && apt-get install -y gnupg2
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
-RUN echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' > tee /etc/apt/sources.list.d/mongodb.list
-RUN apt-get -yq dist-upgrade \
+RUN apt-get update && apt-get -yq dist-upgrade \
   && apt-get install -yq --no-install-recommends \
      curl \
      wget \
@@ -19,13 +16,7 @@ RUN apt-get -yq dist-upgrade \
      git \
      unzip \
      openjdk-11-jdk-headless \
-     emacs25 \
-     mongodb
-
-RUN mkdir -p /data/db
-EXPOSE 27017
-# Set /usr/bin/mongod as the dockerized entry-point application
-ENTRYPOINT ["/usr/bin/mongod"]
+     emacs25
 
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen
