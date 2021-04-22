@@ -106,8 +106,8 @@ public class Territory {
         this.spyBuffer = terr.spyBuffer;
         this.cloakingBuffer = terr.cloakingBuffer;
         this.useShield = terr.useShield;
-        this.useSword = new HashSet<>(terr.useSword);
-        this.recvMissile = new HashSet<>(terr.recvMissile);
+        this.useSword = terr.useSword;
+        this.recvMissile = terr.recvMissile;
     }
 
     /**
@@ -349,8 +349,8 @@ public class Territory {
         ownerName = myArmy.getOwnerName();
         attackerBuffer = new HashMap<>();
         useShield = null;
-        useSword = new HashSet<>();
-        recvMissile = new HashSet<>();
+        useSword = new TreeSet<>();
+        recvMissile = new TreeSet<>();
         return temp.toString();
     }
 
