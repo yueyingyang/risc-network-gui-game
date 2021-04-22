@@ -201,6 +201,10 @@ class TerritoryTest {
         String ans = terr1.resolveCombat(myRandom);
         assertEquals(expect, ans);
 
+        // no combat
+        String ans2 = terr1.resolveCombat(myRandom);
+        assertEquals("", ans2);
+
     }
 
     @Test
