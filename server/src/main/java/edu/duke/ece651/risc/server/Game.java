@@ -32,6 +32,7 @@ import edu.duke.ece651.risc.shared.ServerPlayer;
 import edu.duke.ece651.risc.shared.Territory;
 import edu.duke.ece651.risc.shared.V2MapFactory;
 import edu.duke.ece651.risc.shared.entry.ActionEntry;
+import edu.duke.ece651.risc.shared.game.GameUtil;
 import edu.duke.ece651.risc.shared.game.V2MapView;
 
 
@@ -132,7 +133,7 @@ public class Game {
         }
         this.players.add(player);
         // assign a color to player based on the idx of the player in the list
-        playerColorMap.put(player.getName(), toHexStr(Color.decode(COLORS[players.size() - 1])));
+        playerColorMap.put(player.getName(), GameUtil.toHexStr(Color.decode(COLORS[players.size() - 1])));
         return null;
     }
 
@@ -522,16 +523,6 @@ public class Game {
         }
         //close sockets
         endGame();
-    }
-
-    /**
-     * Convert color object to hex string
-     *
-     * @param c is the color to convert
-     * @return hex string
-     */
-    private String toHexStr(Color c) {
-        return '#' + Integer.toHexString(c.getRGB()).substring(2).toUpperCase(Locale.ROOT);
     }
 
 }

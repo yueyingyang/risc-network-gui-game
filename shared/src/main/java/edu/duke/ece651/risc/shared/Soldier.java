@@ -44,9 +44,22 @@ public class Soldier implements Comparable<Soldier> {
      * else return negative number
      */
     public int fight(Soldier attacker, Random myRandom) {
+        return fight(attacker,myRandom,0,0);
+    }
+
+    /**
+     *
+     * @param attacker      is the soldier that attacks the territory
+     * @param myRandom      is the random object set by the game
+     * @param defenderBonus is the defender bonus point
+     * @param attackerBonus is the attacker bonus point
+     * @return non-negative number if the soldier that defend the territory wins
+     * else return negative number
+     */
+    public int fight(Soldier attacker, Random myRandom, int attackerBonus, int defenderBonus){
         int length = 20;
-        int defenderRoll = myRandom.nextInt(length) + GameUtil.getBonus(type);
-        int attackerRoll = myRandom.nextInt(length) + GameUtil.getBonus(attacker.getType());
+        int defenderRoll = myRandom.nextInt(length) + GameUtil.getBonus(type) + defenderBonus;
+        int attackerRoll = myRandom.nextInt(length) + GameUtil.getBonus(attacker.getType()) + attackerBonus;
         return defenderRoll - attackerRoll;
     }
 

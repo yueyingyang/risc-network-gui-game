@@ -93,11 +93,11 @@ public class V2MapView {
         fillTerrInfo(o, t, playerColorMap.get(t.getOwnerName()), full);
       } else if (playerInfo.getPrevSeenTerr(t.getName()) != null) {
         // 2.2 old information shown as gray
-        fillTerrInfo(o, playerInfo.getPrevSeenTerr(t.getName()), "#808080", full);
+        fillTerrInfo(o, playerInfo.getPrevSeenTerr(t.getName()), GameUtil.toHexStr(Color.gray), full);
       } else {
         // 2.3.= outline only
         o.put("isOutline", true);
-        o.put("color", "#FFF");
+        o.put("color", GameUtil.toHexStr(Color.white));
       }
       // 3. position info
       putPos(calPoint(middle, angleStart, radius), o);
@@ -132,6 +132,9 @@ public class V2MapView {
     o.put("foodRes", playerInfo.getFoodResource());
     o.put("techRes", playerInfo.getTechResource());
     o.put("isRequested", playerInfo.isRequested());
+    for (String s : Constant.prodCost.keySet()) {
+      o.put(s.toLowerCase(Locale.ROOT), playerInfo.getProdCount(s));
+    }
     list.add(o);
     return list;
   }
