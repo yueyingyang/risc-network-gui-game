@@ -334,7 +334,7 @@ public class Territory {
         }
         StringBuilder temp = new StringBuilder();
         temp.append("On territory ").append(this.getName()).append(":\n");
-        temp.append(displayMissileInfo());
+        temp.append(resolveMissile());
         temp.append(displayShieldInfo());
         List<Army> attackers = new ArrayList<>(attackerBuffer.values());
         Collections.shuffle(attackers, myRandom);
@@ -354,14 +354,14 @@ public class Territory {
     }
 
     /**
-     * display the missile information in this round
+     * Resolve missiles for the territory
      *
-     * @return the string that contains missile attacks infomation
+     * @return the string that contains missile attacks information
      */
-    public String displayMissileInfo() {
+    public String resolveMissile() {
         StringBuilder temp = new StringBuilder();
         if (!recvMissile.isEmpty()) {
-            temp.append("Received missile(s) from player ");
+            temp.append("Received missile(s) from ");
             for (String playerName : recvMissile) {
                 temp.append(playerName).append(", ");
             }

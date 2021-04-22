@@ -1,6 +1,5 @@
 package edu.duke.ece651.risc.shared;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -174,6 +173,12 @@ class TerritoryTest {
         // no combat
         String ans2 = terr0.resolveCombat(myRandom);
         assertEquals("", ans2);
+
+        // use prod
+        Territory terr1 = new Territory("1");
+        terr1.setOwnerName("Green");
+        terr1.setMyArmy(new Army("Green", 3));
+        Army army5 = new Army("Yellow", 3);
     }
 
     @Test
@@ -188,7 +193,7 @@ class TerritoryTest {
         // combat with missile
         terr0.applyMissile("Blue");
         terr0.applyMissile("Yellow");
-        String ans3 = terr0.displayMissileInfo();
+        String ans3 = terr0.resolveMissile();
         assertEquals("Received missile(s) from Blue, Yellow player.\n", ans3);
     }
 
