@@ -69,8 +69,8 @@ public class Territory {
         this.spyBuffer = new HashMap<>();
         this.cloakingBuffer = 0;
         this.useShield = null;
-        this.useSword = new HashSet<>();
-        this.recvMissile=new HashSet<>();
+        this.useSword = new TreeSet<>();
+        this.recvMissile=new TreeSet<>();
     }
 
     /**
@@ -328,14 +328,15 @@ public class Territory {
      * @return the information of the combat resolve process
      */
     public String resolveCombat(Random myRandom) {
-        StringBuilder temp = new StringBuilder();
-        temp.append(displayMissileInfo());
-        if (attackerBuffer.size() == 0) {
-            return temp.toString();
+        if (recvMissile.size() ==0 && useShield == null
+                && useSword.size() == 0 && attackerBuffer.size() == 0) {
+            return "";
         }
+        StringBuilder temp = new StringBuilder();
+        temp.append("On territory ").append(this.getName()).append(":\n");
+        temp.append(displayMissileInfo());
         List<Army> attackers = new ArrayList<>(attackerBuffer.values());
         Collections.shuffle(attackers, myRandom);
-        temp.append("On territory ").append(this.getName()).append(":\n");
         Army defender = myArmy;
         for (Army attacker : attackers) {
             displayCombatInfo(defender, attacker, temp);
