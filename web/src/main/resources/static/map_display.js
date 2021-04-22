@@ -75,7 +75,11 @@ const resolve_html =
 const info_display = {
     "techLevel": "Tech Level",
     "foodRes": "Food Resources",
-    "techRes": "Tech Resources"
+    "techRes": "Tech Resources",
+    "missile": "Missile",
+    "ship": "Ship",
+    "sword": "Sword",
+    "shield": "Shield"
 }
 
 function toStatHTML(player_info) {

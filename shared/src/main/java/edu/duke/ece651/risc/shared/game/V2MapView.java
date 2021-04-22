@@ -90,6 +90,9 @@ public class V2MapView {
     o.put("foodRes", playerInfo.getFoodResource());
     o.put("techRes", playerInfo.getTechResource());
     o.put("isRequested", playerInfo.isRequested());
+    for (String s : Constant.prodCost.keySet()) {
+      o.put(s.toLowerCase(Locale.ROOT), playerInfo.getProdCount(s));
+    }
     list.add(o);
     return list;
   }
