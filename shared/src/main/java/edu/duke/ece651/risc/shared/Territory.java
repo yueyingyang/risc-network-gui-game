@@ -336,6 +336,7 @@ public class Territory {
         temp.append("On territory ").append(this.getName()).append(":\n");
         temp.append(resolveMissile());
         temp.append(displayShieldInfo());
+        temp.append(displaySwordInfo());
         List<Army> attackers = new ArrayList<>(attackerBuffer.values());
         Collections.shuffle(attackers, myRandom);
         Army defender = myArmy;
@@ -390,6 +391,9 @@ public class Territory {
      * @return show the player that uses sword
      */
     public String displaySwordInfo() {
+        if (useSword.size() == 0) {
+            return "";
+        }
         StringBuilder temp = new StringBuilder();
         for (String name : useSword) {
             temp.append(name).append(", ");

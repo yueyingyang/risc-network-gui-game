@@ -173,16 +173,38 @@ class TerritoryTest {
         // no combat
         String ans2 = terr0.resolveCombat(myRandom);
         assertEquals("", ans2);
-
-        // use prod
-        Territory terr1 = new Territory("1");
-        terr1.setOwnerName("Green");
-        terr1.setMyArmy(new Army("Green", 3));
-        Army army5 = new Army("Yellow", 3);
     }
 
     @Test
-    public void test_displayMissileInfo(){
+    public void test_resolveCombatWithProd() {
+        Random myRandom = new Random(0);
+        Territory terr1 = new Territory("1");
+        terr1.setOwnerName("Green");
+        terr1.setMyArmy(new Army("Green", 3));
+        Army army5 = new Army("Yellow", 2);
+        Army army6 = new Army("Blue", 2);
+        terr1.bufferAttacker(army5);
+        terr1.bufferAttacker(army6);
+        terr1.applyMissile("Yellow");
+        terr1.setUseShield("Green");
+        terr1.setUseSword("Yellow");
+        String expect = "On territory 1:\n" +
+                "Received missile(s) from Yellow player.\n" +
+                "Green player use shield.\n" +
+                "Yellow player use sword.\n" +
+                "Defender: Green player(0 soldiers)\n" +
+                "Attacker: Yellow player(2 type-0 soldiers)\n" +
+                "Yellow player wins.\n" +
+                "Defender: Yellow player(2 type-0 soldiers)\n" +
+                "Attacker: Blue player(2 type-0 soldiers)\n" +
+                "Yellow player wins.\n";
+        String ans = terr1.resolveCombat(myRandom);
+        assertEquals(expect, ans);
+
+    }
+
+    @Test
+    public void test_resolveMissile(){
         Territory terr0 = new Territory("1");
         terr0.setOwnerName("Purple");
         Army army0 = new Army("Purple", 1);
@@ -210,12 +232,14 @@ class TerritoryTest {
     @Test
     public void test_displaySwordInfo() {
         Territory terr0 = new Territory("0");
+        String ans0 = terr0.displaySwordInfo();
+        assertEquals("", ans0);
         terr0.setUseSword("Blue");
         terr0.setUseSword("Yellow");
         terr0.setUseSword("Green");
         terr0.setUseSword("Red");
-        String ans = terr0.displaySwordInfo();
-        assertEquals("Blue, Green, Red, Yellow player use sword.\n", ans);
+        String ans1 = terr0.displaySwordInfo();
+        assertEquals("Blue, Green, Red, Yellow player use sword.\n", ans1);
     }
 
     @Test
