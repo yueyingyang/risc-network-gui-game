@@ -47,14 +47,6 @@ public class OneTurnThread implements Runnable {
     public OneTurnThread(GameMap g, ServerPlayer p, List<ServerPlayer> playerList, PlayerInfo playerInfo, CyclicBarrier barrier, int gameID, Map<String, String> playerColorMap) {
         this(g, p, playerList, playerInfo, barrier, gameID);
         this.playerColorMap = playerColorMap;
-        System.out.println("wow");
-        JSONSerializer js = new JSONSerializer();
-        System.out.println("gamemap: "+js.serialize(g));
-        System.out.println("player: "+js.serialize(p)+p.getCurrentGame());
-        System.out.println("playerList: "+js.serialize(playerList));
-        System.out.println("playerInfo: "+js.serialize(playerInfo));
-        System.out.println("gameid: "+gameID);
-        System.out.println("colormap: "+js.serialize(playerColorMap));
     }
 
     /**
@@ -66,9 +58,11 @@ public class OneTurnThread implements Runnable {
     private void applyMovement(ActionEntry a) {
         synchronized (gameMap) {
             try {
-                PlayerInfo pi = new PlayerInfo(playerInfo.getName(), playerInfo.getTechLevel(), playerInfo.getFoodResource(), playerInfo.getTechResource());
+                JSONSerializer js = new JSONSerializer();
+                PlayerInfo pi = (PlayerInfo)js.clone(playerInfo, PlayerInfo.class);
+                // PlayerInfo pi = new PlayerInfo(playerInfo.getName(), playerInfo.getTechLevel(), playerInfo.getFoodResource(), playerInfo.getTechResource());
                 a.apply(gameMap, playerInfo);
-//                also apply on the local copy
+                // also apply on the local copy
                 a.apply(mapLocal, pi);
                 player.sendMessage(Constant.VALID_ACTION);
             } catch (Exception e) {

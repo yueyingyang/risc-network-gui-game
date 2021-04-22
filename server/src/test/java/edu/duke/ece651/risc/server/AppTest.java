@@ -228,4 +228,28 @@ class AppTest {
     String str = app.allGameList(sp.getName());
     assertEquals("[]\n[{\"id\":0,\"players\":[\"Red\"]}]",str);
   }
+
+  @Test
+  public void test_gameCanPlace(){
+    ServerPlayer sp1 = new ServerPlayer();
+    ServerPlayer sp2 = new ServerPlayer();
+    sp1.setCurrentGameID(0);
+    sp2.setCurrentGameID(1);
+    Game g = new Game(2,0);
+    g.addPlayer(sp1);
+    g.addPlayer(sp2);
+    assertEquals(false, app.gameCanPlace(g));
+    sp2.setCurrentGameID(0);
+    assertEquals(true, app.gameCanPlace(g));
+  }
+
+  @Test
+  public void test_recoverGame(){
+    assertDoesNotThrow(()->{app.recoverPlayers();});
+    assertDoesNotThrow(()->{app.recoverGames();}); 
+    
+  }
+
+  
+
 }

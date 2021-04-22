@@ -189,6 +189,11 @@ public class App {
     }
   }
 
+  /**
+   * check if the game is able to start the placement phase after restart the server
+   * @param g
+   * @return
+   */
   public Boolean gameCanPlace(Game g){
     for(ServerPlayer p:g.players){
       if(p.getCurrentGame()!=g.getGameID()){
@@ -281,7 +286,7 @@ public class App {
   }
 
   /**
-   * 
+   * recover games from the database
    */
   public void recoverGames(){
     ArrayList<Game> gameList = database.recoverGameList();
@@ -306,6 +311,9 @@ public class App {
     }  
   }
 
+  /**
+   * recover players from the database
+   */
   public void recoverPlayers(){
     ArrayList<ServerPlayer> playerList = database.recoverPlayerList();
     for(ServerPlayer sp:playerList){

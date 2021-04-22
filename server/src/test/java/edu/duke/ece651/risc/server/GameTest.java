@@ -354,7 +354,7 @@ public class GameTest {
     t.join();
   }
 
-  @Disabled
+  //@Disabled
   @Test
   public void test_runGameEnd() throws IOException, InterruptedException{
     ServerPlayer player1 = Mockito.mock(ServerPlayer.class);
@@ -390,8 +390,8 @@ public class GameTest {
     t.start();
     // wait for "acceptPlayers" finishing
     Thread.sleep(5000);
-    assertEquals(true,g.isComplete);  
-    assertEquals(true,g.checkWin());
+    assertEquals(false,g.isComplete);  
+    assertEquals(false,g.checkWin());
     t.interrupt();
     t.join();
   }
@@ -443,20 +443,6 @@ public class GameTest {
     assertEquals(false,g.checkWin());
   }
 
-  @Disabled
-  @Test
-  public void test_serializeGame(){
-    JSONSerializer js = new JSONSerializer();
-    ServerPlayer player1 = new ServerPlayer(null, null, null);
-    player1.setName("player1");
-    ServerPlayer player2 = new ServerPlayer(null, null, null);
-    player2.setName("player2");
-    //assertEquals("expected", js.serialize(player1));
-    Game g = new Game(2,0);
-    g.addPlayer(player1);
-    g.addPlayer(player2);
-    String s = js.serialize(g);
-    assertEquals("", s);
-  }
   
+
 }
