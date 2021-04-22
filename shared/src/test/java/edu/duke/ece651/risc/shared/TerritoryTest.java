@@ -179,6 +179,22 @@ class TerritoryTest {
     }
 
     @Test
+    public void test_displayMissileInfo(){
+        Territory terr0 = new Territory("1");
+        terr0.setOwnerName("Purple");
+        Army army0 = new Army("Purple", 1);
+        army0.addSoldiers(2, "3");
+        army0.addSoldiers(3, "2");
+        terr0.setMyArmy(army0);
+        Random myRandom = new Random(0);
+
+        // combat with missile
+        terr0.applyMissile("Blue");
+        String ans3 = terr0.displayMissileInfo();
+        assertEquals("The territory 1 is attacked by missile(s) from Blue\n", ans3);
+    }
+
+    @Test
     public void test_getters() {
         Territory terr = new Territory("NANJING", 10, 15, 20);
         assertEquals(10, terr.getSize());
@@ -343,8 +359,18 @@ class TerritoryTest {
         terr0.addSpies(name2, 1);
         // adjacent, hide, has spy
         assertTrue(terr0.isVisible(myInfo1));
+    }
 
-
+    @Test
+    public void test_prod(){
+        Territory terr = new Territory("NANJING", 10, 15, 20);
+        terr.setUseSword("Blue");
+        terr.setUseShield("Red");
+        assertEquals(terr.getAttackerBonus("Blue"),Constant.SWORD_BONUS);
+        assertEquals(terr.getAttackerBonus("Red"),0);
+        assertEquals(terr.getDefenderBonus("Blue"),Constant.SHIELD_BONUS);
+        assertEquals(terr.getDefenderBonus("Red"),Constant.SHIELD_BONUS);
+        assertEquals(terr.getDefenderBonus("Green"),0);
     }
 
 }

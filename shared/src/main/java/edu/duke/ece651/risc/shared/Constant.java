@@ -130,6 +130,8 @@ public class Constant {
         prodCost.put(shield,50);
         prodCost.put(sword,50);
     }
+    public static int SHIELD_BONUS = 3;
+    public static int SWORD_BONUS = 3;
 
 }
 
