@@ -203,6 +203,17 @@ class TerritoryTest {
     }
 
     @Test
+    public void test_displaySwordInfo() {
+        Territory terr0 = new Territory("0");
+        terr0.setUseSword("Blue");
+        terr0.setUseSword("Yellow");
+        terr0.setUseSword("Green");
+        terr0.setUseSword("Red");
+        String ans = terr0.displaySwordInfo();
+        assertEquals("Blue, Green, Red, Yellow player use sword.\n", ans);
+    }
+
+    @Test
     public void test_getters() {
         Territory terr = new Territory("NANJING", 10, 15, 20);
         assertEquals(10, terr.getSize());

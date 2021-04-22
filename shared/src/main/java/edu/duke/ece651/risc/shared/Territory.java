@@ -375,13 +375,27 @@ public class Territory {
     /**
      * Display shield info
      *
-     * @return show whether the player use shield
+     * @return show whether the player uses shield
      */
     public String displayShieldInfo() {
         StringBuilder temp = new StringBuilder();
         if (useShield != null) {
             temp.append(ownerName).append(" player use shield.\n");
         }
+        return temp.toString();
+    }
+
+    /**
+     * Display sword info
+     * @return show the player that uses sword
+     */
+    public String displaySwordInfo() {
+        StringBuilder temp = new StringBuilder();
+        for (String name : useSword) {
+            temp.append(name).append(", ");
+        }
+        temp.delete(temp.length() - 2, temp.length());
+        temp.append(" player use sword.\n");
         return temp.toString();
     }
 
