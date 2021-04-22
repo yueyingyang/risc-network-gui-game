@@ -189,7 +189,17 @@ class TerritoryTest {
         terr0.applyMissile("Blue");
         terr0.applyMissile("Yellow");
         String ans3 = terr0.displayMissileInfo();
-        assertEquals("Received missile(s) from Blue, Yellow.\n", ans3);
+        assertEquals("Received missile(s) from Blue, Yellow player.\n", ans3);
+    }
+
+    @Test
+    public void test_displayShieldInfo() {
+        Territory terr0 = new Territory("1");
+        terr0.setOwnerName("Purple");
+        terr0.setUseShield("Purple");
+        String ans = terr0.displayShieldInfo();
+        assertEquals("Purple player use shield.\n", ans);
+
     }
 
     @Test

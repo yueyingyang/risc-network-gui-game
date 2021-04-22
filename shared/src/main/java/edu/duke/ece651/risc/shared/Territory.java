@@ -70,7 +70,7 @@ public class Territory {
         this.cloakingBuffer = 0;
         this.useShield = null;
         this.useSword = new TreeSet<>();
-        this.recvMissile=new TreeSet<>();
+        this.recvMissile = new TreeSet<>();
     }
 
     /**
@@ -107,7 +107,7 @@ public class Territory {
         this.cloakingBuffer = terr.cloakingBuffer;
         this.useShield = terr.useShield;
         this.useSword = new HashSet<>(terr.useSword);
-        this.recvMissile=new HashSet<>(terr.recvMissile);
+        this.recvMissile = new HashSet<>(terr.recvMissile);
     }
 
     /**
@@ -328,19 +328,20 @@ public class Territory {
      * @return the information of the combat resolve process
      */
     public String resolveCombat(Random myRandom) {
-        if (recvMissile.size() ==0 && useShield == null
+        if (recvMissile.size() == 0 && useShield == null
                 && useSword.size() == 0 && attackerBuffer.size() == 0) {
             return "";
         }
         StringBuilder temp = new StringBuilder();
         temp.append("On territory ").append(this.getName()).append(":\n");
         temp.append(displayMissileInfo());
+        temp.append(displayShieldInfo());
         List<Army> attackers = new ArrayList<>(attackerBuffer.values());
         Collections.shuffle(attackers, myRandom);
         Army defender = myArmy;
         for (Army attacker : attackers) {
             displayCombatInfo(defender, attacker, temp);
-            defender = defender.fight(attacker, myRandom, getAttackerBonus(attacker.getOwnerName()),getDefenderBonus(defender.getOwnerName()));
+            defender = defender.fight(attacker, myRandom, getAttackerBonus(attacker.getOwnerName()), getDefenderBonus(defender.getOwnerName()));
             temp.append(defender.getOwnerName()).append(" player wins.\n");
         }
         myArmy = defender;
@@ -357,16 +358,29 @@ public class Territory {
      *
      * @return the string that contains missile attacks infomation
      */
-    public String displayMissileInfo(){
-        StringBuilder temp=new StringBuilder();
-        if(!recvMissile.isEmpty()){
-            temp.append("Received missile(s) from ");
-            for(String playerName:recvMissile){
+    public String displayMissileInfo() {
+        StringBuilder temp = new StringBuilder();
+        if (!recvMissile.isEmpty()) {
+            temp.append("Received missile(s) from player ");
+            for (String playerName : recvMissile) {
                 temp.append(playerName).append(", ");
             }
             temp.delete(temp.length() - 2, temp.length());
-            temp.append(".\n");
-            setMyArmy(new Army(getOwnerName(),new ArrayList<>()));
+            temp.append(" player.\n");
+            setMyArmy(new Army(getOwnerName(), new ArrayList<>()));
+        }
+        return temp.toString();
+    }
+
+    /**
+     * Display shield info
+     *
+     * @return show whether the player use shield
+     */
+    public String displayShieldInfo() {
+        StringBuilder temp = new StringBuilder();
+        if (useShield != null) {
+            temp.append(ownerName).append(" player use shield.\n");
         }
         return temp.toString();
     }
@@ -578,8 +592,8 @@ public class Territory {
      * @param playerName the corresponding player's name
      * @return shield bonus if the player used shield or used sword before win last round, otherwise return 0
      */
-    public int getDefenderBonus(String playerName){
-        if(playerName.equals(useShield) || useSword.contains(playerName)) {
+    public int getDefenderBonus(String playerName) {
+        if (playerName.equals(useShield) || useSword.contains(playerName)) {
             return Constant.SHIELD_BONUS;
         }
         return 0;
@@ -587,11 +601,12 @@ public class Territory {
 
     /**
      * get the attacker's bonus in this round
+     *
      * @param playerName the player's name
      * @return sword bonus if the player used sword
      */
-    public int getAttackerBonus(String playerName){
-        if(!useSword.contains(playerName)) {
+    public int getAttackerBonus(String playerName) {
+        if (!useSword.contains(playerName)) {
             return 0;
         }
         return Constant.SWORD_BONUS;
@@ -602,7 +617,7 @@ public class Territory {
      *
      * @param playerName the name of the player uses sword
      */
-    public void setUseSword(String playerName){
+    public void setUseSword(String playerName) {
         useSword.add(playerName);
     }
 
@@ -612,8 +627,8 @@ public class Territory {
      *
      * @param playerName the name of the player uses shield
      */
-    public void setUseShield(String playerName){
-        useShield=playerName;
+    public void setUseShield(String playerName) {
+        useShield = playerName;
     }
 
     /**
@@ -621,7 +636,7 @@ public class Territory {
      *
      * @param playerName the name of player uses missile
      */
-    public void applyMissile(String playerName){
+    public void applyMissile(String playerName) {
         recvMissile.add(playerName);
     }
 
@@ -631,7 +646,7 @@ public class Territory {
      * @param playerName the name of player
      * @return true if the player used missile otherwise return false
      */
-    public boolean hasMissile(String playerName){
+    public boolean hasMissile(String playerName) {
         return recvMissile.contains(playerName);
     }
 }
