@@ -490,9 +490,10 @@ public class Game {
             }
             addResourcesToConnected(stillInPlayers);
             sendAndPlace(totalSoldiers);
+            this.isPlacementComplete = true;
             //update games collection
             updateGamesCollection(gamesCollection);
-            this.isPlacementComplete = true;
+            
         }
         while (!Thread.currentThread().isInterrupted()) {
             ArrayList<ServerPlayer> connectedPlayers = sendMap_GetConnectedPlayers();

@@ -124,6 +124,10 @@ public class Territory {
         this.name = name;
     }
 
+    public void removeNeighbours(){
+        this.neighbours = null;
+    }
+
     /**
      * Get the name of the owner
      *

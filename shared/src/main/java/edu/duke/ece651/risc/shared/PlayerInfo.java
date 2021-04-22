@@ -178,6 +178,7 @@ public class PlayerInfo {
      */
     public void seeTerr(Territory terr0) {
         Territory terr1 = new Territory(terr0);
+        terr1.removeNeighbours();
         terr1.setName(terr1.getName()+this.name);
         hasSeen.put(terr0.getName(), terr1);
     }

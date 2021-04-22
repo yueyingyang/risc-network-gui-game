@@ -219,6 +219,7 @@ public class App {
     }
     player.sendMessage(Constant.CAN_REJOINGAME);
     player.setCurrentGameID(currentGameID);
+    System.out.println("the placement is done? "+g.isPlacementComplete);
     //persistence rejoin
     if(g.isPlacementComplete){
       player.sendMessage("play");

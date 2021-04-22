@@ -19,7 +19,7 @@ import edu.duke.ece651.risc.shared.JSONSerializer;
 import edu.duke.ece651.risc.shared.ServerPlayer;
 
 public class Database {
-    private int refresh = 1;
+    private int refresh = 0;
     private volatile MongoClient mongoClient;
     private volatile MongoDatabase mongoDatabase;
     private volatile MongoCollection<Document> playersCollection;// only need players names
@@ -33,7 +33,7 @@ public class Database {
         loggerContext.getLogger("org.mongodb.driver").setLevel(Level.ERROR);
         //instantiate a MongoClient object without any parameters to connect to a MongoDB instance 
         //running on localhost on port 27017
-        this.mongoClient = new MongoClient("localhost" , 27017);
+        this.mongoClient = new MongoClient("vcm-18515.vm.duke.edu" , 27017);
         //create or get database mydb
         this.mongoDatabase = mongoClient.getDatabase("mydb");
         System.out.println("Connect to database successfully");
