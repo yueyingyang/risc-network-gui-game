@@ -24,7 +24,9 @@ import edu.duke.ece651.risc.shared.PlayerInfo;
         @JsonSubTypes.Type(value = SpyEntry.class, name = "spy"),
         @JsonSubTypes.Type(value = SpyMoveEntry.class, name = "spyMove"),
         @JsonSubTypes.Type(value = ProdEntry.class, name = "prod"),
-        @JsonSubTypes.Type(value = MissileEntry.class, name = "missile")
+        @JsonSubTypes.Type(value = SwordEntry.class, name = "sword"),
+        @JsonSubTypes.Type(value = ShieldEntry.class, name = "shield"),
+        @JsonSubTypes.Type(value = MissileEntry.class, name = "missile"),
 })
 public interface ActionEntry {
 
