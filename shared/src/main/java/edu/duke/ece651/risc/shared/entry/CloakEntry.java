@@ -4,6 +4,8 @@ import edu.duke.ece651.risc.shared.Constant;
 import edu.duke.ece651.risc.shared.GameMap;
 import edu.duke.ece651.risc.shared.PlayerInfo;
 import edu.duke.ece651.risc.shared.Territory;
+import edu.duke.ece651.risc.shared.checker.Checker;
+import edu.duke.ece651.risc.shared.checker.ClockRuleChecker;
 
 import java.beans.ConstructorProperties;
 
@@ -31,6 +33,9 @@ public class CloakEntry extends BasicEntry {
      */
     @Override
     public void apply(GameMap myMap, PlayerInfo myInfo) {
+        Checker checker = new ClockRuleChecker(null);
+        checker.checkAction(this,myMap,myInfo);
+
         Territory terr = myMap.getTerritory(toName);
         terr.bufferCloaking();
         myInfo.consumeTech(Constant.ORDER_CLOAKING_COST);
