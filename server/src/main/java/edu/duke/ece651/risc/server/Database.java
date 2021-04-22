@@ -18,16 +18,22 @@ import ch.qos.logback.classic.LoggerContext;
 import edu.duke.ece651.risc.shared.JSONSerializer;
 import edu.duke.ece651.risc.shared.ServerPlayer;
 
+/**
+ * This class is used for connecting the database and providing some interface of the DB used in App
+ */
 public class Database {
-    private int refresh = 0;
+    //the flag to refrsh the database
+    private int refresh = 0; 
     private volatile MongoClient mongoClient;
     private volatile MongoDatabase mongoDatabase;
     private volatile MongoCollection<Document> playersCollection;// only need players names
     private volatile MongoCollection<Document> gamesCollection;
     private JSONSerializer js;
 
+    /**
+     * The constructor of the database
+     */
     public Database(){
-     
         //ignore some annoying log of MongoDB
         LoggerContext loggerContext = (LoggerContext)LoggerFactory.getILoggerFactory();
         loggerContext.getLogger("org.mongodb.driver").setLevel(Level.ERROR);
@@ -55,25 +61,40 @@ public class Database {
         this.js = new JSONSerializer();
     }
 
+    /**
+     * get the games collection
+     */
     public MongoCollection<Document> getGamesCollection(){
         return this.gamesCollection;
     }
 
+    /**
+     * get the players collection
+     */
     public MongoCollection<Document> getPlayersCollection(){
         return this.playersCollection;
     }
 
+    /**
+     * insert a player into the player collection
+     */
     public synchronized void insertPlayersCollection(ServerPlayer player){
         Document document = new Document("playerName", player.getName());
         this.playersCollection.insertOne(document);
     }
 
+    /**
+     * insert a game into the games collection
+     */
     public synchronized void insertGamesCollection(Game g){
         String s = js.serialize(g);
         Document document = new Document("gameID", g.getGameID()).append("description", s);
         gamesCollection.insertOne(document);
     }
 
+    /**
+     * update a particular game in the games collection
+     */
     public synchronized void updateGamesCollection(Game g){
         String s = js.serialize(g);
         BasicDBObject newDocument = new BasicDBObject();
@@ -83,7 +104,10 @@ public class Database {
         gamesCollection.updateOne(Filters.eq("gameID", g.getGameID()), updateObject);
     }
 
-      public ArrayList<ServerPlayer> recoverPlayerList(){
+    /**
+     * recover the player List from the database
+     */
+    public ArrayList<ServerPlayer> recoverPlayerList(){
         ArrayList<ServerPlayer> playerList = new ArrayList<>();
         FindIterable<Document> findIterable = playersCollection.find();  
         MongoCursor<Document> mongoCursor = findIterable.iterator();  
@@ -94,18 +118,21 @@ public class Database {
             playerList.add(sp);
         }
         return playerList;
-      }
+    }
 
-      public ArrayList<Game> recoverGameList(){
+    /**
+     * recover the game list from the database
+     */
+    public ArrayList<Game> recoverGameList(){
         ArrayList<Game> res = new ArrayList<>();
         FindIterable<Document> findIterable1 = gamesCollection.find();  
         MongoCursor<Document> mongoCursor1= findIterable1.iterator();  
         while(mongoCursor1.hasNext()){
-          String gameString = (String)mongoCursor1.next().get("description");
-          Game g = (Game)js.deserialize(gameString, Game.class);
-          res.add(g);
+            String gameString = (String)mongoCursor1.next().get("description");
+            Game g = (Game)js.deserialize(gameString, Game.class);
+            res.add(g);
         }
         return res;
-      }
+    }
    
 }

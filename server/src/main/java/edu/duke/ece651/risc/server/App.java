@@ -267,6 +267,11 @@ public class App {
   }
 
 
+  /**
+   * after the server restart, reinitilaize the 3 player list used in game class from the database
+   * @param list
+   * @return
+   */
   public ArrayList<ServerPlayer> reinitializePlayers(ArrayList<ServerPlayer> list){
     ArrayList<ServerPlayer> res = new ArrayList<>();
     for(ServerPlayer sp:list){
@@ -275,6 +280,9 @@ public class App {
     return res;
   }
 
+  /**
+   * 
+   */
   public void recoverGames(){
     ArrayList<Game> gameList = database.recoverGameList();
     for(Game g:gameList){
