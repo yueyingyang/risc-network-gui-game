@@ -72,7 +72,7 @@ public class App {
     loggerContext.getLogger("org.mongodb.driver").setLevel(Level.ERROR);
     //instantiate a MongoClient object without any parameters to connect to a MongoDB instance 
     //running on localhost on port 27017
-    this.mongoClient = new MongoClient("localhost" , 27017);
+    this.mongoClient = new MongoClient("vcm-16514.vm.duke.edu" , 27017);
     //create or get database mydb
     this.mongoDatabase = mongoClient.getDatabase("mydb");
     System.out.println("Connect to database successfully");
