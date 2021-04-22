@@ -174,8 +174,6 @@ class TerritoryTest {
         // no combat
         String ans2 = terr0.resolveCombat(myRandom);
         assertEquals("", ans2);
-        assertEquals(0, terr0.getNumSoldiersInAttacker("Purple"));
-        assertEquals(0, terr0.getNumSoldiersInAttacker("Purple", "1"));
     }
 
     @Test
@@ -186,12 +184,12 @@ class TerritoryTest {
         army0.addSoldiers(2, "3");
         army0.addSoldiers(3, "2");
         terr0.setMyArmy(army0);
-        Random myRandom = new Random(0);
 
         // combat with missile
         terr0.applyMissile("Blue");
+        terr0.applyMissile("Yellow");
         String ans3 = terr0.displayMissileInfo();
-        assertEquals("The territory 1 is attacked by missile(s) from Blue\n", ans3);
+        assertEquals("Received missile(s) from Blue, Yellow.\n", ans3);
     }
 
     @Test

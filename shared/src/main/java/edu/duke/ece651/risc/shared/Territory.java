@@ -360,12 +360,12 @@ public class Territory {
     public String displayMissileInfo(){
         StringBuilder temp=new StringBuilder();
         if(!recvMissile.isEmpty()){
-            temp.append("The territory ").append(getName()).append(" is attacked by missile(s) from");
+            temp.append("Received missile(s) from ");
             for(String playerName:recvMissile){
-                temp.append(" ").append(playerName).append(",");
+                temp.append(playerName).append(", ");
             }
-            temp.deleteCharAt(temp.length()-1);
-            temp.append("\n");
+            temp.delete(temp.length() - 2, temp.length());
+            temp.append(".\n");
             setMyArmy(new Army(getOwnerName(),new ArrayList<>()));
         }
         return temp.toString();
