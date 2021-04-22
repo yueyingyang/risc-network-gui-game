@@ -388,18 +388,18 @@ public class Territory {
 
     /**
      * Display sword info
+     *
      * @return show the player that uses sword
      */
     public String displaySwordInfo() {
-        if (useSword.size() == 0) {
-            return "";
-        }
         StringBuilder temp = new StringBuilder();
-        for (String name : useSword) {
-            temp.append(name).append(", ");
+        if (useSword.size() > 0) {
+            for (String name : useSword) {
+                temp.append(name).append(", ");
+            }
+            temp.delete(temp.length() - 2, temp.length());
+            temp.append(" player use sword.\n");
         }
-        temp.delete(temp.length() - 2, temp.length());
-        temp.append(" player use sword.\n");
         return temp.toString();
     }
 

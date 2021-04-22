@@ -211,6 +211,8 @@ class TerritoryTest {
         army0.addSoldiers(2, "3");
         army0.addSoldiers(3, "2");
         terr0.setMyArmy(army0);
+        String ans0 = terr0.resolveMissile();
+        assertEquals("", ans0);
 
         // combat with missile
         terr0.applyMissile("Blue");
