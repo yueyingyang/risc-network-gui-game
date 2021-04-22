@@ -222,10 +222,12 @@ class TerritoryTest {
     @Test
     public void test_displayShieldInfo() {
         Territory terr0 = new Territory("1");
+        String ans0 = terr0.displayShieldInfo();
+        assertEquals("", ans0);
         terr0.setOwnerName("Purple");
         terr0.setUseShield("Purple");
-        String ans = terr0.displayShieldInfo();
-        assertEquals("Purple player use shield.\n", ans);
+        String ans1 = terr0.displayShieldInfo();
+        assertEquals("Purple player use shield.\n", ans1);
 
     }
 
