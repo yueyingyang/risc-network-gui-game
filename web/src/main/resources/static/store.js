@@ -56,7 +56,6 @@ products.forEach(item => {
 const update_total = () => {
     const type = $("form#buy [name*='fromType']").val().toLowerCase()
     const amount = parseInt($("form#buy [name*='soldierNum']").val())
-    console.log(type)
-    console.log(amount)
-    $("#total").empty().append(product_price[type] * amount)
+    let total = isNaN(product_price[type] * amount) ? 0 : product_price[type] * amount;
+    $("#total").empty().append(total)
 }

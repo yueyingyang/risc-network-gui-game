@@ -116,7 +116,12 @@ public class LobbyController {
     cs.sendMessage(new ObjectMapper().writeValueAsString(startReq));
     String valRes = cs.recvMessage();
     if (valRes.equals(Constant.CAN_REJOINGAME)) {
-      return "redirect:/game/play";
+      String next = cs.recvMessage();
+      if (next.equals("place")) {
+        return "redirect:/waiting";
+      } else {
+        return "redirect:/game/play";
+      }
     }
     return "redirect:back_lobby";
   }
