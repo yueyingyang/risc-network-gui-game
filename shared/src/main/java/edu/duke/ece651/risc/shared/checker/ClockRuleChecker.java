@@ -23,5 +23,8 @@ public class ClockRuleChecker extends Checker{
         if(myInfo.getTechResource() < Constant.ORDER_CLOAKING_COST){
             throw new IllegalArgumentException("Your tech resource is not enough!");
         }
+        if (!myInfo.hasCloakingTech()) {
+            throw new IllegalArgumentException("You need to research cloaking tech first!");
+        }
     }
 }
