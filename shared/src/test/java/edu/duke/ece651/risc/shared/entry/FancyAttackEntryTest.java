@@ -74,5 +74,7 @@ class FancyAttackEntryTest {
         assertEquals(264,myInfo.getFoodResource());
         Territory terr2 = myMap.getTerritory("2");
         assertEquals(1,terr2.getNumSoldiersInAttacker("LiLei","2"));
+
+
     }
 }
