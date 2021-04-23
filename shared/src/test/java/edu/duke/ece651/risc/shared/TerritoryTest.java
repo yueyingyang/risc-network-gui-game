@@ -1,6 +1,5 @@
 package edu.duke.ece651.risc.shared;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -174,24 +173,81 @@ class TerritoryTest {
         // no combat
         String ans2 = terr0.resolveCombat(myRandom);
         assertEquals("", ans2);
-        assertEquals(0, terr0.getNumSoldiersInAttacker("Purple"));
-        assertEquals(0, terr0.getNumSoldiersInAttacker("Purple", "1"));
     }
 
     @Test
-    public void test_displayMissileInfo(){
+    public void test_resolveCombatWithProd() {
+        Random myRandom = new Random(0);
+        Territory terr1 = new Territory("1");
+        terr1.setOwnerName("Green");
+        terr1.setMyArmy(new Army("Green", 3));
+        Army army5 = new Army("Yellow", 2);
+        Army army6 = new Army("Blue", 2);
+        terr1.bufferAttacker(army5);
+        terr1.bufferAttacker(army6);
+        terr1.applyMissile("Yellow");
+        terr1.setUseShield("Green");
+        terr1.setUseSword("Yellow");
+        String expect = "On territory 1:\n" +
+                "Received missile(s) from Yellow player.\n" +
+                "Green player use shield.\n" +
+                "Yellow player use sword.\n" +
+                "Defender: Green player(0 soldiers)\n" +
+                "Attacker: Yellow player(2 type-0 soldiers)\n" +
+                "Yellow player wins.\n" +
+                "Defender: Yellow player(2 type-0 soldiers)\n" +
+                "Attacker: Blue player(2 type-0 soldiers)\n" +
+                "Yellow player wins.\n";
+        String ans = terr1.resolveCombat(myRandom);
+        assertEquals(expect, ans);
+
+        // no combat
+        String ans2 = terr1.resolveCombat(myRandom);
+        assertEquals("", ans2);
+
+    }
+
+    @Test
+    public void test_resolveMissile(){
         Territory terr0 = new Territory("1");
         terr0.setOwnerName("Purple");
         Army army0 = new Army("Purple", 1);
         army0.addSoldiers(2, "3");
         army0.addSoldiers(3, "2");
         terr0.setMyArmy(army0);
-        Random myRandom = new Random(0);
+        String ans0 = terr0.resolveMissile();
+        assertEquals("", ans0);
 
         // combat with missile
         terr0.applyMissile("Blue");
-        String ans3 = terr0.displayMissileInfo();
-        assertEquals("The territory 1 is attacked by missile(s) from Blue\n", ans3);
+        terr0.applyMissile("Yellow");
+        String ans3 = terr0.resolveMissile();
+        assertEquals("Received missile(s) from Blue, Yellow player.\n", ans3);
+    }
+
+    @Test
+    public void test_displayShieldInfo() {
+        Territory terr0 = new Territory("1");
+        String ans0 = terr0.displayShieldInfo();
+        assertEquals("", ans0);
+        terr0.setOwnerName("Purple");
+        terr0.setUseShield("Purple");
+        String ans1 = terr0.displayShieldInfo();
+        assertEquals("Purple player use shield.\n", ans1);
+
+    }
+
+    @Test
+    public void test_displaySwordInfo() {
+        Territory terr0 = new Territory("0");
+        String ans0 = terr0.displaySwordInfo();
+        assertEquals("", ans0);
+        terr0.setUseSword("Blue");
+        terr0.setUseSword("Yellow");
+        terr0.setUseSword("Green");
+        terr0.setUseSword("Red");
+        String ans1 = terr0.displaySwordInfo();
+        assertEquals("Blue, Green, Red, Yellow player use sword.\n", ans1);
     }
 
     @Test
