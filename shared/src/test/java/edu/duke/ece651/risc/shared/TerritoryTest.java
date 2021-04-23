@@ -188,10 +188,12 @@ class TerritoryTest {
         terr1.applyMissile("Yellow");
         terr1.setUseShield("Green");
         terr1.setUseSword("Yellow");
+        terr1.addUseShip("Orange");
         String expect = "On territory 1:\n" +
                 "Received missile(s) from Yellow player.\n" +
                 "Green player use shield.\n" +
                 "Yellow player use sword.\n" +
+                "Orange player use ship.\n" +
                 "Defender: Green player(0 soldiers)\n" +
                 "Attacker: Yellow player(2 type-0 soldiers)\n" +
                 "Yellow player wins.\n" +

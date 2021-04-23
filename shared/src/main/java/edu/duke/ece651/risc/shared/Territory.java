@@ -32,6 +32,7 @@ public class Territory {
     private String useShield;
     private Set<String> useSword;
     private Set<String> recvMissile;
+    private Set<String> useShip;
 
     /**
      * Add for Jackson deserialization
@@ -72,6 +73,7 @@ public class Territory {
         this.useShield = null;
         this.useSword = new TreeSet<>();
         this.recvMissile = new TreeSet<>();
+        this.useShip = new TreeSet<>();
     }
 
     /**
@@ -109,6 +111,7 @@ public class Territory {
         this.useShield = terr.useShield;
         this.useSword = terr.useSword;
         this.recvMissile = terr.recvMissile;
+        this.useShip = terr.useShip;
     }
 
     /**
@@ -346,6 +349,7 @@ public class Territory {
         temp.append(resolveMissile());
         temp.append(displayShieldInfo());
         temp.append(displaySwordInfo());
+        temp.append(displayShipInfo());
         List<Army> attackers = new ArrayList<>(attackerBuffer.values());
         Collections.shuffle(attackers, myRandom);
         Army defender = myArmy;
@@ -408,6 +412,23 @@ public class Territory {
             }
             temp.delete(temp.length() - 2, temp.length());
             temp.append(" player use sword.\n");
+        }
+        return temp.toString();
+    }
+
+    /**
+     * Display sword info
+     *
+     * @return show the player that uses sword
+     */
+    public String displayShipInfo() {
+        StringBuilder temp = new StringBuilder();
+        if (useSword.size() > 0) {
+            for (String name : useShip) {
+                temp.append(name).append(", ");
+            }
+            temp.delete(temp.length() - 2, temp.length());
+            temp.append(" player use ship.\n");
         }
         return temp.toString();
     }
@@ -676,4 +697,24 @@ public class Territory {
     public boolean hasMissile(String playerName) {
         return recvMissile.contains(playerName);
     }
+
+    /**
+     * Record the player that use the ship
+     *
+     * @param playerName is the player name
+     */
+    public void addUseShip(String playerName) {
+        useShip.add(playerName);
+    }
+
+    /**
+     * Return if the player has use the ship
+     *
+     * @param playerName is the player name
+     * @return if the player has use the ship
+     */
+    public boolean hasUseShip(String playerName) {
+        return useShip.contains(playerName);
+    }
+
 }

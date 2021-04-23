@@ -62,6 +62,7 @@ public class FancyAttackEntry extends BasicEntry {
         fromTerr.removeSoldiersFromArmy(numSoldiers, fromType);
         Army attacker = new Army(fromTerr.getOwnerName(), numSoldiers, fromType);
         toTerr.bufferAttacker(attacker);
+        toTerr.addUseShip(playerName);
         myInfo.consumeFood(numSoldiers);
     }
 
