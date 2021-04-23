@@ -23,7 +23,7 @@ import edu.duke.ece651.risc.shared.ServerPlayer;
  */
 public class Database {
     //the flag to refrsh the database
-    private int refresh = 0; 
+    private int refresh = 1; 
     private volatile MongoClient mongoClient;
     private volatile MongoDatabase mongoDatabase;
     private volatile MongoCollection<Document> playersCollection;// only need players names

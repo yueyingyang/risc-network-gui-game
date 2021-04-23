@@ -36,7 +36,6 @@ public class PlacementThread implements Runnable{
             p.sendMessage(view.toString(false));
             try{
                 String s = p.recvMessage();
-                System.out.println("in placement thread"+p.out.equals(null));
                 Collection<ActionEntry> placements = js.getOm().readValue(s, new TypeReference<Collection<ActionEntry>>() {
                 });
                 int sum = 0;
