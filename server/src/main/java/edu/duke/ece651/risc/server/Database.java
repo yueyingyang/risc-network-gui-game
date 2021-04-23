@@ -1,5 +1,5 @@
-package edu.duke.ece651.risc.server;
 
+package edu.duke.ece651.risc.server;
 import java.util.ArrayList;
 
 import com.mongodb.BasicDBObject;
@@ -65,7 +65,7 @@ public class Database {
      * get the games collection
      */
     public MongoCollection<Document> getGamesCollection(){
-        return this.gamesCollection;
+      return this.gamesCollection;
     }
 
     /**
