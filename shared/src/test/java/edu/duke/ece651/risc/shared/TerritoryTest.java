@@ -207,6 +207,10 @@ class TerritoryTest {
         String ans2 = terr1.resolveCombat(myRandom);
         assertEquals("", ans2);
 
+        // use ship
+        terr1.addUseShip("Green");
+        System.out.println(terr1.resolveCombat(myRandom));
+
     }
 
     @Test
