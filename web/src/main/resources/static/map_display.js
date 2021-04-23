@@ -114,9 +114,15 @@ const display_playerInfo = (player_info) => {
         '        </div>'
 }
 
-function renderTerrList(my_terr, enemy_terr) {
-    my_terr = toOptionList(my_terr)
-    enemy_terr = toOptionList(enemy_terr)
+function renderTerrList(my, enemy) {
+    let my_terr = []
+    $.each(my, function (key, value) {
+        my_terr.push($('<option></option>').attr("value", key).text(key));
+    })
+    let enemy_terr = []
+    $.each(enemy, function (key, value) {
+        enemy_terr.push($('<option></option>').attr("value", key).text(key));
+    })
     // fromName: my_terr except for move_spy's fromName
     $("select[name*='fromName']").append(my_terr)
     $("form#move_spy select[name*='fromName']").empty().append(my_terr).append(enemy_terr)
@@ -143,5 +149,5 @@ const display_map = (tooltip_formatter_fn) => {
     option = getOption(tooltip_formatter_fn);
     myChart.setOption(option);
     $("#player_info").empty().append(display_playerInfo(graphData["playerInfo"][0]));
-    // renderTerrList(graphData['myTerr'][0], graphData['enemyTerr'][0]);
+    renderTerrList(graphData['myTerr'][0], graphData['enemyTerr'][0]);
 };

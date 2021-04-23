@@ -98,7 +98,7 @@ public class AjaxActionController {
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
     // Wrap a Soldier entry
     SoldierEntry soldierEntry = new SoldierEntry(
-            input.getToName(),
+            input.getFromName(),
             input.getFromType(),
             input.getToType(),
             input.getSoldierNum(),
@@ -172,7 +172,7 @@ public class AjaxActionController {
   @PostMapping(value = "/spy", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ActionAjaxResBody> spy(@RequestBody UserActionInput input) throws IOException {
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-    SpyEntry spy = new SpyEntry(input.getToName(), input.getSoldierNum(), userName);
+    SpyEntry spy = new SpyEntry(input.getFromName(), input.getSoldierNum(), userName);
     return getActionRes(spy);
   }
 
