@@ -31,7 +31,6 @@ public class PlacementThread implements Runnable{
     public void run(){
         while(true){
             JSONSerializer js = new JSONSerializer();
-            System.out.println(js.serialize(this.gameMap));
             p.sendObject(this.gameMap);
             p.sendMessage(String.valueOf(totalSoldiers));
             p.sendMessage(view.toString(false));

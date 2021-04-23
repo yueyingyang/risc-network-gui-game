@@ -26,10 +26,13 @@ public class OneTurnThread implements Runnable {
     private Map<String, String> playerColorMap;
 
     /**
-     * constructor
-     *
-     * @param g the gameMap of the game
-     * @param p the player
+     * the constructor of oneTurnThread
+     * @param g
+     * @param p
+     * @param playerList
+     * @param playerInfo
+     * @param barrier
+     * @param gameID
      */
     public OneTurnThread(GameMap g, ServerPlayer p, List<ServerPlayer> playerList, PlayerInfo playerInfo, CyclicBarrier barrier, int gameID) {
         this.gameMap = g;
@@ -44,6 +47,16 @@ public class OneTurnThread implements Runnable {
         this.playerColorMap = new HashMap<>();
     }
 
+    /**
+     * the constroctor that add playerColorMap
+     * @param g
+     * @param p
+     * @param playerList
+     * @param playerInfo
+     * @param barrier
+     * @param gameID
+     * @param playerColorMap
+     */
     public OneTurnThread(GameMap g, ServerPlayer p, List<ServerPlayer> playerList, PlayerInfo playerInfo, CyclicBarrier barrier, int gameID, Map<String, String> playerColorMap) {
         this(g, p, playerList, playerInfo, barrier, gameID);
         this.playerColorMap = playerColorMap;
