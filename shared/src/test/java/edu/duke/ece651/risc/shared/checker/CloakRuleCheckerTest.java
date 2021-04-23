@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class CloakRuleCheckerTest {
     @Test
-    public void test_checkMyRUle(){
+    public void test_checkMyRule(){
         AbstractMapFactory f = new V1MapFactory();
         String name0 = "LiLei";
         String name1 = "HanMeiMei";
@@ -35,9 +35,14 @@ public class CloakRuleCheckerTest {
         // check cost not enough case
         ActionEntry entry3 = new CloakEntry("0",name0);
         assertThrows(IllegalArgumentException.class,()->checker.checkAction(entry3,myMap,myInfo0));
-        // check normal case
-        PlayerInfo myInfo2=new PlayerInfo(name0, 3, 280, 120);
-        ActionEntry entry4 = new CloakEntry("0",name0);
-        assertDoesNotThrow(()->checker.checkAction(entry4,myMap,myInfo2));
+
+        // check not research tech
+        PlayerInfo myInfo2=new PlayerInfo(name2, 3, 280, 120);
+        ActionEntry entry4 = new CloakEntry("4",name0);
+        assertThrows(IllegalArgumentException.class, ()->checker.checkAction(entry4,myMap,myInfo2));
+        // normal case
+        ActionEntry entry5 = new CloakingTechEntry(name2);
+        entry5.apply(myMap, myInfo2);
+        assertDoesNotThrow(() -> entry4.apply(myMap, myInfo2));
     }
 }

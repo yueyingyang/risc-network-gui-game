@@ -31,7 +31,12 @@ public class ClockingTechRuleCheckerTest {
         // check tech level not enough case
         ActionEntry entry1 = new CloakingTechEntry(name1);
         assertThrows(IllegalArgumentException.class,()->checker.checkAction(entry1,myMap,myInfo1));
+        // not enough tech resource
         ActionEntry entry2 = new CloakingTechEntry(name2);
         assertThrows(IllegalArgumentException.class,()->checker.checkAction(entry2,myMap,myInfo2));
+        // have researched clocking
+        entry0.apply(myMap, myInfo0);
+        assertThrows(IllegalArgumentException.class, () -> checker.checkAction(entry0, myMap, myInfo0));
+
     }
 }
