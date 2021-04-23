@@ -11,8 +11,17 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
+
+import org.bson.Document;
 
 import edu.duke.ece651.risc.shared.Constant;
 import edu.duke.ece651.risc.shared.GameMap;
@@ -27,23 +36,30 @@ import edu.duke.ece651.risc.shared.game.GameUtil;
 import edu.duke.ece651.risc.shared.game.V2MapView;
 
 
+import java.util.stream.Collectors;
+
+
 /**
  * Game class is responsible for the one game's play
  */
+@JsonIgnoreProperties({ "threadPool"})
 public class Game {
     private int gameID;
     private int playerNum;
-    private ArrayList<ServerPlayer> players;
-    private ArrayList<ServerPlayer> stillInPlayers;//players still didn't lose
-    private ArrayList<ServerPlayer> stillWatchPlayers;//players stillIn with those who want to watch after losing
-    private HashMap<String, PlayerInfo> allplayerInfo;
-    private HashMap<String, V2MapView> allMapViews;
+    public ArrayList<ServerPlayer> players;
+    public ArrayList<ServerPlayer> stillInPlayers;//players still didn't lose
+    public ArrayList<ServerPlayer> stillWatchPlayers;//players stillIn with those who want to watch after losing
+    private Map<String, PlayerInfo> allplayerInfo;
+    private Map<String, V2MapView> allMapViews;
     private GameMap gameMap;
-    private Random myRandom;
     public Boolean isComplete;
     private ExecutorService threadPool;
     private Map<String, String> playerColorMap;
+    // to check the game's state
+    public Boolean isPlacementComplete;
 
+
+    public Game(){this.threadPool = Executors.newFixedThreadPool(5);}
 
     /**
      * the construtor of the game
@@ -59,9 +75,9 @@ public class Game {
         this.allplayerInfo = new HashMap<>();
         this.allMapViews = new HashMap<>();
         this.playerColorMap = new HashMap<>();
-        this.myRandom = new Random();
         this.isComplete = false;
         this.threadPool = Executors.newFixedThreadPool(5);
+        this.isPlacementComplete = false;
     }
 
     /**
@@ -70,6 +86,7 @@ public class Game {
      * @param name
      * @return
      */
+    @JsonIgnore
     public PlayerInfo getPlayerInfoByName(String name) {
         return allplayerInfo.get(name);
     }
@@ -88,6 +105,7 @@ public class Game {
      *
      * @return the list of playerName
      */
+    @JsonIgnore
     public List<String> getAllPlayers() {
         ArrayList<String> res = new ArrayList<String>();
         for (Player p : players) {
@@ -95,6 +113,13 @@ public class Game {
         }
         return res;
     }
+
+    public void resetPlayers(ArrayList<ServerPlayer> players,ArrayList<ServerPlayer> stillIn,ArrayList<ServerPlayer> stillWatch){
+        this.players = players;
+        this.stillInPlayers = stillIn;
+        this.stillWatchPlayers = stillWatch;
+    }
+    
 
     /**
      * try to add one player to the game
@@ -118,7 +143,7 @@ public class Game {
      * @return true if no more players can be accepted
      * false if can accpet more players
      */
-    public Boolean isGameFull() {
+    public synchronized Boolean isGameFull() {
         return (this.players.size() == this.playerNum);
     }
 
@@ -136,6 +161,7 @@ public class Game {
      *
      * @return the num of players participated in the game in total
      */
+    @JsonIgnore
     public int getPLayerInGameNum() {
         return this.players.size();
     }
@@ -160,6 +186,7 @@ public class Game {
      *
      * @return the map of this game
      */
+    @JsonIgnore
     public GameMap getMap() {
         return this.gameMap;
     }
@@ -234,10 +261,11 @@ public class Game {
      * This method will create a thread for each player to receive their actions
      * the move action and the move part in attack will be done immediately
      */
-    public void receiveAndApplyMoves(ArrayList<ServerPlayer> stillInPlayers) throws BrokenBarrierException, InterruptedException {
+    public void receiveAndApplyMoves(ArrayList<ServerPlayer> connectePlayers) throws BrokenBarrierException, InterruptedException{
         //ArrayList<OneTurnThread> threads = new ArrayList<>();
-        CyclicBarrier barrier = new CyclicBarrier(stillInPlayers.size() + 1);
-        for (ServerPlayer player : stillInPlayers) {
+        List<ServerPlayer> temp = connectePlayers.stream().filter(it -> stillInPlayers.contains(it)).collect(Collectors.toList());
+        CyclicBarrier barrier = new CyclicBarrier(temp.size()+1);
+        for (ServerPlayer player : temp) {
             threadPool.execute(new OneTurnThread(gameMap, player, players, allplayerInfo.get(player.getName()), barrier, gameID, playerColorMap));
         }
         barrier.await();
@@ -252,7 +280,7 @@ public class Game {
         StringBuilder sb = new StringBuilder("");
         for (Territory t : gameMap.getAllTerritories()) {
             //resolve combats and create combat results
-            sb.append(t.resolveCombat(myRandom));
+            sb.append(t.resolveCombat(new Random()));
         }
         return sb.toString();
     }
@@ -287,6 +315,7 @@ public class Game {
         for (ServerPlayer p : stillWatchPlayers) {
             if (p.getCurrentGame() == gameID) {
                 p.sendMessage(allMapViews.get(p.getName()).toString(true));
+                System.out.println(allMapViews.get(p.getName()).toString(true));
                 connectedPlayers.add(p);
             }
         }
@@ -301,7 +330,7 @@ public class Game {
     public void playOneTurn(ArrayList<ServerPlayer> connectedPlayers) throws IOException, BrokenBarrierException, InterruptedException {
         //create a thread for each player to type their actions until receive commit
         //for inactive players, do nothing, just like they drectly type in Commit
-        receiveAndApplyMoves(stillInPlayers);
+        receiveAndApplyMoves(connectedPlayers);
         //resolve all combats and send combat results to players still watch the game
         String combatResult = doAttacks();
         effectTechForStillIn(connectedPlayers);
@@ -315,7 +344,7 @@ public class Game {
      *
      * @throws IOException
      */
-    public void updatePlayerLists() throws IOException {
+    public void updatePlayerLists(ArrayList<ServerPlayer> connectedPlayers) throws IOException {
         //update the stillWatch players list and the stillIn players list
         ArrayList<ServerPlayer> temp = new ArrayList<ServerPlayer>(stillInPlayers);
         ArrayList<ServerPlayer> losers = new ArrayList<>();
@@ -333,11 +362,8 @@ public class Game {
             }
             //for those who didn't lose, tell them to continue
             else {
-                if (player.getCurrentGame().equals(this.gameID)) {
-                    try {
-                        player.sendMessage(Constant.CONTINUE_PLAYING);
-                    } catch (Exception e) {
-                    }
+                if(player.getCurrentGame().equals(this.gameID) && connectedPlayers.contains(player)){
+                    try{player.sendMessage(Constant.CONTINUE_PLAYING);}catch(Exception e){}
                 }
             }
         }
@@ -418,45 +444,80 @@ public class Game {
         barrier.await();
     }
 
+    public synchronized void updateGamesCollection(MongoCollection<Document> gamesCollection){
+        JSONSerializer serializer = new JSONSerializer();
+        String s = serializer.serialize(this);
+        BasicDBObject newDocument = new BasicDBObject();
+        newDocument.put("description", s); // (2)
+        BasicDBObject updateObject = new BasicDBObject();
+        updateObject.put("$set", newDocument); // (3)
+        gamesCollection.updateOne(Filters.eq("gameID", this.gameID), updateObject);    
+  }
+
+    public void  effectAllSpyMove(){
+        for(Territory t:gameMap.getAllTerritories()){
+            t.effectSpyMove();
+        }
+    }
+
+    public void effectAllCloaking(){
+        for(Territory t:gameMap.getAllTerritories()){
+            t.consumeCloaking();
+            t.effectCloaking();
+        }
+    }
 
     /**
      * after the game room's required number of people is reached, run the game
      *
      * @throws IOException
      */
-    public void runGame(int TerritoryPerPlayer, int totalSoldiers) throws IOException, InterruptedException, BrokenBarrierException {
-        //copy players list for stillIn and stillWatch
-        stillInPlayers = new ArrayList<>(players);
-        stillWatchPlayers = new ArrayList<>(players);
-        for (ServerPlayer p : players) {
-            PlayerInfo pi = new PlayerInfo(p.getName());
-            allplayerInfo.put(p.getName(), pi);
+    public void runGame(int TerritoryPerPlayer, int totalSoldiers, MongoCollection<Document> gamesCollection) throws IOException, InterruptedException, BrokenBarrierException {
+        if(!isPlacementComplete){
+            stillInPlayers = new ArrayList<>(players);
+            stillWatchPlayers = new ArrayList<>(players);
+            for (ServerPlayer p : players) {
+                PlayerInfo pi = new PlayerInfo(p.getName());
+                allplayerInfo.put(p.getName(), pi);
+            }
+            makeMap(TerritoryPerPlayer);
+            for (ServerPlayer p : players) {
+                V2MapView view = new V2MapView(this.gameMap, players, allplayerInfo.get(p.getName()), playerColorMap);
+                allMapViews.put(p.getName(), view);
+            }
+            addResourcesToConnected(stillInPlayers);
+            sendAndPlace(totalSoldiers);
+            this.isPlacementComplete = true;
+            //update games collection
+            updateGamesCollection(gamesCollection);
+            
         }
-        makeMap(TerritoryPerPlayer);
-        for (ServerPlayer p : players) {
-            V2MapView view = new V2MapView(this.gameMap, players, allplayerInfo.get(p.getName()), playerColorMap);
-            allMapViews.put(p.getName(), view);
-        }
-        addResourcesToConnected(stillInPlayers);
-        sendAndPlace(totalSoldiers);
         while (!Thread.currentThread().isInterrupted()) {
             ArrayList<ServerPlayer> connectedPlayers = sendMap_GetConnectedPlayers();
             //multi thread in this function to handle simultaneous input
             playOneTurn(connectedPlayers);
             //update stillIn and stillWatch players list
-            updatePlayerLists();
+            updatePlayerLists(connectedPlayers);
             //add 1 soldier to all territories at the end of one turn;
             addSoldiersToAll(connectedPlayers);
             //add resources for all players
             addResourcesToConnected(connectedPlayers);
+            // make the spies reach their destination
+            effectAllSpyMove();
+            // use cloaking
+            effectAllCloaking();
             //check if the game is over
             if (checkWin() == true) {
                 this.isComplete = true;
                 String winner = this.gameMap.getAllPlayerTerritories().keySet().iterator().next();
                 sendStringToAll(Constant.GAME_OVER, stillWatchPlayers);
                 sendStringToAll("The winner is " + winner, stillWatchPlayers);
+                //update games collection
+                updateGamesCollection(gamesCollection);
                 break;
             }
+            //update games collection
+            updateGamesCollection(gamesCollection);
         }
         //close sockets
         endGame();

@@ -109,7 +109,8 @@ class OneTurnThreadTest {
     p.setCurrentGameID(0);
     PlayerInfo pi = new PlayerInfo("Blue");
     CyclicBarrier barrier = new CyclicBarrier(2);
-    OneTurnThread t = new OneTurnThread(map,p,new ArrayList<>(Collections.singletonList(p)),pi,barrier,0);
+    Map<String,String> playerColorMap = new HashMap<String,String>();
+    OneTurnThread t = new OneTurnThread(map,p,new ArrayList<>(Collections.singletonList(p)),pi,barrier,0,playerColorMap);
     Thread newthread = new Thread(t);
     assertDoesNotThrow(()->{newthread.start();barrier.await();});  
     assertEquals("Blue",t1.getOwnerName());

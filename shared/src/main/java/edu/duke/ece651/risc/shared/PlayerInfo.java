@@ -5,9 +5,16 @@ import edu.duke.ece651.risc.shared.game.GameUtil;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 /**
  * A class represent player info
  */
+@JsonIdentityInfo(
+        scope = PlayerInfo.class,
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "name")
 public class PlayerInfo {
     private String name;
     private int techLevel;
@@ -171,7 +178,9 @@ public class PlayerInfo {
      */
     public void seeTerr(Territory terr0) {
         Territory terr1 = new Territory(terr0);
-        hasSeen.put(terr1.getName(), terr1);
+        terr1.removeNeighbours();
+        terr1.setName(terr1.getName()+this.name);
+        hasSeen.put(terr0.getName(), terr1);
     }
 
     /**
