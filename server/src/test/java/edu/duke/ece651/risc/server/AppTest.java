@@ -54,6 +54,7 @@ class AppTest {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     ServerPlayer sp = new ServerPlayer(new BufferedReader(new StringReader("2\n")),
             new PrintWriter(bytes, true),s);
+    sp.setName("p");
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree("{\"type\":\"start\",\"name\":\"test\",\"gameSize\":\"2\"}");
     Game g = app.startNewGame(sp,rootNode);
@@ -86,10 +87,12 @@ class AppTest {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     ServerPlayer sp = new ServerPlayer(new BufferedReader(new StringReader("")),
             new PrintWriter(bytes, true),s);
+    sp.setName("sp");
     Socket s1 = new Socket();
     ByteArrayOutputStream bytes1 = new ByteArrayOutputStream();
     ServerPlayer sp1 = new ServerPlayer(new BufferedReader(new StringReader("")),
             new PrintWriter(bytes1, true),s1);
+    sp1.setName("sp1");
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree("{\"type\":\"start\",\"name\":\"test\",\"gameSize\":\"2\"}");
     app.startNewGame(sp, rootNode);
@@ -114,8 +117,8 @@ class AppTest {
     ServerPlayer sp2 = new ServerPlayer(new BufferedReader(new StringReader("")),new PrintWriter(bytes2, true),s2);
     sp2.setName("C");
     ObjectMapper mapper = new ObjectMapper();
-    JsonNode rootNode = mapper.readTree("{\"type\":\"start\",\"name\":\"test\",\"gameSize\":\"2\"}");
-    JsonNode rejoinReq = mapper.readTree("{\"type\":\"rejoin\",\"name\":\"test\",\"gameID\":\"0\"}");
+    JsonNode rootNode = mapper.readTree("{\"type\":\"start\",\"name\":\"A\",\"gameSize\":\"2\"}");
+    JsonNode rejoinReq = mapper.readTree("{\"type\":\"rejoin\",\"name\":\"A\",\"gameID\":\"0\"}");
     Game g = app.startNewGame(sp, rootNode);
     g.addPlayer(sp1);
     g.makeMap(2);
@@ -225,4 +228,28 @@ class AppTest {
     String str = app.allGameList(sp.getName());
     assertEquals("[]\n[{\"id\":0,\"players\":[\"Red\"]}]",str);
   }
+
+  @Test
+  public void test_gameCanPlace(){
+    ServerPlayer sp1 = new ServerPlayer();
+    ServerPlayer sp2 = new ServerPlayer();
+    sp1.setCurrentGameID(0);
+    sp2.setCurrentGameID(1);
+    Game g = new Game(2,0);
+    g.addPlayer(sp1);
+    g.addPlayer(sp2);
+    assertEquals(false, app.gameCanPlace(g));
+    sp2.setCurrentGameID(0);
+    assertEquals(true, app.gameCanPlace(g));
+  }
+
+  @Test
+  public void test_recoverGame(){
+    assertDoesNotThrow(()->{app.recoverPlayers();});
+    assertDoesNotThrow(()->{app.recoverGames();}); 
+    
+  }
+
+  
+
 }

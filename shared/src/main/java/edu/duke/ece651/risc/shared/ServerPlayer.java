@@ -3,6 +3,9 @@ package edu.duke.ece651.risc.shared;
 import java.awt.*;
 import java.net.Socket;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.mongodb.connection.Server;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,6 +15,7 @@ import java.io.PrintWriter;
  * <p>
  * Could add more features based on server-side needs
  */
+@JsonIgnoreProperties({ "in", "out", "clientSocket","currentGameID","color"})
 public class ServerPlayer extends Player {
   private Socket clientSocket;
   private Integer currentGameID;
@@ -30,6 +34,11 @@ public class ServerPlayer extends Player {
    */
   public void setColor(Color color) {
     this.color = color;
+  }
+
+  public ServerPlayer(){
+    super(null,null);
+    this.clientSocket=null;
   }
 
   /**

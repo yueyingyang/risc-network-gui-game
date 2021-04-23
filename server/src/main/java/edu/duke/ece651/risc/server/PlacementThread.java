@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.concurrent.CyclicBarrier;
 import java.io.IOException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonSerializer;
 
 import edu.duke.ece651.risc.shared.GameMap;
 import edu.duke.ece651.risc.shared.JSONSerializer;
@@ -52,6 +53,7 @@ public class PlacementThread implements Runnable{
                 break;         
             }catch(IOException e){
                 System.out.println("Exception catched when recving message form player");
+                e.printStackTrace();
             }       
         }
         try{

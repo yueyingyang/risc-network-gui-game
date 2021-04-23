@@ -14,9 +14,12 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 import edu.duke.ece651.risc.shared.*;
 import edu.duke.ece651.risc.shared.game.*;
@@ -26,9 +29,12 @@ public class App {
   public volatile ArrayList<Game> games;
   private final ServerSocket hostSocket;
   private final PrintStream output;
-  private Map<String, ServerPlayer> players;
+  private volatile Map<String, ServerPlayer> players;
   private Map<String, actionHandler> actionHandlerMap;
   private ExecutorService threadPool;
+
+  private Database database;
+
 
   /**
    * the constructor of App build the socket based on the port number initialize
@@ -45,12 +51,16 @@ public class App {
     actionHandlerMap.put(Constant.STARTGAME, this::startNewGame);
     actionHandlerMap.put(Constant.JOINGAME, this::joinAndRun);
     actionHandlerMap.put(Constant.REJOINGAME, this::rejoinGame);
+
+    this.database = new Database();
   }
 
   /**
    * All steps of the server side program
    */
   public void run() throws IOException{
+    recoverPlayers();
+    recoverGames();
     this.acceptPlayers(this.hostSocket);
     this.hostSocket.close();
   }
@@ -105,7 +115,7 @@ public class App {
     for (Game g : this.getPlayerGame(playerName)) {
         if(g.isComplete==false){
           allJoined.add(new GameInfo(g.getGameID(), g.getAllPlayers()));
-        }   
+        }
     }
     String res = null;
     try {
@@ -130,6 +140,7 @@ public class App {
     // a new game should always add a player successfully
     // new game should assert newGame.addPlayer(player) == null;
     newGame.addPlayer(player);
+    database.insertGamesCollection(newGame);
     return newGame;
   }
 
@@ -165,16 +176,31 @@ public class App {
    */
   public void joinAndRun(ServerPlayer player, JsonNode rootNode){
     Game g = this.joinExistingGame(player, rootNode);
+    database.updateGamesCollection(g);
     if (g.isGameFull()) {
       Thread t = new Thread(() -> {
         try {
-          g.runGame(2, 6);
+          g.runGame(2, 6, database.getGamesCollection());
         } catch (Exception e) {
           System.out.println("Exception catched when running the game!" + e.getMessage());
         }
       });
       t.start();
     }
+  }
+
+  /**
+   * check if the game is able to start the placement phase after restart the server
+   * @param g
+   * @return
+   */
+  public Boolean gameCanPlace(Game g){
+    for(ServerPlayer p:g.players){
+      if(p.getCurrentGame()!=g.getGameID()){
+        return false;
+      }
+    }
+    return true;
   }
 
   /**
@@ -185,18 +211,36 @@ public class App {
    */
   public void rejoinGame(ServerPlayer player, JsonNode n) {
     Integer currentGameID = Integer.parseInt(n.path("gameID").textValue());
-    if(games.get(currentGameID).checkWin().equals(true)){
+    Game g = games.get(currentGameID);
+    if(g.isPlacementComplete && g.checkWin().equals(true)){
       player.sendMessage(Constant.CANNOT_REJOINGAME);
       player.sendMessage(Constant.CANNOT_REJOINGAME_WIN);
       return;
     }
-    if(games.get(currentGameID).checkLost(player).equals(true)){
+    if(g.isPlacementComplete && g.checkLost(player).equals(true)){
       player.sendMessage(Constant.CANNOT_REJOINGAME);
       player.sendMessage(Constant.CANNOT_REJOINGAME_LOSE);
       return;
     }
     player.sendMessage(Constant.CAN_REJOINGAME);
     player.setCurrentGameID(currentGameID);
+    System.out.println("the placement is done? "+g.isPlacementComplete);
+    //persistence rejoin
+    if(g.isPlacementComplete){
+      player.sendMessage("play");
+    }
+    else{
+      player.sendMessage("place");
+      if(this.gameCanPlace(g) && g.isGameFull()){
+        Thread t = new Thread(() -> {
+          try {
+            g.runGame(2, 6, database.getGamesCollection());
+          } catch (Exception e) {e.printStackTrace();}
+        });
+        t.start();
+      }
+    }
+    //System.out.print(player.getName()+"  "+currentGameID);
   }
 
 
@@ -211,12 +255,13 @@ public class App {
    * @param clientSocket is the player's socket
    * @return the unique serverplayer
    */
-  public ServerPlayer createOrUpdatePlayer(String playerName, BufferedReader in, PrintWriter out, Socket clientSocket) {
+  public synchronized ServerPlayer createOrUpdatePlayer(String playerName, BufferedReader in, PrintWriter out, Socket clientSocket) {
     ServerPlayer player = null;
     if (!players.containsKey(playerName)) {
       player = new ServerPlayer(in, out, clientSocket);
       players.put(playerName, player);
       player.setName(playerName);
+      database.insertPlayersCollection(player);
     } else {
       player = players.get(playerName);
       //update the player's inputstream and outputstream
@@ -228,8 +273,60 @@ public class App {
 
 
   /**
+   * after the server restart, reinitilaize the 3 player list used in game class from the database
+   * @param list
+   * @return
+   */
+  public ArrayList<ServerPlayer> addPlayerRef(ArrayList<ServerPlayer> list){
+    ArrayList<ServerPlayer> res = new ArrayList<>();
+    for(ServerPlayer sp:list){
+      // add player reference from App to game
+      res.add(players.get(sp.getName()));
+    }
+    return res;
+  }
+
+  /**
+   * recover games from the database
+   */
+  public void recoverGames(){
+    ArrayList<Game> gameList = database.recoverGameList();
+    for(Game g:gameList){
+      ArrayList<ServerPlayer> playersRef = addPlayerRef(g.players);
+      ArrayList<ServerPlayer> stillInRef = addPlayerRef(g.stillInPlayers);
+      ArrayList<ServerPlayer> stillWatchRef = addPlayerRef(g.stillWatchPlayers);
+      g.resetPlayers(playersRef, stillInRef, stillWatchRef);
+      games.add(g);
+      if(g.isGameFull() && !g.isComplete){
+        //Boolean isPlaceComplete = !(g.getMap().getAllTerritories().get(0).getNumSoldiersInArmy()==-1);
+        if(g.isPlacementComplete){
+          //will only start to run game thread when placement phase is done
+          Thread t = new Thread(() -> {
+            try {
+              g.runGame(2, 6, database.getGamesCollection());
+            } catch (Exception e) {e.printStackTrace();}
+          });
+          t.start();
+        }
+      }
+    }
+  }
+
+  /**
+   * recover players from the database
+   */
+  public void recoverPlayers(){
+    ArrayList<ServerPlayer> playerList = database.recoverPlayerList();
+    for(ServerPlayer sp:playerList){
+      this.players.put(sp.getName(), sp);
+    }
+  }
+
+
+
+  /**
    * continuously accept connections and initialize players the player will be
-   * asked whether he/she want to start a new game or join a game
+   * asked whet he/she want to start a new game or join a game
    *
    * @param ss is the server socket for accepting connection
    */
@@ -245,9 +342,10 @@ public class App {
         String actionType = rootNode.path("type").textValue();
         String playerName = rootNode.path("name").textValue();
         ServerPlayer player = createOrUpdatePlayer(playerName, in, out, clientSocket);
+        System.out.println(playerName+"  "+actionType);
         threadPool.execute(() -> {
           if (actionHandlerMap.containsKey(actionType)) {
-              actionHandlerMap.get(actionType).apply(player, rootNode);        
+              actionHandlerMap.get(actionType).apply(player, rootNode);
         }
       });
       } catch (Exception e) {
