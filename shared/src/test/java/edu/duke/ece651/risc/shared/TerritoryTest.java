@@ -209,7 +209,12 @@ class TerritoryTest {
 
         // use ship
         terr1.addUseShip("Green");
-        System.out.println(terr1.resolveCombat(myRandom));
+        String ans3 = terr1.resolveCombat(myRandom);
+        assertEquals("On territory 1:\n" +
+                "Green player use ship.\n", ans3);
+
+        // no combat
+        assertEquals("", terr1.resolveCombat(myRandom));
 
     }
 
