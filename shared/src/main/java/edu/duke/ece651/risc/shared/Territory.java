@@ -419,9 +419,9 @@ public class Territory {
     }
 
     /**
-     * Display sword info
+     * Display ship info
      *
-     * @return show the player that uses sword
+     * @return show the player that uses ship
      */
     public String displayShipInfo() {
         StringBuilder temp = new StringBuilder();
