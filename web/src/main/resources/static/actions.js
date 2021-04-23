@@ -56,5 +56,10 @@ const submit_action = (url, form, submit_btn) => {
             display_map(full_map_formatter);
             submit_btn.toggleClass("disabled");
         },
+        error: () => {
+            $("#msg_box")
+                .append('<p style="user-select: auto;"> ' + " The action is invalid, please re-try with a valid one. " + "</p>");
+            submit_btn.toggleClass("disabled");
+        }
     });
 };

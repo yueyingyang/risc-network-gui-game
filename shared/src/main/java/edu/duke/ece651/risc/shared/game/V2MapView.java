@@ -129,7 +129,35 @@ public class V2MapView {
     data.put("data", createTerrNode(fullInfo));
     data.put("links", createTerrEdge());
     data.put("playerInfo", createPlayerInfoNode());
+    data.put("myTerr", getTerrNameList(true));
+    data.put("enemyTerr", getTerrNameList(false));
     return jsonSerializer.serialize(data);
+  }
+
+  /**
+   * Wrap 2 lists for territory name dropdown
+   *
+   * @param mine is true then return my terr list
+   * @return a list of object node, which just want to align with current mapview structure
+   */
+  private List<ObjectNode> getTerrNameList(boolean mine) {
+    List<ObjectNode> list = new ArrayList<>();
+    ObjectNode o = jsonSerializer.getOm().createObjectNode();
+    if (mine) {
+      // get my territory list
+      for (Territory t : map.getPlayerTerritories(playerInfo.getName())) {
+        o.put(t.getName(), "");
+      }
+    } else {
+      // get all other enemy's territory names
+      for (Territory t : map.getAllTerritories()) {
+        if (!t.getOwnerName().equals(playerInfo.getName())) {
+          o.put(t.getName(), "");
+        }
+      }
+    }
+    list.add(o);
+    return list;
   }
 
   /**

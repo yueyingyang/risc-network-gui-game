@@ -40,7 +40,9 @@ public class AjaxActionController {
 
   private Map<String, ToolCreation> initEntryMapping() {
     Map<String, ToolCreation> m = new HashMap<>();
-    m.put("cloaking", CloakEntry::new);
+    m.put("shield", ShieldEntry::new);
+    m.put("sword", SwordEntry::new);
+    m.put("missile", MissileEntry::new);
     return m;
   }
 
@@ -184,7 +186,10 @@ public class AjaxActionController {
   @PostMapping(value = "/tools", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ActionAjaxResBody> tool(@RequestBody UserActionInput input) throws IOException {
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-    return getActionRes(toolEntryMapping.get(input.getFromType()).apply(input.getToName(), userName));
+    if (input.getFromType().equals("cloaking")) {
+      return getActionRes(new CloakEntry(input.getToName(), userName));
+    }
+    return getActionRes(toolEntryMapping.get(input.getFromType()).apply(input.getToName()));
   }
 
   /**

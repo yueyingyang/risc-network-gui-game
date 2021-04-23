@@ -7,5 +7,5 @@ import edu.duke.ece651.risc.shared.entry.ActionEntry;
  */
 @FunctionalInterface
 public interface ToolCreation {
-  ActionEntry apply(String terrName, String userName);
+  ActionEntry apply(String terrName);
 }

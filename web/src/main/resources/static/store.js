@@ -19,13 +19,13 @@ products = [
     },
     {
         "name": "Shield",
-        "price": 30,
+        "price": 50,
         "desc": "Safer guard to your territory",
         "path_to_img": "shield.png"
     },
     {
         "name": "Sword",
-        "price": 30,
+        "price": 50,
         "desc": "Attack with more power",
         "path_to_img": "sword.png"
     }

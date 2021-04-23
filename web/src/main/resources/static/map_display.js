@@ -113,6 +113,29 @@ const display_playerInfo = (player_info) => {
         toStatHTML(player_info) +
         '        </div>'
 }
+
+function renderTerrList(my_terr, enemy_terr) {
+    my_terr = toOptionList(my_terr)
+    enemy_terr = toOptionList(enemy_terr)
+    // fromName: my_terr except for move_spy's fromName
+    $("select[name*='fromName']").append(my_terr)
+    $("form#move_spy select[name*='fromName']").empty().append(my_terr).append(enemy_terr)
+    // toName should be my_terr for my_terr, and enemy_terr for attack
+    $("form#move select[name*='toName']").empty().append(my_terr)
+    $("form#attack select[name*='toName']").empty().append(enemy_terr)
+    // spy and tool's toName are all terr
+    $("form#move_spy select[name*='toName']").empty().append(my_terr).append(enemy_terr)
+    $("form#tools select[name*='toName']").empty().append(my_terr).append(enemy_terr)
+}
+
+function toOptionList(terr_list) {
+    let option_dom = []
+    $.each(terr_list, function (key, value) {
+        option_dom.push($('<option></option>').attr("value", key).text(key));
+    })
+    return option_dom
+}
+
 const display_map = (tooltip_formatter_fn) => {
     $("#map_box").empty().append(map_html);
     const myChart = echarts.init(document.getElementById("map"));
@@ -120,4 +143,5 @@ const display_map = (tooltip_formatter_fn) => {
     option = getOption(tooltip_formatter_fn);
     myChart.setOption(option);
     $("#player_info").empty().append(display_playerInfo(graphData["playerInfo"][0]));
+    // renderTerrList(graphData['myTerr'][0], graphData['enemyTerr'][0]);
 };
