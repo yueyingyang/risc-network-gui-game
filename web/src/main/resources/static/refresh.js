@@ -39,7 +39,8 @@ const refresh_map = () => {
                 // make sure showing the loading in the map location
                 $('#map_box').empty().append(load_html);
             }
-        }
+        },
+        "error": ajax_error_handler
     }
     $.ajax(config);
 }
@@ -57,6 +58,7 @@ const submit_commit = () => {
             toggleActionAndRefresh();
             combat_resolve_timer = setInterval(resolve_combat, 1000);
         },
+        "error": ajax_error_handler
     });
 }
 
@@ -76,7 +78,7 @@ const resolve_combat = () => {
         success: function (resBody) {
             clearInterval(combat_resolve_timer)
             if (resBody) {
-                $('#msg_box').append('<p style="user-select: auto;"> [COMBAT RESULT]' + resBody['valRes'].replace(new RegExp('\r?\n','g'), '<br />') + '</p>');
+                $('#msg_box').append('<p style="user-select: auto;"> [COMBAT RESULT]' + resBody['valRes'].replace(new RegExp('\r?\n', 'g'), '<br />') + '</p>');
                 if (resBody['graphData'] != null) {
                     startNextTurn(resBody);
                 } else if (resBody['winnerInfo']) {
@@ -89,7 +91,8 @@ const resolve_combat = () => {
                     }
                 }
             }
-        }
+        },
+        "error": ajax_error_handler
     });
 }
 

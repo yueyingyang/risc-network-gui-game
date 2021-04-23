@@ -137,10 +137,13 @@ function renderTerrList(my_terr, enemy_terr) {
     // fromName: my_terr except for move_spy's fromName
     $("select[name*='fromName']").append(my_terr)
     // toName should be my_terr for my_terr, and enemy_terr for attack
-    $("form#move select[name*='toName']").empty().append(my_terr)
-    $("form#attack select[name*='toName']").empty().append(enemy_terr)
+    $("form#move select[name*='toName']").html(my_terr)
+    $("form#attack select[name*='toName']").html(enemy_terr)
+    console.log("Enemy terr:")
+    console.log(enemy_terr)
     // spy and tool's toName are all terr
-    $("form#move_spy select[name*='toName']").empty().append(my_terr).append(enemy_terr)
+    // $("form#move_spy select[name*='toName']").empty().append(my_terr).append(enemy_terr)
+    $("#move_spy_select").html(my_terr)
     $("form#move_spy select[name*='fromName']").empty().append(my_terr).append(enemy_terr)
     $("form#tools select[name*='toName']").empty().append(my_terr).append(enemy_terr)
 }

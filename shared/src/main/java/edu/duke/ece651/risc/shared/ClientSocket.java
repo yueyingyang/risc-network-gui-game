@@ -48,7 +48,21 @@ public class ClientSocket {
     return in.ready();
   }
 
+  /**
+   * Close the socket
+   *
+   * @throws IOException
+   */
   public void close() throws IOException {
     s.close();
+  }
+
+  /**
+   * Check if the socket is closed
+   *
+   * @return true if it's closed
+   */
+  public boolean isClosed() {
+    return !s.isConnected();
   }
 }
