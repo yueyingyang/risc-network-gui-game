@@ -11,7 +11,7 @@ public abstract class Player {
   private static final Logger LOGGER = Logger.getLogger(Player.class.getName());
   // IO stream with game server
   protected BufferedReader in;
-  public PrintWriter out;
+  protected PrintWriter out;
   protected String name;
 
   /**

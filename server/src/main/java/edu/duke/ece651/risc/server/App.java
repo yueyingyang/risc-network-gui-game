@@ -231,7 +231,7 @@ public class App {
     }
     else{
       player.sendMessage("place");
-      if(this.gameCanPlace(g)){
+      if(this.gameCanPlace(g) && g.isGameFull()){
         Thread t = new Thread(() -> {
           try {
             g.runGame(2, 6, database.getGamesCollection());
