@@ -37,11 +37,11 @@ public class FancyAttackEntry extends BasicEntry {
      * @param playerName  is the name of the player
      * @param useShip     is the indicator of use ship to attack
      */
-    @ConstructorProperties({"fromName", "toName", "numSoldiers", "fromType", "playerName","useShip"})
+    @ConstructorProperties({"fromName", "toName", "numSoldiers", "fromType", "playerName", "useShip"})
     public FancyAttackEntry(String fromName, String toName, int numSoldiers,
                             String fromType, String playerName, boolean useShip) {
         super(fromName, toName, numSoldiers, playerName, fromType, null);
-        this.useShip=useShip;
+        this.useShip = useShip;
     }
 
     /**
@@ -54,16 +54,16 @@ public class FancyAttackEntry extends BasicEntry {
     public void apply(GameMap myMap, PlayerInfo myInfo) {
         Checker myChecker = new ClientChecker(new FancyClientChecker(new FancyAttackRuleChecker(null)));
         myChecker.checkAction(this, myMap, myInfo);
-        if(this.useShip) {
-            myInfo.consumeProd(Constant.ship);
-        }
         Territory fromTerr = myMap.getTerritory(fromName);
         Territory toTerr = myMap.getTerritory(toName);
         fromTerr.removeSoldiersFromArmy(numSoldiers, fromType);
         Army attacker = new Army(fromTerr.getOwnerName(), numSoldiers, fromType);
         toTerr.bufferAttacker(attacker);
-        toTerr.addUseShip(playerName);
         myInfo.consumeFood(numSoldiers);
+        if (this.useShip) {
+            myInfo.consumeProd(Constant.ship);
+            toTerr.addUseShip(playerName);
+        }
     }
 
 }
