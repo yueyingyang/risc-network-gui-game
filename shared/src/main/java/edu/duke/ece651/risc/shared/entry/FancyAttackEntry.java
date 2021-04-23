@@ -60,9 +60,9 @@ public class FancyAttackEntry extends BasicEntry {
         Territory fromTerr = myMap.getTerritory(fromName);
         Territory toTerr = myMap.getTerritory(toName);
         fromTerr.removeSoldiersFromArmy(numSoldiers, fromType);
-        fromTerr.addUseShip(playerName);
         Army attacker = new Army(fromTerr.getOwnerName(), numSoldiers, fromType);
         toTerr.bufferAttacker(attacker);
+        toTerr.addUseShip(playerName);
         myInfo.consumeFood(numSoldiers);
     }
 

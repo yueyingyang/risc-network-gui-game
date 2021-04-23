@@ -700,8 +700,9 @@ public class Territory {
 
     /**
      * Return if the player has use the ship
-     * @param playerName
-     * @return
+     *
+     * @param playerName is the player name
+     * @return if the player has use the ship
      */
     public boolean hasUseShip(String playerName) {
         return useShip.contains(playerName);
