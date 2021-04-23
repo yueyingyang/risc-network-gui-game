@@ -1,3 +1,12 @@
+function getLabelFormatter(item) {
+    let formatter = []
+    formatter.push('{terrName|' + item['name'] + '}')
+    if (!item['isOutline']) {
+        formatter.push('{ownerName|' + item['owner'] + '}')
+    }
+    return formatter.join('\n')
+}
+
 function getOption(tooltip_formatter_fn) {
     let colors = graphData["data"].map((territory) => territory["color"]);
     // hide tooltips on edges
@@ -10,16 +19,26 @@ function getOption(tooltip_formatter_fn) {
         item["label"] = {
             show: true,
             position: "inside",
-            fontSize: 20,
-            fontWeight: "bold",
-            color: "#fff",
-            formatter: item["name"],
-        };
+            formatter: getLabelFormatter(item),
+            rich: {
+                terrName: {
+                    fontSize: 20,
+                    fontWeight: "bold",
+                    color: "#fff",
+                    align: 'center'
+                },
+                ownerName: {
+                    fontSize: 13,
+                    color: "#fff",
+                }
+            },
+        }
         if (item["isOutline"] === true) {
             item["tooltip"] = {
                 show: false,
             }
-            item["label"]["color"] = "#B1A7A6";
+            item["label"]["rich"]["terrName"]['color'] = "#B1A7A6";
+            item["label"]["rich"]["ownerName"]['color'] = "#B1A7A6";
         }
         item["itemStyle"] = {
             color: item["color"],
@@ -114,27 +133,19 @@ const display_playerInfo = (player_info) => {
         '        </div>'
 }
 
-function renderTerrList(my, enemy) {
-    let my_terr = []
-    $.each(my, function (key, value) {
-        my_terr.push($('<option></option>').attr("value", key).text(key));
-    })
-    let enemy_terr = []
-    $.each(enemy, function (key, value) {
-        enemy_terr.push($('<option></option>').attr("value", key).text(key));
-    })
+function renderTerrList(my_terr, enemy_terr) {
     // fromName: my_terr except for move_spy's fromName
     $("select[name*='fromName']").append(my_terr)
-    $("form#move_spy select[name*='fromName']").empty().append(my_terr).append(enemy_terr)
     // toName should be my_terr for my_terr, and enemy_terr for attack
     $("form#move select[name*='toName']").empty().append(my_terr)
     $("form#attack select[name*='toName']").empty().append(enemy_terr)
     // spy and tool's toName are all terr
     $("form#move_spy select[name*='toName']").empty().append(my_terr).append(enemy_terr)
+    $("form#move_spy select[name*='fromName']").empty().append(my_terr).append(enemy_terr)
     $("form#tools select[name*='toName']").empty().append(my_terr).append(enemy_terr)
 }
 
-function toOptionList(terr_list) {
+function to_option_dom(terr_list) {
     let option_dom = []
     $.each(terr_list, function (key, value) {
         option_dom.push($('<option></option>').attr("value", key).text(key));
@@ -149,5 +160,5 @@ const display_map = (tooltip_formatter_fn) => {
     option = getOption(tooltip_formatter_fn);
     myChart.setOption(option);
     $("#player_info").empty().append(display_playerInfo(graphData["playerInfo"][0]));
-    renderTerrList(graphData['myTerr'][0], graphData['enemyTerr'][0]);
+    renderTerrList(to_option_dom(graphData['myTerr'][0]), to_option_dom(graphData['enemyTerr'][0]));
 };

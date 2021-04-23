@@ -45,6 +45,7 @@ public class LobbyController {
   @GetMapping("/lobby")
   public String enterLobby(Model model) throws IOException {
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+    playerMapping.removeUser(userName);
     // send getGameList request: wrap a JSON request as defined in doc
     ClientSocket c = playerMapping.getOneTimeSocket();
     ObjectNode gameListReq = JsonNodeFactory.instance.objectNode();
