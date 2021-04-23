@@ -14,21 +14,21 @@ public class V2MapView {
   private JSONSerializer jsonSerializer;
   private Map<String, String> playerColorMap;
   private PlayerInfo playerInfo;
-
   private int radius;
   private Point middle;
   private double angleOffset;
   private double angleStart;
-  
 
-  public V2MapView(){this.jsonSerializer = new JSONSerializer();}
+  public V2MapView() {
+    this.jsonSerializer = new JSONSerializer();
+  }
 
   public V2MapView(GameMap map, List<ServerPlayer> players, PlayerInfo playerInfo, Map<String, String> playerColorMap) {
     this.map = map;
     this.jsonSerializer = new JSONSerializer();
     this.playerInfo = playerInfo;
     this.playerColorMap = playerColorMap;
-
+    // position related fields
     int height = 400;
     int width = 400;
     this.radius = 30;
@@ -37,42 +37,6 @@ public class V2MapView {
     this.angleStart = 0;
   }
 
-    /**
-    * Helper function to make a point
-    *
-    * @param middle
-    * @param angle
-    * @param radius
-    * @return
-    */
-  private Point calPoint(Point middle, double angle, int radius) {
-    double radians = Math.toRadians(angle);
-    int x = (int) (middle.x + radius * Math.cos(radians));
-    int y = (int) (middle.y - radius * Math.sin(radians));
-    return new Point(x, y);
-  }
-
-
-    /**
-    * LINKS part in map view
-    *
-    * @return a list of pair of (source, target)
-    */
-  protected List<ObjectNode> createTerrEdge() {
-    //JSONSerializer jsonSerializer = new JSONSerializer();
-    List<ObjectNode> graphData = new ArrayList<>();
-    for (Territory t : map.getAllTerritories()) {
-      for (Territory neigh : t.getNeighbours()) {
-        ObjectNode o = jsonSerializer.getOm().createObjectNode();
-        o.put("source", t.getName());
-        o.put("target", neigh.getName());
-        graphData.add(o);
-      }
-    }
-    return graphData;
-  }
-
-
   /**
    * DATA part in map view
    *
@@ -80,7 +44,6 @@ public class V2MapView {
    * @return a list of territory node
    */
   protected List<ObjectNode> createTerrNode(boolean full) {
-    //JSONSerializer jsonSerializer = new JSONSerializer();
     List<ObjectNode> graphData = new ArrayList<>();
     for (Territory t : map.getAllTerritories()) {
       ObjectNode o = jsonSerializer.getOm().createObjectNode();
@@ -108,23 +71,24 @@ public class V2MapView {
   }
 
   /**
-   * Serialize object node to json string
+   * LINKS part in map view
    *
-   * @param fullInfo is false if display the empty map (only owner and size...)
-   *                 is true if display the full map
-   * @return string is JSON string
+   * @return a list of pair of (source, target)
    */
-  public String toString(boolean fullInfo) {
-    //JSONSerializer jsonSerializer = new JSONSerializer();
-    HashMap<String, List<ObjectNode>> data = new HashMap<>();
-    data.put("data", createTerrNode(fullInfo));
-    data.put("links", createTerrEdge());
-    data.put("playerInfo", createPlayerInfoNode());
-    return jsonSerializer.serialize(data);
+  protected List<ObjectNode> createTerrEdge() {
+    List<ObjectNode> graphData = new ArrayList<>();
+    for (Territory t : map.getAllTerritories()) {
+      for (Territory neigh : t.getNeighbours()) {
+        ObjectNode o = jsonSerializer.getOm().createObjectNode();
+        o.put("source", t.getName());
+        o.put("target", neigh.getName());
+        graphData.add(o);
+      }
+    }
+    return graphData;
   }
 
   private List<ObjectNode> createPlayerInfoNode() {
-    //JSONSerializer jsonSerializer = new JSONSerializer();
     List<ObjectNode> list = new ArrayList<>();
     ObjectNode o = jsonSerializer.getOm().createObjectNode();
     o.put("name", playerInfo.getName());
@@ -138,7 +102,6 @@ public class V2MapView {
     list.add(o);
     return list;
   }
-
 
   /**
    * Helper method to fill in information into object node
@@ -160,11 +123,45 @@ public class V2MapView {
     }
   }
 
+  /**
+   * Serialize object node to json string
+   *
+   * @param fullInfo is false if display the empty map (only owner and size...)
+   *                 is true if display the full map
+   * @return string is JSON string
+   */
+  public String toString(boolean fullInfo) {
+    HashMap<String, List<ObjectNode>> data = new HashMap<>();
+    data.put("data", createTerrNode(fullInfo));
+    data.put("links", createTerrEdge());
+    data.put("playerInfo", createPlayerInfoNode());
+    return jsonSerializer.serialize(data);
+  }
+
+  /**
+   * Helper function to make a point
+   *
+   * @param middle
+   * @param angle
+   * @param radius
+   * @return
+   */
+  private Point calPoint(Point middle, double angle, int radius) {
+    double radians = Math.toRadians(angle);
+    int x = (int) (middle.x + radius * Math.cos(radians));
+    int y = (int) (middle.y - radius * Math.sin(radians));
+    return new Point(x, y);
+  }
+
+  /**
+   * Helper function to fill in position info
+   *
+   * @param point
+   * @param o
+   */
   private void putPos(Point point, ObjectNode o) {
     o.put("x", point.x);
     o.put("y", point.y);
   }
 }
-
-
 

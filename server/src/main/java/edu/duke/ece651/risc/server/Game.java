@@ -312,10 +312,7 @@ public class Game {
     ArrayList<ServerPlayer> sendMap_GetConnectedPlayers() {
         //send map to players in the stillWatch list
         ArrayList<ServerPlayer> connectedPlayers = new ArrayList<>();
-        //System.out.println(players.get(0).getCurrentGame());
-        //System.out.println(stillWatchPlayers.get(0).getCurrentGame());
         for (ServerPlayer p : stillWatchPlayers) {
-           // System.out.println("in game "+this.gameID+" "+p.getName()+":  "+p.getCurrentGame());
             if (p.getCurrentGame() == gameID) {
                 p.sendMessage(allMapViews.get(p.getName()).toString(true));
                 System.out.println(allMapViews.get(p.getName()).toString(true));

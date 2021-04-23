@@ -34,7 +34,7 @@ public class App {
   private ExecutorService threadPool;
 
   private Database database;
-  
+
 
   /**
    * the constructor of App build the socket based on the port number initialize
@@ -59,8 +59,8 @@ public class App {
    * All steps of the server side program
    */
   public void run() throws IOException{
-    recoverPlayers(); 
-    recoverGames();  
+    recoverPlayers();
+    recoverGames();
     this.acceptPlayers(this.hostSocket);
     this.hostSocket.close();
   }
@@ -115,7 +115,7 @@ public class App {
     for (Game g : this.getPlayerGame(playerName)) {
         if(g.isComplete==false){
           allJoined.add(new GameInfo(g.getGameID(), g.getAllPlayers()));
-        }   
+        }
     }
     String res = null;
     try {
@@ -238,7 +238,7 @@ public class App {
           } catch (Exception e) {e.printStackTrace();}
         });
         t.start();
-      }     
+      }
     }
     //System.out.print(player.getName()+"  "+currentGameID);
   }
@@ -277,9 +277,10 @@ public class App {
    * @param list
    * @return
    */
-  public ArrayList<ServerPlayer> reinitializePlayers(ArrayList<ServerPlayer> list){
+  public ArrayList<ServerPlayer> addPlayerRef(ArrayList<ServerPlayer> list){
     ArrayList<ServerPlayer> res = new ArrayList<>();
     for(ServerPlayer sp:list){
+      // add player reference from App to game
       res.add(players.get(sp.getName()));
     }
     return res;
@@ -291,10 +292,10 @@ public class App {
   public void recoverGames(){
     ArrayList<Game> gameList = database.recoverGameList();
     for(Game g:gameList){
-      ArrayList<ServerPlayer> reinitializePlayers = reinitializePlayers(g.players);
-      ArrayList<ServerPlayer> reinitializeStillIn = reinitializePlayers(g.stillInPlayers);
-      ArrayList<ServerPlayer> reinitializeStillWatch = reinitializePlayers(g.stillWatchPlayers);
-      g.resetPlayers(reinitializePlayers, reinitializeStillIn, reinitializeStillWatch);
+      ArrayList<ServerPlayer> playersRef = addPlayerRef(g.players);
+      ArrayList<ServerPlayer> stillInRef = addPlayerRef(g.stillInPlayers);
+      ArrayList<ServerPlayer> stillWatchRef = addPlayerRef(g.stillWatchPlayers);
+      g.resetPlayers(playersRef, stillInRef, stillWatchRef);
       games.add(g);
       if(g.isGameFull() && !g.isComplete){
         //Boolean isPlaceComplete = !(g.getMap().getAllTerritories().get(0).getNumSoldiersInArmy()==-1);
@@ -306,9 +307,9 @@ public class App {
             } catch (Exception e) {e.printStackTrace();}
           });
           t.start();
-        }        
+        }
       }
-    }  
+    }
   }
 
   /**
@@ -321,7 +322,7 @@ public class App {
     }
   }
 
-    
+
 
   /**
    * continuously accept connections and initialize players the player will be
@@ -329,7 +330,7 @@ public class App {
    *
    * @param ss is the server socket for accepting connection
    */
-  public void acceptPlayers(ServerSocket ss) {   
+  public void acceptPlayers(ServerSocket ss) {
     while (!Thread.currentThread().isInterrupted()) {
       try {
         // accept a new connection and create a new player based on that
@@ -344,7 +345,7 @@ public class App {
         System.out.println(playerName+"  "+actionType);
         threadPool.execute(() -> {
           if (actionHandlerMap.containsKey(actionType)) {
-              actionHandlerMap.get(actionType).apply(player, rootNode);        
+              actionHandlerMap.get(actionType).apply(player, rootNode);
         }
       });
       } catch (Exception e) {
