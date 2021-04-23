@@ -332,7 +332,8 @@ public class Territory {
      */
     public String resolveCombat(Random myRandom) {
         if (recvMissile.size() == 0 && useShield == null
-                && useSword.size() == 0 && attackerBuffer.size() == 0) {
+                && useSword.size() == 0 && attackerBuffer.size() == 0
+                && useShip.size() == 0) {
             return "";
         }
         StringBuilder temp = new StringBuilder();
@@ -355,6 +356,7 @@ public class Territory {
         useShield = null;
         useSword = new TreeSet<>();
         recvMissile = new TreeSet<>();
+        useShip = new TreeSet<>();
         return temp.toString();
     }
 
@@ -414,7 +416,7 @@ public class Territory {
      */
     public String displayShipInfo() {
         StringBuilder temp = new StringBuilder();
-        if (useSword.size() > 0) {
+        if (useShip.size() > 0) {
             for (String name : useShip) {
                 temp.append(name).append(", ");
             }
