@@ -10,28 +10,34 @@ ECE 651: RISC
 
 ## v3 group3 spec
 ### In short
-Support to buy props during the game. The props are game independent (i.e. can only be used in this turn and would expire after the game ends)
+Support to buy products during the game. The products are independent, and can be used after purchased and before the game ends. 
 
 ### In detail
 Below are 4 types of props sold in the Props Store(the number after each prop is the food resources cost, user input is the required fields when user want to use this prop, listed for implementation):
 
-1. Missile(100)：
+2. Missile(100)：
    - Explanation: clear the army on the target territory, but doesn't modify the owner directly (large possibly the player who uses it could attack by an extra unit to get this territory)
    - User input: to territory
-2. Ship(50)：
-   - Explanation: move units without rules (no adjacent rule)
-   - User input: to territory, soldier type, soldier number 
-3. Shield(defender)(30):
-   - Explanation: will increase the defense level of player's own territory = increase bonus(3) on defender buffer
+   - If multiple players send missiles to the same territory or one player send missiles to the same territory, the effect is the same
+   - The Missile will be used after move (including move in attack, spy move).
+   - The program will list the players that send the missiles after each turn
+3. Ship(50)：
+   - Explanation: allow players to attack non-adjacent enemy territories
+   - User input: to territory, soldier type, soldier number
+   - The food resource cost is the same for use or not use ship, i.e. food resource cost = number of units
+   - The program will show the players that use the ship after each turn
+4. Shield(defender)(50):
+   - Explanation: The player can use shield on his own territory. The shield will add 3 bonus to each soldier in the defender when resolving combat.
    - User input: to territory
-4. Sword(attacker)(30)：
-   - Explanation: will increase the attack level if you attacked this territory in this turn = increase bonus(3) on attack buffer
+5. Sword(attacker)(30)：
+   - Explanation: The player can use sword on enemy's territory when attacking that territory. The sword will add 3 bonus to each soldier in attacker. If multiple players attacks one territory, the player 
+   using sword can still have the bouns when he become the defender.
    - User input: to territory
 
 ### Other implementation details:
-There will be a **Props Store** modal / page, which helps:
-1. Show the props owned
-2. Show the props you can buy and could select the purchase amount for each props
+There will be a **Product Store** model / page, which helps:
+1. Show the product owned by the player
+2. Show the props you can buy and could select the purchase amount for each product
 3. Calculate the total cost amount
 
 ## UX principles v2
