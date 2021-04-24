@@ -113,6 +113,16 @@ function toStatHTML(player_info) {
             '                </div>\n' +
             '            </div>\n';
     }
+    if (player_info['isResCloak'] === true) {
+        stat_html += '  <div class="statistic" style="user-select: auto;">\n' +
+            '    <div class="value" style="user-select: auto;">\n' +
+            '      <i class="book icon" style="user-select: auto;"></i> ' +
+            '    </div>\n' +
+            '    <div class="label" style="user-select: auto;">' +
+            '      Cloak\n' +
+            '    </div>\n' +
+            '  </div>'
+    }
     return stat_html
 }
 
@@ -135,10 +145,10 @@ const display_playerInfo = (player_info) => {
 
 function renderTerrList(my_terr, enemy_terr) {
     // fromName: my_terr except for move_spy's fromName
-    $("select[name*='fromName']").append(my_terr)
+    $("select[name*='fromName']").empty().append(my_terr)
     // toName should be my_terr for my_terr, and enemy_terr for attack
-    $("form#move select[name*='toName']").append(my_terr)
-    $("form#attack select[name*='toName']").append(enemy_terr)
+    $("form#move select[name*='toName']").empty().append(my_terr)
+    $("form#attack select[name*='toName']").empty().append(enemy_terr)
     // spy and tool's toName are all terr
     $("form#move_spy select[name*='toName']").empty().append(my_terr).append(enemy_terr)
     $("form#move_spy select[name*='fromName']").empty().append(my_terr).append(enemy_terr)

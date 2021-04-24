@@ -5,7 +5,7 @@ const move_btn = $("form#move .submit");
 const soldier_form = $("form#soldier");
 const soldier_btn = $("form#soldier .submit");
 const tech_form = $("form#tech");
-const tech_bin = $("form#tech .submit");
+const tech_btn = $("form#tech .submit");
 const buy_form = $("form#buy");
 const buy_btn = $("form#buy .submit");
 const move_spy_form = $("form#move_spy");
@@ -20,7 +20,7 @@ const tools_btn = $("form#tools .submit");
 setupForm(attack_form, attack_btn, "/attack");
 setupForm(move_form, move_btn, "/move");
 setupForm(soldier_form, soldier_btn, "/soldier");
-setupForm(tech_form, tech_bin, "/tech");
+setupForm(tech_form, tech_btn, "/tech");
 setupForm(buy_form, buy_btn, "/buy");
 setupForm(move_spy_form, move_spy_btn, '/move_spy');
 setupForm(res_cloaking_form, res_cloaking_btn, "/res_cloaking")
@@ -40,13 +40,37 @@ function setupForm(form, submit_btn, url) {
     });
 }
 
-function buy_action_to_string(form) {
-    return "You submitted the order of buying " + form['soldierNum'] + " " + form["fromType"].toLowerCase() + "(s).";
+function action_str(form, btn) {
+    switch (btn) {
+        case buy_btn:
+            return "BUY " + form['soldierNum'] + " " + form["fromType"].toLowerCase();
+        case tools_btn:
+            return "use TOOL " + form['fromType'] + " on " + form['toName']
+        case attack_btn:
+            return "ATTACK territory" + form['toName'] + " from " + form['fromName'] + " using" + '💂' + "(x" + form["soldierNum"] + ' of type ' + form['fromType'] + ")"
+        case move_btn:
+            return "MOVE " + '💂' + "(x" + form["soldierNum"] + ' of type ' + form['fromType'] + ")" + " from " + form['fromName'] + " to " + form['toName']
+        case move_spy_btn:
+            return "move 👀(x" + form['soldierNum'] + ")" + "to " + form['toName']
+        case soldier_btn:
+            return "upgrade 💂 from " + form['fromType'] + " to " + form['toType'] + "(on territory" + form['fromName'] + ")"
+        case spy_btn:
+            return "upgrade a 👀 " + "on territory" + form['fromName'];
+        case tech_btn:
+            return "Upgrade TECH level by 1"
+        case res_cloaking_btn:
+            return "Research CLOAKING"
+        default:
+            return ""
+    }
 }
 
 // submit form to url
 const submit_action = (url, form, submit_btn) => {
-    let buyAction = submit_btn === buy_btn ? buy_action_to_string(form) : "";
+    let action_des = "[📩] " + action_str(form, submit_btn) + "?"
+    $("#msg_box")
+        .empty()
+        .append(action_des)
     $.ajax({
         type: "POST",
         contentType: "application/json",
@@ -54,16 +78,21 @@ const submit_action = (url, form, submit_btn) => {
         data: JSON.stringify(form),
         dataType: "json",
         success: function (resBody) {
-            console.log(form)
             $("#msg_box")
                 .empty()
-                .append(buyAction)
+                .append(action_des)
                 .append('<p style="user-select: auto;"> ' + resBody["valRes"] + "</p>");
             graphData = resBody["graphData"];
             // display map
             display_map(full_map_formatter);
             submit_btn.toggleClass("disabled");
         },
-        error: ajax_error_handler
+        error: function () {
+            $("#msg_box")
+                .append('<p style="user-select: auto;"> ' + " The action is invalid, please re-try with a valid one. " + "</p>");
+            $("#commit").removeClass("disabled");
+            $("div.field").removeClass("disabled");
+            $(".submit.button.basic").removeClass("disabled");
+        }
     });
 };
