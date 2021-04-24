@@ -173,3 +173,18 @@ const display_map = (tooltip_formatter_fn) => {
     $("#player_info").empty().append(display_playerInfo(graphData["playerInfo"][0]));
     renderTerrList(to_option_dom(graphData['myTerr'][0]), to_option_dom(graphData['enemyTerr'][0]));
 };
+
+const tooltip_display = () => {
+    console.log("toogle map display")
+    const myChart = echarts.init(document.getElementById("map"));
+    let option;
+    option = getOption(full_map_formatter);
+
+    myChart.setOption(option);
+    myChart.dispatchAction({
+        type: 'showTip',
+        seriesIndex:1,  // 显示第几个series
+        dataIndex: new Date().getHours() // 显示第几个数据
+    });
+
+}
