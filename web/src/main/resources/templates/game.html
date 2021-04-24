@@ -116,6 +116,23 @@
             map_refresh_timer = setInterval(refresh_map, 1000);
         }
     )
+    // define the tooltip formatter
+    let graphData = null
+    const full_map_formatter = params => {
+        let res = `😉\t${params.data.owner}<br />` +
+            `🍽\t${params.data.foodProd}<br />` +
+            `💎\t${params.data.techProd}<br />` +
+            `📏\t${params.data.value}<br />`;
+        if (params.data['spy'] !== 0) {
+            res += `👀\t${params.data['spy']}<br />`;
+        }
+        for (let i = 0; i <= 6; i++) {
+            if (params.data['unit' + i] !== 0) {
+                res += `💂${i}\t${params.data['unit' + i]}<br />`;
+            }
+        }
+        return res;
+    }
     // default is loading box
     $('#map_box').empty().append(load_html);
 
