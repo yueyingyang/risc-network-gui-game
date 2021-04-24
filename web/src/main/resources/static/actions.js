@@ -40,7 +40,13 @@ function setupForm(form, submit_btn, url) {
     });
 }
 
+function buy_action_to_string(form) {
+    return "You submitted the order of buying " + form['soldierNum'] + " " + form["fromType"].toLowerCase() + "(s).";
+}
+
+// submit form to url
 const submit_action = (url, form, submit_btn) => {
+    let buyAction = submit_btn === buy_btn ? buy_action_to_string(form) : "";
     $.ajax({
         type: "POST",
         contentType: "application/json",
@@ -48,13 +54,16 @@ const submit_action = (url, form, submit_btn) => {
         data: JSON.stringify(form),
         dataType: "json",
         success: function (resBody) {
+            console.log(form)
             $("#msg_box")
                 .empty()
+                .append(buyAction)
                 .append('<p style="user-select: auto;"> ' + resBody["valRes"] + "</p>");
             graphData = resBody["graphData"];
             // display map
             display_map(full_map_formatter);
             submit_btn.toggleClass("disabled");
         },
+        error: ajax_error_handler
     });
 };
