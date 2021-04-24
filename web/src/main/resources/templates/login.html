@@ -1,21 +1,30 @@
-<html>
-<head></head>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/common_header.html :: headerfiles">
+    <title>Login</title>
+</head>
 <body>
-   <h1>Login</h1>
-   <form name='f' action="login" method='POST'>
-      <table>
-         <tr>
-            <td>User:</td>
-            <td><input type='text' name='username' value=''></td>
-         </tr>
-         <tr>
-            <td>Password:</td>
-            <td><input type='password' name='password' /></td>
-         </tr>
-         <tr>
-            <td><input name="submit" type="submit" value="submit" /></td>
-         </tr>
-      </table>
-  </form>
+<div class="ui grid centered" style="margin-top: 30px">
+    <div class=" column centered row" style="user-select: auto;">
+        <div class="six wide column" style="user-select: auto;">
+            <h2 class="ui header">
+                <a style="color: blueviolet">Login</a>
+                <div class="sub header" style="user-select: auto;">Group 2's RISC game - be excited!</div>
+            </h2>
+            <form class="ui form" name='f' action="login" method='POST'>
+                <div class="field">
+                    <label>Name</label>
+                    <input type='text' name='username' value=''>
+                </div>
+                <div class="field">
+                    <label>Password</label>
+                    <input type='password' name='password'/>
+                </div>
+                <input name="submit" type="submit" value="submit"
+                       class="ui submit button basic violet"/>
+            </form>
+        </div>
+    </div>
+</div>
 </body>
 </html>
