@@ -57,12 +57,4 @@ public class ClientSocket {
     s.close();
   }
 
-  /**
-   * Check if the socket is closed
-   *
-   * @return true if it's closed
-   */
-  public boolean isClosed() {
-    return !s.isConnected();
-  }
 }

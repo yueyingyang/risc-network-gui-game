@@ -61,9 +61,6 @@ public class AjaxController {
 //     return ResponseEntity.status(HttpStatus.ACCEPTED).body(util.mockObjectNodes());
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
     ClientSocket cs = playerMapping.getSocket(userName);
-    if (cs.isClosed()) {
-      return ResponseEntity.status(500).body(null);
-    }
     if (cs.hasNewMsg()) {
       String mapViewString = cs.recvMessage();
       // 1. REJOIN: receive game over and winner info
@@ -97,9 +94,6 @@ public class AjaxController {
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
     ActionAjaxResBody resBody = new ActionAjaxResBody();
     ClientSocket cs = playerMapping.getSocket(userName);
-    if (cs.isClosed()) {
-      return ResponseEntity.status(500).body(null);
-    }
     if (cs.hasNewMsg()) {
       String gameStatus = cs.recvMessage();
       updatedCombatOrGameOver(resBody, cs, gameStatus);
@@ -119,9 +113,6 @@ public class AjaxController {
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
     ActionAjaxResBody resBody = new ActionAjaxResBody();
     ClientSocket cs = playerMapping.getSocket(userName);
-    if (cs.isClosed()) {
-      return ResponseEntity.status(500).body(null);
-    }
     if (!cs.hasNewMsg()) {
       // Continue to wait for combating result
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);

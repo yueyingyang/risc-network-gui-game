@@ -24,7 +24,9 @@
                             <div class="field">
                                 <label style="user-select: auto;">Prop type</label>
                                 <select th:name="fromType"
-                                        class="ui fluid search dropdown" onchange="update_total()" th:placeholder="${props_type[0]}">
+                                        style="width: 90px"
+                                        class="ui fluid search dropdown" onchange="update_total()"
+                                        th:placeholder="${props_type[0]}">
                                     <option th:each="t : ${props_type}" th:text="${t}" th:value="${t}"></option>
                                 </select>
                             </div>
@@ -35,7 +37,7 @@
                             </div>
                         </div>
                         <div class="ui violet left pointing basic label" style="user-select: auto; width: 110px">
-                            Total cost: <p style="display: inline; padding-left: 5px" id="total" >0</p>
+                            Total cost: <p style="display: inline; padding-left: 5px" id="total">0</p>
                         </div>
                         <button class="ui submit button tiny" style="user-select: auto;" onclick="hide_buy_modal()">
                             Confirm to buy

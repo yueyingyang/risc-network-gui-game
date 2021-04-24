@@ -137,21 +137,19 @@ function renderTerrList(my_terr, enemy_terr) {
     // fromName: my_terr except for move_spy's fromName
     $("select[name*='fromName']").append(my_terr)
     // toName should be my_terr for my_terr, and enemy_terr for attack
-    $("form#move select[name*='toName']").html(my_terr)
-    $("form#attack select[name*='toName']").html(enemy_terr)
-    console.log("Enemy terr:")
-    console.log(enemy_terr)
+    $("form#move select[name*='toName']").append(my_terr)
+    $("form#attack select[name*='toName']").append(enemy_terr)
     // spy and tool's toName are all terr
-    // $("form#move_spy select[name*='toName']").empty().append(my_terr).append(enemy_terr)
-    $("#move_spy_select").html(my_terr)
+    $("form#move_spy select[name*='toName']").empty().append(my_terr).append(enemy_terr)
     $("form#move_spy select[name*='fromName']").empty().append(my_terr).append(enemy_terr)
     $("form#tools select[name*='toName']").empty().append(my_terr).append(enemy_terr)
 }
 
+// to HTML string
 function to_option_dom(terr_list) {
-    let option_dom = []
+    let option_dom = ""
     $.each(terr_list, function (key, value) {
-        option_dom.push($('<option></option>').attr("value", key).text(key));
+        option_dom += $('<option></option>').attr("value", key).text(key)[0].outerHTML;
     })
     return option_dom
 }
