@@ -17,13 +17,32 @@ $('.ui.menu a.item').on('click', function () {
         .removeClass('active');
 })
 
-
+// toggle disabled after btn click
 function toggleActionAndRefresh() {
     $("#commit").toggleClass("active").toggleClass("disabled");
     $("div.field").toggleClass("disabled");
     $(".submit.button.basic").toggleClass("disabled");
 }
 
+// define the tooltip formatter
+let graphData = null
+const full_map_formatter = params => {
+    let res = `😉\t${params.data.owner}<br />` +
+        `🍽\t${params.data.foodProd}<br />` +
+        `💎\t${params.data.techProd}<br />` +
+        `📏\t${params.data.value}<br />`;
+    if (params.data['spy'] !== 0) {
+        res += `👀\t${params.data['spy']}<br />`;
+    }
+    for (let i = 0; i <= 6; i++) {
+        if (params.data['unit' + i] !== 0) {
+            res += `💂${i}\t${params.data['unit' + i]}<br />`;
+        }
+    }
+    return res;
+}
+
+// Ajax error handler
 let ajax_error_handler = {
     // internal server error: go back to lobby
     500: function () {

@@ -57,8 +57,6 @@ public class AjaxController {
    */
   @GetMapping(value = "/update_map")
   public ResponseEntity<?> tryUpdateMap() throws IOException {
-    // REALLY NEEDED FOR UI TEST :)
-//     return ResponseEntity.status(HttpStatus.ACCEPTED).body(util.mockObjectNodes());
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
     ClientSocket cs = playerMapping.getSocket(userName);
     if (cs.hasNewMsg()) {

@@ -6,7 +6,6 @@ import edu.duke.ece651.risc.shared.Constant;
 import edu.duke.ece651.risc.shared.JSONSerializer;
 import edu.duke.ece651.risc.shared.entry.*;
 import edu.duke.ece651.risc.web.model.ActionAjaxResBody;
-import edu.duke.ece651.risc.web.model.ToolCreation;
 import edu.duke.ece651.risc.web.model.UserActionInput;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * Controller to handle 4 types of actions + commit
@@ -29,7 +29,7 @@ public class AjaxActionController {
   private final PlayerSocketMap playerMapping;
   private final UtilService util;
   private final JSONSerializer serializer;
-  private final Map<String, ToolCreation> toolEntryMapping;
+  private final Map<String, Function<String, ActionEntry>> toolEntryMapping;
 
   public AjaxActionController(PlayerSocketMap playerMapping, UtilService util) {
     this.util = util;
@@ -38,8 +38,8 @@ public class AjaxActionController {
     this.toolEntryMapping = initEntryMapping();
   }
 
-  private Map<String, ToolCreation> initEntryMapping() {
-    Map<String, ToolCreation> m = new HashMap<>();
+  private Map<String, Function<String, ActionEntry>> initEntryMapping() {
+    Map<String, Function<String, ActionEntry>> m = new HashMap<>();
     m.put("shield", ShieldEntry::new);
     m.put("sword", SwordEntry::new);
     m.put("missile", MissileEntry::new);
