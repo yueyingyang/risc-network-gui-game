@@ -6,12 +6,22 @@
     <title>Error</title>
 </head>
 <body>
-<div class="ui red message" style="width: fit-content">
-    <div class="header">Something went wrong! </div>
-    <div> Please retry to enter the lobby later...</div>
-</div>
-<a th:href="@{/back_lobby}" class="ui violet basic button" style="user-select: auto;color: blueviolet">
-    Lobby
-</a>
+<div class="ui grid centered" style="margin-top: 30px">
+    <div class=" column centered row" style="user-select: auto;">
+        <div class="eight wide column" style="user-select: auto;">
+            <div class="ui red message icon ">
+                <i class=" exclamation circle icon"></i>
+                <div class="content">
+                    <div class="header">Something went wrong!</div>
+                    <p> Please retry to enter the lobby later</p>
+                </div>
+
+            </div>
+            <a th:href="@{/back_lobby}" class="ui  basic button" style="user-select: auto;color: blueviolet">
+                Back to Lobby
+            </a>
+        </div>
+    </div>
+
 </body>
 </html>

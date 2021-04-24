@@ -57,8 +57,6 @@ public class AjaxController {
    */
   @GetMapping(value = "/update_map")
   public ResponseEntity<?> tryUpdateMap() throws IOException {
-    // REALLY NEEDED FOR UI TEST :)
-    // return ResponseEntity.status(HttpStatus.ACCEPTED).body(util.mockObjectNodes());
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
     ClientSocket cs = playerMapping.getSocket(userName);
     if (cs.hasNewMsg()) {
@@ -81,7 +79,6 @@ public class AjaxController {
       return ResponseEntity.status(HttpStatus.ACCEPTED).body(graphData);
     }
     return ResponseEntity.status(HttpStatus.ACCEPTED).body(null);
-
   }
 
   /**
@@ -127,7 +124,7 @@ public class AjaxController {
     if (playerStatus.equals(Constant.CONTINUE_PLAYING)) {
       handleContinue(resBody, cs);
     } else {
-    // 2.2 LOSE
+      // 2.2 LOSE
       handleLose(resBody, cs);
     }
     return ResponseEntity.status(HttpStatus.ACCEPTED).body(resBody);

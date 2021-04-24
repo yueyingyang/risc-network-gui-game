@@ -9,13 +9,13 @@
     <div class="four fields" style="user-select: auto;">
         <div class="field" style="user-select: auto;">
             <label style="user-select: auto;">From Territory</label>
-            <input type="text" placeholder="From Territory" style="user-select: auto;"
-                   name="fromName">
+            <select type="text" style="user-select: auto;" class="ui fluid search dropdown"
+                    name="fromName"></select>
         </div>
         <div class="field" style="user-select: auto;">
             <label style="user-select: auto;">To Territory</label>
-            <input type="text" placeholder="To Territory" style="user-select: auto;"
-                   name="toName">
+            <select type="text" style="user-select: auto;" class="ui fluid search dropdown"
+                    name="toName"></select>
         </div>
         <div class="field" style="user-select: auto;">
             <label style="user-select: auto;">Soldier Type</label>
@@ -35,13 +35,13 @@
     <div class="four fields" style="user-select: auto;">
         <div class="field" style="user-select: auto;">
             <label style="user-select: auto;">From Territory</label>
-            <input type="text" placeholder="From Territory" style="user-select: auto;"
-                   name="fromName">
+            <select type="text" style="user-select: auto;" class="ui fluid search dropdown"
+                    name="fromName"></select>
         </div>
         <div class="field" style="user-select: auto;">
             <label style="user-select: auto;">To Territory</label>
-            <input type="text" placeholder="To Territory" style="user-select: auto;"
-                   name="toName">
+            <select type="text" style="user-select: auto;" class="ui fluid search dropdown"
+                    name="toName"></select>
         </div>
         <div class="field" style="user-select: auto;">
             <label style="user-select: auto;">Number of Soldiers</label>
@@ -54,8 +54,8 @@
     <div class="four fields" style="user-select: auto;">
         <div class="field" style="user-select: auto;">
             <label style="user-select: auto;">Territory</label>
-            <input type="text" placeholder="Territory" style="user-select: auto;"
-                   name="toName">
+            <select style="user-select: auto;" class="ui fluid search dropdown"
+                    name="fromName"></select>
         </div>
         <div class="field" style="user-select: auto;">
             <label style="user-select: auto;">Current Soldier Type</label>
@@ -82,8 +82,8 @@
     <div class="four fields" style="user-select: auto;">
         <div class="field" style="user-select: auto;">
             <label style="user-select: auto;">Territory</label>
-            <input type="text" placeholder="Territory" style="user-select: auto;"
-                   name="toName">
+            <select type="text" style="user-select: auto;" class="ui fluid search dropdown"
+                    name="fromName"></select>
         </div>
         <div class="field" style="user-select: auto;">
             <label style="user-select: auto;">Number of Soldiers</label>
@@ -98,7 +98,7 @@
             <label style="user-select: auto;">Types</label>
             <select th:name="fromType"
                     class="ui fluid search dropdown">
-                <option th:text="Cloaking" th:value="cloaking"></option>
+                <option th:text="Cloaking" selected th:value="cloaking"></option>
                 <option th:text="Missile" th:value="missile"></option>
                 <option th:text="Sword" th:value="sword"></option>
                 <option th:text="Shield" th:value="shield"></option>
@@ -106,8 +106,8 @@
         </div>
         <div class="field" style="user-select: auto;">
             <label style="user-select: auto;">Territory</label>
-            <input type="text" placeholder="Territory" style="user-select: auto;"
-                   name="toName">
+            <select type="text" placeholder="Territory" style="user-select: auto;" class="ui fluid search dropdown"
+                    name="toName"></select>
         </div>
     </div>
 </div>

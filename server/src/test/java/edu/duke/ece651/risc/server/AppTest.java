@@ -134,21 +134,13 @@ class AppTest {
   }
 
   @Test
-  void test_accept_player() throws IOException, InterruptedException {
+  void test_accept_player_start() throws IOException, InterruptedException {
     Socket cs = Mockito.mock(Socket.class);
-    Socket cs1 = Mockito.mock(Socket.class);
-    Socket cs2 = Mockito.mock(Socket.class);
-    Socket cs3 = Mockito.mock(Socket.class);
-    String clientIn = "{\"type\":\"getGameList\",\"name\":\"test\"}\n";
-    String clientIn1 = "{\"type\":\"start\",\"name\":\"test\",\"gameSize\":\"3\"}\n";
-    String clientIn2 = "{\"type\":\"getGameList\",\"name\":\"p2\"}\n";
-    String clientIn3 = "{\"type\":\"join\",\"name\":\"p2\",\"gameID\":\"0\"}\n";
+    String clientIn = "{\"type\":\"start\",\"name\":\"test\",\"gameSize\":\"3\"}\n";
     OutputStream out = getMockClientOuput(cs, clientIn);
-    //OutputStream out1 = getMockClientOuput(cs1, clientIn1);
-    //OutputStream out2 = getMockClientOuput(cs2, clientIn2);
-    //OutputStream out3 = getMockClientOuput(cs3, clientIn3);
-    //Mockito.when(ss.accept()).thenReturn(cs).thenReturn(cs1).thenReturn(cs2).thenReturn(cs3);
     Mockito.when(ss.accept()).thenReturn(cs);
+    app.recoverPlayers();
+    app.recoverGames();
     Thread t = new Thread(() -> {
       try {
         app.acceptPlayers(ss);
@@ -159,15 +151,59 @@ class AppTest {
     // wait for "acceptPlayers" finishing
     Thread.sleep(2000);
     // check the player's out - it should have sth???
-    assertEquals("[]\n[]\n",out.toString());
-    //assertEquals("[]\n[]\n[{\"id\":0,\"players\":[\"test\"]}]\n[]\nYou are in a Game now!\n", out.toString()+out1.toString()+out2.toString()+out3.toString());
+    assertEquals("",out.toString());
     // end the acceptPlayers
     t.interrupt();
     t.join();
   }
 
+  @Test
+  public void test_accpet_players_getGameList() throws InterruptedException, IOException{
+    Socket cs = Mockito.mock(Socket.class);
+    String clientIn = "{\"type\":\"getGameList\",\"name\":\"test\"}\n";
+    OutputStream out = getMockClientOuput(cs, clientIn);
+    Mockito.when(ss.accept()).thenReturn(cs);
+    app.recoverPlayers();
+    app.recoverGames();
+    Thread t = new Thread(() -> {
+      try {
+        app.acceptPlayers(ss);
+      } catch (NullPointerException ignored) {
+      }
+    });
+    t.start();
+    // wait for "acceptPlayers" finishing
+    Thread.sleep(2000);
+    assertEquals("[]\n[]\n",out.toString());
+    t.interrupt();
+    t.join();
+  }
 
+  @Test
+  public void test_accpet_players_join() throws InterruptedException, IOException{
+    Socket cs = Mockito.mock(Socket.class);
+    String clientIn = "{\"type\":\"join\",\"name\":\"test\",\"gameID\":\"0\"}\n";
+    OutputStream out = getMockClientOuput(cs, clientIn);
+    Mockito.when(ss.accept()).thenReturn(cs);
+    app.recoverPlayers();
+    app.recoverGames();
+    Game g = new Game(2,0);
+    app.games.add(g);
+    Thread t = new Thread(() -> {
+      try {
+        app.acceptPlayers(ss);
+      } catch (NullPointerException ignored) {
+      }
+    });
+    t.start();
+    // wait for "acceptPlayers" finishing
+    Thread.sleep(2000);
+    assertEquals("You are in a Game now!\n",out.toString());
+    t.interrupt();
+    t.join();
+  }
 
+  @Test
   private OutputStream getMockClientOuput(Socket cs, String clientIn) throws IOException {
     InputStream in = new ByteArrayInputStream(clientIn.getBytes());
     OutputStream out = new ByteArrayOutputStream();
@@ -175,7 +211,7 @@ class AppTest {
     Mockito.when(cs.getOutputStream()).thenReturn(out);
     return out;
   }
-/*
+
   @Test
   void test_accept_player_exception_handling() throws IOException, InterruptedException {
     Socket cs = Mockito.mock(Socket.class);
@@ -193,27 +229,6 @@ class AppTest {
     t.interrupt();
     t.join();
   }
-
-  @Test
-  void test_run() throws IOException, InterruptedException {
-    // prep
-    Socket cs = Mockito.mock(Socket.class);
-    String clientIn = "3\n";
-    Mockito.when(ss.accept()).thenReturn(cs).thenThrow(new IOException("test"));
-    OutputStream out = getMockClientOuput(cs, clientIn);
-    Mockito.when(hs.getSocket()).thenReturn(ss);
-    // start
-    app = new App(hs, mockOut);
-    Thread t = new Thread(() -> {
-      app.run();
-    });
-    t.start();
-    Thread.sleep(2000);
-    t.interrupt();
-    t.join();
-    Mockito.verify(hs).getSocket();
-    Mockito.verify(hs).closeSocket();
-  }*/
 
   @Test
   void test_allGameList() throws IOException{
@@ -246,10 +261,22 @@ class AppTest {
   @Test
   public void test_recoverGame(){
     assertDoesNotThrow(()->{app.recoverPlayers();});
-    assertDoesNotThrow(()->{app.recoverGames();}); 
-    
+    assertDoesNotThrow(()->{app.recoverGames();});     
   }
 
+  @Test
+  public void test_Database() {
+      Database db = new Database();
+      ServerPlayer sp = new ServerPlayer();
+      sp.setName("test");
+      Game g = new Game(2,0);
+      db.insertPlayersCollection(sp);
+      db.insertGamesCollection(g);
+      ArrayList<Game> gl = db.recoverGameList();
+      ArrayList<ServerPlayer> spl = db.recoverPlayerList();
+      assertEquals(1, gl.size());
+      assertEquals(1, spl.size());
+  }
   
 
 }

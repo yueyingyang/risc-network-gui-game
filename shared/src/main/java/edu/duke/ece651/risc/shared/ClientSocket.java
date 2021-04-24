@@ -48,7 +48,13 @@ public class ClientSocket {
     return in.ready();
   }
 
+  /**
+   * Close the socket
+   *
+   * @throws IOException
+   */
   public void close() throws IOException {
     s.close();
   }
+
 }

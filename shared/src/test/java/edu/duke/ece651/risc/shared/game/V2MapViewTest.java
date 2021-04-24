@@ -35,6 +35,8 @@ class V2MapViewTest {
     assertEquals("[{\"name\":\"0\",\"value\":5,\"spy\":0,\"owner\":\"John\",\"color\":\"#97B8A3\",\"foodProd\":20,\"techProd\":20,\"unit0\":0,\"unit1\":0,\"unit2\":0,\"unit3\":5,\"unit4\":0,\"unit5\":0,\"unit6\":0,\"x\":230,\"y\":200}, {\"name\":\"1\",\"value\":5,\"spy\":0,\"owner\":\"Tom\",\"color\":\"#EDC3C7\",\"foodProd\":20,\"techProd\":20,\"unit0\":1,\"unit1\":0,\"unit2\":0,\"unit3\":0,\"unit4\":0,\"unit5\":0,\"unit6\":0,\"x\":170,\"y\":200}]", deView.get("data").toString());
     assertEquals("[{\"source\":\"0\",\"target\":\"1\"}, {\"source\":\"1\",\"target\":\"0\"}]", deView.get("links").toString());
     assertEquals("[{\"name\":\"John\",\"techLevel\":1,\"foodRes\":20,\"techRes\":20,\"isRequested\":false,\"shield\":0,\"sword\":0,\"ship\":0,\"missile\":0}]", deView.get("playerInfo").toString());
+    assertEquals("[{\"0\":\"\"}]", deView.get("myTerr").toString());
+    assertEquals("[{\"1\":\"\"}]", deView.get("enemyTerr").toString());
   }
 
   List<ServerPlayer> playerList(List<String> names) {

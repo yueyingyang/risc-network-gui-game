@@ -12,7 +12,8 @@
     <div class="seven wide column" style="padding:20px 0 0 50px">
         <div id="player_info"></div>
         <br>
-        <button class="ui icon button violet basic" onclick="display_store_modal()" style="float: right; margin-right: 30px">
+        <button class="ui icon button violet basic" onclick="display_store_modal()"
+                style="float: right; margin-right: 30px">
             <i class="shopping cart icon" style="user-select: auto;"></i>
             Store Entry
         </button>
@@ -59,6 +60,7 @@
     </div>
 </div>
 
+<!--Winner modal-->
 <div class="ui basic modal" id="winner">
     <div class="ui icon header">
         <i class="thumbs up outline icon"></i>
@@ -74,6 +76,7 @@
     </div>
 </div>
 
+<!--Loser modal-->
 <div class="ui basic modal" id="lost">
     <div class="ui icon header">
         <i class="meh outline outline icon"></i>
@@ -90,12 +93,14 @@
             <i class="eye icon"></i>
             Continue to watch
         </a>
-    </div>v
+    </div>
+    v
 </div>
 
-
+<!--Store modal-->
 <div th:insert="fragments/store.html :: store_modal(${propType})"></div>
 
+<!--JS script insertion start-->
 <script th:src="@{/util.js}" type="text/javascript"></script>
 <!-- Map display utils -->
 <script th:src="@{/map_display.js}"></script>
@@ -111,13 +116,13 @@
             map_refresh_timer = setInterval(refresh_map, 1000);
         }
     )
-
+    // define the tooltip formatter
     let graphData = null
     const full_map_formatter = params => {
         let res = `😉\t${params.data.owner}<br />` +
             `🍽\t${params.data.foodProd}<br />` +
             `💎\t${params.data.techProd}<br />` +
-            `📏\t${params.data.value}<br />` ;
+            `📏\t${params.data.value}<br />`;
         if (params.data['spy'] !== 0) {
             res += `👀\t${params.data['spy']}<br />`;
         }
@@ -128,7 +133,6 @@
         }
         return res;
     }
-
     // default is loading box
     $('#map_box').empty().append(load_html);
 

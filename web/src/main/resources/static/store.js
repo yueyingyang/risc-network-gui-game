@@ -1,9 +1,12 @@
+// This file are functions and constant related to store modal display
+
 display_store_modal = () => {
     $('#store').modal('show');
 }
 hide_buy_modal = () => {
     $('#store').modal('hide');
 }
+// product list
 products = [
     {
         "name": "Missile",
@@ -19,13 +22,13 @@ products = [
     },
     {
         "name": "Shield",
-        "price": 30,
+        "price": 50,
         "desc": "Safer guard to your territory",
         "path_to_img": "shield.png"
     },
     {
         "name": "Sword",
-        "price": 30,
+        "price": 50,
         "desc": "Attack with more power",
         "path_to_img": "sword.png"
     }
