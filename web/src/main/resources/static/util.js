@@ -31,7 +31,7 @@ let ajax_error_handler = {
         location.href = "/error"
     },
     // 400: clear all disable and append warning info
-    400: () => {
+    400: function () {
         $("#msg_box")
             .append('<p style="user-select: auto;"> ' + " The action is invalid, please re-try with a valid one. " + "</p>");
         $("#commit").removeClass("disabled");

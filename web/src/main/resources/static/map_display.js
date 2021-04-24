@@ -113,6 +113,16 @@ function toStatHTML(player_info) {
             '                </div>\n' +
             '            </div>\n';
     }
+    if (player_info['isResCloak'] === true) {
+        stat_html += '  <div class="statistic" style="user-select: auto;">\n' +
+            '    <div class="value" style="user-select: auto;">\n' +
+            '      <i class="book icon" style="user-select: auto;"></i> ' +
+            '    </div>\n' +
+            '    <div class="label" style="user-select: auto;">' +
+            '      Cloak\n' +
+            '    </div>\n' +
+            '  </div>'
+    }
     return stat_html
 }
 
@@ -135,10 +145,10 @@ const display_playerInfo = (player_info) => {
 
 function renderTerrList(my_terr, enemy_terr) {
     // fromName: my_terr except for move_spy's fromName
-    $("select[name*='fromName']").append(my_terr)
+    $("select[name*='fromName']").empty().append(my_terr)
     // toName should be my_terr for my_terr, and enemy_terr for attack
-    $("form#move select[name*='toName']").append(my_terr)
-    $("form#attack select[name*='toName']").append(enemy_terr)
+    $("form#move select[name*='toName']").empty().append(my_terr)
+    $("form#attack select[name*='toName']").empty().append(enemy_terr)
     // spy and tool's toName are all terr
     $("form#move_spy select[name*='toName']").empty().append(my_terr).append(enemy_terr)
     $("form#move_spy select[name*='fromName']").empty().append(my_terr).append(enemy_terr)
@@ -163,3 +173,18 @@ const display_map = (tooltip_formatter_fn) => {
     $("#player_info").empty().append(display_playerInfo(graphData["playerInfo"][0]));
     renderTerrList(to_option_dom(graphData['myTerr'][0]), to_option_dom(graphData['enemyTerr'][0]));
 };
+
+const tooltip_display = () => {
+    console.log("toogle map display")
+    const myChart = echarts.init(document.getElementById("map"));
+    let option;
+    option = getOption(full_map_formatter);
+
+    myChart.setOption(option);
+    myChart.dispatchAction({
+        type: 'showTip',
+        seriesIndex:1,  // 显示第几个series
+        dataIndex: new Date().getHours() // 显示第几个数据
+    });
+
+}
