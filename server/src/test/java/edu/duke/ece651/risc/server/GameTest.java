@@ -1,4 +1,5 @@
 package edu.duke.ece651.risc.server;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.awt.*;
@@ -19,6 +20,7 @@ import org.mockito.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.List;
+import java.util.concurrent.CyclicBarrier;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -231,29 +233,39 @@ public class GameTest {
     Game g = new Game(2,0);        
     ByteArrayOutputStream bytes1 = new ByteArrayOutputStream();  
     ByteArrayOutputStream bytes2 = new ByteArrayOutputStream();                                                                                                   
-    ServerPlayer p1 = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes1, true),socket1);
+    ServerPlayer p1 = new ServerPlayer(new BufferedReader(new StringReader(Constant.ORDER_COMMIT)), new PrintWriter(bytes1, true),socket1);
     p1.setName("Red");
     p1.setColor(Color.RED);
     p1.setCurrentGameID(0);
-    ServerPlayer p2 = new ServerPlayer(new BufferedReader(new StringReader("")), new PrintWriter(bytes2, true),socket2);
+    ServerPlayer p2 = new ServerPlayer(new BufferedReader(new StringReader(Constant.ORDER_COMMIT)), new PrintWriter(bytes2, true),socket2);
     p2.setName("Blue");
     p2.setColor(Color.BLUE);
     p2.setCurrentGameID(0);
     g.addPlayer(p1);
     g.addPlayer(p2);
+    g.makeMap(1);
+    ArrayList<ServerPlayer> playerList = new ArrayList<>();
+    playerList.add(p1);
+    playerList.add(p2);
+    g.resetPlayers(playerList, playerList, playerList);
+    for(Territory t:g.getMap().getAllTerritories()){
+      t.addSoldiersToArmy(1);
+    }
+    g.isPlacementComplete = true;
     Thread t = new Thread(() -> {
       try {
-        g.runGame(2,6,null);
+        g.runGame(1,2,null);
       } catch (Exception ignored) {
       }
     });
     t.start();
     // wait for "acceptPlayers" finishing
     Thread.sleep(2000);
-    g.endGame();
-    assertThrows(IOException.class, ()->{p1.recvMessage();});
     t.interrupt();
     t.join();
+    g.endGame();
+    assertThrows(IOException.class, ()->{p1.recvMessage();});
+   
   }
 
   @Test
@@ -354,7 +366,75 @@ public class GameTest {
     t.join();
   }
 
-  //@Disabled
+  @Test
+    public void test_PlacementThreadRun()throws InterruptedException, JsonProcessingException{
+        ActionEntry p0 = new PlaceEntry("0",1, "test");
+        Collection<ActionEntry> ca = new ArrayList<ActionEntry>();
+        ca.add(p0);
+        JSONSerializer js = new JSONSerializer(); 
+        Game game = new Game(2,0);        
+        Socket s = new Socket();
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        ServerPlayer sp = new ServerPlayer(new BufferedReader((new StringReader(js.getOm().writerFor(new TypeReference<List<ActionEntry>>() {}).writeValueAsString(ca)))),
+            new PrintWriter(bytes, true),s);
+        sp.setCurrentGameID(0);
+        sp.setName("test");
+        game.addPlayer(sp);
+        ArrayList<ServerPlayer> pl = new ArrayList<>();
+        pl.add(sp);
+        Map<String,String> colorMap = new HashMap<>();
+        colorMap.put("test","Red");
+        PlayerInfo pi = new PlayerInfo("test",0,0,0);
+        game.makeMap(2);       
+        V2MapView mv = new V2MapView(game.getMap(),pl,pi,colorMap);
+        CyclicBarrier barrier = new CyclicBarrier(1);
+        
+        PlacementThread pth = new PlacementThread(6,game.getMap(),mv,sp,barrier);
+        Thread t = new Thread(pth);
+        t.start();
+        // wait for "acceptPlayers" finishing
+        Thread.sleep(2000);
+        t.interrupt();
+        t.join();
+        assertEquals(1, game.getMap().getTerritory("0").getNumSoldiersInArmy());    
+    }
+
+    @Test
+    public void test_PlacementThreadRunInvalid()throws InterruptedException, JsonProcessingException{
+      ActionEntry p0 = new PlaceEntry("0",10, "test");
+      Collection<ActionEntry> ca = new ArrayList<ActionEntry>();
+      ca.add(p0);
+      JSONSerializer js = new JSONSerializer(); 
+      Game game = new Game(2,0);        
+      Socket s = new Socket();
+      ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+      ServerPlayer sp = new ServerPlayer(new BufferedReader((new StringReader(js.getOm().writerFor(new TypeReference<List<ActionEntry>>() {}).writeValueAsString(ca)))),
+          new PrintWriter(bytes, true),s);
+      System.out.println(js.getOm().writerFor(new TypeReference<List<ActionEntry>>() {}).writeValueAsString(ca));
+      sp.setCurrentGameID(0);
+      sp.setName("test");
+      game.addPlayer(sp);
+      ArrayList<ServerPlayer> pl = new ArrayList<>();
+      pl.add(sp);
+      Map<String,String> colorMap = new HashMap<>();
+      colorMap.put("test","Red");
+      PlayerInfo pi = new PlayerInfo("test",0,0,0);
+      game.makeMap(2);       
+      V2MapView mv = new V2MapView(game.getMap(),pl,pi,colorMap);
+      CyclicBarrier barrier = new CyclicBarrier(1);
+      
+      PlacementThread pth = new PlacementThread(6,game.getMap(),mv,sp,barrier);
+      Thread t = new Thread(pth);
+      t.start();
+      // wait for "acceptPlayers" finishing
+      Thread.sleep(2000);
+      t.interrupt();
+      t.join();
+      assertEquals(0, game.getMap().getTerritory("0").getNumSoldiersInArmy());     
+    }
+
+
+
   @Test
   public void test_runGameEnd() throws IOException, InterruptedException{
     ServerPlayer player1 = Mockito.mock(ServerPlayer.class);
@@ -441,6 +521,38 @@ public class GameTest {
     // wait for "acceptPlayers" finishing
     Thread.sleep(5000);  
     assertEquals(false,g.checkWin());
+    t.interrupt();
+    t.join();
+  }
+
+  @Test
+  public void test_resetPlayers(){
+    ArrayList<ServerPlayer> players = new ArrayList<ServerPlayer>();
+    Game g = new Game(2,0);
+    ServerPlayer sp = new ServerPlayer();
+    g.addPlayer(sp);
+    g.resetPlayers(players, players, players);
+    assertEquals(0,g.getPLayerInGameNum());
+  }
+
+  @Test
+  public void test_effects(){
+    Game game = new Game(2,0);        
+    Socket s = new Socket();
+    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+    ServerPlayer sp = new ServerPlayer(new BufferedReader((new StringReader(""))),
+        new PrintWriter(bytes, true),s);
+    sp.setCurrentGameID(0);
+    sp.setName("test");
+    game.addPlayer(sp);
+    game.makeMap(1);
+    assertEquals("test",game.getMap().getAllTerritories().get(0).getOwnerName());
+    ArrayList<ServerPlayer> playerList = new ArrayList<>();
+    playerList.add(sp);
+    game.resetPlayers(playerList, playerList, playerList);
+    game.effectAllCloaking();
+    game.effectAllSpyMove();
+    assertEquals(0, game.getMap().getTerritory("0").getCloaking());
   }
 
   

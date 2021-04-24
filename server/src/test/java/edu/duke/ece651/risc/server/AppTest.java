@@ -204,10 +204,6 @@ class AppTest {
   }
 
   @Test
-  
-
-
-
   private OutputStream getMockClientOuput(Socket cs, String clientIn) throws IOException {
     InputStream in = new ByteArrayInputStream(clientIn.getBytes());
     OutputStream out = new ByteArrayOutputStream();
@@ -265,10 +261,22 @@ class AppTest {
   @Test
   public void test_recoverGame(){
     assertDoesNotThrow(()->{app.recoverPlayers();});
-    assertDoesNotThrow(()->{app.recoverGames();}); 
-    
+    assertDoesNotThrow(()->{app.recoverGames();});     
   }
 
+  @Test
+  public void test_Database() {
+      Database db = new Database();
+      ServerPlayer sp = new ServerPlayer();
+      sp.setName("test");
+      Game g = new Game(2,0);
+      db.insertPlayersCollection(sp);
+      db.insertGamesCollection(g);
+      ArrayList<Game> gl = db.recoverGameList();
+      ArrayList<ServerPlayer> spl = db.recoverPlayerList();
+      assertEquals(1, gl.size());
+      assertEquals(1, spl.size());
+  }
   
 
 }

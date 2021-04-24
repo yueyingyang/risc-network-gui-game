@@ -2,6 +2,8 @@
 package edu.duke.ece651.risc.server;
 import java.util.ArrayList;
 
+import javax.swing.plaf.TreeUI;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
@@ -23,7 +25,7 @@ import edu.duke.ece651.risc.shared.ServerPlayer;
  */
 public class Database {
     //the flag to refrsh the database
-    private int refresh = 1; 
+    private Boolean refresh = true; 
     private volatile MongoClient mongoClient;
     private volatile MongoDatabase mongoDatabase;
     private volatile MongoCollection<Document> playersCollection;// only need players names
@@ -45,7 +47,7 @@ public class Database {
         System.out.println("Connect to database successfully");
 
         // if need refresh, drop the collections in the database
-        if(this.refresh==1){
+        if(this.refresh==true){
             mongoDatabase.getCollection("players").drop();
             System.out.println("drop players collection!");
             mongoDatabase.getCollection("games").drop();
@@ -71,9 +73,9 @@ public class Database {
     /**
      * get the players collection
      */
-    public MongoCollection<Document> getPlayersCollection(){
+    /*public MongoCollection<Document> getPlayersCollection(){
         return this.playersCollection;
-    }
+    }*/
 
     /**
      * insert a player into the player collection
